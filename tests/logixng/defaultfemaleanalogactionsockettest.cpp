@@ -49,7 +49,7 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
 
     //@Override
     /*protected*/ FemaleSocket* DefaultFemaleAnalogActionSocketTest::getFemaleSocket(QString name) {
-        return new DFAADefaultFemaleAnalogActionSocket(nullptr, new FemaleSocketListener()
+        return new DefaultFemaleAnalogActionSocket(nullptr, new DFAAFemaleSocketListener()
 //        {
 //            //@Override
 //            /*public*/  void connected(FemaleSocket socket) {
@@ -140,7 +140,7 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
         manager = (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
         maleSocket = ((DefaultAnalogActionManager*)manager->mself())->registerAction(_action);
         otherMaleSocket = ((DefaultAnalogActionManager*)manager->mself())->registerAction(otherAction);
-        _femaleSocket = new DFAA2DefaultFemaleAnalogActionSocket(conditionalNG, new FemaleSocketListener()
+        _femaleSocket = new DefaultFemaleAnalogActionSocket(conditionalNG, new DFAA2FemaleSocketListener(this)
 //        {
 //            //@Override
 //            /*public*/  void connected(FemaleSocket socket) {

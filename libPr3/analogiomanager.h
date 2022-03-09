@@ -6,7 +6,7 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2020
  */
-/*public*/  /*interface*/class AnalogIOManager : public Manager/*<AnalogIO>*/ {
+/*public*/  /*interface*/class AnalogIOManager : public virtual Manager/*<AnalogIO>*/ {
 Q_INTERFACES(Manager)
  public:
     /**

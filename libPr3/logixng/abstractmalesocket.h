@@ -7,8 +7,9 @@
 #include "symboltable.h"
 #include "runtimeexception.h"
 #include "jmriexception.h"
+#include "abstractnamedbean.h"
 
-class AbstractMaleSocket :  public QObject, public virtual MaleSocket
+class AbstractMaleSocket :  public /*QObject*/AbstractNamedBean, public virtual MaleSocket
 {
   Q_OBJECT
   Q_INTERFACES(MaleSocket)
@@ -41,7 +42,7 @@ class AbstractMaleSocket :  public QObject, public virtual MaleSocket
   /*public*/ /*final*/ int getNumPropertyChangeListeners()override;
   /*public*/ /*final*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() const override;
   /*public*/ /*final*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName)override;
-  /*public*/ /*final*/ QList<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name)override;
+  /*public*/ /*final*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name)override;
   /*public*/ QString getComment()override;
   /*public*/ void setComment(QString comment)override;
   /*public*/ bool getListen()override;
@@ -106,11 +107,11 @@ class AbstractMaleSocket :  public QObject, public virtual MaleSocket
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ Base* _object;
+  /*private*/ /*final*/ Base* _object=nullptr;
   /*private*/ bool _locked = false;
   /*private*/ bool _system = false;
   /*private*/ /*final*/ BaseManager/*<NamedBean*><? extends NamedBean>*/* _manager;
-  /*private*/ Base* _parent;
+  /*private*/ Base* _parent = nullptr;
   /*private*/ ErrorHandlingType::TYPES _errorHandlingType = ErrorHandlingType::Default;
   /*private*/ bool _catchAbortExecution;
   /*private*/ bool _listen = true;     // By default, actions and expressions listen

@@ -168,7 +168,7 @@ BeanItemPanel* BeanEditAction::usageDetails()
  usage->addItem(new BeanEditItem(nullptr, nullptr, tr("Provides an indication as to where %1 is used within your panel.").arg( bean->getDisplayName())));
 
  QStringList listeners =  QStringList();
- foreach (QString ref, *bean->getListenerRefs())
+ foreach (QString ref, bean->getListenerRefs())
  {
   if (!listeners.contains(ref))
   {

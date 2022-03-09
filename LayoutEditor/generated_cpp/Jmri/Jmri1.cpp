@@ -9253,7 +9253,7 @@ if (_wrapper) {
 }
   return LnSensor::getListenerRef(l0);
 }
-QList<QString >*  PythonQtShell_LnSensor::getListenerRefs()
+QList<QString >  PythonQtShell_LnSensor::getListenerRefs()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9261,9 +9261,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getListenerRefs");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QList<QString >*"};
+      static const char* argumentList[] ={"QList<QString >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString >* returnValue{};
+      QList<QString > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -9272,7 +9272,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getListenerRefs", methodInfo, result);
           } else {
-            returnValue = *((QList<QString >**)args[0]);
+            returnValue = *((QList<QString >*)args[0]);
           }
         }
       }
@@ -11678,6 +11678,39 @@ if (_wrapper) {
   }
 }
   LnTurnout::provideSecondFeedbackSensor(pName0);
+}
+QObject*  PythonQtShell_LnTurnout::pself()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("pself");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QObject* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
+          } else {
+            returnValue = *((QObject**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnTurnout::pself();
 }
 void PythonQtShell_LnTurnout::requestUpdateFromLayout()
 {
@@ -15235,7 +15268,7 @@ if (_wrapper) {
 }
   return NamedBean::getListenerRef(arg__1);
 }
-QList<QString >*  PythonQtShell_NamedBean::getListenerRefs()
+QList<QString >  PythonQtShell_NamedBean::getListenerRefs()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15243,9 +15276,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getListenerRefs");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QList<QString >*"};
+      static const char* argumentList[] ={"QList<QString >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString >* returnValue{};
+      QList<QString > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -15254,7 +15287,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getListenerRefs", methodInfo, result);
           } else {
-            returnValue = *((QList<QString >**)args[0]);
+            returnValue = *((QList<QString >*)args[0]);
           }
         }
       }
@@ -15837,7 +15870,7 @@ QString  PythonQtWrapper_NamedBean::getListenerRef(NamedBean* theWrappedObject, 
   return ( theWrappedObject->getListenerRef(arg__1));
 }
 
-QList<QString >*  PythonQtWrapper_NamedBean::getListenerRefs(NamedBean* theWrappedObject)
+QList<QString >  PythonQtWrapper_NamedBean::getListenerRefs(NamedBean* theWrappedObject)
 {
   return ( theWrappedObject->getListenerRefs());
 }

@@ -8,7 +8,7 @@ class Metatypes : public QObject
   Q_OBJECT
  public:
   explicit Metatypes(QObject *parent = nullptr);
-  static bool done;
+  static bool ng_done;// = false;
  signals:
 
 

@@ -16,6 +16,6 @@
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
-
+        QString sys = maleSocket->getSystemName();
         return new DebuggerMaleDigitalActionSocket(manager, (NamedBean*)maleSocket);
     }

@@ -511,16 +511,16 @@ void BeanTableDataModel::setManager(Manager *) {}
    //question.setAlignmentX(Component.CENTER_ALIGNMENT);
    container->layout()->addWidget(question);
 
-   QList<QString>* listenerRefs = t->getListenerRefs();
-   if(listenerRefs->size()>0)
+   QList<QString> listenerRefs = t->getListenerRefs();
+   if(listenerRefs.size()>0)
    {
     question = new QLabel("    ");
     container->layout()->addWidget(question);
     QStringList listeners = QStringList();
-    for (int i = 0; i<listenerRefs->size(); i++)
+    for (int i = 0; i<listenerRefs.size(); i++)
     {
-     if(!listeners.contains(listenerRefs->at(i)))
-      listeners.append(listenerRefs->at(i));
+     if(!listeners.contains(listenerRefs.at(i)))
+      listeners.append(listenerRefs.at(i));
     }
 
     for (int i = 0; i<listeners.size(); i++)
@@ -1412,7 +1412,7 @@ void BeanTableDataModel::onColumnSelected(QObject* obj)
         }
         message.append(e->getMessage());
     }
-    int count = t->getListenerRefs()->size();
+    int count = t->getListenerRefs().size();
     model->log->debug(tr("Delete with %1").arg(count));
     if (model->getDisplayDeleteMsg() == 0x02 && message.isEmpty()) {
         model->doDelete(t);
@@ -1429,10 +1429,10 @@ void BeanTableDataModel::onColumnSelected(QObject* obj)
             question->setAlignment(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
             container->layout()->addWidget(question);
 
-            QList<QString>* listenerRefs = t->getListenerRefs();
-            if (listenerRefs->size() > 0) {
+            QList<QString> listenerRefs = t->getListenerRefs();
+            if (listenerRefs.size() > 0) {
                 QList<QString> listeners = QList<QString>();
-                for (QString listenerRef : *listenerRefs) {
+                for (QString listenerRef : listenerRefs) {
                     if (!listeners.contains(listenerRef)) {
                         listeners.append(listenerRef);
                     }

@@ -178,6 +178,8 @@ friend class DefaultRouteManager;
 friend class SignalGroupManager;
 friend class DefaultSignalGroupManager;
 friend class DefaultVariableLightManager;
+friend class InternalAnalogIOManager;
+friend class DefaultAnalogExpressionManager;
 
 protected:
 /**

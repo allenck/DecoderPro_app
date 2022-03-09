@@ -7,7 +7,7 @@
 #include "analogexpression.h"
 #include "jmriexception.h"
 #include "instancemanager.h"
-#include "analogexpressionmanager.h"
+#include "defaultanalogexpressionmanager.h"
 /**
  * Abstract class for SwingConfiguratorInterface
  *
@@ -63,7 +63,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  BaseManager/*<? extends NamedBean>*/* AbstractAnalogExpressionSwing::getManager() {
-        return (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
+        return (DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
     }
 
     /** {@inheritDoc} */
@@ -85,13 +85,13 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString AbstractAnalogExpressionSwing::getExampleSystemName() {
-        return ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getSystemNamePrefix() + "AE10";
+        return ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getSystemNamePrefix() + "AE10";
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString AbstractAnalogExpressionSwing::getAutoSystemName() {
-        return  ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getAutoSystemName();
+        return  ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->DefaultAnalogExpressionManager::getAutoSystemName();
     }
 
 

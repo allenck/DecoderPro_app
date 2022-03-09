@@ -11,11 +11,11 @@ class Base;
     /*public*/ QSet<QHash<Category*, /*Class<? extends Base>*/QString> > AnalogFactory::getClasses() {
         QSet<QHash<Category*, /*Class<? extends Base>>*/QString > > analogExpressionClasses = QSet<QHash<Category*, /*Class<? extends Base>>*/QString> >();
 #if 1
-        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "AnalogExpressionAnalogIO"}});
-        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "AnalogExpressionConstant"}});
-        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "AnalogExpressionMemory"}});
-        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::COMMON, "AnalogFormula"}});
-        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "TimeSinceMidnight"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, ".jmri.jmrit.logixng.AnalogExpressionAnalogIO"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, ".jmri.jmrit.logixng.expressions.AnalogExpressionConstant"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, ".jmri.jmrit.logixng.AnalogExpressionMemory"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::COMMON, ".jmri.jmrit.logixng.expressions.AnalogFormula"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, ".jmri.jmrit.logixng.TimeSinceMidnight"}});
 #else
         QMap<Category*, /*Class<? extends Base>>*/QString > map = QMap<Category*, /*Class<? extends Base>>*/QString >();
         map.insert(Category::ITEM, "AnalogExpressionAnalogIO");

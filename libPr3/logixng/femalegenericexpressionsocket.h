@@ -76,5 +76,5 @@ Q_INTERFACES(FemaleSocket)
     /*public*/ virtual QVariant evaluateGeneric() /*throws JmriException*/=0;
 
 };
-  Q_DECLARE_INTERFACE(FemaleGenericExpressionSocket, "FemaleGenericExpressionSocket")
+Q_DECLARE_INTERFACE(FemaleGenericExpressionSocket, "FemaleGenericExpressionSocket")
 #endif // FEMALEGENERICEXPRESSIONSOCKET_H

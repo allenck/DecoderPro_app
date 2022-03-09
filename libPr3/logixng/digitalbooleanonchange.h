@@ -25,6 +25,7 @@ class DigitalBooleanOnChange : public AbstractDigitalBooleanAction, public Femal
 //        private Trigger(String text) {
 //            this._text = text;
 //        }
+    /*public*/static QList<TargetAction> values() { return QList<TargetAction> {CHANGE_TO_TRUE, CHANGE_TO_FALSE, CHANGE};};
 
       //@Override
       /*public*/static  QString toString(TargetAction t) {
@@ -39,6 +40,13 @@ class DigitalBooleanOnChange : public AbstractDigitalBooleanAction, public Femal
            return "?";
           }
       }
+    static TargetAction toTargetAction(QString s)
+    {
+     if(s == tr("On change to true")) return CHANGE_TO_TRUE;
+     if(s== tr("On change to false")) return CHANGE_TO_FALSE;
+     if(s== tr("On change")) return CHANGE;
+        throw new IllegalArgumentException(tr("%1 is vot a valid Trigger target action").arg(s));
+    }
   };
 
   explicit DigitalBooleanOnChange(QString sys, QString user, Trigger::TargetAction trigger, QObject *parent = nullptr);

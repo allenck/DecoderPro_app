@@ -322,7 +322,7 @@ public:
         /**
         * Returns a list of all the listerners references
         */
-        virtual QList<QString>* getListenerRefs();
+        virtual QList<QString> getListenerRefs();
 
         /**
          * Number of current listeners. May return -1 if the

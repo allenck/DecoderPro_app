@@ -1,7 +1,7 @@
 #include "defaultanalogexpressionmanager.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "maleanalogexpressionsocket.h"
 #include "loggingutil.h"
 #include "threadingutil.h"
@@ -18,6 +18,8 @@
 #include "class.h"
 #include "exceptions.h"
 #include "debuggermaleanalogexpressionsocketfactory.h"
+#include "analogexpressionanalogio.h"
+#include "analogfactory.h"
 
 /**
  * Class providing the basic logic of the ExpressionManager interface.
@@ -30,49 +32,43 @@
 
 
     /*public*/  DefaultAnalogExpressionManager::DefaultAnalogExpressionManager(QObject* parent) : AbstractBaseManager(parent) {
-        ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
+        ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
-        aList = {"AnalogExpressionAnalogIO",
-           "AnalogExpressionConstant",
-           "AnalogExpressionMemory",
-           "AnalogFormula",
-           "TimeSinceMidnight"};
+        QList<AnalogExpressionFactory*> factories = {new AnalogFactory()};
 
 //        for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load("AnalogExpressionFactory")*/aList) {
 //            expressionFactory->init();
-        foreach(QString name, aList)
+        foreach(AnalogExpressionFactory* factory, factories)
         {
-         try {
-           Class* clazz = Class::forName(name);
-          }  catch (ClassNotFoundException* ex) {
-
-          }
+         factory->init();
         }
 
         for (Category* category : Category::values()) {
             expressionClassList.insert(category,  QList</*Class<? extends Base*/QString>());
         }
-#if 0 // TODO:
-//        System.out.format("Read expressions%n");
-        for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load(AnalogExpressionFactory.class)*/aList) {
-            //expressionFactory.getClasses().forEach((entry) ->
-             QMapIterator<Category*, QList<QString> > entry(expressionFactory->getClasses());
-             foreach(QString name, aList)
-             {
-              try {
-                Class* clazz = Class::forName(name);
-               }  catch (ClassNotFoundException* ex) {
-
-               }
-             }while(entry.hasNext()
-)            {
-              entry.next();
-//                System.out.format("Add expression: %s, %s%n", entry.getKey().name(), entry.getValue().getName());
-              expressionClassList.value(entry.key()).append(entry.value());
-            }//);
+//        //        System.out.format("Read expressions%n");
+//                for (AnalogExpressionFactory expressionFactory : ServiceLoader.load(AnalogExpressionFactory.class)) {
+//                    expressionFactory.getClasses().forEach((entry) -> {
+//        //                System.out.format("Add expression: %s, %s%n", entry.getKey().name(), entry.getValue().getName());
+//                        expressionClassList.get(entry.getKey()).add(entry.getValue());
+//                    });
+//                }
+        for (AnalogExpressionFactory* expressionFactory : factories)
+        {
+         QSet<QHash<Category*, QString>> classes = expressionFactory->getClasses();
+         for(QHash<Category*, QString> map : classes )
+         {
+          QHashIterator<Category*, QString> entry(map);
+          while(entry.hasNext())
+          {
+           entry.next();
+           QList<QString> temp = expressionClassList.value(entry.key());
+           temp.append(entry.value());
+           expressionClassList.insert(entry.key(), temp);
+          }
+         }
         }
-#endif
-//        bList = {new MaleAnalogExpressionSocketFactory()};
+
 //        for (MaleAnalogExpressionSocketFactory* maleSocketFactory : /*ServiceLoader.load(MaleAnalogExpressionSocketFactory.class)*/bList) {
 //            _maleSocketFactories.append(maleSocketFactory);
 //        }
@@ -166,7 +162,7 @@
      **/
     //@Override
     /*public*/  Manager::NameValidity DefaultAnalogExpressionManager::validSystemNameFormat(QString systemName) {
-        return LogixNG_Manager::ng_validSystemNameFormat(
+        return DefaultLogixNGManager::ng_validSystemNameFormat(
                 getSubSystemNamePrefix(), systemName);
     }
 
@@ -212,5 +208,14 @@
         return (MaleAnalogExpressionSocket*)maleSocket->bself();
     }
 
+
+/*public*/ QString DefaultAnalogExpressionManager::getAutoSystemName() {
+    //int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
+    int nextAutoBlockRef = lastAutoNamedBeanRef++;
+    QString b = QString(getSubSystemNamePrefix() + ":AUTO:");
+    QString nextNumber = paddedNumber.format(nextAutoBlockRef);
+    b.append(nextNumber);
+    return b;
+}
 
     /*private*/ /*final*/ /*static*/ Logger* DefaultAnalogExpressionManager::log = LoggerFactory::getLogger("DefaultAnalogExpressionManager");

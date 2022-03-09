@@ -6,6 +6,8 @@
 #include "swingconfiguratorinterface.h"
 #include "swingtools.h"
 #include <QLocale>
+#include "abstractmalesocket.h"
+#include "abstractanalogexpressionswing.h"
 
 FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
 {
@@ -163,7 +165,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/  void FemaleSocketTestBase::testConnectIncompatibleSocket() {
-        MaleSocket* incompatibleSocket = (MaleSocket*)new IncompatibleMaleSocket();
+        MaleSocket* incompatibleSocket = new IncompatibleMaleSocket();
         Assert::assertFalse("socket not compatible", _femaleSocket->isCompatible(incompatibleSocket), __FILE__, __LINE__);
 
         // Test connect incompatible male socket
@@ -247,10 +249,10 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
     /*public*/  void FemaleSocketTestBase::testSetParentForAllChildren() /*throws SocketAlreadyConnectedException */{
         Assert::assertFalse("femaleSocket is not connected", _femaleSocket->isConnected(), __FILE__, __LINE__);
         if (! _femaleSocket->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
-        Assert::assertNull("malesocket->getParent() is null", maleSocket->getParent()->bself(), __FILE__, __LINE__);
+        Assert::assertNull("malesocket->getParent() is null", (QObject*)maleSocket->getParent(), __FILE__, __LINE__);
         _femaleSocket->_connect(maleSocket);
         if (! _femaleSocket->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
-        Assert::assertEquals("malesocket.getParent() is femaleSocket", _femaleSocket, maleSocket->getParent(), __FILE__, __LINE__);
+        Assert::assertEquals("malesocket.getParent() is femaleSocket", (QObject*)_femaleSocket->bself(), (QObject*)maleSocket->getParent()->bself(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -346,7 +348,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         try {
             int mutableInt=0;
             _femaleSocket->printTree((PrintWriter*)nullptr, "", &mutableInt);
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -355,7 +357,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         try {
             int mutableInt =0;
             _femaleSocket->printTree(QLocale(), (PrintWriter*)nullptr, "", /*new MutableInt(0)*/&mutableInt);
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -363,7 +365,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         errorFlag->set(false);
         try {
             _femaleSocket->getCategory();
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -371,7 +373,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         errorFlag->set(false);
         try {
             _femaleSocket->getChild(0);
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -379,7 +381,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         errorFlag->set(false);
         try {
             _femaleSocket->getChildCount();
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -387,7 +389,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         errorFlag->set(false);
         try {
             _femaleSocket->getUserName();
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -395,7 +397,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         errorFlag->set(false);
         try {
             _femaleSocket->setUserName("aaa");
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException* ex) {
             errorFlag->set(true);
         }
         Assert::assertTrue("method not supported", errorFlag->get(), __FILE__, __LINE__);
@@ -413,9 +415,14 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
             entry.next();
             for (/*Class<? extends Base>*.QString*/QString clazz : entry.value()) {
                 // The class SwingToolsTest does not have a swing configurator
-                SwingConfiguratorInterface* iface = SwingTools::getSwingConfiguratorForClass(clazz);
+                SwingConfiguratorInterface* iface0 = SwingTools::getSwingConfiguratorForClass(clazz);
+                QObject* oIface = (QObject*)iface0;
+                QString cn = oIface->metaObject()->className();
+                AbstractAnalogExpressionSwing* iface = (AbstractAnalogExpressionSwing*)oIface;
+
                 iface->getConfigPanel(new JPanel());
-                Base* obj = iface->createNewObject(iface->getAutoSystemName(), nullptr);
+                QString sys = iface->getAutoSystemName();
+                Base* obj = iface->createNewObject(sys, nullptr);
                 Assert::assertEquals(QString("category is correct for ")+((MaleSocket*)obj->bself())->getObject()->bself()->metaObject()->className(), entry.key(), obj->getCategory(), __FILE__, __LINE__);
 //                Assert::assertEquals("category is correct for "+obj.getShortDescription(), entry.getKey(), obj.getCategory());
             }

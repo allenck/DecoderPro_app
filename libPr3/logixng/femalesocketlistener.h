@@ -13,13 +13,13 @@
      * The socket is connected.
      * @param socket the socket
      */
-  /*public*/ virtual void connected(FemaleSocket* socket) {}
+  /*public*/ virtual void connected(FemaleSocket* socket) =0;
 
     /**
      * The socket is disconnected.
      * @param socket the socket
      */
-  /*public*/ virtual void disconnected(FemaleSocket* socket) {}
+  /*public*/ virtual void disconnected(FemaleSocket* socket) =0;
 
     /**
      * The socket name is changed.

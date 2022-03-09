@@ -78,6 +78,8 @@
 #include "defaultvariablelightmanager.h"
 #include "defaultlightcontrol.h"
 #include "jmriconfigurationmanager.h"
+#include "proxyanalogiomanager.h"
+
 #ifdef HAVE_LOGIXNG
 #include "../libPr3/logixng/defaultlogixngpreferences.h"
 #include "../libPr3/logixng/defaultlogixngmanager.h"
@@ -127,9 +129,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
           type == "Timebase")
    memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");    // In order for getDefault() to create a new object, the manager also
     // needs to be added to the method getInitalizes() below.
-// if (type == "AnalogIOManager") {
-//     return new ProxyAnalogIOManager().init();
-// }
+ if (type == "AnalogIOManager") {
+     return (new ProxyAnalogIOManager())->init();
+ }
  if (type == "AudioManager")
  {
   DefaultAudioManager* dam =  new DefaultAudioManager(memo);

@@ -22,6 +22,7 @@
     /*public*/ ClipboardMany::ClipboardMany(QString sys, QString user, QObject *parent)
             /*throw (BadUserNameException, BadSystemNameException)*/ : AbstractBase(sys, user, parent) {
         //super(sys, user);
+     setObjectName("ClipboardMany");
         _itemEntries.append(new ItemEntry(new DefaultFemaleAnySocket(this, this, getNewSocketName())));
     }
 
@@ -69,7 +70,7 @@
 
                         if (namedBean != nullptr) {
                             if (qobject_cast<AbstractMaleSocket*>(namedBean->self())) {
-                                AbstractMaleSocket* maleSocket = (AbstractMaleSocket*)namedBean;
+                                AbstractMaleSocket* maleSocket = (AbstractMaleSocket*)namedBean->self();
                                 ae->_socket->_connect(maleSocket);
                                 maleSocket->setup();
                             } else {

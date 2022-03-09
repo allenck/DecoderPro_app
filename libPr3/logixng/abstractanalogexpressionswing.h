@@ -11,6 +11,8 @@ class AbstractAnalogExpressionSwing : public AbstractSwingConfigurator
 
  public:
   explicit AbstractAnalogExpressionSwing(QObject *parent = nullptr) : AbstractSwingConfigurator(parent) {};
+//  ~AbstractAnalogExpressionSwing() {}
+//  AbstractAnalogExpressionSwing(const AbstractAnalogExpressionSwing&) : AbstractSwingConfigurator() {}
   /*public*/  QString getExecuteEvaluateMenuText()override;
   /*public*/  void executeEvaluate(/*@Nonnull*/ Base* object)override;
   void run();
@@ -28,6 +30,7 @@ class AbstractAnalogExpressionSwing : public AbstractSwingConfigurator
   /*protected*/ /*abstract*/virtual void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel)=0;
 
 };
+//Q_DECLARE_METATYPE(AbstractAnalogExpressionSwing)
 
 class AbstractAnalogExpressionSwingTA1 : public ThreadAction
 {

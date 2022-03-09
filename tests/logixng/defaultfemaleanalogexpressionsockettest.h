@@ -12,7 +12,7 @@ class DefaultFemaleAnalogExpressionSocketTest : public FemaleSocketTestBase
 {
   Q_OBJECT
  public:
-  explicit DefaultFemaleAnalogExpressionSocketTest(QObject *parent = nullptr);
+  explicit DefaultFemaleAnalogExpressionSocketTest(QObject *parent = nullptr)  : FemaleSocketTestBase(parent) {}
   //@Rule
 //  /*public*/   /*final*/ ExpectedException thrown = ExpectedException::none();
   Q_INVOKABLE /*public*/   void setUp();

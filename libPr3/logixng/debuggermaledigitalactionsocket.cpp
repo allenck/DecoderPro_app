@@ -12,6 +12,7 @@
     {
         //super(manager, maleSocket);
      setObjectName("DebuggerMaleDigitalActionSocket");
+
     }
 
     /** {@inheritDoc} */

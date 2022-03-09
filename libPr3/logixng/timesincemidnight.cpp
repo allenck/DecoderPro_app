@@ -21,6 +21,8 @@
         //super(sys, user);
     }
 
+/*static*/ QList<TimeSinceMidnight::Type::TYPE> TimeSinceMidnight::Type::values {FastClock, SystemClock};
+
     //@Override
     /*public*/  Base* TimeSinceMidnight::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");

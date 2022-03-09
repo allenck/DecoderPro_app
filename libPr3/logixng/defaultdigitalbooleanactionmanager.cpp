@@ -42,7 +42,18 @@
 //                actionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
 //        }
-        QSetIterator<QHash<Category*, QString>> entry((new DigitalBooleanFactory())->getClasses());
+        //QSetIterator<QHash<Category*, QString>> entry((new DigitalBooleanFactory())->getClasses());
+        for(QHash<Category*, QString> map : (new DigitalBooleanFactory())->getClasses())
+        {
+         QHashIterator<Category*, QString> entry(map);
+         while(entry.hasNext())
+         {
+          entry.next();
+          QList<QString> temp = actionClassList.value(entry.key());
+          temp.append(entry.value());
+          actionClassList.insert(entry.key(), temp);
+         }
+        }
 
 //        for (MaleDigitalBooleanActionSocketFactory* maleSocketFactory : ServiceLoader.load(MaleDigitalBooleanActionSocketFactory.class)) {
 //            _maleSocketFactories.add(maleSocketFactory);

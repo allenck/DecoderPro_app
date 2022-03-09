@@ -1,7 +1,8 @@
 #include "swingtools.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
-
+#include "class.h"
+#include "logixng/metatypes.h"
 /**
  * LogixNG Swing tools.
  *
@@ -89,12 +90,11 @@
      */
     /*static*/ /*public*/  SwingConfiguratorInterface* SwingTools::getSwingConfiguratorForClass(QString clazz) {
         SwingConfiguratorInterface* adapter = nullptr;
+        if(!Metatypes::ng_done)
+         new Metatypes();
         try {
-#if 0 // TODO:
-            adapter = (SwingConfiguratorInterface*) Class::forName(adapterNameForClass(clazz))->getDeclaredConstructor()->newInstance();
-#endif
+            adapter = (SwingConfiguratorInterface*) Class::forName(adapterNameForClass(clazz))/*->getDeclaredConstructor()*/->newInstance();
         }
-
         catch (ClassNotFoundException* ex) {
             log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }

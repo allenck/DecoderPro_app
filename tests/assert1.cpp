@@ -100,6 +100,9 @@
         return;
     if(actual != nullptr && expected != nullptr)
     {
+     QString s1 = expected->metaObject()->className();
+     QString s2 = actual->metaObject()->className();
+
         if(actual->metaObject()->className() != expected->metaObject()->className())
         {
             fail(tr("%4\n %1 objects not same %2 vs %3").arg(actual->metaObject()->className()).arg(expected->metaObject()->className()), file, line);

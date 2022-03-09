@@ -1,9 +1,9 @@
 #include "defaultfemaleanalogactionsocket.h"
-#include "analogactionmanager.h"
+#include "defaultanalogactionmanager.h"
 #include "instancemanager.h"
 #include "base.h"
 #include "femalesocketlistener.h"
-
+#include "defaultmaleanalogactionsocket.h"
 /**
  * Default implementation of the Female Analog Action socket
  */
@@ -14,18 +14,22 @@
     /*public*/  DefaultFemaleAnalogActionSocket::DefaultFemaleAnalogActionSocket(Base* parent, FemaleSocketListener* listener,
                                                                                  QString name, QObject* parentObject) : AbstractFemaleSocket(parent, listener, name, parentObject) {
         //super(parent, listener, name);
+        setObjectName("DefaultFemaleAnalogActionSocket");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool DefaultFemaleAnalogActionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleAnalogActionSocket*>(socket->bself());
+    /*public*/  bool DefaultFemaleAnalogActionSocket::isCompatible(MaleSocket *socket) {
+     QObject* obj = socket->bself();
+     if(!obj) return false;
+     MaleAnalogActionSocket* s = qobject_cast<MaleAnalogActionSocket*>(obj);
+     return s;
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QHash<Category *, QList<QString> > DefaultFemaleAnalogActionSocket::getConnectableClasses() {
-        return ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getActionClasses();
+        return ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getActionClasses();
     }
 
     /** {@inheritDoc} */
@@ -45,7 +49,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString DefaultFemaleAnalogActionSocket::getLongDescription(QLocale locale) {
-        return tr(/*locale, */"?~ %1").arg(AbstractFemaleSocket::getName());
+        return tr(/*locale, */"!~ %1").arg(AbstractFemaleSocket::getName());
     }
 
     /** {@inheritDoc} */

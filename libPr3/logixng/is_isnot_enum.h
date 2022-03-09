@@ -9,6 +9,7 @@
 /*public*/ /*enum*/ class Is_IsNot_Enum : QObject {
 
  Q_OBJECT
+ public:
 //    Is(tr("Is")),
 //    IsNot(tr("Is not"));
   enum VAL {Is, IsNot};
@@ -20,8 +21,9 @@
     }
 
     //@Override
-    /*public*/ QString toString() {
-        return _text;
+    /*public*/static  QString toString(VAL v) {
+        if(v== Is) return tr("Is");
+        return tr("IsNot");
     }
 
 };

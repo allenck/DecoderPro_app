@@ -154,8 +154,8 @@
         _action = new MyActionTurnout("IQDA321");
         ActionTurnout* otherAction = new MyActionTurnout("IQDA322");
         manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        maleSocket = ((DigitalActionManager*)manager->mself())->registerAction(_action);
-        otherMaleSocket = ((DigitalActionManager*)manager->mself())->registerAction(otherAction);
+        maleSocket = ((DefaultDigitalActionManager*)manager->mself())->registerAction(_action);
+        otherMaleSocket = ((DefaultDigitalActionManager*)manager->mself())->registerAction(otherAction);
         _femaleSocket = new DefaultFemaleDigitalActionSocket(conditionalNG, new MyFemaleSocketListener02(this)
 //         {
 //            //@Override

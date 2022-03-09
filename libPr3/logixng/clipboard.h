@@ -5,7 +5,7 @@
 //#include "defaultfemaleanysocket.h"
 #include <QtCore>
 
-class AbstractFemaleSocket;
+class FemaleSocket;
 class MaleSocket;
 /**
  * The clipboard with actions and expressions
@@ -56,7 +56,7 @@ class MaleSocket;
      *
      * @return the root female socket
      */
-  /*public*/ virtual AbstractFemaleSocket* getFemaleSocket() {return nullptr;}
+  /*public*/ virtual FemaleSocket* getFemaleSocket() {return nullptr;}
 
     /**
      * Moves an item on the clipboard to the top of the clipboard.

@@ -145,6 +145,7 @@ SOURCES += \
  Signal/mergsd2signalhead.cpp \
  Signal/mergsd2signalheadxml.cpp \
  #Signal/serialsignalhead.cpp \
+ abstractanalogiomanager.cpp \
  abstractprovidingproxymanager.cpp \
  abstractproxymanager.cpp \
  acelamessage.cpp \
@@ -159,6 +160,7 @@ SOURCES += \
 # direct/portcontroller.cpp \
 # direct/serialdriveradapter.cpp \
 # direct/trafficcontroller.cpp \
+ internalanalogiomanager.cpp \
  lightcontrolpane.cpp \
  lightcontroltablemodel.cpp \
  lighteditaction.cpp \
@@ -1138,6 +1140,19 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/abstractanalogactionswing.cpp \
+ logixng/analogactionlightintensity.cpp \
+ logixng/analogactionlightintensityswing.cpp \
+ logixng/analogactionmemoryswing.cpp \
+ logixng/analogexpressionanalogioswing.cpp \
+ logixng/analogexpressionconstantswing.cpp \
+ logixng/analogformulaswing.cpp \
+ logixng/analogmanyswing.cpp \
+ logixng/digitalbooleanmany.cpp \
+ logixng/digitalbooleanmanyswing.cpp \
+ logixng/digitalbooleanonchangeswing.cpp \
+ logixng/expressionturnout.cpp \
+ logixng/timesincemidnightswing.cpp \
  logixng/debuggermaleanalogexpressionsocketfactory.cpp \
  logixng/stringexpressionmemory.cpp \
  logixng/actionturnout.cpp \
@@ -1345,6 +1360,7 @@ HEADERS += \
  Signal/mergsd2signalhead.h \
  Signal/mergsd2signalheadxml.h \
  #Signal/serialsignalhead.h \
+ abstractanalogiomanager.h \
  abstractprovidingproxymanager.h \
  abstractproxymanager.h \
  acelasignalheadxml.h \
@@ -1361,6 +1377,7 @@ HEADERS += \
 # direct/portcontroller.h \
 # direct/serialdriveradapter.h \
 # direct/trafficcontroller.h \
+ internalanalogiomanager.h \
  lightcontrolpane.h \
  lightcontroltablemodel.h \
  lighteditaction.h \
@@ -2451,6 +2468,19 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/abstractanalogactionswing.h \
+ logixng/analogactionlightintensity.h \
+ logixng/analogactionlightintensityswing.h \
+ logixng/analogactionmemoryswing.h \
+ logixng/analogexpressionanalogioswing.h \
+ logixng/analogexpressionconstantswing.h \
+ logixng/analogformulaswing.h \
+ logixng/analogmanyswing.h \
+ logixng/digitalbooleanmany.h \
+ logixng/digitalbooleanmanyswing.h \
+ logixng/digitalbooleanonchangeswing.h \
+ logixng/expressionturnout.h \
+ logixng/timesincemidnightswing.h \
  logixng/debuggermaleanalogexpressionsocketfactory.h \
  logixng/stringexpressionmemory.h \
  logixng/actionturnout.h \

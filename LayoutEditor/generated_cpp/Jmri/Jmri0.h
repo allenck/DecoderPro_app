@@ -209,7 +209,7 @@ virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
@@ -249,7 +249,7 @@ inline QString  py_q_getComment() { return AbstractNamedBean::getComment(); }
 inline QString  py_q_getDisplayName() { return AbstractNamedBean::getDisplayName(); }
 inline QString  py_q_getFullyFormattedDisplayName() { return AbstractNamedBean::getFullyFormattedDisplayName(); }
 inline QString  py_q_getListenerRef(PropertyChangeListener*  l) { return AbstractNamedBean::getListenerRef(l); }
-inline QList<QString >*  py_q_getListenerRefs() { return AbstractNamedBean::getListenerRefs(); }
+inline QList<QString >  py_q_getListenerRefs() { return AbstractNamedBean::getListenerRefs(); }
 inline int  py_q_getNumPropertyChangeListeners() { return AbstractNamedBean::getNumPropertyChangeListeners(); }
 inline QVariant  py_q_getProperty(QString  key) { return AbstractNamedBean::getProperty(key); }
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() const { return AbstractNamedBean::getPropertyChangeListeners(); }
@@ -303,8 +303,8 @@ void delete_AbstractNamedBean(AbstractNamedBean* obj) { delete obj; }
    QString  py_q_getFullyFormattedDisplayName(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getFullyFormattedDisplayName());}
    QString  getListenerRef(AbstractNamedBean* theWrappedObject, PropertyChangeListener*  l);
    QString  py_q_getListenerRef(AbstractNamedBean* theWrappedObject, PropertyChangeListener*  l){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getListenerRef(l));}
-   QList<QString >*  getListenerRefs(AbstractNamedBean* theWrappedObject);
-   QList<QString >*  py_q_getListenerRefs(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getListenerRefs());}
+   QList<QString >  getListenerRefs(AbstractNamedBean* theWrappedObject);
+   QList<QString >  py_q_getListenerRefs(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getListenerRefs());}
    int  getNumPropertyChangeListeners(AbstractNamedBean* theWrappedObject);
    int  py_q_getNumPropertyChangeListeners(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getNumPropertyChangeListeners());}
    QVariant  getProperty(AbstractNamedBean* theWrappedObject, QString  key);
@@ -529,7 +529,7 @@ virtual QString  getFullyFormattedDisplayName();
 virtual bool  getInverted() const;
 virtual int  getKnownState() const;
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
@@ -859,6 +859,7 @@ virtual bool  isFollowingCommandedState();
 virtual void propertyChange(PropertyChangeEvent*  evt);
 virtual void provideFirstFeedbackSensor(QString  pName);
 virtual void provideSecondFeedbackSensor(QString  pName);
+virtual QObject*  pself();
 virtual void requestUpdateFromLayout();
 virtual QObject*  self();
 virtual void setBinaryOutput(bool  state);
@@ -937,6 +938,7 @@ inline bool  py_q_isFollowingCommandedState() { return AbstractTurnout::isFollow
 inline void py_q_propertyChange(PropertyChangeEvent*  evt) { AbstractTurnout::propertyChange(evt); }
 inline void py_q_provideFirstFeedbackSensor(QString  pName) { AbstractTurnout::provideFirstFeedbackSensor(pName); }
 inline void py_q_provideSecondFeedbackSensor(QString  pName) { AbstractTurnout::provideSecondFeedbackSensor(pName); }
+inline QObject*  py_q_pself() { return AbstractTurnout::pself(); }
 inline void py_q_requestUpdateFromLayout() { AbstractTurnout::requestUpdateFromLayout(); }
 inline QObject*  py_q_self() { return AbstractTurnout::self(); }
 inline void py_q_setBinaryOutput(bool  state) { AbstractTurnout::setBinaryOutput(state); }
@@ -1048,6 +1050,8 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
    void py_q_provideFirstFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_provideFirstFeedbackSensor(pName));}
    void provideSecondFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName);
    void py_q_provideSecondFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_provideSecondFeedbackSensor(pName));}
+   QObject*  pself(AbstractTurnout* theWrappedObject);
+   QObject*  py_q_pself(AbstractTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_pself());}
    void requestUpdateFromLayout(AbstractTurnout* theWrappedObject);
    void py_q_requestUpdateFromLayout(AbstractTurnout* theWrappedObject){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_requestUpdateFromLayout());}
    QObject*  self(AbstractTurnout* theWrappedObject);
@@ -1125,7 +1129,7 @@ virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
@@ -1205,7 +1209,7 @@ virtual int  getFrequency();
 virtual QString  getFullyFormattedDisplayName();
 virtual long  getLength();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
@@ -1326,7 +1330,7 @@ virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
 virtual float  getGain();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual float  getMetersPerUnit();
 virtual int  getNumPropertyChangeListeners();
 virtual QVector3D  getOrientation(int  arg__1);
@@ -1460,7 +1464,7 @@ virtual int  getFadeOut();
 virtual QString  getFullyFormattedDisplayName();
 virtual float  getGain();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getMaxLoops();
 virtual float  getMaximumDistance();
 virtual int  getMinLoops();
@@ -2176,7 +2180,7 @@ virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;

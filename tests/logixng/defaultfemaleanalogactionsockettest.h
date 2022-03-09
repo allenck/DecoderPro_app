@@ -36,17 +36,18 @@ protected:
     /*protected*/ FemaleSocket* getFemaleSocket(QString name)override;
     /*protected*/ bool hasSocketBeenSetup()override;
 
-    friend class DFAADefaultFemaleAnalogActionSocket;
-    friend class DFAA2DefaultFemaleAnalogActionSocket;
+    friend class DFAAFemaleSocketListener;
+    friend class DFAA2FemaleSocketListener;
 };
 
-class DFAADefaultFemaleAnalogActionSocket : public DefaultFemaleAnalogActionSocket
+class DFAAFemaleSocketListener : public QObject, public FemaleSocketListener
 {
     Q_OBJECT
+  Q_INTERFACES(FemaleSocketListener)
     DefaultFemaleAnalogActionSocketTest* test;
 public:
-    DFAADefaultFemaleAnalogActionSocket(Base* parentObject, FemaleSocketListener* listener, QString name,DefaultFemaleAnalogActionSocketTest* test=nullptr)
-        : DefaultFemaleAnalogActionSocket(parentObject, listener, name ,test)
+    DFAAFemaleSocketListener(DefaultFemaleAnalogActionSocketTest* test=nullptr)
+        : QObject()
     { this->test = test; }
     //@Override
     /*public*/  void connected(FemaleSocket* socket) {
@@ -74,22 +75,23 @@ public:
  friend class DefaultFemaleAnalogActionSocketTest;
 };
 
-class DFAA2DefaultFemaleAnalogActionSocket : public DefaultFemaleAnalogActionSocket
+class DFAA2FemaleSocketListener : public QObject, public FemaleSocketListener
 {
     Q_OBJECT
+  Q_INTERFACES(FemaleSocketListener)
     DefaultFemaleAnalogActionSocketTest* test;
 
 public:
-    DFAA2DefaultFemaleAnalogActionSocket(Base* parentObject, FemaleSocketListener* listener, QString name,DefaultFemaleAnalogActionSocketTest* test)
-        : DefaultFemaleAnalogActionSocket(parentObject, listener, name ,test)
+    DFAA2FemaleSocketListener(DefaultFemaleAnalogActionSocketTest* test)
+        : QObject()
     { this->test = test;}
     //@Override
-    /*public*/  void connected(FemaleSocket* socket) {
+    /*public*/  void connected(FemaleSocket* socket) override{
     test->flag->set(true);
     }
 
     //@Override
-    /*public*/  void disconnected(FemaleSocket* socket) {
+    /*public*/  void disconnected(FemaleSocket* socket) override {
     test->flag->set(true);
     }
 };

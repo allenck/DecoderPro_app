@@ -203,9 +203,9 @@ QString AbstractNamedBean::getDisplayName()
 }
 
 /* This allows a meaning full list of places where the bean is in use!*/
-/*public synchronized*/ QList<QString>* AbstractNamedBean::getListenerRefs()
+/*public synchronized*/ QList<QString> AbstractNamedBean::getListenerRefs()
 {
- QList<QString>* list = new QList<QString>();
+ QList<QString> list = QList<QString>();
  //Enumeration<PropertyChangeListener> en = listenerRefs.keys();
  QHashIterator<PropertyChangeListener*, QString> en(*listenerRefs);
 //        while (en.hasMoreElements()) {
@@ -213,7 +213,7 @@ QString AbstractNamedBean::getDisplayName()
  {
   en.next();
   PropertyChangeListener* l = en.key();
-  list->append(listenerRefs->value(l));
+  list.append(listenerRefs->value(l));
  }
  return list;
 }

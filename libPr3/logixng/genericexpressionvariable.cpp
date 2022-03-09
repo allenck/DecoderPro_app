@@ -9,7 +9,9 @@
 
 
 
-    /*public*/  GenericExpressionVariable::GenericExpressionVariable(FemaleGenericExpressionSocket* socket, QObject* parent) : QObject(parent){
+    /*public*/  GenericExpressionVariable::GenericExpressionVariable(FemaleGenericExpressionSocket* socket, QObject* parent)
+     : QObject(parent){
+     setObjectName("GenericExpressionVariable");
         _socket = socket;
     }
 

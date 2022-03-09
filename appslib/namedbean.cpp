@@ -147,11 +147,11 @@ QString NamedBean::getListenerRef(PropertyChangeListener */*l*/)
 {
     return "";
 }
-QList<QString>* NamedBean::getListenerRefs()
+QList<QString> NamedBean::getListenerRefs()
 {
-    //return QStringList();
- return NULL;
+ return QStringList();
 }
+
 int NamedBean::getNumPropertyChangeListeners()
 {
     return 0;

@@ -4,6 +4,7 @@
 #include "abstractfemalesocket.h"
 #include "femaleanalogactionsocket.h"
 #include <QObject>
+#include "abstractmalesocket.h"
 
 class Base;
 class FemaleSocketListener;
@@ -13,7 +14,7 @@ class DefaultFemaleAnalogActionSocket : public AbstractFemaleSocket, public Fema
   Q_INTERFACES(FemaleAnalogActionSocket)
  public:
   /*public*/  DefaultFemaleAnalogActionSocket(Base* parentObject, FemaleSocketListener* listener, QString name, QObject* parent= nullptr);
-  /*public*/  bool isCompatible(MaleSocket* socket)override;
+  /*public*/  bool isCompatible(MaleSocket *socket)override;
   /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getConnectableClasses()override;
   /*public*/  void setValue(double value) /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;

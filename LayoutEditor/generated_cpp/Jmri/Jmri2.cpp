@@ -1709,7 +1709,7 @@ if (_wrapper) {
 }
   return Sensor::getListenerRef(l0);
 }
-QList<QString >*  PythonQtShell_Sensor::getListenerRefs()
+QList<QString >  PythonQtShell_Sensor::getListenerRefs()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1717,9 +1717,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getListenerRefs");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QList<QString >*"};
+      static const char* argumentList[] ={"QList<QString >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString >* returnValue{};
+      QList<QString > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -1728,7 +1728,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getListenerRefs", methodInfo, result);
           } else {
-            returnValue = *((QList<QString >**)args[0]);
+            returnValue = *((QList<QString >*)args[0]);
           }
         }
       }
@@ -11999,7 +11999,7 @@ if (_wrapper) {
 }
   return Turnout::getListenerRef(l0);
 }
-QList<QString >*  PythonQtShell_Turnout::getListenerRefs()
+QList<QString >  PythonQtShell_Turnout::getListenerRefs()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12007,9 +12007,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getListenerRefs");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QList<QString >*"};
+      static const char* argumentList[] ={"QList<QString >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString >* returnValue{};
+      QList<QString > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -12018,7 +12018,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getListenerRefs", methodInfo, result);
           } else {
-            returnValue = *((QList<QString >**)args[0]);
+            returnValue = *((QList<QString >*)args[0]);
           }
         }
       }

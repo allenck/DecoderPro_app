@@ -30,7 +30,7 @@
      * Create a new system name for an Expression.
      * @return a new system name
      */
-  /*public*/ virtual QString getAutoSystemName() {return "?";}
+  /*public*/ virtual QString getAutoSystemName() {return "";}
 
     /**
      * Create a female socket for analog expressions

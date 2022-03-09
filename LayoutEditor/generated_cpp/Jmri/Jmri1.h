@@ -1266,7 +1266,7 @@ virtual QString  getFullyFormattedDisplayName();
 virtual bool  getInverted() const;
 virtual int  getKnownState() const;
 virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
@@ -1431,6 +1431,7 @@ virtual bool  isFollowingCommandedState();
 virtual void propertyChange(PropertyChangeEvent*  evt);
 virtual void provideFirstFeedbackSensor(QString  pName);
 virtual void provideSecondFeedbackSensor(QString  pName);
+virtual QObject*  pself();
 virtual void requestUpdateFromLayout();
 virtual QObject*  self();
 virtual void setBinaryOutput(bool  state);
@@ -1901,7 +1902,7 @@ virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
 virtual QString  getListenerRef(PropertyChangeListener*  arg__1);
-virtual QList<QString >*  getListenerRefs();
+virtual QList<QString >  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  name);
@@ -1940,7 +1941,7 @@ inline QString  py_q_getComment() { return NamedBean::getComment(); }
 inline QString  py_q_getDisplayName() { return NamedBean::getDisplayName(); }
 inline QString  py_q_getFullyFormattedDisplayName() { return NamedBean::getFullyFormattedDisplayName(); }
 inline QString  py_q_getListenerRef(PropertyChangeListener*  arg__1) { return NamedBean::getListenerRef(arg__1); }
-inline QList<QString >*  py_q_getListenerRefs() { return NamedBean::getListenerRefs(); }
+inline QList<QString >  py_q_getListenerRefs() { return NamedBean::getListenerRefs(); }
 inline int  py_q_getNumPropertyChangeListeners() { return NamedBean::getNumPropertyChangeListeners(); }
 inline QVariant  py_q_getProperty(QString  key) { return NamedBean::getProperty(key); }
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  name) { return NamedBean::getPropertyChangeListenersByReference(name); }
@@ -1998,8 +1999,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    QString  py_q_getFullyFormattedDisplayName(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getFullyFormattedDisplayName());}
    QString  getListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1);
    QString  py_q_getListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getListenerRef(arg__1));}
-   QList<QString >*  getListenerRefs(NamedBean* theWrappedObject);
-   QList<QString >*  py_q_getListenerRefs(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getListenerRefs());}
+   QList<QString >  getListenerRefs(NamedBean* theWrappedObject);
+   QList<QString >  py_q_getListenerRefs(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getListenerRefs());}
    int  getNumPropertyChangeListeners(NamedBean* theWrappedObject);
    int  py_q_getNumPropertyChangeListeners(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getNumPropertyChangeListeners());}
    QVariant  getProperty(NamedBean* theWrappedObject, QString  key);

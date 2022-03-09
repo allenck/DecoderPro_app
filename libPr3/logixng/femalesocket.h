@@ -1,10 +1,12 @@
 #ifndef FEMALESOCKET_H
 #define FEMALESOCKET_H
-//#include "base.h"
+#include "base.h"
 #include "socketalreadyconnectedexception.h"
 #include "malesocket.h"
 #include "femalesocketoperation.h"
 #include "category.h"
+
+
 /**
  * A LogixNG female expression socket.
  * A Expression or a Action that has children must not use

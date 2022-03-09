@@ -75,14 +75,14 @@
         QHash<Category*, QList</*Class<? extends Base>*/QString>> map = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
 
         QList</*Class<? extends Base>*/QString> classes = QList</*Class<? extends Base>*/QString>();
-        classes.append("AnalogExpressionAnalogIO");
-        classes.append("AnalogExpressionConstant");
-        classes.append("AnalogExpressionMemory");
-        classes.append("TimeSinceMidnight");
+        classes.append("AnalogExpressionMemoryAnalogExpressionAnalogIO");
+        classes.append("AnalogExpressionMemoryAnalogExpressionConstant");
+        classes.append("AnalogExpressionMemoryAnalogExpressionMemory");
+        classes.append("jmri.jmrit.logixng.expressions.TimeSinceMidnight");
         map.insert(Category::ITEM, classes);
 
         classes = QList</*Class<? extends Base>*/QString>();
-        classes.append("AnalogFormula");
+        classes.append("jmri.jmrit.logixng.expressions.AnalogFormula");
         map.insert(Category::COMMON, classes);
 
         classes = QList</*Class<? extends Base>*/QString>();

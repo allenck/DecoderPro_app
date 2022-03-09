@@ -104,6 +104,7 @@ SOURCES += appslib.cpp \
     profile.cpp \
     myapplication.cpp \
     createbuttonmodel.cpp \
+    proxyanalogiomanager.cpp \
     splashwindow.cpp \
     systemnamevalidator.cpp \
     toolsmenu.cpp \
@@ -245,6 +246,7 @@ HEADERS += appslib.h\
     myapplication.h \
     createbuttonmodel.h \
     namedbean.h \
+    proxyanalogiomanager.h \
     proxymanager.h \
     splashwindow.h \
     systemnamevalidator.h \

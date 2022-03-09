@@ -41,7 +41,7 @@ public:
     /*public synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() const override;
     /*public synchronized*/  QVector<PropertyChangeListener*> getPropertyChangeListeners(QString name)override;
     /* This allows a meaning full list of places where the bean is in use!*/
-    /*public synchronized*/  QList<QString>* getListenerRefs() override;
+    /*public synchronized*/  QList<QString> getListenerRefs() override;
     /*public synchronized*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override;
     /*public synchronized*/  QString getListenerRef(PropertyChangeListener* l) override;
     /**

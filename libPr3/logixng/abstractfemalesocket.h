@@ -76,7 +76,7 @@ class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
   /*public*/ QString getListenerRef(PropertyChangeListener* l) override;
   /*public*/ QList<QString> getListenerRefs()override;
   /*public*/ int getNumPropertyChangeListeners()override;
-  /*public*/ QList<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name)override;
+  /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name)override;
   /*public*/ void forEntireTree(RunnableWithBase* r)override;
   /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ override;
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/  override;

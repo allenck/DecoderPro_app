@@ -27,18 +27,18 @@
         //super("IQClipboard");
 
         // Listeners should never be enabled for the clipboard
-        _femaleSocket->AbstractFemaleSocket::setEnableListeners(false);
+        _femaleSocket->setEnableListeners(false);
 
         try {
-            _femaleSocket->AbstractFemaleSocket::_connect(new MaleRootSocket(nullptr, this));
+            _femaleSocket->_connect(new MaleRootSocket(nullptr, this));
         } catch (SocketAlreadyConnectedException* ex) {
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        if (!_femaleSocket->AbstractFemaleSocket::setParentForAllChildren(QList<QString>())) {
+        if (!_femaleSocket->setParentForAllChildren(QList<QString>())) {
             throw new RuntimeException("Failed to set parent for all children");
         }
-        _clipboardItems->setParent(_femaleSocket->AbstractFemaleSocket::getConnectedSocket());
+        _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
     }
 
     //@Override
@@ -78,7 +78,7 @@
     }
 
     //@Override
-    /*public*/ AbstractFemaleSocket* DefaultClipboard::getFemaleSocket() {
+    /*public*/ FemaleSocket* DefaultClipboard::getFemaleSocket() {
         return _femaleSocket;
     }
 
@@ -106,16 +106,16 @@
     /*public*/ bool DefaultClipboard::replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors) {
         _clipboardItems = clipboardItems;
 
-        _femaleSocket->AbstractFemaleSocket::_disconnect();
+        _femaleSocket->_disconnect();
 
         try {
-            _femaleSocket->AbstractFemaleSocket::_connect(new MaleRootSocket(nullptr, this));
+            _femaleSocket->_connect(new MaleRootSocket(nullptr, this));
         } catch (SocketAlreadyConnectedException* ex) {
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        bool result = _femaleSocket->AbstractFemaleSocket::setParentForAllChildren(errors);
-        _clipboardItems->setParent(_femaleSocket->AbstractFemaleSocket::getConnectedSocket());
+        bool result = _femaleSocket->setParentForAllChildren(errors);
+        _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
         return result;
     }
 

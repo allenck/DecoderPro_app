@@ -27,6 +27,7 @@
             QString name, QObject* parentObject) : AbstractFemaleSocket(parent, listener, name, parentObject){
 
         //super(parent, listener, name);
+        setObjectName("DefaultFemaleGenericExpressionSocket");
         _analogSocket = new DefaultFemaleAnalogExpressionSocket(this, this, "A");
         _digitalSocket = new DefaultFemaleDigitalExpressionSocket(this, this, "D");
         _stringSocket = new DefaultFemaleStringExpressionSocket(this, this, "S");

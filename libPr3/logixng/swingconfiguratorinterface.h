@@ -107,7 +107,7 @@ class SwingConfiguratorInterface
 
   /*public*/  static QList<JComponent*> parseMessage(QString message, QList<JComponent*> components) ;
 
-
+  virtual QObject* sself() =0;
 };
 
 Q_DECLARE_INTERFACE(SwingConfiguratorInterface, "SwingConfiguratorInterface")

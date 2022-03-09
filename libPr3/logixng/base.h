@@ -179,7 +179,7 @@ class Base;
      * @return a short description
      */
     /*default*/ /*public*/ QString getShortDescription() {
-        return getShortDescription(/*Locale.getDefault()*/);
+        return getShortDescription(QLocale());
     }
 
     /**
@@ -530,7 +530,7 @@ class Base;
      * @return a list of textual references
      */
     //@CheckReturnValue
-  /*public*/ virtual QList<QString> getListenerRefs() {return QList<QString>();}
+  /*public*/ virtual QList<QString> getListenerRefs() {return  QList<QString>();}
 
     /**
      * Returns a list of all the listeners references for this object
@@ -560,7 +560,7 @@ class Base;
      */
     //@CheckReturnValue
     //@Nonnull
-    /*public*/ virtual QList<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name){return QList<PropertyChangeListener*>();}
+    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name){return QVector<PropertyChangeListener*>();}
 
 
 

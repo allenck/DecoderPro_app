@@ -9,76 +9,9 @@
 
 #if 1
 class DCFemaleSocketListener;
-class MyDefaultFemaleAnySocket;
 class DefaultClipboard;
 class FemaleSocketListener;
-class MyDefaultFemaleAnySocket : public DefaultFemaleAnySocket
-{
-  Q_OBJECT
-  //Q_INTERFACES(FemaleAnySocket)
 
- public:
-  MyDefaultFemaleAnySocket(DefaultClipboard* defaultClipboard, FemaleSocketListener* listener, QString name)
-   : DefaultFemaleAnySocket((Base*)defaultClipboard, listener, name)
-  {
-  }
-  QObject* bself() override {return (QObject*)this;}
-  //@Override
-  /*public*/ void connected(FemaleSocket* socket) {
-      // Do nothing
-  }
-
-  //@Override
-  /*public*/ void disconnected(FemaleSocket* socket) {
-      // Do nothing
-  }
-
-  QString getSystemName() const override {return AbstractFemaleSocket::getSystemName();}
-  QString getUserName() const override {return AbstractFemaleSocket::getUserName();}
-  QString getComment() override {return AbstractFemaleSocket::getComment();}
-  void setUserName(QString name) override{AbstractFemaleSocket::setUserName(name);}
-  /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ override{}
-  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames)  override{}
-  /*public*/ void getListenerRefsIncludingChildren(QList<QString> list) override {return AbstractFemaleSocket::getListenerRefsIncludingChildren(list);}
-  /*public*/ Base* getParent() const override {return AbstractFemaleSocket::getParent();}
-  /*public*/ void setParent(/*@Nonnull*/ Base* parent)override{}
-  /*public*/ bool setParentForAllChildren(QList<QString> errors)override{}
-  /*public*/ void setComment(QString s)override{}
-  /*public*/ /*final*/ LogixNG* getLogixNG()override {return AbstractFemaleSocket::getLogixNG();}
-  /*public*/ /*final*/ Base* getRoot()override {return AbstractFemaleSocket::getRoot();}
-  /*public*/ FemaleSocket* getChild(int index) override {return AbstractFemaleSocket::getChild(index);}
-  /*public*/ int getChildCount() override {return AbstractFemaleSocket::getChildCount();}
-  /*public*/ /*final*/ ConditionalNG* getConditionalNG()override {return AbstractFemaleSocket::getConditionalNG();}
-  /*public*/ /*final*/ void dispose()override {AbstractFemaleSocket::dispose();}
-   /*public*/ void registerListeners()override {AbstractFemaleSocket::registerListeners();}
-   /*public*/ void unregisterListeners() override {AbstractFemaleSocket::unregisterListeners();}
-   /*public*/ /*final*/ bool isActive()override {return AbstractFemaleSocket::isActive();}
-  /*public*/ Category* getCategory() override {return AbstractFemaleSocket::getCategory();}
-  /*public*/ void printTree(
-          PrintTreeSettings* settings,
-          PrintWriter* writer,
-          QString indent,
-    /*MutableInt*/int*  lineNumber)override {return AbstractFemaleSocket::printTree(settings, writer, indent, lineNumber);}
-  /*public*/ void printTree(
-          PrintTreeSettings* settings,
-          QLocale locale,
-          PrintWriter* writer,
-          QString indent,
-          /*MutableInt*/int*  lineNumber)override {return AbstractFemaleSocket::printTree(settings, locale,writer,indent, lineNumber );}
-  /*public*/ void printTree(
-          PrintTreeSettings* settings,
-          QLocale locale,
-          PrintWriter* writer,
-          QString indent,
-          QString currentIndent,
-          /*MutableInt*/int*  lineNumber)override {return AbstractFemaleSocket::printTree(settings, locale, writer,indent, lineNumber);}
-  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override
-    {return AbstractFemaleSocket::getUsageTree(level,  bean, report, cdl);}
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override
-    {return AbstractFemaleSocket::getUsageDetail(level,  bean,  report,  cdl);}
-  /*public*/ QString toString() override{AbstractFemaleSocket::toString();}
-
-};
 class DCFemaleSocketListener : public QObject, public FemaleSocketListener
 {
   Q_OBJECT
@@ -109,7 +42,7 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ bool add(MaleSocket* maleSocket, QList<QString> errors)override;
   /*public*/ MaleSocket* fetchTopItem()override;
   /*public*/ MaleSocket* getTopItem()override;
-  /*public*/ AbstractFemaleSocket *getFemaleSocket()override;
+  /*public*/ FemaleSocket *getFemaleSocket()override;
   /*public*/ void moveItemToTop(MaleSocket* maleSocket)override;
   /*public*/ void setup()override;
   /*public*/ bool replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors);
@@ -137,7 +70,7 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ void disconnected(FemaleSocket* socket) {
       // Do nothing
   }
-  /*private*/ /*final*/ DefaultFemaleAnySocket* _femaleSocket = new MyDefaultFemaleAnySocket(this, new DCFemaleSocketListener(),"A");
+  /*private*/ /*final*/ FemaleAnySocket* _femaleSocket = new DefaultFemaleAnySocket(this, new DCFemaleSocketListener(),"A");
 
  protected:
   /*protected*/ void registerListenersForThisClass()override;

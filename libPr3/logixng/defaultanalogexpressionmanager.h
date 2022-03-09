@@ -38,19 +38,13 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
+  /*public*/ QString getAutoSystemName()override;
 
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base*/QString>> expressionClassList = QHash<Category*, QList</*Class<? extends Base*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultAnalogExpressionManager* _instance;// = nullptr;
-  QList<QString> aList; //list of classes derived from AnalogExpressionFactory*
-//                                       = {new AnalogExpressionAnalogIO(),
-//                                          new AnalogExpressionConstant(),
-//                                          new AnalogExpressionMemory(),
-//                                          new AnalogFormula(),
-//                                          new TimeSinceMidnight()};
-  QList<MaleAnalogExpressionSocketFactory*> bList; //DebuggerMaleAnalogExpressionSocketFactory
 protected:
   /*protected*/ MaleAnalogExpressionSocket* createMaleAnalogExpressionSocket(AnalogExpressionBean* expression);
   /*protected*/ MaleAnalogExpressionSocket* castBean(MaleSocket* maleSocket)override;

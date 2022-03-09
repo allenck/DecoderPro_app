@@ -20,6 +20,12 @@ class TimeSinceMidnight : public AbstractAnalogExpression, public PropertyChange
      if(t == FastClock) return tr("Fast Clock");
      return tr("System Clock");
     }
+    static QList<TYPE> values;// {FastClock, SystemClock};
+    static TYPE getType(QString s)
+    {
+     if(s == tr("Fast Clock")) return FastClock;
+     return SystemClock;
+    }
   };
 
   explicit TimeSinceMidnight(QString sys, QString user, QObject *parent = nullptr);

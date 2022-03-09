@@ -37,15 +37,17 @@ private:
     /*private*/ /*SortedSet*/QSet<QString> getClassNames(QList</*Class<? extends Base>*/QString> classes);
     /*private*/ bool isSetsEqual(Category* category, /*SortedSet*/QSet<QString> set1, /*SortedSet*/QSet<QString> set2);
     /*private*/ bool setName_verifyException(QString newName, QString expectedExceptionMessage);
-    /*private*/ class IncompatibleMaleSocket : MaleSocket {
+    /*private*/ class IncompatibleMaleSocket : public QObject, public MaleSocket {
     public:
+    IncompatibleMaleSocket(QObject* parent = nullptr)
+     : QObject(parent) {setObjectName("IncompatibleMaleSocket");}
         //@Override
-        /*public*/  void setEnabled(bool enable) {
+        /*public*/  void setEnabled(bool enable) override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  void setEnabledFlag(bool enable) {
+        /*public*/  void setEnabledFlag(bool enable) override{
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -271,7 +273,7 @@ private:
         }
 
         //@Override
-        /*public*/  QList<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name) override{
+        /*public*/  QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name) override{
             throw new UnsupportedOperationException("Not supported");
         }
 

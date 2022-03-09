@@ -13,6 +13,7 @@
 #include "genericexpressionvariable.h"
 #include "conditionalng.h"
 #include "vptr.h"
+#include "defaultlogixngmanager.h"
 
 /**
  * Evaluates to True if the formula evaluates to true
@@ -95,6 +96,8 @@
         QMap<QString, Variable*> variables = QMap<QString, Variable*>();
         RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
         for (int i=0; i < getChildCount(); i++) {
+         FemaleSocket* entry = getChild(i);
+         QString name = entry->getName();
             Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket*)getChild(i)->bself());
             variables.insert(v->getName(), v);
         }
@@ -360,9 +363,9 @@
                     ee->_socket->_disconnect();
                     if (socketSystemName != nullptr) {
                         Manager/*<? extends MaleSocket>*/* m =
-                                ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))
+                                ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))
                                         ->getManager(manager);
-                        MaleSocket* maleSocket = (MaleSocket*)(MaleRootSocket*)m->getBySystemName(socketSystemName);
+                        MaleSocket* maleSocket = (MaleSocket*)m->getBySystemName(socketSystemName);
                         if (maleSocket != nullptr) {
                             ee->_socket->_connect(maleSocket);
                             maleSocket->setup();

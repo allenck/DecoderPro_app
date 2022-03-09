@@ -4,7 +4,7 @@
 #include "memorymanager.h"
 #include "jlabel.h"
 #include "namedbeanhandlemanager.h"
-#include "analogexpressionmanager.h"
+#include "defaultanalogexpressionmanager.h"
 
 /**
  * Configures an AnalogExpressionMemory object with a Swing JPanel.
@@ -17,9 +17,11 @@
 
     //@Override
     /*protected*/ void AnalogExpressionMemorySwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        AnalogExpressionMemory* action = (AnalogExpressionMemory*)object->bself();
+        AnalogExpressionMemory* action = nullptr;
+        if(object)
+         action = (AnalogExpressionMemory*)object->bself();
 
-        panel = new JPanel();
+        panel = new JPanel(new FlowLayout());
         memoryBeanPanel = new BeanSelectPanel((MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr);
 
         if (action != nullptr) {
@@ -51,7 +53,7 @@
                 action->setMemory(handle);
             }
         }
-        return ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->registerExpression(action);
+        return ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->registerExpression(action);
     }
 
     /** {@inheritDoc} */

@@ -16,7 +16,7 @@
 /*public*/ AbstractFemaleSocket::AbstractFemaleSocket(Base* parent, FemaleSocketListener* listener, QString name, QObject* parentObject)
    : QObject(parentObject){
     if (!FemaleSocket::validateName(name)) {
-        throw  IllegalArgumentException("the name is not valid: " + name);
+        throw new IllegalArgumentException("the name is not valid: " + name);
     }
     if (listener == nullptr) throw  IllegalArgumentException("FemaleSocketListener is null");
     _parent = parent;
@@ -62,19 +62,19 @@
 //@Override
 /*public*/ void AbstractFemaleSocket::_connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/ {
     if (socket == nullptr) {
-        throw  NullPointerException("socket cannot be null");
+        throw new NullPointerException("socket cannot be null");
     }
 
     if (_listenersAreRegistered) {
-        throw  UnsupportedOperationException("A socket must not be connected when listeners are registered");
+        throw new UnsupportedOperationException("A socket must not be connected when listeners are registered");
     }
 
     if (isConnected()) {
-        throw  SocketAlreadyConnectedException("Socket is already connected");
+        throw new SocketAlreadyConnectedException("Socket is already connected");
     }
 
     if (!isCompatible(socket)) {
-        throw  IllegalArgumentException("Socket "+QString(socket->bself()->metaObject()->className())+" is not compatible with "+ QString(this->bself()->metaObject()->className()));
+        throw new IllegalArgumentException("Socket "+QString(socket->bself()->metaObject()->className())+" is not compatible with "+ QString(this->bself()->metaObject()->className()));
 //            throw new IllegalArgumentException("Socket "+socket.getClass().getName()+" is not compatible with "+this.getClass().getName()+". Socket.getObject: "+socket.getObject().getClass().getName());
     }
 //        QObject* mObj = (QObject*)socket;
@@ -82,7 +82,7 @@
 //         _socket = (AbstractMaleSocket*)mObj;
 //        else
      _socket = socket;
-    _socket->Base::setParent(this);
+    _socket->setParent(this);
     _listener->connected(this);
     pcs->firePropertyChange(new PropertyChangeEvent(this, Base::PROPERTY_SOCKET_CONNECTED, QVariant(), VPtr<MaleSocket>::asQVariant(_socket)));
 //        pcs->firePropertyChange(Base.PROPERTY_SOCKET_CONNECTED, null, _socket);
@@ -98,7 +98,7 @@
     }
 
     if (_listenersAreRegistered) {
-        throw  UnsupportedOperationException("A socket must not be disconnected when listeners are registered");
+        throw new UnsupportedOperationException("A socket must not be disconnected when listeners are registered");
     }
 
     _socket->Base::setParent(nullptr);
@@ -152,7 +152,7 @@
 //@Override
 /*public*/ void AbstractFemaleSocket::setName(QString name, bool ignoreDuplicateErrors) {
     if (!validateName(name, ignoreDuplicateErrors)) {
-        throw  IllegalArgumentException("the name is not valid: " + name);
+        throw new  IllegalArgumentException("the name is not valid: " + name);
     }
     _name = name;
     _listener->socketNameChanged(this);
@@ -175,7 +175,7 @@
 
     if (isConnected()) {
         MaleSocket* aSocket = getConnectedSocket();
-        disconnect();
+        _disconnect();
         aSocket->dispose();
     }
     disposeMe();
@@ -238,31 +238,31 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ Category* AbstractFemaleSocket::getCategory() {
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
 //@Override
 /*public*/ FemaleSocket* AbstractFemaleSocket::getChild(int index)  {
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
 //@Override
 /*public*/ int AbstractFemaleSocket::getChildCount() {
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
 //@Override
 /*public*/ QString AbstractFemaleSocket::getUserName() const{
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
 //@Override
 /*public*/ void AbstractFemaleSocket::setUserName(QString s)  {
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
@@ -274,7 +274,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ void AbstractFemaleSocket::setComment(QString s) {
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
@@ -327,7 +327,7 @@
         QString indent,
         /*MutableInt*/int*  lineNumber) {
 
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
@@ -339,7 +339,7 @@
         QString indent,
         /*MutableInt*/int*  lineNumber) {
 
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 /** {@inheritDoc} */
@@ -414,12 +414,12 @@
 
 //@Override
 /*public*/ void AbstractFemaleSocket::addPropertyChangeListener(PropertyChangeListener* listener, QString name, QString listenerRef) {
-    throw  UnsupportedOperationException("Not supported");
+    throw new UnsupportedOperationException("Not supported");
 }
 
 //@Override
 /*public*/ void AbstractFemaleSocket::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener, QString name, QString listenerRef) {
-    throw  UnsupportedOperationException("Not supported");
+    throw new UnsupportedOperationException("Not supported");
 }
 
 //@Override
@@ -429,7 +429,7 @@
 
 //@Override
 /*public*/ void AbstractFemaleSocket::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
-    throw  UnsupportedOperationException("Not supported");
+    throw new UnsupportedOperationException("Not supported");
 }
 
 //@Override
@@ -438,8 +438,8 @@
 }
 
 //@Override
-/*public*/QList<QString>AbstractFemaleSocket:: getListenerRefs() {
-    throw  UnsupportedOperationException("Not supported");
+/*public*/QList<QString> AbstractFemaleSocket::getListenerRefs() {
+    throw new UnsupportedOperationException("Not supported");
 }
 
 //@Override
@@ -448,9 +448,9 @@
 }
 
 //@Override
-/*public*/ QList<PropertyChangeListener*> AbstractFemaleSocket::getPropertyChangeListenersByReference(QString name) {
-    throw  UnsupportedOperationException("Not supported");
- return QList<PropertyChangeListener*>();
+/*public*/ QVector<PropertyChangeListener *> AbstractFemaleSocket::getPropertyChangeListenersByReference(QString name) {
+    throw new UnsupportedOperationException("Not supported");
+ return QVector<PropertyChangeListener*>();
 }
 
 /**
@@ -470,7 +470,7 @@
 
 //@Override
 /*public*/ Base* AbstractFemaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
-    throw  UnsupportedOperationException("Not supported");
+    throw new UnsupportedOperationException("Not supported");
 }
 
 /** {@inheritDoc} */

@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "loggingutil.h"
 #include "threadingutil.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "instancemanager.h"
 #include "defaultmaleanalogactionsocket.h"
 #include "defaultfemaleanalogactionsocket.h"
@@ -23,16 +23,16 @@
 
 
     /*public*/  DefaultAnalogActionManager::DefaultAnalogActionManager(QObject* parent) : AbstractBaseManager(parent) {
-        ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
+        ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (AnalogActionFactory actionFactory : ServiceLoader.load(AnalogActionFactory.class)) {
 //            actionFactory.init();
 //        }
+          (new AnalogFactory())->init();
 
-//        for (Category category : Category.values()) {
-//            actionClassList.put(category, new ArrayList<>());
-//        }
-        (new AnalogFactory())->init();
+        for (Category* category : Category::values()) {
+            actionClassList.insert(category, QList<QString>());
+        }
 
 //        for (AnalogActionFactory actionFactory : ServiceLoader.load(AnalogActionFactory.class)) {
 //            actionFactory.getClasses().forEach((entry) -> {
@@ -41,7 +41,20 @@
 //            });
 //        }
 // TODO:        (new AnalogFactory())->
-
+          AnalogFactory* actionFactory = new AnalogFactory();
+          QSet<QHash<Category*, /*Class<? extends Base>*/QString> > set = actionFactory->getClasses();
+          for(QHash<Category*, QString> map : set)
+          {
+           QHashIterator<Category*, QString> entry(map);
+           while (entry.hasNext())
+           {
+            entry.next();
+            //actionClassList.value(entry.key()).append(entry.value());
+            QList<QString>  list = actionClassList.value(entry.key());
+            list.append(entry.value());
+            actionClassList.insert(entry.key(), list);
+           }
+          }
 //        for (MaleAnalogActionSocketFactory* maleSocketFactory : ServiceLoader.load(MaleAnalogActionSocketFactory.class)) {
 //            _maleSocketFactories.add(maleSocketFactory);
 //        }
