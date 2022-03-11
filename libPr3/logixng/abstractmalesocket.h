@@ -8,8 +8,9 @@
 #include "runtimeexception.h"
 #include "jmriexception.h"
 #include "abstractnamedbean.h"
+#include "abstractbase.h"
 
-class AbstractMaleSocket :  public /*QObject*/AbstractNamedBean, public virtual MaleSocket
+class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleSocket
 {
   Q_OBJECT
   Q_INTERFACES(MaleSocket)

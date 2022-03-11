@@ -1,5 +1,6 @@
 #include "abstractdebuggermalesocket.h"
 #include "vptr.h"
+#include "abstractbase.h"
 
 /**
  * Abstract debugger male socket
@@ -10,7 +11,7 @@
 
 
     /*public*/  AbstractDebuggerMaleSocket::AbstractDebuggerMaleSocket(BaseManager/*<? extends MaleSocket>*/* manager, NamedBean* maleSocket, QObject* parent)
-      :  AbstractMaleSocket(manager, (Base*)maleSocket, parent){
+      :  AbstractMaleSocket(manager, (AbstractBase*)maleSocket->self(), parent){
     }
 
     /**
@@ -18,14 +19,14 @@
      * evaluated.
      * @return an information string
      */
-    /*public*/  /*abstract*/ QString getBeforeInfo();
+//    /*public*/  /*abstract*/ QString getBeforeInfo();
 
     /**
      * Get information about this action/expression after it is executed or
      * evaluated.
      * @return an information string
      */
-    /*public*/  /*abstract*/ QString getAfterInfo();
+//    /*public*/  /*abstract*/ QString getAfterInfo();
 
     /*protected*/ bool AbstractDebuggerMaleSocket::isDebuggerActive() {
         return _debugger->isDebuggerActive()

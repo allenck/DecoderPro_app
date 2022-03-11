@@ -96,8 +96,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  MaleSocket *DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/MaleSocket* maleSocket) {
-//        MaleAnalogExpressionSocket* bean = (MaleAnalogExpressionSocket*)AbstractBaseManager::registerBean(maleSocket);
-          AbstractBaseManager::registerBean(maleSocket);
+        MaleAnalogExpressionSocket* bean = (MaleAnalogExpressionSocket*)(maleSocket->bself());
+        MaleSocket* ms =  AbstractBaseManager::registerBean(/*maleSocket*/bean);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
         return /*bean*/maleSocket;
     }

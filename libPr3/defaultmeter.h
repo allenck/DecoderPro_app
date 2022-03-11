@@ -25,10 +25,12 @@ class DefaultMeter : public AbstractAnalogIO, public  Meter
   /*public*/ double getMax()override;
   /*public*/ double getResolution()override;
   /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative()override;
-  QObject* mself()override {return (QObject*)this;}
   /*public*/ void dispose()override;
   /*public*/ void requestUpdateFromLayout()override;
   QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
+
+  QObject* mself()override {return (QObject*)this;}
+  QObject* self()override {return (QObject*)this;}
 
  private:
   static Logger* log;

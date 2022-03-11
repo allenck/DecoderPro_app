@@ -21,8 +21,14 @@
 
 
 /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent)
- : AbstractNamedBean(object->getSystemName(), object->getUserName(), parent) {
- setObjectName("AbstractMaleSocket");
+ //: AbstractNamedBean(object->getSystemName(), object->getUserName(), parent)
+ : AbstractBase(parent)
+{
+ if(objectName().isEmpty())
+  setObjectName("AbstractMaleSocket");
+ if(mSystemName.isEmpty())
+  mSystemName = ((AbstractNamedBean*)object->bself())->getSystemName();
+
  _manager = manager;
 //        QObject* obj = (QObject*)object;
 //        if(static_cast<AbstractMaleSocket*>(obj))
@@ -126,7 +132,10 @@
 
 //@Override
 /*public*/ /*final*/ QString AbstractMaleSocket::getSystemName() const{
-    return _object->getSystemName();
+    //return _object->getSystemName();
+ QObject* obj = (QObject*)_object->bself();
+ QString sys = ((AbstractNamedBean*)obj)->getSystemName();
+ return sys;
 }
 
 //@Override

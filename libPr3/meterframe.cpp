@@ -331,7 +331,7 @@
             update();
         //};
         if (meter != nullptr) {
-            ((AbstractNamedBean*)meter)->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
+            ((AbstractNamedBean*)meter->mself())->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
         }
 #if 0 // TODO:
         // Add component listener to handle frame resizing event

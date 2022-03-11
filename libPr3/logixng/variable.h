@@ -14,6 +14,7 @@
 
     /*public*/ virtual void setValue(SymbolTable* symbolTable, QVariant value) /*throws JmriException*/=0;
 
+  virtual QObject* vself() =0;
 };
 Q_DECLARE_INTERFACE(Variable, "Variable")
 #endif // VARIABLE_H

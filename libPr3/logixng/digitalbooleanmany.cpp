@@ -35,8 +35,8 @@
 //@Override
 /*public*/  Base* DigitalBooleanMany::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
     DigitalBooleanActionManager* manager = (DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager");
-    QString sysName = systemNames.value(getSystemName());
-    QString userName = userNames.value(getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     DigitalBooleanMany* copy = new DigitalBooleanMany(sysName, userName);
     copy->setComment(getComment());

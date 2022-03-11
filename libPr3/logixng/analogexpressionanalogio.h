@@ -36,7 +36,7 @@ class AnalogExpressionAnalogIO : public AbstractAnalogExpression, public Propert
   QObject* bself() override{return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
 
-  QString getUserName()const override {return AbstractBase::getUserName();}
+  //QString getUserName()const override {return AbstractBase::getUserName();}
 
  public slots:
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/override;

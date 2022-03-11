@@ -129,14 +129,14 @@
         //@Override
         /*public*/  void MyAction::execute() {
 //            System.out.format("%s: start\n", getUserName());
-            _printWriter->format("%s: start\n", AbstractBase::getUserName().toStdString().c_str());
+            _printWriter->format("%s: start\n", AbstractNamedBean::getUserName().toStdString().c_str());
             try {
                 SleeperThread::msleep(_delay);
             } catch (InterruptedException* ex) {
 //                ex.printStackTrace(_printWriter);
             }
 //            System.out.format("%s: end\n", getUserName());
-            _printWriter->format("%s: end\n", AbstractBase::getUserName().toStdString().c_str());
+            _printWriter->format("%s: end\n", AbstractNamedBean::getUserName().toStdString().c_str());
             _printWriter->flush();
             _ab->set(true);
         }

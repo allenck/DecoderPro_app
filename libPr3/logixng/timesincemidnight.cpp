@@ -8,6 +8,8 @@
 #include "timerutil.h"
 #include "system.h"
 #include "conditionalng.h"
+#include "simpletimebase.h"
+
 /**
  * This expression returns the number of minutes since midnight for the fast
  * clock or the system clock.
@@ -46,7 +48,7 @@
         _type = type;
 
         if (_type == Type::FastClock) {
-            _fastClock = (Timebase*)InstanceManager::getDefault("Timebase");
+            _fastClock = (SimpleTimebase*)InstanceManager::getDefault("Timebase");
         } else {
             _fastClock = nullptr;
         }

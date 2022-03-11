@@ -27,8 +27,8 @@
 //@Nonnull
 /*public*/  ProxyAnalogIOManager* ProxyAnalogIOManager::init() {
     // Note that not all lights in LightManager are VariableLight.
-    addBeanType("Meter", (Manager*)InstanceManager::getDefault("MeterManager"));
-    addBeanType("VariableLight", (Manager*)InstanceManager::getDefault("LightManager"));
+// TODO:    addBeanType("Meter", (AbstractProxyManager*)InstanceManager::getDefault("MeterManager"));
+    addBeanType("VariableLight", (AbstractProxyManager*)InstanceManager::getDefault("LightManager"));
     return this;
 }
 

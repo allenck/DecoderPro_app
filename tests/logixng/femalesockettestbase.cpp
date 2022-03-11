@@ -416,14 +416,15 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
             for (/*Class<? extends Base>*.QString*/QString clazz : entry.value()) {
                 // The class SwingToolsTest does not have a swing configurator
                 SwingConfiguratorInterface* iface0 = SwingTools::getSwingConfiguratorForClass(clazz);
-                QObject* oIface = (QObject*)iface0;
+                QObject* oIface = (QObject*)iface0->sself();
                 QString cn = oIface->metaObject()->className();
                 AbstractAnalogExpressionSwing* iface = (AbstractAnalogExpressionSwing*)oIface;
 
-                iface->getConfigPanel(new JPanel());
-                QString sys = iface->getAutoSystemName();
-                Base* obj = iface->createNewObject(sys, nullptr);
-                Assert::assertEquals(QString("category is correct for ")+((MaleSocket*)obj->bself())->getObject()->bself()->metaObject()->className(), entry.key(), obj->getCategory(), __FILE__, __LINE__);
+                iface0->getConfigPanel(new JPanel());
+                QString sys = iface0->getAutoSystemName();
+                Base* obj = iface0->createNewObject(sys, nullptr);
+                QString cn2 = obj->bself()->metaObject()->className();
+                Assert::assertEquals(QString("category is correct for ")+cn2, entry.key(), obj->getCategory(), __FILE__, __LINE__);
 //                Assert::assertEquals("category is correct for "+obj.getShortDescription(), entry.getKey(), obj.getCategory());
             }
         }

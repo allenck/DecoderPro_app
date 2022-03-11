@@ -28,8 +28,8 @@
 //@Override
 /*public*/  Base* AnalogActionLightIntensity::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
     AnalogActionManager* manager = (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
-    QString sysName = systemNames.value(getSystemName());
-    QString userName = userNames.value(getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     AnalogActionLightIntensity* copy = new AnalogActionLightIntensity(sysName, userName);
     copy->setComment(getComment());

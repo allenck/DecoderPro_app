@@ -1,6 +1,6 @@
 #include "debuggermaleanalogactionsocketfactory.h"
 #include "instancemanager.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "debuggermaleanalogactionsocket.h"
 /**
  *
@@ -12,9 +12,9 @@
 //@Override
 /*public*/ NamedBean* DebuggerMaleAnalogActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, NamedBean* maleSocket) {
 
-    if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+    if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
         return maleSocket;
     }
 
-    return new DebuggerMaleAnalogActionSocket(manager, (NamedBean*)maleSocket);
+    return new DebuggerMaleAnalogActionSocket(manager, (AbstractBase*)maleSocket->self());
 }

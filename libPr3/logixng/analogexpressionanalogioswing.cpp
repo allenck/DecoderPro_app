@@ -6,7 +6,7 @@
 #include "beanselectpanel.h"
 #include "proxyanalogiomanager.h"
 #include "jlabel.h"
-
+#include "proxyanalogiomanager.h"
 /**
  * Configures an AnalogExpressionAnalogIO object with a Swing JPanel.
  *

@@ -12,6 +12,7 @@ class FemaleAnalogExpressionSocket;
 class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public FemaleGenericExpressionSocket, public FemaleSocketListener
 {
   Q_OBJECT
+  Q_INTERFACES(FemaleGenericExpressionSocket)
  public:
   DefaultFemaleGenericExpressionSocket(SocketType socketType,
                                        Base* parent,

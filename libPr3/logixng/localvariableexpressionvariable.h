@@ -12,6 +12,8 @@ class LocalVariableExpressionVariable : public Variable
   /*public*/  QVariant getValue(SymbolTable* symbolTable) /*throws JmriException*/override;
   /*public*/  void setValue(SymbolTable* symbolTable, QVariant value) /*throws JmriException*/override;
 
+  QObject* vself() override {return (QObject*)this;}
+
  private:
   /*private*/ /*final*/ QString _name;
 

@@ -7,8 +7,9 @@ class AnalogExpressionConstantSwing : public AbstractAnalogExpressionSwing
 {
   Q_OBJECT
  public:
-  Q_INVOKABLE explicit AnalogExpressionConstantSwing(QObject *parent = nullptr): AbstractAnalogExpressionSwing(parent) {}
-  ~AnalogExpressionConstantSwing() {setObjectName("AnalogExpressionConstantSwing");}
+  Q_INVOKABLE explicit AnalogExpressionConstantSwing(QObject *parent = nullptr)
+   : AbstractAnalogExpressionSwing(parent) {setObjectName("AnalogExpressionConstantSwing");}
+  ~AnalogExpressionConstantSwing() {}
   AnalogExpressionConstantSwing(const AnalogExpressionConstantSwing&) : AbstractAnalogExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;

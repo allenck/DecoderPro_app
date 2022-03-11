@@ -262,7 +262,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
   Timebase* timebase = qobject_cast<Timebase*>(new SimpleTimebase(memo));
   //InstanceManager.getOptionalDefault(ConfigureManager").ifPresent(cm -> cm.registerConfig(timebase, Manager.TIMEBASE));
-  AppsConfigurationManager* cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+  ConfigureManager* cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   if(cm)
    cm->registerConfig(timebase, Manager::TIMEBASE);
   return timebase;

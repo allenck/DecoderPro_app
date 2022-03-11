@@ -80,7 +80,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
     /*private*/ QString _socketSystemName;
   public:
     /*public*/ QString _manager;
-    /*public*/ ExpressionEntry(FemaleGenericExpressionSocket* socket, QString socketSystemName, QString manager) {
+    /*public*/ ExpressionEntry(FemaleGenericExpressionSocket* socket, QString socketSystemName, QString manager) : QObject() {
    setObjectName("ExpressionEntry");
    _socket = socket;
         _socketSystemName = socketSystemName;

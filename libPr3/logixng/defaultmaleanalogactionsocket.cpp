@@ -15,7 +15,7 @@
 
 
     /*public*/  DefaultMaleAnalogActionSocket::DefaultMaleAnalogActionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
-        /*@Nonnull*/ AnalogActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (Base*)action, parent) {
+        /*@Nonnull*/ AnalogActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (AbstractBase*)action->self(), parent) {
         //super(manager, action);
      setObjectName("DefaultMaleAnalogActionSocket");
     }

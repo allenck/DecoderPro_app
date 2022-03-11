@@ -4,6 +4,7 @@
 #include "logixng_manager.h"
 #include "malesocketfactory.h"
 #include "vptr.h"
+#include "abstractdebuggermalesocket.h"
 
 /**
  * Abstract partial implementation for the LogixNG action and expression managers.
@@ -116,12 +117,13 @@
     /*public*/  MaleSocket* AbstractBaseManager::registerBean(/*@Nonnull*/ MaleSocket* s) {
         if(!s)
          throw new NullPointerException("required bean is null!");
+        QString s1 = ((AbstractMaleSocket*)s->bself())->getSystemName();
         NamedBean* bean = (AbstractNamedBean*)s->bself();
-        //QString sys = bean->getSystemName();
+        QString sys = bean->getSystemName();
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, bean);
         }
-        QString sys = bean->getSystemName();
+        /*QString*/ sys = bean->getSystemName();
          AbstractManager::Register(bean);
         return s;
     }
