@@ -1,12 +1,13 @@
 #ifndef PUSHBUTTONDELEGATE_H
 #define PUSHBUTTONDELEGATE_H
 
+#include <QStyledItemDelegate>
 #include <QItemDelegate>
 #include <javaqt_global.h>
 
 class JToggleButton;
 class QPushButton;
-class JAVAQTSHARED_EXPORT PushButtonDelegate : public QItemDelegate
+class JAVAQTSHARED_EXPORT PushButtonDelegate : public QStyledItemDelegate
 {
 Q_OBJECT
 

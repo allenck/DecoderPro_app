@@ -34,6 +34,7 @@ public slots:
     /*public*/  void testSWISystemName();
 
 private:
+  static Logger* log;
     /*private*/ /*SortedSet*/QSet<QString> getClassNames(QList</*Class<? extends Base>*/QString> classes);
     /*private*/ bool isSetsEqual(Category* category, /*SortedSet*/QSet<QString> set1, /*SortedSet*/QSet<QString> set2);
     /*private*/ bool setName_verifyException(QString newName, QString expectedExceptionMessage);

@@ -790,7 +790,7 @@
  //dialog->show();
  int rslt = dialog->exec();
  //dialog->/*dispose*/close();
- if(options.count() >0)
+ if(options.count() >0 || optionType == 0)
   return rslt;
  QVariant selectedValue = pane->getValue();
 

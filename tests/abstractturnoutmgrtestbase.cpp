@@ -8,7 +8,7 @@
 
 AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : AbstractProvidingTurnoutManagerTestBase(parent)
 {
- this->l = (ProxyTurnoutManager*)AbstractProvidingTurnoutManagerTestBase::l->mself();
+ this->_manager = (ProxyTurnoutManager*)AbstractProvidingTurnoutManagerTestBase::_manager->mself();
 }
 /**
  * Base for TurnoutManager tests in specific jmrix.* packages
@@ -48,17 +48,17 @@ AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : Abstra
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testDispose() {
-        if (l != nullptr) {
-            l->dispose();  // all we're really doing here is making sure the method exists
+        if (_manager != nullptr) {
+            _manager->dispose();  // all we're really doing here is making sure the method exists
         }
     }
 
     //@Test(expected=IllegalArgumentException.class)
     /*public*/ void AbstractTurnoutMgrTestBase::testProvideFailure() {
         try {
-            l->provideTurnout("");
+            _manager->provideTurnout("");
         } catch (IllegalArgumentException* ex) {
-          JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
+          JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + _manager->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
 //          throw ex;
         }
     }
@@ -66,40 +66,40 @@ AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : Abstra
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testTurnoutPutGet() {
         // create
-        Turnout* t = l->newTurnout(getSystemName(getNumToTest1()), "mine");
+        Turnout* t = _manager->newTurnout(getSystemName(getNumToTest1()), "mine");
         // check
         Assert::assertNotNull("real object returned ", t, __FILE__, __LINE__);
-        Assert::assertEquals("user name correct ", t, l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertEquals("system name correct ", t, l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertEquals("user name correct ", t, _manager->getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertEquals("system name correct ", t, _manager->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testProvideName() {
         // create
-        Turnout* t = l->provide("" + QString::number(getNumToTest1()));
+        Turnout* t = _manager->provide("" + QString::number(getNumToTest1()));
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t == _manager->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testDefaultSystemName() {
         // create
-        Turnout* t = l->provideTurnout("" + getNumToTest1());
+        Turnout* t = _manager->provideTurnout("" + getNumToTest1());
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t == _manager->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testSingleObject() {
         // test that you always get the same representation
-        Turnout* t1 = l->newTurnout(getSystemName(getNumToTest1()), "mine");
+        Turnout* t1 = _manager->newTurnout(getSystemName(getNumToTest1()), "mine");
         Assert::assertTrue("t1 real object returned ", t1 != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("same by user ", t1 == l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("same by system ", t1 == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("same by user ", t1 == _manager->getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("same by system ", t1 == _manager->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
 
-        Turnout* t2 = l->newTurnout(getSystemName(getNumToTest1()), "mine");
+        Turnout* t2 = _manager->newTurnout(getSystemName(getNumToTest1()), "mine");
         Assert::assertTrue("t2 real object returned ", t2 != nullptr, __FILE__, __LINE__);
         // check
         Assert::assertTrue("same new ", t1 == t2, __FILE__, __LINE__);
@@ -108,36 +108,36 @@ AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : Abstra
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testMisses() {
         // try to get nonexistant turnouts
-        Assert::assertTrue(nullptr == l->getByUserName("foo"), __FILE__, __LINE__);
-        Assert::assertTrue(nullptr == l->getBySystemName("bar"), __FILE__, __LINE__);
+        Assert::assertTrue(nullptr == _manager->getByUserName("foo"), __FILE__, __LINE__);
+        Assert::assertTrue(nullptr == _manager->getBySystemName("bar"), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testUpperLower() {
-        Turnout* t = l->provideTurnout("" + getNumToTest2());
+        Turnout* t = _manager->provideTurnout("" + getNumToTest2());
 
-        Assert::assertNull(l->getTurnout(t->getSystemName().toLower()), __FILE__, __LINE__);
+        Assert::assertNull(_manager->getTurnout(t->getSystemName().toLower()), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testRename() {
         // get turnout
-        Turnout* t1 = l->newTurnout(getSystemName(getNumToTest1()), "before");
+        Turnout* t1 = _manager->newTurnout(getSystemName(getNumToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Turnout* t2 = (Turnout*)l->getByUserName("after");
+        Turnout* t2 = (Turnout*)_manager->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
-        Assert::assertEquals("no old object", nullptr, l->getByUserName("before"), __FILE__, __LINE__);
+        Assert::assertEquals("no old object", nullptr, _manager->getByUserName("before"), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testThrownText(){
-         Assert::assertEquals("thrown text",tr("Thrown"),l->getThrownText(), __FILE__, __LINE__);
+         Assert::assertEquals("thrown text",tr("Thrown"),_manager->getThrownText(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutMgrTestBase::testClosedText(){
-         Assert::assertEquals("closed text",tr("Closed"),l->getClosedText(), __FILE__, __LINE__);
+         Assert::assertEquals("closed text",tr("Closed"),_manager->getClosedText(), __FILE__, __LINE__);
     }
 
     /**

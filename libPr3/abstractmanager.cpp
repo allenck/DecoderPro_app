@@ -227,7 +227,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 {
   //QString systemName = s->getSystemName();
  QString systemName;
-   systemName = s->getSystemName();
+   systemName = ((AbstractNamedBean*)s->self())->getSystemName();
 
   //Q_ASSERT(!systemName.isEmpty());
   if(systemName.isEmpty())

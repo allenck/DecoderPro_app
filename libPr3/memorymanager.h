@@ -5,12 +5,12 @@
 #include "libPr3_global.h"
 #include "providingmanager.h"
 
-class LIBPR3SHARED_EXPORT MemoryManager :  public QObject ,public ProvidingManager
+class LIBPR3SHARED_EXPORT MemoryManager :  public ProvidingManager
 {
-    Q_OBJECT
+    //Q_OBJECT
   Q_INTERFACES(ProvidingManager);
 public:
-    explicit MemoryManager(QObject *parent = 0);
+    //explicit MemoryManager(QObject *parent = 0);
     /**
      * Locate a Memory object representing some specific information.
      *<P>
@@ -152,5 +152,5 @@ signals:
 public slots:
     
 };
-//Q_DECLARE_INTERFACE(MemoryManger, "MemoryManager")
+Q_DECLARE_INTERFACE(MemoryManager, "MemoryManager")
 #endif // MEMORYMANAGER_H

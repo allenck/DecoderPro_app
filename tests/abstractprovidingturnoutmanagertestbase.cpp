@@ -14,7 +14,7 @@
 
 AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase(QObject *parent)
 {
- l= qobject_cast<Manager*>(InstanceManager::turnoutManagerInstance()->mself());
+ _manager= qobject_cast<Manager*>(InstanceManager::turnoutManagerInstance()->mself());
 }
 /**
  * Extension of AbstractManagerTestBase base for ProvidingManager test classes.
@@ -31,7 +31,7 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
 
     //@Test(expected = IllegalArgumentException.class)
     /*public*/ void AbstractProvidingTurnoutManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-        TurnoutManager* m = (TurnoutManager*)l->mself();
+        TurnoutManager* m = (TurnoutManager*)_manager->mself();
         try {
             m->provide(""); // this should throw an IllegalArgumentException.
         } catch (IllegalArgumentException iae) {
@@ -43,9 +43,9 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
     //@Test
     /*public*/ void AbstractProvidingTurnoutManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException, /*NoSuchFieldException,
             NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException ){
-        TurnoutManager* m = (TurnoutManager*)l->mself();
-        QString s1 = l->makeSystemName("1");
-        QString s2 = l->makeSystemName("2");
+        TurnoutManager* m = (TurnoutManager*)_manager->mself();
+        QString s1 = _manager->makeSystemName("1");
+        QString s2 = _manager->makeSystemName("2");
         testRegisterDuplicateSystemName(m, s1, s2);
     }
 
@@ -89,32 +89,32 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
         e2->mSystemName = e1->getSystemName();
 #endif
         // Remove bean if it's already registered
-        if (l->getBeanBySystemName(e1->getSystemName()) != nullptr) {
-            l->deregister(e1);
+        if (_manager->getBeanBySystemName(e1->getSystemName()) != nullptr) {
+            _manager->deregister(e1);
         }
         // Remove bean if it's already registered
-        if (l->getBeanBySystemName(e2->getSystemName()) != nullptr) {
-            l->deregister(e2);
+        if (_manager->getBeanBySystemName(e2->getSystemName()) != nullptr) {
+            _manager->deregister(e2);
         }
 
         // Register the bean once. This should be OK.
-        l->Register(e1);
+        _manager->Register(e1);
 
         // Register bean twice. This gives only a debug message.
-        l->Register(e1);
+        _manager->Register(e1);
 
         QString expectedMessage = "systemName is already registered: " + e1->getSystemName();
         try {
             // Register different bean with existing systemName.
             // This should fail with an DuplicateSystemNameException.
-            l->Register(e2);
+            _manager->Register(e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
         } catch (NamedBean::DuplicateSystemNameException* ex) {
             Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 
-        l->deregister(e1);
+        _manager->deregister(e1);
     }
 #if 0
     /*protected*/ Field AbstractProvidingTurnoutManagerTestBase::getField(Class c, QString fieldName) {

@@ -6,7 +6,7 @@
 #include "junitutil.h"
 
 LogixNG_InitializationManagerTestAction::LogixNG_InitializationManagerTestAction(QObject *parent)
-    : AbstractAction(tr("LogixNG_InitializationManagerTestparent"),parent)
+    : AbstractAction(tr("LogixNG_Initialization"),parent)
 {
 connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }

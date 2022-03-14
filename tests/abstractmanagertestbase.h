@@ -21,7 +21,7 @@ public slots:
 
 protected:
  // Manager<E> under test - setUp() loads this
- /*protected*/ Manager* l = nullptr;
+ /*protected*/ Manager* _manager = nullptr;
 
 };
 

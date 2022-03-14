@@ -27,7 +27,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
 
     //@Test(expected = IllegalArgumentException.class)
     /*public*/ void AbstractProvidingReporterManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->mself();
+        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)_manager->mself();
         try {
             m->provide(""); // this should throw an IllegalArgumentException.
         } catch (IllegalArgumentException iae) {
@@ -39,9 +39,9 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
     //@Test
     /*public*/ void AbstractProvidingReporterManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException, /*NoSuchFieldException,
             NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException) {
-        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->mself();
-        QString s1 = l->makeSystemName("1");
-        QString s2 = l->makeSystemName("2");
+        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)_manager->mself();
+        QString s1 = _manager->makeSystemName("1");
+        QString s2 = _manager->makeSystemName("2");
         testRegisterDuplicateSystemName(m, s1, s2);
     }
 
@@ -86,32 +86,32 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
 #endif
 
         // Remove bean if it's already registered
-        if (l->getBeanBySystemName(((NamedBean*)e1->self())->getSystemName()) != nullptr) {
-            l->deregister((NamedBean*)e1);
+        if (_manager->getBeanBySystemName(((NamedBean*)e1->self())->getSystemName()) != nullptr) {
+            _manager->deregister((NamedBean*)e1);
         }
         // Remove bean if it's already registered
-        if (l->getBeanBySystemName(((NamedBean*)e2->self())->getSystemName()) != nullptr) {
-            l->deregister((NamedBean*)e2);
+        if (_manager->getBeanBySystemName(((NamedBean*)e2->self())->getSystemName()) != nullptr) {
+            _manager->deregister((NamedBean*)e2);
         }
 
         // Register the bean once. This should be OK.
-        l->Register((NamedBean*)e1);
+        _manager->Register((NamedBean*)e1);
 
         // Register bean twice. This gives only a debug message.
-        l->Register((NamedBean*)e1);
+        _manager->Register((NamedBean*)e1);
 
         QString expectedMessage = "systemName is already registered: " + ((NamedBean*)e1->self())->getSystemName();
         try {
             // Register different bean with existing systemName.
             // This should fail with an DuplicateSystemNameException.
-            ((ReporterManager*)l->mself())->Register((NamedBean*)e2);
+            ((ReporterManager*)_manager->mself())->Register((NamedBean*)e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
         } catch (NamedBean::DuplicateSystemNameException* ex) {
             Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 
-        ((ReporterManager*)l->mself())->deregister((NamedBean*)e1);
+        ((ReporterManager*)_manager->mself())->deregister((NamedBean*)e1);
     }
 #if 0
     protected Field getField(Class c, String fieldName) {

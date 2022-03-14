@@ -54,6 +54,7 @@ Q_OBJECT
     //            /*throws SocketAlreadyConnectedException*/;
 
 };
+
 class ReleaseUntil_LNGI : public ReleaseUntil
 {
  Q_OBJECT

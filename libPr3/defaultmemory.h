@@ -6,7 +6,8 @@ class DefaultMemory : public AbstractMemory
 {
     Q_OBJECT
 public:
-    explicit DefaultMemory(QString sysName, QString userName="", QObject *parent = 0);
+  explicit DefaultMemory(QString sysName, QString userName="", QObject *parent = 0) : AbstractMemory(sysName, userName, parent){
+  setObjectName("DefaultMemory");}
     /**
      * Provide generic access to internal state.
      *<P>
@@ -18,8 +19,19 @@ public:
      * If the current value can be reduced to an integer, that
      * is returned, otherwise a value of -1 is returned.
      */
-    /*public*/ int getState();
-    /*public*/ void setState(int s);
+  /*public*/ int getState()override {
+   //try {
+    bool ok;
+       int i = getValue().toInt(&ok);
+   if(!ok) {
+       return -1;
+   }
+   return i;
+  }
+  /*public*/ void setState(int s) override{
+   setValue( QString::number(s));
+
+  }
 
 signals:
     

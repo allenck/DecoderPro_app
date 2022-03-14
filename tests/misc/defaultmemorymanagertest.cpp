@@ -19,28 +19,28 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
 //@Test
 /*public*/ void DefaultMemoryManagerTest::testIMthrows() {
     try {
-        ((DefaultMemoryManager*)l->mself())->provideMemory("IM");
+        ((DefaultMemoryManager*)_manager->mself())->provideMemory("IM");
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
     } catch (IllegalArgumentException e) {
         // nothing to do
     }
-    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name \"" + l->getSystemNamePrefix() + "\" is missing suffix.");
+    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name \"" + _manager->getSystemNamePrefix() + "\" is missing suffix.");
 }
 
 //@Test
 /*public*/ void DefaultMemoryManagerTest::testBlankThrows() {
     try {
-        ((DefaultMemoryManager*)l->mself())->provideMemory("");
+        ((DefaultMemoryManager*)_manager->mself())->provideMemory("");
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
     } catch (IllegalArgumentException e) {
         // nothing to do
     }
-    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name must start with \"" + l->getSystemNamePrefix() + "\".");
+    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name must start with \"" + _manager->getSystemNamePrefix() + "\".");
 }
 
 //@Test
 /*public*/ void DefaultMemoryManagerTest::testCreatesiM() {
-    Memory* im = ((DefaultMemoryManager*)l->mself())->provideMemory("iM");
+    Memory* im = ((DefaultMemoryManager*)_manager->mself())->provideMemory("iM");
     Assert::assertNotNull("iM created",im, __FILE__, __LINE__);
     Assert::assertEquals("correct system name","IMiM",im->getSystemName(), __FILE__, __LINE__);
 }
@@ -48,7 +48,7 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
 //@Before
 /*public*/ void DefaultMemoryManagerTest::setUp() {
     JUnitUtil::setUp();
-    l = new DefaultMemoryManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    _manager = new DefaultMemoryManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
 }
 
 //@After

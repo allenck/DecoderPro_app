@@ -8,6 +8,7 @@
 #include "idtagmanager.h"
 #include "proxymanager.h"
 
+
 class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport, public ProxyManager, public PropertyChangeListener, public Manager::ManagerDataListener
 {
     Q_OBJECT

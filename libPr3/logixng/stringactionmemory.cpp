@@ -1,6 +1,10 @@
 #include "stringactionmemory.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
+#include "defaultstringactionmanager.h"
+#include "defaultmemorymanager.h"
+#include "namedbeanhandlemanager.h"
+#include "vptr.h"
 
 /**
  * Sets a Memory.
@@ -14,54 +18,54 @@
     /*public*/  StringActionMemory::StringActionMemory(QString sys, QString user, QObject *parent) : AbstractStringAction(sys, user, parent) {
         //super(sys, user);
     }
-#if 0
+
     //@Override
-    /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
-        StringActionManager manager = InstanceManager.getDefault(StringActionManager.class);
-        String sysName = systemNames.get(getSystemName());
-        String userName = userNames.get(getSystemName());
-        if (sysName == null) sysName = manager.getAutoSystemName();
-        StringActionMemory copy = new StringActionMemory(sysName, userName);
-        copy.setComment(getComment());
-        if (_memoryHandle != null) copy.setMemory(_memoryHandle);
-        return manager.registerAction(copy);
+    /*public*/  Base* StringActionMemory::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+        StringActionManager* manager = (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = manager->getAutoSystemName();
+        StringActionMemory* copy = new StringActionMemory(sysName, userName);
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
+        if (_memoryHandle != nullptr) copy->setMemory(_memoryHandle);
+        return manager->registerAction(copy);
     }
 
-    /*public*/  void setMemory(/*@Nonnull*/ String memoryName) {
+    /*public*/  void StringActionMemory::setMemory(/*@Nonnull*/ QString memoryName) {
         assertListenersAreNotRegistered(log, "setMemory");
-        Memory* memory = InstanceManager.getDefault(MemoryManager.class).getMemory(memoryName);
-        if (memory != null) {
+        Memory* memory = ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(memoryName);
+        if (memory != nullptr) {
             setMemory(memory);
         } else {
             removeMemory();
-            log.error("memory \"{}\" is not found", memoryName);
+            log->error(tr("memory \"%1\" is not found").arg(memoryName));
         }
     }
 
-    /*public*/  void setMemory(/*@Nonnull*/ NamedBeanHandle<Memory> handle) {
+    /*public*/  void StringActionMemory::setMemory(/*@Nonnull*/ NamedBeanHandle<Memory*>* handle) {
         assertListenersAreNotRegistered(log, "setMemory");
         _memoryHandle = handle;
-        InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
+        InstanceManager::memoryManagerInstance()->addVetoableChangeListener(this);
     }
 
-    /*public*/  void setMemory(/*@Nonnull*/ Memory memory) {
+    /*public*/  void StringActionMemory::setMemory(/*@Nonnull*/ Memory* memory) {
         assertListenersAreNotRegistered(log, "setMemory");
-        setMemory(InstanceManager.getDefault(NamedBeanHandleManager.class)
-                .getNamedBeanHandle(memory.getDisplayName(), memory));
+        setMemory(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
+                ->getNamedBeanHandle(memory->getDisplayName(), memory));
     }
 
-    /*public*/  void removeMemory() {
+    /*public*/  void StringActionMemory::removeMemory() {
         assertListenersAreNotRegistered(log, "setMemory");
-        if (_memoryHandle != null) {
-            InstanceManager.memoryManagerInstance().removeVetoableChangeListener(this);
-            _memoryHandle = null;
+        if (_memoryHandle != nullptr) {
+            InstanceManager::memoryManagerInstance()->removeVetoableChangeListener(this);
+            _memoryHandle = nullptr;
         }
     }
 
-    /*public*/  NamedBeanHandle<Memory> getMemory() {
+    /*public*/  NamedBeanHandle<Memory*>* StringActionMemory::getMemory() {
         return _memoryHandle;
     }
-#endif
+
     /** {@inheritDoc} */
     //@Override
     /*public*/  void StringActionMemory::setValue(QString value) {
@@ -69,19 +73,19 @@
             _memoryHandle->getBean()->setValue(value);
         }
     }
-#if 0
+
     //@Override
-    /*public*/  void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
-        if ("CanDelete".equals(evt.getPropertyName())) { // No I18N
-            if (evt.getOldValue() instanceof Memory) {
-                if (evt.getOldValue().equals(getMemory().getBean())) {
-                    PropertyChangeEvent e = new PropertyChangeEvent(this, "DoNotDelete", null, null);
-                    throw new PropertyVetoException(Bundle.getMessage("StringMemory_MemoryInUseMemoryActionVeto", getDisplayName()), e); // NOI18N
+    /*public*/  void StringActionMemory::vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ {
+        if ("CanDelete"==(evt->getPropertyName())) { // No I18N
+            if (VPtr<Memory>::asPtr(evt->getOldValue())) {
+                if (VPtr<Memory>::asPtr(evt->getOldValue())->equals(getMemory()->getBean())) {
+                    PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                    throw new PropertyVetoException(tr("Memory is in use by Memory action \"%1\"").arg(AbstractNamedBean::getDisplayName()), e); // NOI18N
                 }
             }
-        } else if ("DoDelete".equals(evt.getPropertyName())) { // No I18N
-            if (evt.getOldValue() instanceof Memory) {
-                if (evt.getOldValue().equals(getMemory().getBean())) {
+        } else if ("DoDelete" == (evt->getPropertyName())) { // No I18N
+            if (VPtr<Memory>::asPtr(evt->getOldValue()) ) {
+                if (VPtr<Memory>::asPtr(evt->getOldValue())->equals(getMemory()->getBean())) {
                     removeMemory();
                 }
             }
@@ -90,66 +94,66 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  FemaleSocket getChild(int index) throws IllegalArgumentException, UnsupportedOperationException {
+    /*public*/  FemaleSocket* StringActionMemory::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  int getChildCount() {
+    /*public*/  int StringActionMemory::getChildCount() {
         return 0;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category getCategory() {
-        return Category.ITEM;
+    /*public*/  Category* StringActionMemory::getCategory() {
+        return Category::ITEM;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  String getShortDescription(Locale locale) {
-        return Bundle.getMessage(locale, "StringActionMemory_Short");
+    /*public*/  QString StringActionMemory::getShortDescription(QLocale locale) {
+        return tr(/*locale,*/ "StringActionMemory");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  String getLongDescription(Locale locale) {
-        if (_memoryHandle != null) {
-            return Bundle.getMessage(locale, "StringActionMemory_Long", _memoryHandle.getBean().getDisplayName());
+    /*public*/  QString StringActionMemory::getLongDescription(QLocale locale) {
+        if (_memoryHandle != nullptr) {
+            return tr(/*locale,*/ "Set memory %1").arg(_memoryHandle->getBean()->getDisplayName());
         } else {
-            return Bundle.getMessage(locale, "StringActionMemory_Long", "none");
+            return tr(/*locale,*/ "Set memory %1").arg("none");
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void setup() {
+    /*public*/  void StringActionMemory::setup() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void registerListenersForThisClass() {
+    /*public*/  void StringActionMemory::registerListenersForThisClass() {
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void unregisterListenersForThisClass() {
+    /*public*/  void StringActionMemory::unregisterListenersForThisClass() {
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void StringActionMemory::disposeMe() {
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*/*public*/ */  void getUsageDetail(int level, NamedBean bean, List<NamedBeanUsageReport> report, NamedBean cdl) {
-        log.debug("getUsageReport :: StringActionMemory: bean = {}, report = {}", cdl, report);
-        if (getMemory() != null && bean.equals(getMemory().getBean())) {
-            report.add(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription()));
+    /*public*/  void StringActionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+        log->debug(tr("getUsageReport :: StringActionMemory: bean = %1, report = %2").arg(cdl->getSystemName()).arg(report.size()));
+        if (getMemory() != nullptr && bean->equals(getMemory()->getBean())) {
+            report.append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
         }
     }
-#endif
+
     /*private*/ /*final*/ /*static*/ Logger* StringActionMemory::log = LoggerFactory::getLogger("StringActionMemory");

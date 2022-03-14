@@ -28,17 +28,17 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
     //@Test
     /*public*/ void ProxyReporterManagerTest::testReporterPutGet() {
         // create
-        Reporter* t = ((ProxyReporterManager*)l->mself())->newReporter(getSystemName(getNameToTest1()), "mine");
+        Reporter* t = ((ProxyReporterManager*)_manager->mself())->newReporter(getSystemName(getNameToTest1()), "mine");
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", ((NamedBean*)t->self()) == ((ProxyReporterManager*)l->mself())->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", ((NamedBean*)t->self()) == ((ProxyReporterManager*)l->mself())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", ((NamedBean*)t->self()) == ((ProxyReporterManager*)_manager->mself())->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ((NamedBean*)t->self()) == ((ProxyReporterManager*)_manager->mself())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProxyReporterManagerTest::testTwoNames() {
-        Reporter* ir211 = ((ProxyReporterManager*)l->mself())->provideReporter("LR211");
-        Reporter* lr211 = ((ProxyReporterManager*)l->mself())->provideReporter("IR211");
+        Reporter* ir211 = ((ProxyReporterManager*)_manager->mself())->provideReporter("LR211");
+        Reporter* lr211 = ((ProxyReporterManager*)_manager->mself())->provideReporter("IR211");
 
         Assert::assertNotNull(ir211->self(), __FILE__, __LINE__);
         Assert::assertNotNull(lr211->self(), __FILE__, __LINE__);
@@ -47,7 +47,7 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
 
     //@Test
     /*public*/ void ProxyReporterManagerTest::testDefaultNotInternal() {
-        Reporter* lut = ((ProxyReporterManager*)l->mself())->provideReporter("211");
+        Reporter* lut = ((ProxyReporterManager*)_manager->mself())->provideReporter("211");
 
         Assert::assertNotNull(lut->self(), __FILE__, __LINE__);
         Assert::assertEquals("IR211", ((NamedBean*)lut->self())->getSystemName(), __FILE__, __LINE__);
@@ -55,10 +55,10 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
 
     //@Test
     /*public*/ void ProxyReporterManagerTest::testProvideUser() {
-        Reporter* l1 = ((ProxyReporterManager*)l->mself())->provideReporter("211");
+        Reporter* l1 = ((ProxyReporterManager*)_manager->mself())->provideReporter("211");
         ((NamedBean*)l1->self())->setUserName("user 1");
-        Reporter* l2 = ((ProxyReporterManager*)l->mself())->provideReporter("user 1");
-        Reporter* l3 = ((ProxyReporterManager*)l->mself())->getReporter("user 1");
+        Reporter* l2 = ((ProxyReporterManager*)_manager->mself())->provideReporter("user 1");
+        Reporter* l3 = ((ProxyReporterManager*)_manager->mself())->getReporter("user 1");
 
         Assert::assertNotNull(l1->self(), __FILE__, __LINE__);
         Assert::assertNotNull(l2->self(), __FILE__, __LINE__);
@@ -67,7 +67,7 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
         Assert::assertEquals(l3, l2, __FILE__, __LINE__);
         Assert::assertEquals(l1, l3, __FILE__, __LINE__);
 
-        Reporter* l4 = ((ProxyReporterManager*)l->mself())->getReporter("JLuser 1");
+        Reporter* l4 = ((ProxyReporterManager*)_manager->mself())->getReporter("JLuser 1");
         Assert::assertNull(l4->self(), __FILE__, __LINE__);
     }
 
@@ -97,7 +97,7 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
     /*public*/ void ProxyReporterManagerTest::setUp() {
         JUnitUtil::setUp();
         // create and register the manager object
-        l = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
+        _manager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
     }
 
     //@After

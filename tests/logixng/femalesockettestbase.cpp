@@ -8,6 +8,7 @@
 #include <QLocale>
 #include "abstractmalesocket.h"
 #include "abstractanalogexpressionswing.h"
+#include "loggerfactory.h"
 
 FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
 {
@@ -441,6 +442,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
             for (/*Class<? extends Base>*/QString clazz : entry.value()) {
                 // The class SwingToolsTest does not have a swing configurator
                 SwingConfiguratorInterface* iface = SwingTools::getSwingConfiguratorForClass(clazz);
+                log->debug(tr("check valid SystemName: %1 %2").arg(getManager()->getSubSystemNamePrefix(), iface->getExampleSystemName() ));
                 Assert::assertEquals("example system name is correct for "+clazz,
                         Manager::NameValidity::VALID,
                         getManager()->validSystemNameFormat(iface->getExampleSystemName()), __FILE__, __LINE__);
@@ -787,5 +789,5 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
         }
     };
 #endif
-//    /*private*/ final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FemaleSocketTestBase.class);
+    /*private*/ /*final*/ /*static*/ Logger* FemaleSocketTestBase::log = LoggerFactory::getLogger("FemaleSocketTestBase");
 

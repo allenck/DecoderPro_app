@@ -8,7 +8,7 @@
 
 AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 {
- l= (MemoryManager*)InstanceManager::memoryManagerInstance();
+ _manager= (MemoryManager*)InstanceManager::memoryManagerInstance();
 }
 /**
  * Extension of AbstractManagerTestBase base for ProvidingManager test classes.
@@ -25,7 +25,7 @@ AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 
 //@Test(expected = IllegalArgumentException.class)
 /*public*/ void AbstractProvidingMemoryManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-   MemoryManager* m = (MemoryManager*)l->mself();
+   MemoryManager* m = (MemoryManager*)_manager->mself();
     try {
         m->provide(""); // this should throw an IllegalArgumentException.
     } catch (IllegalArgumentException iae) {
@@ -37,7 +37,7 @@ AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 //@Test
 /*public*/ void AbstractProvidingMemoryManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException,/* NoSuchFieldException,
         NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException ){
-    MemoryManager* m = (MemoryManager*)l->mself();
+    MemoryManager* m = (MemoryManager*)_manager->mself();
     QString s1 = m->makeSystemName("1");
     QString s2 = m->makeSystemName("2");
     testRegisterDuplicateSystemName(m, s1, s2);
@@ -85,32 +85,32 @@ AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 #endif
 
     // Remove bean if it's already registered
-    if (l->getBeanBySystemName(e1->getSystemName()) != nullptr) {
-        l->deregister(e1);
+    if (_manager->getBeanBySystemName(e1->getSystemName()) != nullptr) {
+        _manager->deregister(e1);
     }
     // Remove bean if it's already registered
-    if (l->getBeanBySystemName(e2->getSystemName()) != nullptr) {
-        l->deregister(e2);
+    if (_manager->getBeanBySystemName(e2->getSystemName()) != nullptr) {
+        _manager->deregister(e2);
     }
 
     // Register the bean once. This should be OK.
-    l->Register(e1);
+    _manager->Register(e1);
 
     // Register bean twice. This gives only a debug message.
-    l->Register(e1);
+    _manager->Register(e1);
 
     QString expectedMessage = "systemName is already registered: " + e1->getSystemName();
     try {
         // Register different bean with existing systemName.
         // This should fail with an DuplicateSystemNameException.
-        l->Register(e2);
+        _manager->Register(e2);
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
     } catch (NamedBean::DuplicateSystemNameException* ex) {
         Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
         JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
     }
 
-    l->deregister(e1);
+    _manager->deregister(e1);
 }
 #if 0
 /*protected*/ Field getField(Class c, String fieldName) {

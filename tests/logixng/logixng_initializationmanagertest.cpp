@@ -5,13 +5,13 @@
 #include "junitutil.h"
 #include "logixng_initializationmanager.h"
 #include "stringwriter.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "instancemanager.h"
-#include "conditionalng_manager.h"
+#include "defaultconditionalngmanager.h"
 #include "defaultconditionalngscaffold.h"
 #include "assert1.h"
 #include "sleeperthread.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 
 /**
  * Test LogixNG_InitializationManager
@@ -53,9 +53,9 @@
         MyAction::getLogixNG("IQ8", "LogixNG* 8", getAB(), printWriter, 0, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);
         MyAction::getLogixNG("IQ3", "LogixNG* 3", getAB(), printWriter, 0, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);
 
-        LogixNG* l2 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ2")->self();
-        LogixNG* l7 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ7")->self();
-        LogixNG* l8 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ8")->self();
+        LogixNG* l2 = (LogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ2")->self();
+        LogixNG* l7 = (LogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ7")->self();
+        LogixNG* l8 = (LogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ8")->self();
 
         LogixNG_InitializationManager* initManager = (LogixNG_InitializationManager*)
                 InstanceManager::getDefault("LogixNG_InitializationManager");
@@ -67,7 +67,7 @@
         // No LogixNG* has been executed yet.
         Assert::assertEquals("Strings are equal", "", stringWriter->toString(), __FILE__, __LINE__);
 
-        ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))
+        ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))
                 ->activateAllLogixNGs(true, true);
 
         //boolean result = JUnitUtil.waitFor(() -> {return checkAB();});
@@ -120,7 +120,7 @@
                 long delay) : ActionAtomicBoolean(ab, false){
 
             //super(ab, false);
-            AbstractBase::setUserName(userName);
+            setUserName(userName);
             _ab = ab;
             _printWriter = printWriter;
             _delay = delay;
@@ -151,20 +151,20 @@
                 /*throws SocketAlreadyConnectedException*/ {
 
             LogixNG* logixNG =
-                    ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))
+                    ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))
                             ->createLogixNG(systemName, nullptr);
 
             systemName =
-                    ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))
-                            ->getAutoSystemName();
+                    ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
+                            ->AbstractManager::getAutoSystemName();
             ConditionalNG* conditionalNG =
                     new DefaultConditionalNGScaffold(systemName, "", threadID);
-            ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register(conditionalNG);
+            ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register(conditionalNG);
             conditionalNG->setEnabled(true);
             logixNG->addConditionalNG(conditionalNG);
 
             MyAction* action = new MyAction(userName, ab, printWriter, delay);
-            MaleSocket* socket = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->registerAction(action);
+            MaleSocket* socket = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->registerAction(action);
             conditionalNG->getChild(0)->_connect(socket);
 
             logixNG->setEnabled(true);

@@ -23,14 +23,15 @@
          action= (AnalogExpressionAnalogIO*)object->bself();
 
         panel = new JPanel(new FlowLayout());
-        analogIOBeanPanel = new BeanSelectPanel((Manager*)InstanceManager::getDefault("AnalogIOManager"), nullptr);
+#if 1 // TODO:
+        analogIOBeanPanel = new BeanSelectPanel((AbstractManager*)(ProxyAnalogIOManager*)InstanceManager::getDefault("AnalogIOManager"), nullptr);
 
         if (action != nullptr) {
             if (action->getAnalogIO() != nullptr) {
                 analogIOBeanPanel->setDefaultNamedBean(action->getAnalogIO()->getBean());
             }
         }
-
+#endif
         panel->layout()->addWidget(new JLabel(tr("AnalogIO")));
         panel->layout()->addWidget(analogIOBeanPanel);
     }

@@ -1,7 +1,7 @@
 #include "abstractmemorymanager.h"
 
 AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
-    MemoryManager(parent)
+    AbstractManager(parent)
 {
  lastAutoMemoryRef = 0;
  //registerSelf();
@@ -144,6 +144,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 /*public*/ Memory* AbstractMemoryManager::provide(QString name)  throw (IllegalArgumentException) {
     return provideMemory(name);
 }
+
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractMemoryManager.class.getName());
 //}

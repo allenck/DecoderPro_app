@@ -35,9 +35,9 @@ isEmpty( PROJ_DIR ) {
 
 
 SOURCES += javaqt.cpp \
+    classmigration.cpp \
     atomicboolean.cpp \
     #changelistenermap.cpp \
-    classmigration.cpp \
     csvformat.cpp \
     csvprinter.cpp \
     exceptioncontext.cpp \
@@ -51,6 +51,7 @@ SOURCES += javaqt.cpp \
     jmriexception.cpp \
     jscrollpane.cpp \
     jtextpane.cpp \
+    jtitledseparator.cpp \
     jvetoablechangesupport.cpp \
     loconetexception.cpp \
     loggerfactory.cpp \
@@ -317,6 +318,7 @@ HEADERS += javaqt.h\
     jseparator.h \
     abstractaction.h \
  jtextpane.h \
+ jtitledseparator.h \
  jvetoablechangesupport.h \
  loconetexception.h \
     logger.h \
@@ -327,6 +329,7 @@ HEADERS += javaqt.h\
  preferNumericComparator.h \
  #systemtype.h \
  propertychangefirer.h \
+ reference.h \
  stringwriter.h \
  swingpropertychangesupport.h \
  thread.h \

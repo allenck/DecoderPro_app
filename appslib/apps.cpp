@@ -103,8 +103,8 @@
 #include "connectionconfigmanager.h"
 #include "defaultlogixmanager.h"
 #ifdef HAVE_LOGIXNG
-#include "logixng_manager.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngmanager.h"
+#include "defaultlogixngpreferences.h"
 #endif // HAVE_LOGIXNG
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -528,7 +528,7 @@ bool Apps::configDeferredLoadOK = false;
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 
 #ifdef HAVE_LOGIXNG
- LogixNG_Manager* logixNG_Manager = (LogixNG_Manager*) InstanceManager::getDefault("LogixNG_Manager");
+ LogixNG_Manager* logixNG_Manager = (DefaultLogixNGManager*) InstanceManager::getDefault("LogixNG_Manager");
  logixNG_Manager->setupAllLogixNGs();
  if (((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getStartLogixNGOnStartup()) {
      logixNG_Manager->activateAllLogixNGs();

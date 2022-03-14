@@ -371,8 +371,12 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 #else
     QSet<NamedBean*> set = QSet<NamedBean*>();
 #endif
-    set.unite(manager->getNamedBeanSet());
-    set.subtract(excludedItems);
+    QSet<NamedBean*> nbs = manager->getNamedBeanSet();
+    if(!nbs.isEmpty())
+    {
+     set.unite(nbs);
+     set.subtract(excludedItems);
+    }
 #if 0
     Vector<B> vector = new Vector<>(set);
     if (allowNull) {

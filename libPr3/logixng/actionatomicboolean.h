@@ -6,6 +6,7 @@
 
 class ActionAtomicBoolean : public AbstractDigitalAction
 {
+  Q_OBJECT
  public:
   explicit ActionAtomicBoolean(AtomicBoolean *atomicBoolean, bool newValue, QObject *parent = nullptr);
   /*public*/  ActionAtomicBoolean(QString sys, QString user, QObject *parent = nullptr);

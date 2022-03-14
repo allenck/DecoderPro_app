@@ -10,10 +10,10 @@
  * @param <B> type of supported NamedBean
  */
 //template<class B>
-/*public*/ class  ProxyManager /*<B extends NamedBean>*/ : public Manager
+/*public*/ class  ProxyManager /*<B extends NamedBean>*/ : public  Manager
 {
 //Q_OBJECT
-    Q_INTERFACES(Manager)
+    //Q_INTERFACES(Manager)
 public:
 //    ProxyManager(QObject* parent) : Manager(parent){}
     /**

@@ -806,7 +806,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initMemoryManager() {
     MemoryManager* m = new DefaultMemoryManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::MEMORIES);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m, Manager::MEMORIES);
     }
 }
 
@@ -1510,7 +1510,9 @@ static void checkThreads() {
  catch(Exception* ex)
  {
   JOptionPane::showMessageDialog(nullptr, tr("Unhandled exception while running test '%1'\n%2")
-     .arg(testClassName).arg(ex->getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
+     .arg(testClassName, ex->getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
+  if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
+   throw new Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testClassName));
  }
 }
 /*private*/ /*final*/ /*static*/ Logger* JUnitUtil::log = LoggerFactory::getLogger("JUnitUtil");

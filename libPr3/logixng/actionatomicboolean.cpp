@@ -1,5 +1,5 @@
 #include "actionatomicboolean.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
 #include "atomicboolean.h"
 
@@ -13,7 +13,7 @@
 
     /*public*/  ActionAtomicBoolean::ActionAtomicBoolean(AtomicBoolean* atomicBoolean,
                                                          bool newValue, QObject* parent)
-     : AbstractDigitalAction(((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getAutoSystemName(), nullptr, parent)
+     : AbstractDigitalAction(((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->AbstractManager::getAutoSystemName(), nullptr, parent)
             /*throws BadUserNameException*/ {
         //super(InstanceManager::getDefault("DigitalActionManager")).getAutoSystemName(), null);
         _atomicBoolean = atomicBoolean;
@@ -37,7 +37,7 @@
 
     //@Override
     /*public*/  Base* ActionAtomicBoolean::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
-        DigitalActionManager* manager = (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
+        DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
         QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
         QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();

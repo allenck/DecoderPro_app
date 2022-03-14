@@ -42,7 +42,9 @@
 #include "meteraction.h"
 #include "ctc/ctceditoraction.h"
 #include "ctc/ctcrunaction.h"
-
+#ifdef HAVE_LOGIXNG
+#include "logixng/logixngmenu.h"
+#endif
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
 //{
@@ -205,6 +207,12 @@ addAction(ta);
  addAction(new WebServerAction(this));
  // add the server menu
  addMenu(new ServerMenu());
+
+#ifdef HAVE_LOGIXNG
+ addSeparator();
+ // LogixNG menu
+ addMenu(new LogixNGMenu());
+#endif
 }
 
 

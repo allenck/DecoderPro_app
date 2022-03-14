@@ -32,7 +32,7 @@ public slots:
 
 private:
     static /*protected*/ bool listenerResult;// = false;
-    TurnoutManager* l;
+    TurnoutManager* _manager;
 
 protected:
     /*protected*/ int getNumToTest1();

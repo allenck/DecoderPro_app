@@ -6,6 +6,7 @@
 
 class Logger;
 class ThreadAction;
+class ThreadActionWithJmriException;
 class ThreadingUtil : public QObject
 {
   Q_OBJECT
@@ -20,6 +21,9 @@ class ThreadingUtil : public QObject
   static /*public*/ void runOnLayout(/*@Nonnull*/ ThreadAction* ta);
   static /*public*/ bool isLayoutThread();
   static /*public*/ bool isGUIThread();
+  static /*public*/ void runOnLayoutWithJmriException(ThreadActionWithJmriException* ta);
+  static /*public*/ void runOnGUIWithJmriException(/*@Nonnull*/ ThreadActionWithJmriException* ta);
+
 
  signals:
 
@@ -42,5 +46,28 @@ class ThreadingUtil : public QObject
      */
     //@Override
   /*public*/ void run() {}
+};
+
+/**
+ * Interface for use in ThreadingUtil's lambda interfaces
+ */
+//@FunctionalInterface
+/*static*/ /*public*/ /*interface*/class ThreadActionWithJmriException : public Runnable{
+  Q_OBJECT
+ public:
+    /**
+     * When an object implementing interface <code>ThreadActionWithJmriException</code>
+     * is used to create a thread, starting the thread causes the object's
+     * <code>run</code> method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method <code>run</code> is that it may
+     * take any action whatsoever.
+     *
+     * @throws JmriException when an exception occurs
+     * @throws RuntimeException when an exception occurs
+     * @see     java.lang.Thread#run()
+     */
+  /*public*/ void run() /*throws JmriException, RuntimeException*/{}
 };
 #endif // THREADINGUTIL_H

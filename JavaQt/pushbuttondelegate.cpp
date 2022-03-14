@@ -6,7 +6,7 @@
 #include "jtogglebutton.h"
 #include <QPainter>
 
-PushButtonDelegate::PushButtonDelegate(QObject *parent) : QItemDelegate(parent)
+PushButtonDelegate::PushButtonDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
 }
 

@@ -6,7 +6,7 @@ ClassMigration::ClassMigration()
 
 }
 
-/*private*/ QMap<QString, QString> ClassMigration::map = { // see ClassMigration properties
+/*private*/ /*static*/ QMap<QString, QString> ClassMigration::map = { // see ClassMigration properties
  {"jmri.configurexml.AbstractLightManagerConfigXML","jmri.managers.configurexml.AbstractLightManagerConfigXML"},
  {"jmri.configurexml.AbstractMemoryManagerConfigXML","jmri.managers.configurexml.AbstractMemoryManagerConfigXML"},
  {"jmri.configurexml.AbstractReporterManagerConfigXML","jmri.managers.configurexml.AbstractReporterManagerConfigXML"},
@@ -70,7 +70,6 @@ ClassMigration::ClassMigration()
  {"jmri.jmrit.display.layoutEditor.configurexml.LayoutRHXOverXml","jmri.jmrit.display.layoutEditor.configurexml.LayoutRHXOverViewXml"},
  {"jmri.jmrit.display.layoutEditor.configurexml.LayoutLHXOverXml","jmri.jmrit.display.layoutEditor.configurexml.LayoutLHXOverViewXml"},
  {"jmri.jmrit.display.layoutEditor.configurexml.LayoutDoubleXOverXml","jmri.jmrit.display.layoutEditor.configurexml.LayoutDoubleXOverViewXml"}
-
 };
 
 /*public*/ /*static*/ QString ClassMigration::migrateName(QString oldName){

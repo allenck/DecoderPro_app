@@ -48,7 +48,7 @@
             }
 
             if (_threadNames.contains(name)) {
-                throw new  IllegalArgumentException(tr("Thread name %s already exists").arg(name));
+                throw new  IllegalArgumentException(tr("Thread name %1 already exists").arg(name));
             }
             LogixNG_Thread* thread = new LogixNG_Thread(threadID, name);
             _threads.insert(threadID, thread);

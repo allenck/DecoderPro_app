@@ -533,6 +533,7 @@
      QObject* obj;
      if(id != 0)
      {
+      if(!log) log = LoggerFactory::getLogger("Class");
       log->debug(tr("Id found %1 typename: %2").arg(id).arg(QMetaType::typeName(id)));
    #if QT_VERSION < 0x050000
       obj = (QObject*)QMetaType::construct(id);

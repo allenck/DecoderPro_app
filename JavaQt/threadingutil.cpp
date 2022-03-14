@@ -1,5 +1,9 @@
 #include "threadingutil.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
+#include "runtimeexception.h"
+#include "reference.h"
+
 ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
 {
 
@@ -35,6 +39,26 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
     /*static*/ /*public*/ void ThreadingUtil::runOnLayout(/*@Nonnull*/ ThreadAction* ta) {
         runOnGUI(ta);
     }
+/**
+ * Run some layout-specific code before returning.
+ * This method catches and rethrows JmriException and RuntimeException.
+ * <p>
+ * Typical uses:
+ * <p> {@code
+ * ThreadingUtil.runOnLayout(() -> {
+ *     sensor.setState(value);
+ * });
+ * }
+ *
+ * @param ta What to run, usually as a lambda expression
+ * @throws JmriException when an exception occurs
+ * @throws RuntimeException when an exception occurs
+ */
+/*static*/ /*public*/ void ThreadingUtil::runOnLayoutWithJmriException(
+        /*@Nonnull*/ ThreadActionWithJmriException* ta)
+        /*throws JmriException, RuntimeException*/ {
+    runOnGUIWithJmriException(ta);
+}
 #if 0
     /**
      * Run some layout-specific code at some later point.
@@ -120,6 +144,61 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
 //                // should have been handled inside the ThreadAction
 //            }
 //        }
+    }
+    /**
+     * Run some GUI-specific code before returning.
+     * This method catches and rethrows JmriException and RuntimeException.
+     * <p>
+     * Typical uses:
+     * <p> {@code
+     * ThreadingUtil.runOnGUI(() -> {
+     *     mine.setVisible();
+     * });
+     * }
+     * <p>
+     * If an InterruptedException is encountered, it'll be deferred to the
+     * next blocking call via Thread.currentThread().interrupt()
+     *
+     * @param ta What to run, usually as a lambda expression
+     * @throws JmriException when an exception occurs
+     * @throws RuntimeException when an exception occurs
+     */
+    /*static*/ /*public*/ void ThreadingUtil::runOnGUIWithJmriException(
+            /*@Nonnull*/ ThreadActionWithJmriException* ta)
+            /*throws JmriException, RuntimeException*/ {
+
+        if (isGUIThread()) {
+            // run now
+            ta->run();
+        } else {
+            // dispatch to Swing
+//            warnLocks();
+            try {
+                Reference<JmriException*>* jmriException = new Reference<JmriException*>();
+                Reference<RuntimeException*>* runtimeException = new Reference<RuntimeException*>();
+//                SwingUtilities.invokeAndWait(() ->
+                {
+                    try {
+                        ta->run();
+                    } catch (JmriException* e) {
+                        jmriException->set(e);
+                    } catch (RuntimeException* e) {
+                        runtimeException->set(e);
+                    }
+                }//);
+                JmriException* je = jmriException->get();
+                if (je != nullptr) throw je;
+                RuntimeException* re = runtimeException->get();
+                if (re != nullptr) throw re;
+            } catch (InterruptedException* e) {
+                log->debug("Interrupted while running on GUI thread");
+                QThread::currentThread()->quit();
+            } catch (InvocationTargetException* e) {
+                log->error("Error while on GUI thread", e->getCause());
+                log->error("   Came from call to runOnGUI:", e);
+                // should have been handled inside the ThreadAction
+            }
+        }
     }
 
     /**
