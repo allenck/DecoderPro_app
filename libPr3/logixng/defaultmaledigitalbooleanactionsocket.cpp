@@ -18,6 +18,7 @@
     /*public*/  DefaultMaleDigitalBooleanActionSocket::DefaultMaleDigitalBooleanActionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
       /*@Nonnull*/ DigitalBooleanActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (Base*)action, parent) {
         //super(manager, action);
+     setObjectName("DefaultMaleDigitalBooleanActionSocket");
     }
 
     /** {@inheritDoc} */

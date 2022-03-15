@@ -107,7 +107,7 @@
     // Check if system name is valid
     if (this->validSystemNameFormat(((AbstractNamedBean*)action->self())->getSystemName()) != NameValidity::VALID) {
         log->warn("SystemName " + ((AbstractNamedBean*)action->self())->getSystemName() + " is not in the correct format");
-        throw new IllegalArgumentException(tr("System name is invalid: %1").arg(action->NamedBean::getSystemName()));
+        throw new IllegalArgumentException(tr("System name is invalid: %1").arg(((AbstractNamedBean*)action->self())->getSystemName()));
     }
 
     // Keep track of the last created auto system name
@@ -144,7 +144,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/  QString DefaultDigitalActionManager::getBeanTypeHandled(bool plural) const {
-    return plural ? tr("DigitalActions") : tr("DigitalAction");
+    return plural ? tr("Digital actions") : tr("Digital action");
 }
 
 /** {@inheritDoc} */

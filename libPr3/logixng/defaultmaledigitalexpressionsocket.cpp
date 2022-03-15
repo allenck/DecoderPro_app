@@ -15,6 +15,7 @@
     /*public*/ DefaultMaleDigitalExpressionSocket::DefaultMaleDigitalExpressionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
       /*@Nonnull*/ DigitalExpressionBean* expression, QObject *parent) :  AbstractMaleSocket(manager, expression, parent){
         //super(manager, expression);
+     setObjectName("DefaultMaleDigitalExpressionSocket");
     }
 
     /** {@inheritDoc} */

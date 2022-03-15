@@ -3,7 +3,7 @@
 #include "threadingutil.h"
 #include "loggingutil.h"
 #include "instancemanager.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "digitalfactory.h"
 #include "expressionfactory.h"
 #include "maledigitalexpressionsocket.h"
@@ -25,7 +25,7 @@
 
     /*public*/  DefaultDigitalExpressionManager::DefaultDigitalExpressionManager(QObject *parent) : AbstractBaseManager(parent){
      setObjectName("DefaultDigitalExpressionManager");
-        ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
+        ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (DigitalExpressionFactory expressionFactory : ServiceLoader.load(DigitalExpressionFactory.class)) {
 //            expressionFactory.init();
@@ -101,13 +101,13 @@
         }
 
         // Check if system name is valid
-        if (this->validSystemNameFormat(expression->NamedBean::getSystemName()) != NameValidity::VALID) {
-            log->warn("SystemName " + expression->NamedBean::getSystemName() + " is not in the correct format");
-            throw new IllegalArgumentException("System name is invalid: "+expression->NamedBean::getSystemName());
+        if (this->validSystemNameFormat(((AbstractNamedBean*)expression->self())->getSystemName()) != NameValidity::VALID) {
+            log->warn("SystemName " + ((AbstractNamedBean*)expression->self())->getSystemName() + " is not in the correct format");
+            throw new IllegalArgumentException("System name is invalid: "+((AbstractNamedBean*)expression->self())->getSystemName());
         }
 
         // Keep track of the last created auto system name
-        updateAutoNumber(expression->NamedBean::getSystemName());
+        updateAutoNumber(((AbstractNamedBean*)expression->self())->getSystemName());
 
         // save in the maps
         MaleDigitalExpressionSocket* maleSocket = createMaleExpressionSocket(expression);

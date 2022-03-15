@@ -131,40 +131,40 @@ equals(ENABLE_LOGIXNG, "Y" ) {
    message("libPr3: LogixNG disabled")
 }
 SOURCES += \
- Signal/abstractmrnodetrafficcontroller.cpp \
- Signal/abstractnode.cpp \
- Signal/acelaaddress.cpp \
- Signal/acelaconnectiontypelist.cpp \
- Signal/acelanode.cpp \
- Signal/acelareply.cpp \
- Signal/acelasignalhead.cpp \
- Signal/acelasystemconnectionmemo.cpp \
- Signal/acelatrafficcontroller.cpp \
- Signal/lsdecsignalhead.cpp \
- Signal/lsdecsignalheadxml.cpp \
- Signal/mergsd2signalhead.cpp \
- Signal/mergsd2signalheadxml.cpp \
- #Signal/serialsignalhead.cpp \
- abstractanalogiomanager.cpp \
- abstractprovidingproxymanager.cpp \
- abstractproxymanager.cpp \
- acelamessage.cpp \
- acelasignalheadxml.cpp \
- addeditsinglelightcontrolframe.cpp \
- defaultlightcontrol.cpp \
-# direct/defaultthrottle.cpp \
-# direct/defaultthrottlemanager.cpp \
-# direct/directcomponentfactory.cpp \
-# direct/directmenu.cpp \
-# direct/directsystemconnectionmemo.cpp \
-# direct/portcontroller.cpp \
-# direct/serialdriveradapter.cpp \
-# direct/trafficcontroller.cpp \
- internalanalogiomanager.cpp \
- lightcontrolpane.cpp \
- lightcontroltablemodel.cpp \
- lighteditaction.cpp \
- lightintensitypane.cpp \
+    Signal/abstractmrnodetrafficcontroller.cpp \
+    Signal/abstractnode.cpp \
+    Signal/acelaaddress.cpp \
+    Signal/acelaconnectiontypelist.cpp \
+    Signal/acelanode.cpp \
+    Signal/acelareply.cpp \
+    Signal/acelasignalhead.cpp \
+    Signal/acelasystemconnectionmemo.cpp \
+    Signal/acelatrafficcontroller.cpp \
+    Signal/lsdecsignalhead.cpp \
+    Signal/lsdecsignalheadxml.cpp \
+    Signal/mergsd2signalhead.cpp \
+    Signal/mergsd2signalheadxml.cpp \
+    #Signal/serialsignalhead.cpp \
+    abstractanalogiomanager.cpp \
+    abstractprovidingproxymanager.cpp \
+    abstractproxymanager.cpp \
+    acelamessage.cpp \
+    acelasignalheadxml.cpp \
+    addeditsinglelightcontrolframe.cpp \
+    defaultlightcontrol.cpp \
+   # direct/defaultthrottle.cpp \
+   # direct/defaultthrottlemanager.cpp \
+   # direct/directcomponentfactory.cpp \
+   # direct/directmenu.cpp \
+   # direct/directsystemconnectionmemo.cpp \
+   # direct/portcontroller.cpp \
+   # direct/serialdriveradapter.cpp \
+   # direct/trafficcontroller.cpp \
+    internalanalogiomanager.cpp \
+    lightcontrolpane.cpp \
+    lightcontroltablemodel.cpp \
+    lighteditaction.cpp \
+    lightintensitypane.cpp \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
@@ -188,7 +188,7 @@ SOURCES += \
     slotmanager.cpp \
     abstractprogrammer.cpp \
     loconetslot.cpp \
- sprog/sprogserialdriveradapter.cpp \
+    sprog/sprogserialdriveradapter.cpp \
     systemconnectionmemomanager.cpp \
     loconetsystemconnectionmemo.cpp \
     abstractpowermanager.cpp \
@@ -1138,6 +1138,8 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/and.cpp \
+    logixng/expressionmemory.cpp \
     logixng/actionmemory.cpp \
     logixng/abstractanalogactionswing.cpp \
     logixng/analogactionlightintensity.cpp \
@@ -2475,6 +2477,8 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/and.h \
+    logixng/expressionmemory.h \
     logixng/actionmemory.h \
     logixng/importconditional.h \
     logixng/logixnginitializationtable.h \

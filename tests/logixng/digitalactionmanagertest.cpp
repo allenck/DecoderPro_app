@@ -56,7 +56,7 @@
     //@Test
     /*public*/  void DigitalActionManagerTest::testInstance() {
         Assert::assertNotNull("instance() is not null", DefaultDigitalActionManager::instance(), __FILE__, __LINE__);
-        JUnitAppender::assertWarnMessage("instance() called on wrong thread");
+        JUnitAppender::assertWarnMessage("instance() called on wrong thread", __FILE__, __LINE__);
     }
 
     // The minimal setup for log4J

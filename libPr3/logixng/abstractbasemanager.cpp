@@ -88,6 +88,7 @@
         // not the male socket that's registered in the manager. To resolve
         // this, we search for the registered bean with the system name and
         // then deregister the bean we have found.
+ QString sn = s->getSystemName();
         NamedBean*bean = AbstractManager::getBySystemName(s->getSystemName());
         if (bean == nullptr) {
             // This should never happen.

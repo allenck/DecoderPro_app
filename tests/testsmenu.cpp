@@ -110,6 +110,8 @@
 #include "logixng/defaultfemalestringactionsockettestaction.h"
 #include "logixng/logixng_managertestaction.h"
 #include "logixng/digitalactionmanagertestaction.h"
+#include "logixng/digitalexpressionmanagertestaction.h"
+#include "logixng/defaultmaledigitalexpressionsockettestaction.h"
 
 #endif
 
@@ -296,6 +298,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));
     logixNGManagerMenu->addAction(new DefaultLogixNGManagerTestAction(this));
     logixNGManagerMenu->addAction(new DigitalActionManagerTestAction(this));
+    logixNGManagerMenu->addAction(new DigitalExpressionManagerTestAction(this));
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleAnalogActionSocketTestAction(this));
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleAnalogExpressionSocketTestAction(this));
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleDigitalActionSocketTestAction(this));
@@ -307,6 +310,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMaleSocketMenu->addAction(new DefaultMaleAnalogActionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleAnalogExpressionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleDigitalActionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleDigitalExpressionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleStringActionSocketTestAction(this));
     logixNGMenu->addAction(new SymbolTableTestAction(this));
 

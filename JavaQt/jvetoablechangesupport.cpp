@@ -81,18 +81,20 @@
         if (listener == nullptr) {
             return;
         }
-//        if (qobject_cast<VetoableChangeListenerProxy*>(listener->self()) != nullptr) {
+#if 1
+//        if (static_cast<VetoableChangeListenerProxy*>(listener->self()) != nullptr) {
 //            VetoableChangeListenerProxy* proxy =
 //                    (VetoableChangeListenerProxy*)listener;
 //            // Call two argument add method.
 //            addVetoableChangeListener(proxy->getPropertyName(),
 //                                      proxy->getListener());
 //        } else
-//        {
-//            this->map->add("", listener);
-//        }
-//        connect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));
-    }
+        {
+            this->map->add("", listener);
+        }
+//        connect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener->self(), SLOT(vetoableChange(PropertyChangeEvent*)));
+#endif
+}
 
     /**
      * Remove a VetoableChangeListener from the listener list.
@@ -109,13 +111,14 @@
         if (listener == nullptr) {
             return;
         }
-        if ((VetoableChangeListenerProxy*)(listener) != nullptr) {
-            VetoableChangeListenerProxy* proxy =
-                    (VetoableChangeListenerProxy*)listener;
-            // Call two argument remove method.
-            removeVetoableChangeListener(proxy->getPropertyName(),
-                                         proxy->getListener());
-        } else {
+//        if ((VetoableChangeListenerProxy*)(listener) != nullptr) {
+//            VetoableChangeListenerProxy* proxy =
+//                    (VetoableChangeListenerProxy*)listener;
+//            // Call two argument remove method.
+//            removeVetoableChangeListener(proxy->getPropertyName(),
+//                                         proxy->getListener());
+//        } else
+        {
             this->map->remove("", listener);
         }
 //        disconnect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));

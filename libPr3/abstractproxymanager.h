@@ -9,10 +9,10 @@
 #include "proxymanager.h"
 
 
-class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport, public ProxyManager, public PropertyChangeListener, public Manager::ManagerDataListener
+class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport, public ProxyManager, public PropertyChangeListener, public Manager::ManagerDataListener, public VetoableChangeListener
 {
     Q_OBJECT
-    Q_INTERFACES( ProxyManager PropertyChangeListener Manager::ManagerDataListener )
+    Q_INTERFACES( ProxyManager PropertyChangeListener Manager::ManagerDataListener VetoableChangeListener)
  public:
     AbstractProxyManager(QObject* parent = nullptr );
     /*public*/  QList<AbstractManager/*<E>*/*> getManagerList() override;

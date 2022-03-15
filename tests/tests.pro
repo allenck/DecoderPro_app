@@ -286,6 +286,10 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/defaultmaledigitalexpressionsockettest.cpp \
+    logixng/defaultmaledigitalexpressionsockettestaction.cpp \
+    logixng/digitalexpressionmanagertest.cpp \
+    logixng/digitalexpressionmanagertestaction.cpp \
     logixng/defaultfemalestringactionsockettest.cpp \
     logixng/defaultfemalestringactionsockettestaction.cpp \
     logixng/digitalactionmanagertest.cpp \
@@ -569,6 +573,10 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/defaultmaledigitalexpressionsockettest.h \
+    logixng/defaultmaledigitalexpressionsockettestaction.h \
+    logixng/digitalexpressionmanagertest.h \
+    logixng/digitalexpressionmanagertestaction.h \
     logixng/defaultfemalestringactionsockettest.h \
     logixng/defaultfemalestringactionsockettestaction.h \
     logixng/digitalactionmanagertest.h \
