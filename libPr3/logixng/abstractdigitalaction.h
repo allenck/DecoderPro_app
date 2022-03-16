@@ -9,7 +9,7 @@ class AbstractDigitalAction : public AbstractBase, public DigitalActionBean
   Q_OBJECT
   Q_INTERFACES(DigitalActionBean)
  public:
-  explicit AbstractDigitalAction( QObject *parent = nullptr) : AbstractBase(parent) {}
+  AbstractDigitalAction( QObject *parent = nullptr) : AbstractBase(parent) {}
   AbstractDigitalAction(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getParent() const override;
   /*public*/  void setParent(Base* parent)override;

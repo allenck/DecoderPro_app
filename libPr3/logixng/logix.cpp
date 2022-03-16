@@ -17,7 +17,7 @@
 
 /*public*/  Logix::Logix(QString sys, QString user, QObject* parent) : AbstractDigitalAction(sys, user, parent) {
     //super(sys, user);
- setObjectName("Logix");
+     setObjectName("Logix");
     _expressionSocket = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))
             ->createFemaleSocket(this, this, "E");
     _actionSocket = ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))

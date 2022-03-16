@@ -152,7 +152,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString  DefaultDigitalExpressionManager::getBeanTypeHandled(bool plural) const {
-        return plural ? tr("DigitalExpressions") : tr("DigitalExpression");
+        return plural ? tr("Digital expressions") : tr("Digital expression");
     }
 
     /** {@inheritDoc} */

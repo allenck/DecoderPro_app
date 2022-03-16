@@ -19,7 +19,7 @@
 
     //@Test
     /*public*/  void DigitalActionManagerTest::testRegisterAction() {
-        MyAction02* myAction = new MyAction02(_m->getSystemNamePrefix()+"BadSystemName");
+        MyAction03* myAction = new MyAction03(_m->getSystemNamePrefix()+"BadSystemName");
 
         bool hasThrown = false;
         try {

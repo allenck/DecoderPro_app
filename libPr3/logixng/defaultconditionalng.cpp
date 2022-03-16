@@ -299,7 +299,7 @@
                     } else {
                         log->error("digital action is not found: " + _socketSystemName);
                     }
-                } catch (SocketAlreadyConnectedException ex) {
+                } catch (SocketAlreadyConnectedException* ex) {
                     // This shouldn't happen and is a runtime error if it does.
                     throw new RuntimeException("socket is already connected");
                 }

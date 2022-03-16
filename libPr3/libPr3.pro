@@ -1138,6 +1138,9 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/logix.cpp \
+    logixng/expressionsensor.cpp \
+    logixng/expressionsensorswing.cpp \
     logixng/and.cpp \
     logixng/expressionmemory.cpp \
     logixng/actionmemory.cpp \
@@ -2477,6 +2480,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/logix.h \
+    logixng/expressionsensor.h \
+    logixng/expressionsensorswing.h \
     logixng/and.h \
     logixng/expressionmemory.h \
     logixng/actionmemory.h \

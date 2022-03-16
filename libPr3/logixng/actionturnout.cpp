@@ -1,6 +1,12 @@
 #include "actionturnout.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
+#include "defaultdigitalactionmanager.h"
+#include "referenceutil.h"
+#include "recursivedescentparser.h"
+#include "vptr.h"
+#include "typeconversionutil.h"
+#include "conditionalng.h"
 
 /**
  * This action sets the state of a turnout.
@@ -13,180 +19,181 @@
     /*public*/  ActionTurnout::ActionTurnout(QString sys, QString user, QObject *parent) : AbstractDigitalAction(sys, user, parent)
             /*throws BadUserNameException, BadSystemNameException*/ {
         //super(sys, user);
-    }
-#if 0
-    @Override
-    /*public*/  Base getDeepCopy(Map<String, String> systemNames, Map<String, String> userNames) throws ParserException {
-        DigitalActionManager manager = InstanceManager.getDefault(DigitalActionManager.class);
-        String sysName = systemNames.get(getSystemName());
-        String userName = userNames.get(getSystemName());
-        if (sysName == null) sysName = manager.getAutoSystemName();
-        ActionTurnout copy = new ActionTurnout(sysName, userName);
-        copy.setComment(getComment());
-        if (_turnoutHandle != null) copy.setTurnout(_turnoutHandle);
-        copy.setBeanState(_turnoutState);
-        copy.setAddressing(_addressing);
-        copy.setFormula(_formula);
-        copy.setLocalVariable(_localVariable);
-        copy.setReference(_reference);
-        copy.setStateAddressing(_stateAddressing);
-        copy.setStateFormula(_stateFormula);
-        copy.setStateLocalVariable(_stateLocalVariable);
-        copy.setStateReference(_stateReference);
-        return manager.registerAction(copy);
+     setObjectName("ActionTurnout");
     }
 
-    /*public*/  void setTurnout(@Nonnull String turnoutName) {
+    //@Override
+    /*public*/  Base* ActionTurnout::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/ {
+        DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = manager->getAutoSystemName();
+        ActionTurnout* copy = new ActionTurnout(sysName, userName);
+        copy->setComment(getComment());
+        if (_turnoutHandle != nullptr) copy->setTurnout(_turnoutHandle);
+        copy->setBeanState(_turnoutState);
+        copy->setAddressing(_addressing);
+        copy->setFormula(_formula);
+        copy->setLocalVariable(_localVariable);
+        copy->setReference(_reference);
+        copy->setStateAddressing(_stateAddressing);
+        copy->setStateFormula(_stateFormula);
+        copy->setStateLocalVariable(_stateLocalVariable);
+        copy->setStateReference(_stateReference);
+        return manager->registerAction(copy);
+    }
+
+    /*public*/  void ActionTurnout::setTurnout(/*@Nonnull*/ QString turnoutName) {
         assertListenersAreNotRegistered(log, "setTurnout");
-        Turnout turnout = InstanceManager.getDefault(TurnoutManager.class).getTurnout(turnoutName);
-        if (turnout != null) {
+        Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getTurnout(turnoutName);
+        if (turnout != nullptr) {
             setTurnout(turnout);
         } else {
             removeTurnout();
-            log.error("turnout \"{}\" is not found", turnoutName);
+            log->error(tr("turnout \"%1\" is not found").arg(turnoutName));
         }
     }
 
-    /*public*/  void setTurnout(@Nonnull NamedBeanHandle<Turnout> handle) {
+    /*public*/  void ActionTurnout::setTurnout(/*@Nonnull*/ NamedBeanHandle<Turnout*>* handle) {
         assertListenersAreNotRegistered(log, "setTurnout");
         _turnoutHandle = handle;
-        InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
+        InstanceManager::turnoutManagerInstance()->addVetoableChangeListener(this);
     }
 
-    /*public*/  void setTurnout(@Nonnull Turnout turnout) {
+    /*public*/  void ActionTurnout::setTurnout(/*@Nonnull*/ Turnout* turnout) {
         assertListenersAreNotRegistered(log, "setTurnout");
-        setTurnout(InstanceManager.getDefault(NamedBeanHandleManager.class)
-                .getNamedBeanHandle(turnout.getDisplayName(), turnout));
+        setTurnout(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
+                ->getNamedBeanHandle(turnout->getDisplayName(), turnout));
     }
 
-    /*public*/  void removeTurnout() {
+    /*public*/  void ActionTurnout::removeTurnout() {
         assertListenersAreNotRegistered(log, "setTurnout");
-        if (_turnoutHandle != null) {
-            InstanceManager.turnoutManagerInstance().removeVetoableChangeListener(this);
-            _turnoutHandle = null;
+        if (_turnoutHandle != nullptr) {
+            InstanceManager::turnoutManagerInstance()->removeVetoableChangeListener(this);
+            _turnoutHandle = nullptr;
         }
     }
 
-    /*public*/  NamedBeanHandle<Turnout> getTurnout() {
+    /*public*/  NamedBeanHandle<Turnout*>* ActionTurnout::getTurnout() {
         return _turnoutHandle;
     }
 
-    /*public*/  void setAddressing(NamedBeanAddressing addressing) throws ParserException {
+    /*public*/  void ActionTurnout::setAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/ {
         _addressing = addressing;
         parseFormula();
     }
 
-    /*public*/  NamedBeanAddressing getAddressing() {
+    /*public*/  NamedBeanAddressing::TYPE ActionTurnout::getAddressing() {
         return _addressing;
     }
 
-    /*public*/  void setReference(@Nonnull String reference) {
-        if ((! reference.isEmpty()) && (! ReferenceUtil.isReference(reference))) {
+    /*public*/  void ActionTurnout::setReference(/*@Nonnull*/ QString reference) {
+        if ((! reference.isEmpty()) && (! ReferenceUtil::isReference(reference))) {
             throw new IllegalArgumentException("The reference \"" + reference + "\" is not a valid reference");
         }
         _reference = reference;
     }
 
-    /*public*/  String getReference() {
+    /*public*/  QString ActionTurnout::getReference() {
         return _reference;
     }
 
-    /*public*/  void setLocalVariable(@Nonnull String localVariable) {
+    /*public*/  void ActionTurnout::setLocalVariable(/*@Nonnull*/ QString localVariable) {
         _localVariable = localVariable;
     }
 
-    /*public*/  String getLocalVariable() {
+    /*public*/  QString ActionTurnout::getLocalVariable() {
         return _localVariable;
     }
 
-    /*public*/  void setFormula(@Nonnull String formula) throws ParserException {
+    /*public*/  void ActionTurnout::setFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/ {
         _formula = formula;
         parseFormula();
     }
 
-    /*public*/  String getFormula() {
+    /*public*/  QString ActionTurnout::getFormula() {
         return _formula;
     }
 
-    /*private*/ void parseFormula() throws ParserException {
-        if (_addressing == NamedBeanAddressing.Formula) {
-            Map<String, Variable> variables = new HashMap<>();
+    /*private*/ void ActionTurnout::parseFormula() /*throws ParserException*/ {
+        if (_addressing == NamedBeanAddressing::Formula) {
+            QMap<QString, Variable*> variables = QMap<QString, Variable*>();
 
-            RecursiveDescentParser parser = new RecursiveDescentParser(variables);
-            _expressionNode = parser.parseExpression(_formula);
+            RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
+            _expressionNode = parser->parseExpression(_formula);
         } else {
-            _expressionNode = null;
+            _expressionNode = nullptr;
         }
     }
 
-    /*public*/  void setStateAddressing(NamedBeanAddressing addressing) throws ParserException {
+    /*public*/  void ActionTurnout::setStateAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/ {
         _stateAddressing = addressing;
         parseStateFormula();
     }
 
-    /*public*/  NamedBeanAddressing getStateAddressing() {
+    /*public*/  NamedBeanAddressing::TYPE ActionTurnout::getStateAddressing() {
         return _stateAddressing;
     }
 
-    /*public*/  void setBeanState(TurnoutState state) {
+    /*public*/  void ActionTurnout::setBeanState(TurnoutState::STATE state) {
         _turnoutState = state;
     }
 
-    /*public*/  TurnoutState getBeanState() {
+    /*public*/  ActionTurnout::TurnoutState::STATE ActionTurnout::getBeanState() {
         return _turnoutState;
     }
 
-    /*public*/  void setStateReference(@Nonnull String reference) {
-        if ((! reference.isEmpty()) && (! ReferenceUtil.isReference(reference))) {
+    /*public*/  void ActionTurnout::setStateReference(/*@Nonnull*/ QString reference) {
+        if ((! reference.isEmpty()) && (! ReferenceUtil::isReference(reference))) {
             throw new IllegalArgumentException("The reference \"" + reference + "\" is not a valid reference");
         }
         _stateReference = reference;
     }
 
-    /*public*/  String getStateReference() {
+    /*public*/  QString ActionTurnout::getStateReference() {
         return _stateReference;
     }
 
-    /*public*/  void setStateLocalVariable(@Nonnull String localVariable) {
+    /*public*/  void ActionTurnout::setStateLocalVariable(/*@Nonnull*/ QString localVariable) {
         _stateLocalVariable = localVariable;
     }
 
-    /*public*/  String getStateLocalVariable() {
+    /*public*/  QString ActionTurnout::getStateLocalVariable() {
         return _stateLocalVariable;
     }
 
-    /*public*/  void setStateFormula(@Nonnull String formula) throws ParserException {
+    /*public*/  void ActionTurnout::setStateFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/ {
         _stateFormula = formula;
         parseStateFormula();
     }
 
-    /*public*/  String getStateFormula() {
+    /*public*/  QString ActionTurnout::getStateFormula() {
         return _stateFormula;
     }
 
-    /*private*/ void parseStateFormula() throws ParserException {
-        if (_stateAddressing == NamedBeanAddressing.Formula) {
-            Map<String, Variable> variables = new HashMap<>();
+    /*private*/ void ActionTurnout::parseStateFormula() /*throws ParserException*/ {
+        if (_stateAddressing == NamedBeanAddressing::Formula) {
+            QMap<QString, Variable*> variables = QMap<QString, Variable*>();
 
-            RecursiveDescentParser parser = new RecursiveDescentParser(variables);
-            _stateExpressionNode = parser.parseExpression(_stateFormula);
+            RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
+            _stateExpressionNode = parser->parseExpression(_stateFormula);
         } else {
-            _stateExpressionNode = null;
+            _stateExpressionNode = nullptr;
         }
     }
 
-    @Override
-    /*public*/  void vetoableChange(java.beans.PropertyChangeEvent evt) throws java.beans.PropertyVetoException {
-        if ("CanDelete".equals(evt.getPropertyName())) { // No I18N
-            if (evt.getOldValue() instanceof Turnout) {
-                if (evt.getOldValue().equals(getTurnout().getBean())) {
-                    PropertyChangeEvent e = new PropertyChangeEvent(this, "DoNotDelete", null, null);
-                    throw new PropertyVetoException(Bundle.getMessage("Turnout_TurnoutInUseTurnoutActionVeto", getDisplayName()), e); // NOI18N
+    //@Override
+    /*public*/  void ActionTurnout::vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/ {
+        if ("CanDelete" == (evt->getPropertyName())) { // No I18N
+            if (VPtr<Turnout>::asPtr(evt->getOldValue())) {
+                if (VPtr<Turnout>::asPtr(evt->getOldValue())->equals(getTurnout()->getBean())) {
+                    PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                    throw new PropertyVetoException(tr("Turnout is in use by Turnout action \"%1\"").arg(AbstractNamedBean::getDisplayName()), e); // NOI18N
                 }
             }
-        } else if ("DoDelete".equals(evt.getPropertyName())) { // No I18N
-            if (evt.getOldValue() instanceof Turnout) {
-                if (evt.getOldValue().equals(getTurnout().getBean())) {
+        } else if ("DoDelete" ==(evt->getPropertyName())) { // No I18N
+            if (VPtr<Turnout>::asPtr(evt->getOldValue())) {
+                if (VPtr<Turnout>::asPtr(evt->getOldValue())->equals(getTurnout()->getBean())) {
                     removeTurnout();
                 }
             }
@@ -194,251 +201,207 @@
     }
 
     /** {@inheritDoc} */
-    @Override
-    /*public*/  Category getCategory() {
-        return Category.ITEM;
+    //@Override
+    /*public*/  Category* ActionTurnout::getCategory() {
+        return Category::ITEM;
     }
 
-    /*private*/ String getNewState() throws JmriException {
+    /*private*/ QString ActionTurnout::getNewState() /*throws JmriException*/ {
 
         switch (_stateAddressing) {
-            case Reference:
-                return ReferenceUtil.getReference(
-                        getConditionalNG().getSymbolTable(), _stateReference);
+            case NamedBeanAddressing::Reference:
+                return ReferenceUtil::getReference(
+                        getConditionalNG()->getSymbolTable(), _stateReference);
 
-            case LocalVariable:
-                SymbolTable symbolTable = getConditionalNG().getSymbolTable();
+            case NamedBeanAddressing::LocalVariable:
+            {
+                SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
                 return TypeConversionUtil
-                        .convertToString(symbolTable.getValue(_stateLocalVariable), false);
-
-            case Formula:
-                return _stateExpressionNode != null
-                        ? TypeConversionUtil.convertToString(
-                                _stateExpressionNode.calculate(
-                                        getConditionalNG().getSymbolTable()), false)
-                        : null;
+                        ::convertToString(symbolTable->getValue(_stateLocalVariable), false);
+            }
+            case NamedBeanAddressing::Formula:
+                return _stateExpressionNode != nullptr
+                        ? TypeConversionUtil::convertToString(
+                                _stateExpressionNode->calculate(
+                                        getConditionalNG()->getSymbolTable()), false)
+                        : nullptr;
 
             default:
-                throw new IllegalArgumentException("invalid _addressing state: " + _stateAddressing.name());
+                throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_stateAddressing));
         }
     }
 
     /** {@inheritDoc} */
-    @Override
-    /*public*/  void execute() throws JmriException {
-        Turnout turnout;
+    //@Override
+    /*public*/  void ActionTurnout::execute() /*throws JmriException*/ {
+        Turnout* turnout;
 
 //        System.out.format("ActionTurnout.execute: %s%n", getLongDescription());
 
         switch (_addressing) {
-            case Direct:
-                turnout = _turnoutHandle != null ? _turnoutHandle.getBean() : null;
+            case NamedBeanAddressing::Direct:
+                turnout = _turnoutHandle != nullptr ? _turnoutHandle->getBean() : nullptr;
                 break;
 
-            case Reference:
-                String ref = ReferenceUtil.getReference(
-                        getConditionalNG().getSymbolTable(), _reference);
-                turnout = InstanceManager.getDefault(TurnoutManager.class)
-                        .getNamedBean(ref);
+            case NamedBeanAddressing::Reference:
+            {
+                QString ref = ReferenceUtil::getReference(
+                        getConditionalNG()->getSymbolTable(), _reference);
+                turnout = (Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))
+                        ->AbstractProxyManager::getNamedBean(ref)->self();
                 break;
-
-            case LocalVariable:
-                SymbolTable symbolTable = getConditionalNG().getSymbolTable();
-                turnout = InstanceManager.getDefault(TurnoutManager.class)
-                        .getNamedBean(TypeConversionUtil
-                                .convertToString(symbolTable.getValue(_localVariable), false));
+            }
+            case NamedBeanAddressing::LocalVariable:
+            {
+                SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
+                turnout = (Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))
+                        ->AbstractProxyManager::getNamedBean(TypeConversionUtil
+                                ::convertToString(symbolTable->getValue(_localVariable), false))->self();
                 break;
-
-            case Formula:
-                turnout = _expressionNode != null ?
-                        InstanceManager.getDefault(TurnoutManager.class)
-                                .getNamedBean(TypeConversionUtil
-                                        .convertToString(_expressionNode.calculate(
-                                                getConditionalNG().getSymbolTable()), false))
-                        : null;
+            }
+            case NamedBeanAddressing::Formula:
+                turnout = _expressionNode != nullptr ?
+                        (Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))
+                                ->AbstractProxyManager::getNamedBean(TypeConversionUtil
+                                        ::convertToString(_expressionNode->calculate(
+                                                getConditionalNG()->getSymbolTable()), false))->self()
+                        : nullptr;
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _addressing state: " + _addressing.name());
+                throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_addressing));
         }
 
 //        System.out.format("ActionTurnout.execute: turnout: %s%n", turnout);
 
-        if (turnout == null) {
+        if (turnout == nullptr) {
 //            log.error("turnout is null");
             return;
         }
 
-        String name = (_stateAddressing != NamedBeanAddressing.Direct)
-                ? getNewState() : null;
+        QString name = (_stateAddressing != NamedBeanAddressing::Direct)
+                ? getNewState() : nullptr;
 
-        TurnoutState state;
-        if ((_stateAddressing == NamedBeanAddressing.Direct)) {
+        TurnoutState::STATE state;
+        if ((_stateAddressing == NamedBeanAddressing::Direct)) {
             state = _turnoutState;
         } else {
-            state = TurnoutState.valueOf(name);
+            state = TurnoutState::valueOf(name);
         }
 
-        ThreadingUtil.runOnLayoutWithJmriException(() -> {
-            if (state == TurnoutState.Toggle) {
-                if (turnout.getKnownState() == Turnout.CLOSED) {
-                    turnout.setCommandedState(Turnout.THROWN);
-                } else {
-                    turnout.setCommandedState(Turnout.CLOSED);
-                }
-            } else {
-                turnout.setCommandedState(state.getID());
-            }
-        });
+//        ThreadingUtil::runOnLayoutWithJmriException(() -> {
+//            if (state == TurnoutState.Toggle) {
+//                if (turnout.getKnownState() == Turnout.CLOSED) {
+//                    turnout.setCommandedState(Turnout.THROWN);
+//                } else {
+//                    turnout.setCommandedState(Turnout.CLOSED);
+//                }
+//            } else {
+//                turnout.setCommandedState(state.getID());
+//            }
+//        });
+        ThreadingUtil::runOnLayoutWithJmriException(new ToggleTurnout(turnout, state));
     }
 
-    @Override
-    /*public*/  FemaleSocket getChild(int index) throws IllegalArgumentException, UnsupportedOperationException {
+    //@Override
+    /*public*/  FemaleSocket* ActionTurnout::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
         throw new UnsupportedOperationException("Not supported.");
     }
 
-    @Override
-    /*public*/  int getChildCount() {
+    //@Override
+    /*public*/  int ActionTurnout::getChildCount() {
         return 0;
     }
 
-    @Override
-    /*public*/  String getShortDescription(Locale locale) {
-        return Bundle.getMessage(locale, "Turnout_Short");
+    //@Override
+    /*public*/  QString ActionTurnout::getShortDescription(QLocale locale) {
+        return tr(/*locale,*/ "Turnout");
     }
 
-    @Override
-    /*public*/  String getLongDescription(Locale locale) {
-        String namedBean;
-        String state;
+    //@Override
+    /*public*/  QString ActionTurnout::getLongDescription(QLocale locale) {
+        QString namedBean;
+        QString state;
 
         switch (_addressing) {
-            case Direct:
-                String turnoutName;
-                if (_turnoutHandle != null) {
-                    turnoutName = _turnoutHandle.getBean().getDisplayName();
+            case NamedBeanAddressing::Direct:
+            {
+                QString turnoutName;
+                if (_turnoutHandle != nullptr) {
+                    turnoutName = _turnoutHandle->getBean()->getDisplayName();
                 } else {
-                    turnoutName = Bundle.getMessage(locale, "BeanNotSelected");
+                    turnoutName = tr(/*locale, */"''");
                 }
-                namedBean = Bundle.getMessage(locale, "AddressByDirect", turnoutName);
+                namedBean = tr(/*locale, */"%1").arg(turnoutName);
+                break;
+            }
+            case NamedBeanAddressing::Reference:
+                namedBean = tr(/*locale,*/ "by reference %1").arg(_reference);
                 break;
 
-            case Reference:
-                namedBean = Bundle.getMessage(locale, "AddressByReference", _reference);
+            case NamedBeanAddressing::LocalVariable:
+                namedBean = tr(/*locale,*/ "by local variable %1").arg(_localVariable);
                 break;
 
-            case LocalVariable:
-                namedBean = Bundle.getMessage(locale, "AddressByLocalVariable", _localVariable);
-                break;
-
-            case Formula:
-                namedBean = Bundle.getMessage(locale, "AddressByFormula", _formula);
+            case NamedBeanAddressing::Formula:
+                namedBean = tr(/*locale, */"by formula %1").arg(_formula);
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _addressing state: " + _addressing.name());
+                throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_addressing));
         }
 
         switch (_stateAddressing) {
-            case Direct:
-                state = Bundle.getMessage(locale, "AddressByDirect", _turnoutState._text);
+            case NamedBeanAddressing::Direct:
+                state = tr(/*locale,*/ "%1").arg(TurnoutState::toString(_turnoutState));
                 break;
 
-            case Reference:
-                state = Bundle.getMessage(locale, "AddressByReference", _stateReference);
+            case NamedBeanAddressing::Reference:
+                state = tr(/*locale,*/ "by reference %1").arg(_stateReference);
                 break;
 
-            case LocalVariable:
-                state = Bundle.getMessage(locale, "AddressByLocalVariable", _stateLocalVariable);
+            case NamedBeanAddressing::LocalVariable:
+                state = tr(/*locale,*/ "by local variable %1").arg(_stateLocalVariable);
                 break;
 
-            case Formula:
-                state = Bundle.getMessage(locale, "AddressByFormula", _stateFormula);
+            case NamedBeanAddressing::Formula:
+                state = tr(/*locale,*/ "by formula %1").arg(_stateFormula);
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _stateAddressing state: " + _stateAddressing.name());
+                throw new IllegalArgumentException("invalid _stateAddressing state: " + NamedBeanAddressing::toString(_stateAddressing));
         }
 
-        return Bundle.getMessage(locale, "Turnout_Long", namedBean, state);
+        return tr(/*locale,*/ "Set turnout %1 to state %2").arg(namedBean, state);
     }
 
     /** {@inheritDoc} */
-    @Override
-    /*public*/  void setup() {
+    //@Override
+    /*public*/  void ActionTurnout::setup() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
-    @Override
-    /*public*/  void registerListenersForThisClass() {
+    //@Override
+    /*public*/  void ActionTurnout::registerListenersForThisClass() {
     }
 
     /** {@inheritDoc} */
-    @Override
-    /*public*/  void unregisterListenersForThisClass() {
+    //@Override
+    /*public*/  void ActionTurnout::unregisterListenersForThisClass() {
     }
 
     /** {@inheritDoc} */
-    @Override
-    /*public*/  void disposeMe() {
+    //@Override
+    /*public*/  void ActionTurnout::disposeMe() {
     }
 
 
     // This constant is only used internally in TurnoutState but must be outside
     // the enum.
-    /*private*/ static /*final*/ int TOGGLE_ID = -1;
-#endif
-#if 0
-    /*public*/  enum TurnoutState {
-        Closed(Turnout.CLOSED, InstanceManager.getDefault(TurnoutManager.class).getClosedText()),
-        Thrown(Turnout.THROWN, InstanceManager.getDefault(TurnoutManager.class).getThrownText()),
-        Toggle(TOGGLE_ID, Bundle.getMessage("TurnoutToggleStatus"));
+    /*private*/ /*static*/ /*final*/ int ActionTurnout::TOGGLE_ID = -1;
 
-        /*private*/ /*final*/ int _id;
-        /*private*/ /*final*/ String _text;
 
-        /*private*/ TurnoutState(int id, String text) {
-            this._id = id;
-            this._text = text;
-        }
-
-        static /*public*/  TurnoutState get(int id) {
-            switch (id) {
-                case Turnout.CLOSED:
-                    return Closed;
-
-                case Turnout.THROWN:
-                    return Thrown;
-
-                case TOGGLE_ID:
-                    return Toggle;
-
-                default:
-                    throw new IllegalArgumentException("invalid turnout state");
-            }
-        }
-
-        /*public*/  int getID() {
-            return _id;
-        }
-
-        @Override
-        /*public*/  String toString() {
-            return _text;
-        }
-
-    }
-
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/  void getUsageDetail(int level, NamedBean bean, List<NamedBeanUsageReport> report, NamedBean cdl) {
-        log.debug("getUsageReport :: ActionTurnout: bean = {}, report = {}", cdl, report);
-        if (getTurnout() != null && bean.equals(getTurnout().getBean())) {
-            report.add(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription()));
-        }
-    }
-#endif
     /*private*/ /*final*/ /*static*/ Logger* ActionTurnout::log = LoggerFactory::getLogger("ActionTurnout");
 
 

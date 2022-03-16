@@ -1,19 +1,21 @@
-#ifndef DIGITALACTIONMANAGERTEST_H
-#define DIGITALACTIONMANAGERTEST_H
+#ifndef DIGITALBOOLEANACTIONMANAGERTEST_H
+#define DIGITALBOOLEANACTIONMANAGERTEST_H
 
 #include <abstractmanagertestbase.h>
+#include <QObject>
 #include "abstractbase.h"
-#include "digitalactionbean.h"
+#include "digitalbooleanactionbean.h"
 
-class MyAction03;
-class DigitalActionManager;
-class DigitalActionManagerTest : public AbstractManagerTestBase
+class MyAction02;
+class DigitalBooleanActionManager;
+class DigitalBooleanActionManagerTest : public AbstractManagerTestBase
 {
   Q_OBJECT
  public:
-  explicit DigitalActionManagerTest(QObject *parent = nullptr) : AbstractManagerTestBase(parent) {}
+  explicit DigitalBooleanActionManagerTest(QObject *parent = nullptr) : AbstractManagerTestBase(parent){}
   Q_INVOKABLE /*public*/  void setUp();
   Q_INVOKABLE /*public*/  void tearDown();
+
 
  public slots:
   /*public*/  void testRegisterAction();
@@ -21,38 +23,38 @@ class DigitalActionManagerTest : public AbstractManagerTestBase
   /*public*/  void testInstance();
 
  private:
-  /*private*/ DigitalActionManager* _m;
+  /*private*/ DigitalBooleanActionManager* _m;
 
 };
 
-/*private*/ /*static*/ class MyAction03 : public AbstractBase, public DigitalActionBean {
+/*private*/ /*static*/ class MyAction02 : public  AbstractBase,  public DigitalBooleanActionBean {
 Q_OBJECT
-  Q_INTERFACES(DigitalActionBean)
+  Q_INTERFACES(DigitalBooleanActionBean)
  public:
-    /*public*/  MyAction03(QString sys) /*throws BadSystemNameException*/ : AbstractBase(sys) {
+    /*public*/  MyAction02(QString sys) /*throws BadSystemNameException*/ : AbstractBase(sys){
         //super(sys);
-   setObjectName("MyAction");
     }
+QObject* self() override{ return (QObject*)this;}
+QObject* bself() override{ return (QObject*)this;}
 
-  QObject* bself() override{return (QObject*)this;}
  protected:
     //@Override
-    /*protected*/ void registerListenersForThisClass() override{
+    /*protected*/ void registerListenersForThisClass() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*protected*/ void unregisterListenersForThisClass() override{
+    /*protected*/ void unregisterListenersForThisClass() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*protected*/ void disposeMe() override{
+    /*protected*/ void disposeMe() {
         throw new UnsupportedOperationException("Not supported");
     }
-public:
+ public:
     //@Override
-    /*public*/  void setState(int s) /*throws JmriException*/override {
+    /*public*/  void setState(int s) /*throws JmriException*/ {
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -62,12 +64,12 @@ public:
     }
 
     //@Override
-    /*public*/  QString getBeanType() override{
+    /*public*/  QString getBeanType() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/  QString getShortDescription(QLocale locale) override{
+    /*public*/  QString getShortDescription(QLocale locale)override {
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -77,7 +79,7 @@ public:
     }
 
     //@Override
-    /*public*/  Base* getParent() {
+    /*public*/  Base* getParent() const override{
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -87,12 +89,12 @@ public:
     }
 
     //@Override
-    /*public*/  FemaleSocket* getChild(int index)/* throws IllegalArgumentException, UnsupportedOperationException*/override {
+    /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */{
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/  int getChildCount()override {
+    /*public*/  int getChildCount() override{
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -107,12 +109,12 @@ public:
     }
 
     //@Override
-    /*public*/  void execute() /*throws JmriException*/ override{
+    /*public*/  void execute(bool hasChangedToTrue, bool hasChangedToFalse) /*throws JmriException*/ override{
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/  Base* getDeepCopy(QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException*/override {
+    /*public*/  Base* getDeepCopy(QMap<QString, QString> map,QMap<QString, QString> map1) /*throws JmriException*/override {
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -123,4 +125,4 @@ public:
 
 };
 
-#endif // DIGITALACTIONMANAGERTEST_H
+#endif // DIGITALBOOLEANACTIONMANAGERTEST_H

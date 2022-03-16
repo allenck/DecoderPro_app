@@ -8,10 +8,12 @@
 #include "namedbeanaddressing.h"
 #include "expressionnode.h"
 #include "instancemanager.h"
+#include "threadingutil.h"
 
-class ActionTurnout : public AbstractDigitalAction
+class ActionTurnout : public AbstractDigitalAction, public VetoableChangeListener
 {
   Q_OBJECT
+  Q_INTERFACES(VetoableChangeListener)
  public:
   explicit ActionTurnout(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  class TurnoutState {
@@ -19,7 +21,7 @@ class ActionTurnout : public AbstractDigitalAction
 //      Thrown(Turnout.THROWN, InstanceManager.getDefault(TurnoutManager.class).getThrownText()),
 //      Toggle(TOGGLE_ID, Bundle.getMessage("TurnoutToggleStatus"));
    public:
-   enum TYPE {Closed, Thrown, Toggle};
+   enum STATE {Closed, Thrown, Toggle};
 
 //      /*private*/ /*final*/ int _id;
 //      /*private*/ /*final*/ String _text;
@@ -29,7 +31,7 @@ class ActionTurnout : public AbstractDigitalAction
 //          this._text = text;
 //      }
 
-      static /*public*/  TurnoutState::TYPE get(int id) {
+      static /*public*/  TurnoutState::STATE get(int id) {
           switch (id) {
               case Turnout::CLOSED:
                   return Closed;
@@ -50,7 +52,7 @@ class ActionTurnout : public AbstractDigitalAction
 //      }
 
       //@Override
-      /*public*/  static QString toString(TYPE _id) {
+      /*public*/  static QString toString(STATE _id) {
            switch(_id)
            {
             case Closed:
@@ -63,7 +65,54 @@ class ActionTurnout : public AbstractDigitalAction
            }
       };
 
+      static STATE valueOf(QString s)
+      {
+       if(s == tr("Closed")) return Closed;
+       if(s == tr("Thrown")) return Thrown;
+       if(s == tr("Toggle")) return Toggle;
+       throw new IllegalArgumentException("invalid turnout state");
+      }
+
   };
+  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/override;
+  /*public*/  void setTurnout(/*@Nonnull*/ QString turnoutName);
+  /*public*/  void setTurnout(/*@Nonnull*/ NamedBeanHandle<Turnout*>* handle);
+  /*public*/  void setTurnout(/*@Nonnull*/ Turnout* turnout);
+  /*public*/  void removeTurnout() ;
+  /*public*/  NamedBeanHandle<Turnout*>* getTurnout();
+  /*public*/  void setAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/;
+  /*public*/  NamedBeanAddressing::TYPE getAddressing() ;
+  /*public*/  void setReference(/*@Nonnull*/ QString reference);
+  /*public*/  QString getReference();
+  /*public*/  void setLocalVariable(/*@Nonnull*/ QString localVariable);
+  /*public*/  QString getLocalVariable();
+  /*public*/  void setFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/;
+  /*public*/  QString getFormula();
+  /*private*/ void parseFormula() /*throws ParserException*/;
+  /*public*/  void setStateAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/;
+  /*public*/  NamedBeanAddressing::TYPE getStateAddressing();
+  /*public*/  void setBeanState(TurnoutState::STATE state) ;
+  /*public*/  TurnoutState::STATE getBeanState();
+  /*public*/  void setStateReference(/*@Nonnull*/ QString reference) ;
+  /*public*/  QString getStateReference();
+  /*public*/  void setStateLocalVariable(/*@Nonnull*/ QString localVariable);
+  /*public*/  QString getStateLocalVariable() ;
+  /*public*/  void setStateFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/;
+  /*public*/  QString getStateFormula();
+  /*public*/  Category* getCategory()override;
+  /*public*/  void execute() /*throws JmriException*/override;
+  /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override;
+  /*public*/  int getChildCount() override;
+  /*public*/  QString getShortDescription(QLocale locale) override;
+  /*public*/  QString getLongDescription(QLocale locale)override;
+  /*public*/  void setup()override;
+  /*public*/  void registerListenersForThisClass() override;
+  /*public*/  void unregisterListenersForThisClass()override;
+  /*public*/  void disposeMe()override;
+
+
+ public slots:
+  /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/override;
 
  private:
   static Logger* log;
@@ -74,13 +123,42 @@ class ActionTurnout : public AbstractDigitalAction
   /*private*/ QString _formula = "";
   /*private*/ ExpressionNode* _expressionNode;
   /*private*/ NamedBeanAddressing::TYPE _stateAddressing = NamedBeanAddressing::Direct;
-  /*private*/ TurnoutState::TYPE _turnoutState = TurnoutState::Thrown;
+  /*private*/ TurnoutState::STATE _turnoutState = TurnoutState::Thrown;
   /*private*/ QString _stateReference = "";
   /*private*/ QString _stateLocalVariable = "";
   /*private*/ QString _stateFormula = "";
   /*private*/ ExpressionNode* _stateExpressionNode;
+  // This constant is only used internally in TurnoutState but must be outside
+  // the enum.
+  /*private*/ static /*final*/ int TOGGLE_ID;// = -1;
+  /*private*/ void parseStateFormula() /*throws ParserException*/;
+  /*private*/ QString getNewState() /*throws JmriException*/;
 
 };
 
+class ToggleTurnout : public ThreadActionWithJmriException
+{
+  Q_OBJECT
+  Turnout* turnout;
+  ActionTurnout::TurnoutState::STATE state;
+ public:
+  ToggleTurnout(Turnout* turnout, ActionTurnout::TurnoutState::STATE state) {
+   this->turnout = turnout;
+   this->state = state;
+  }
+  void run()
+  {
+   if (state == ActionTurnout::TurnoutState::Toggle) {
+       if (turnout->getKnownState() == Turnout::CLOSED) {
+           turnout->setCommandedState(Turnout::THROWN);
+       } else {
+           turnout->setCommandedState(Turnout::CLOSED);
+       }
+   } else {
+       turnout->setCommandedState(state);
+   }
+
+  }
+};
 
 #endif // ACTIONTURNOUT_H

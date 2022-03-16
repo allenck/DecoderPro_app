@@ -32,6 +32,7 @@
 
         // We need a male socket to test with, so we register the action and then unregister the socket
         DigitalExpressionBean* action = new ExpressionMemory("IQDE321", "");
+        QString sn = ((AbstractNamedBean*)action->self())->getSystemName();
         MaleDigitalExpressionSocket* maleSocket = _m->registerExpression(action);
         _m->deregister(maleSocket);
 

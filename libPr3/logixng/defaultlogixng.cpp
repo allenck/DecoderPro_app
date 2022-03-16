@@ -15,363 +15,363 @@
 
 
 
-    /*public*/ DefaultLogixNG::DefaultLogixNG(QString sys, QString user, QObject *parent) /*throw (BadUserNameException, BadSystemNameException)*/
-      : LogixNG(sys, user, parent)
-    {
-        //super(sys, user);
-     setObjectName("DefaultLogixNG");
-        // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->validSystemNameFormat(mSystemName);
-        if (isNameValid != Manager::NameValidity::VALID) {
-            throw  IllegalArgumentException("system name is not valid");
+/*public*/ DefaultLogixNG::DefaultLogixNG(QString sys, QString user, QObject *parent) /*throw (BadUserNameException, BadSystemNameException)*/
+  : LogixNG(sys, user, parent)
+{
+    //super(sys, user);
+ setObjectName("DefaultLogixNG");
+    // Do this test here to ensure all the tests are using correct system names
+    Manager::NameValidity isNameValid = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->validSystemNameFormat(mSystemName);
+    if (isNameValid != Manager::NameValidity::VALID) {
+        throw  IllegalArgumentException("system name is not valid");
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ Base* DefaultLogixNG::getParent() const {
+    return nullptr;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::setParent(Base* parent) {
+    throw  UnsupportedOperationException("A LogixNG cannot have a parent");
+}
+
+//@Override
+/*public*/ QString DefaultLogixNG::getBeanType() {
+    return tr("LogixNG");
+}
+
+//@Override
+/*public*/ void DefaultLogixNG::setState(int s) /*throw (JmriException)*/ {
+    log->warn("Unexpected call to setState in DefaultLogixNG.");  // NOI18N
+}
+
+//@Override
+/*public*/ int DefaultLogixNG::getState() {
+    log->warn("Unexpected call to getState in DefaultLogixNG.");  // NOI18N
+    return UNKNOWN;
+}
+
+//@Override
+/*public*/ QString DefaultLogixNG::getShortDescription(QLocale locale) {
+    return "LogixNG";
+}
+
+//@Override
+/*public*/ QString DefaultLogixNG::getLongDescription(QLocale locale) {
+    return "LogixNG: "+AbstractNamedBean::getDisplayName();
+}
+
+//@Override
+/*public*/ FemaleSocket* DefaultLogixNG::getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) {
+    throw  UnsupportedOperationException("Not supported.");
+}
+
+//@Override
+/*public*/ int DefaultLogixNG::getChildCount() {
+    throw  UnsupportedOperationException("Not supported.");
+}
+
+//@Override
+/*public*/ Category* DefaultLogixNG::getCategory() {
+    throw new UnsupportedOperationException("Not supported.");
+}
+
+/** {@inheritDoc} */
+//@Override
+/*final*/ /*public*/ void DefaultLogixNG::setup() {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        if ( entry->_conditionalNG == nullptr
+                || entry->_conditionalNG->Base::getSystemName()
+                        !=(entry->_systemName)) {
+
+            QString systemName = entry->_systemName;
+            if (systemName != nullptr) {
+                entry->_conditionalNG =
+                        (ConditionalNG*)((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))
+                                ->getBySystemName(systemName);
+                if (entry->_conditionalNG != nullptr) {
+                    entry->_conditionalNG->setup();
+                } else {
+                    log->error("cannot load conditionalNG " + systemName);
+                }
+            }
+        } else {
+            entry->_conditionalNG->setup();
         }
     }
+}
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ Base* DefaultLogixNG::getParent() const {
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::setEnabled(bool enable) {
+    _enabled = enable;
+    if (isActive()) {
+        registerListeners();
+        execute(true);
+    } else {
+        unregisterListeners();
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ bool DefaultLogixNG::isEnabled() {
+    return _enabled;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString DefaultLogixNG::getConditionalNG_SystemName(int index) {
+    return _conditionalNG_Entries.at(index)->_systemName;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::setConditionalNG_SystemName(int index, QString systemName) {
+    if (index == _conditionalNG_Entries.size()) {
+        _conditionalNG_Entries.append(new ConditionalNG_Entry(systemName));
+    } else {
+        ConditionalNG_Entry* entry = _conditionalNG_Entries.at(index);
+        entry->_systemName = systemName;
+        entry->_conditionalNG = nullptr;
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ int DefaultLogixNG::getNumConditionalNGs() {
+    return _conditionalNG_Entries.size();
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::swapConditionalNG(int nextInOrder, int row) {
+    if (row <= nextInOrder) {
+        return;
+    }
+    ConditionalNG_Entry* temp = _conditionalNG_Entries.at(row);
+    for (int i = row; i > nextInOrder; i--) {
+        _conditionalNG_Entries.replace(i, _conditionalNG_Entries.at(i - 1));
+    }
+    _conditionalNG_Entries.replace(nextInOrder, temp);
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNG(int order) {
+    try {
+        return _conditionalNG_Entries.at(order)->_conditionalNG;
+    } catch (IndexOutOfBoundsException* ioob) {
         return nullptr;
     }
+}
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ void DefaultLogixNG::setParent(Base* parent) {
-        throw  UnsupportedOperationException("A LogixNG cannot have a parent");
-    }
-
-    //@Override
-    /*public*/ QString DefaultLogixNG::getBeanType() {
-        return tr("LogixNG");
-    }
-
-    //@Override
-    /*public*/ void DefaultLogixNG::setState(int s) /*throw (JmriException)*/ {
-        log->warn("Unexpected call to setState in DefaultLogixNG.");  // NOI18N
-    }
-
-    //@Override
-    /*public*/ int DefaultLogixNG::getState() {
-        log->warn("Unexpected call to getState in DefaultLogixNG.");  // NOI18N
-        return UNKNOWN;
-    }
-
-    //@Override
-    /*public*/ QString DefaultLogixNG::getShortDescription(QLocale locale) {
-        return "LogixNG";
-    }
-
-    //@Override
-    /*public*/ QString DefaultLogixNG::getLongDescription(QLocale locale) {
-        return "LogixNG: "+AbstractNamedBean::getDisplayName();
-    }
-
-    //@Override
-    /*public*/ FemaleSocket* DefaultLogixNG::getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) {
-        throw  UnsupportedOperationException("Not supported.");
-    }
-
-    //@Override
-    /*public*/ int DefaultLogixNG::getChildCount() {
-        throw  UnsupportedOperationException("Not supported.");
-    }
-
-    //@Override
-    /*public*/ Category* DefaultLogixNG::getCategory() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /** {@inheritDoc} */
-    //@Override
-    /*final*/ /*public*/ void DefaultLogixNG::setup() {
-        for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
-            if ( entry->_conditionalNG == nullptr
-                    || entry->_conditionalNG->Base::getSystemName()
-                            !=(entry->_systemName)) {
-
-                QString systemName = entry->_systemName;
-                if (systemName != nullptr) {
-                    entry->_conditionalNG =
-                            (ConditionalNG*)((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))
-                                    ->getBySystemName(systemName);
-                    if (entry->_conditionalNG != nullptr) {
-                        entry->_conditionalNG->setup();
-                    } else {
-                        log->error("cannot load conditionalNG " + systemName);
-                    }
-                }
+/** {@inheritDoc} */
+//@Override
+/*public*/ bool DefaultLogixNG::addConditionalNG(ConditionalNG* conditionalNG) {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        if (((AbstractNamedBean*)conditionalNG->self())->getSystemName() == (entry->_systemName)) {
+            if (entry->_conditionalNG == nullptr) {
+                // Normally this will be during xml loading
+                entry->_conditionalNG = conditionalNG;
+                return true;
             } else {
-                entry->_conditionalNG->setup();
+                log->error(tr("ConditionalNG '%1' has already been added to LogixNG '%2'").arg(conditionalNG->NamedBean::getSystemName(), getSystemName()));  // NOI18N
+                return false;
             }
         }
+
     }
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ void DefaultLogixNG::setEnabled(bool enable) {
-        _enabled = enable;
-        if (isActive()) {
-            registerListeners();
-            execute(true);
-        } else {
-            unregisterListeners();
+    ConditionalNG_Entry* entry = new ConditionalNG_Entry(conditionalNG, ((AbstractNamedBean*)conditionalNG->self())->getSystemName());
+    _conditionalNG_Entries.append(entry);
+    conditionalNG->setParent(this);
+    return true;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNG(QString systemName) {
+    for (int i = 0; i < getNumConditionalNGs(); i++) {
+        if (systemName ==(_conditionalNG_Entries.at(i)->_systemName)) {
+            return _conditionalNG_Entries.at(i)->_conditionalNG;
         }
     }
+    return nullptr;
+}
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ bool DefaultLogixNG::isEnabled() {
-        return _enabled;
-    }
-#if 0
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ String getConditionalNG_SystemName(int index) {
-        return _conditionalNG_Entries.get(index)._systemName;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void setConditionalNG_SystemName(int index, String systemName) {
-        if (index == _conditionalNG_Entries.size()) {
-            _conditionalNG_Entries.add(new ConditionalNG_Entry(systemName));
-        } else {
-            ConditionalNG_Entry entry = _conditionalNG_Entries.get(index);
-            entry._systemName = systemName;
-            entry._conditionalNG = null;
+/** {@inheritDoc} */
+//@Override
+/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNGByUserName(QString userName) {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        if (userName == (((AbstractNamedBean*)entry->_conditionalNG->self())->getUserName())) {
+            return entry->_conditionalNG;
         }
     }
+    return nullptr;
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ int getNumConditionalNGs() {
-        return _conditionalNG_Entries.size();
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::deleteConditionalNG(ConditionalNG* conditionalNG) {
+    if (_conditionalNG_Entries.size() <= 0) {
+        log->error(tr("attempt to delete ConditionalNG not in LogixNG: %1").arg(((AbstractNamedBean*)conditionalNG->self())->getSystemName()));  // NOI18N
+        return;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void swapConditionalNG(int nextInOrder, int row) {
-        if (row <= nextInOrder) {
-            return;
-        }
-        ConditionalNG_Entry temp = _conditionalNG_Entries.get(row);
-        for (int i = row; i > nextInOrder; i--) {
-            _conditionalNG_Entries.set(i, _conditionalNG_Entries.get(i - 1));
-        }
-        _conditionalNG_Entries.set(nextInOrder, temp);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ ConditionalNG getConditionalNG(int order) {
-        try {
-            return _conditionalNG_Entries.get(order)._conditionalNG;
-        } catch (java.lang.IndexOutOfBoundsException ioob) {
-            return null;
+    bool found = false;
+    // Remove Conditional from this logix
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        if (conditionalNG == entry->_conditionalNG) {
+            _conditionalNG_Entries.removeOne(entry);
+            found = true;
+            break;
         }
     }
-
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ boolean addConditionalNG(ConditionalNG conditionalNG) {
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            if (conditionalNG.getSystemName().equals(entry._systemName)) {
-                if (entry._conditionalNG == null) {
-                    // Normally this will be during xml loading
-                    entry._conditionalNG = conditionalNG;
-                    return true;
-                } else {
-                    log.error("ConditionalNG '{}' has already been added to LogixNG '{}'", conditionalNG.getSystemName(), getSystemName());  // NOI18N
-                    return false;
-                }
-            }
-
-        }
-
-        ConditionalNG_Entry entry = new ConditionalNG_Entry(conditionalNG, conditionalNG.getSystemName());
-        _conditionalNG_Entries.add(entry);
-        conditionalNG.setParent(this);
-        return true;
+    if (!found) {
+        log->error(tr("attempt to delete ConditionalNG not in LogixNG: %1").arg(((AbstractNamedBean*)conditionalNG->self())->getSystemName()));  // NOI18N
     }
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ ConditionalNG getConditionalNG(String systemName) {
-        for (int i = 0; i < getNumConditionalNGs(); i++) {
-            if (systemName.equals(_conditionalNG_Entries.get(i)._systemName)) {
-                return _conditionalNG_Entries.get(i)._conditionalNG;
-            }
-        }
-        return null;
+/** {@inheritDoc} */
+//@Override
+/*public*/ bool DefaultLogixNG::isActive() {
+    return _enabled && _manager->isActive();
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::execute() {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        entry->_conditionalNG->execute();
     }
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ ConditionalNG getConditionalNGByUserName(String userName) {
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            if (userName.equals(entry._conditionalNG.getUserName())) {
-                return entry._conditionalNG;
-            }
-        }
-        return null;
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::execute(bool allowRunDelayed) {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        entry->_conditionalNG->execute(allowRunDelayed);
     }
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void deleteConditionalNG(ConditionalNG conditionalNG) {
-        if (_conditionalNG_Entries.size() <= 0) {
-            log.error("attempt to delete ConditionalNG not in LogixNG: {}", conditionalNG.getSystemName());  // NOI18N
-            return;
-        }
+/** {@inheritDoc} */
+//@Override
+/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNG() {
+    throw new UnsupportedOperationException("Not supported.");
+}
 
-        boolean found = false;
-        // Remove Conditional from this logix
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            if (conditionalNG == entry._conditionalNG) {
-                _conditionalNG_Entries.remove(entry);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            log.error("attempt to delete ConditionalNG not in LogixNG: {}", conditionalNG.getSystemName());  // NOI18N
+/** {@inheritDoc} */
+//@Override
+/*public*/ LogixNG* DefaultLogixNG::getLogixNG() {
+    return this;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ /*final*/ Base* DefaultLogixNG::getRoot() {
+    return this;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ bool DefaultLogixNG::setParentForAllChildren(QList<QString> errors) {
+    bool result = true;
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        if (entry->_conditionalNG != nullptr) {
+            entry->_conditionalNG->setParent(this);
+            result = result && entry->_conditionalNG->setParentForAllChildren(errors);
         }
     }
+    return result;
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ boolean isActive() {
-        return _enabled && _manager.isActive();
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::registerListeners() {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        entry->_conditionalNG->registerListeners();
     }
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void execute() {
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            entry._conditionalNG.execute();
-        }
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::unregisterListeners() {
+    for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
+        entry->_conditionalNG->unregisterListeners();
     }
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void execute(boolean allowRunDelayed) {
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            entry._conditionalNG.execute(allowRunDelayed);
-        }
+/*protected*/ void DefaultLogixNG::printTreeRow(
+        PrintTreeSettings* settings,
+        QLocale locale,
+        PrintWriter* writer,
+        QString currentIndent,
+        int* lineNumber) {
+
+    if (settings->_printLineNumbers) {
+        writer->write(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/,8));
     }
+    writer->write(currentIndent);
+    writer->write(getLongDescription(locale));
+    writer->println();
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ ConditionalNG getConditionalNG() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::printTree(
+        PrintTreeSettings* settings,
+        PrintWriter* writer,
+        QString indent,
+        int* lineNumber) {
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ LogixNG getLogixNG() {
-        return this;
-    }
+    printTree(settings, QLocale(), writer, indent, "", lineNumber);
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ final Base getRoot() {
-        return this;
-    }
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::printTree(
+        PrintTreeSettings* settings,
+        QLocale locale,
+        PrintWriter* writer,
+        QString indent,
+        int* lineNumber) {
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ boolean setParentForAllChildren(List<String> errors) {
-        boolean result = true;
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            if (entry._conditionalNG != null) {
-                entry._conditionalNG.setParent(this);
-                result = result && entry._conditionalNG.setParentForAllChildren(errors);
-            }
-        }
-        return result;
-    }
+    printTree(settings, locale, writer, indent, "", lineNumber);
+}
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void registerListeners() {
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            entry._conditionalNG.registerListeners();
-        }
-    }
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::printTree(
+        PrintTreeSettings* settings,
+        QLocale locale,
+        PrintWriter* writer,
+        QString indent,
+        QString currentIndent,
+        int* lineNumber) {
 
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void unregisterListeners() {
-        for (ConditionalNG_Entry entry : _conditionalNG_Entries) {
-            entry._conditionalNG.unregisterListeners();
-        }
-    }
+    printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 
-    protected void printTreeRow(
-            PrintTreeSettings settings,
-            Locale locale,
-            PrintWriter writer,
-            String currentIndent,
-            MutableInt lineNumber) {
-
-        if (settings._printLineNumbers) {
-            writer.append(String.format(PRINT_LINE_NUMBERS_FORMAT, lineNumber.addAndGet(1)));
-        }
-        writer.append(currentIndent);
-        writer.append(getLongDescription(locale));
-        writer.println();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void printTree(
-            PrintTreeSettings settings,
-            PrintWriter writer,
-            String indent,
-            MutableInt lineNumber) {
-
-        printTree(settings, Locale.getDefault(), writer, indent, "", lineNumber);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void printTree(
-            PrintTreeSettings settings,
-            Locale locale,
-            PrintWriter writer,
-            String indent,
-            MutableInt lineNumber) {
-
-        printTree(settings, locale, writer, indent, "", lineNumber);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    /*public*/ void printTree(
-            PrintTreeSettings settings,
-            Locale locale,
-            PrintWriter writer,
-            String indent,
-            String currentIndent,
-            MutableInt lineNumber) {
-
-        printTreeRow(settings, locale, writer, currentIndent, lineNumber);
-
-        for (int i=0; i < this.getNumConditionalNGs(); i++) {
-            getConditionalNG(i).printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
+    for (int i=0; i < this->getNumConditionalNGs(); i++) {
+        getConditionalNG(i)->printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
 //            writer.println();
-        }
     }
+}
 
-    @Override
-    /*public*/ Base getDeepCopy(Map<String, String> systemNames, Map<String, String> userNames) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+//@Override
+/*public*/ Base* DefaultLogixNG::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    throw new UnsupportedOperationException("Not supported yet.");
+}
 
-    @Override
-    /*public*/ Base deepCopyChildren(Base original, Map<String, String> systemNames, Map<String, String> userNames) throws JmriException {
-        throw new UnsupportedOperationException("Not supported");
-    }
-#endif
+//@Override
+/*public*/ Base* DefaultLogixNG::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+    throw new UnsupportedOperationException("Not supported");
+}
+
 //    private static class ConditionalNG_Entry {
 //        private String _systemName;
 //        private ConditionalNG _conditionalNG;
@@ -399,43 +399,43 @@
 //        }
 //    }
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ QList<NamedBeanUsageReport*> DefaultLogixNG::getUsageReport(NamedBean* bean) {
-        QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
-        if (bean != nullptr) {
-            getUsageTree(0, bean, report, nullptr);
-        }
-        return report;
+/** {@inheritDoc} */
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> DefaultLogixNG::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        getUsageTree(0, bean, report, nullptr);
     }
+    return report;
+}
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ void DefaultLogixNG::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> report, NamedBean* cdl) {
-        log->debug(tr("** %1 :: %2").arg(level).arg(/*this.getClass().getName()*/ metaObject()->className()));
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> report, NamedBean* cdl) {
+    log->debug(tr("** %1 :: %2").arg(level).arg(/*this.getClass().getName()*/ metaObject()->className()));
 
-        level++;
-        for (int i=0; i < this->getNumConditionalNGs(); i++) {
-            getConditionalNG(i)->getUsageTree(level, bean, report, (NamedBean*)getConditionalNG(i));
-        }
+    level++;
+    for (int i=0; i < this->getNumConditionalNGs(); i++) {
+        getConditionalNG(i)->getUsageTree(level, bean, report, (NamedBean*)getConditionalNG(i));
     }
+}
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ void DefaultLogixNG::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void DefaultLogixNG::getListenerRefsIncludingChildren(QList<QString> list) {
+    //list.addAll(getListeneDefaultLogixNG::rRefs());
+    foreach(QString s, Base::getListenerRefs())
+    {
+     list.append(s);
     }
-
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ void DefaultLogixNG::getListenerRefsIncludingChildren(QList<QString> list) {
-        //list.addAll(getListeneDefaultLogixNG::rRefs());
-        foreach(QString s, Base::getListenerRefs())
-        {
-         list.append(s);
-        }
-        for (int i=0; i < getNumConditionalNGs(); i++) {
-            getConditionalNG(i)->getListenerRefsIncludingChildren(list);
-        }
+    for (int i=0; i < getNumConditionalNGs(); i++) {
+        getConditionalNG(i)->getListenerRefsIncludingChildren(list);
     }
+}
 
-    /*private*/ /*final*/ /*static*/ Logger* DefaultLogixNG::log = LoggerFactory::getLogger("DefaultLogixNG");
+/*private*/ /*final*/ /*static*/ Logger* DefaultLogixNG::log = LoggerFactory::getLogger("DefaultLogixNG");

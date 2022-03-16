@@ -13,7 +13,7 @@ class JAVAQTSHARED_EXPORT AbstractNamedBean :  public QObject, public virtual Na
     Q_OBJECT
     Q_INTERFACES(NamedBean)
 public:
-    /*explicit*/ AbstractNamedBean(QObject *parent = 0);
+    AbstractNamedBean(QObject *parent = 0);
     /**
      * Get associated comment text.
      */

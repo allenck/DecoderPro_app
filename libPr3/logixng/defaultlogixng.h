@@ -37,6 +37,44 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
   /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
   /*public*/ QString getUserName() const override {return AbstractNamedBean::getUserName();}
+  /*public*/ QString getConditionalNG_SystemName(int index)override;
+  /*public*/ void setConditionalNG_SystemName(int index, QString systemName)override;
+  /*public*/ int getNumConditionalNGs() override;
+  /*public*/ void swapConditionalNG(int nextInOrder, int row)override;
+  /*public*/ ConditionalNG* getConditionalNG(int order)override;
+  /*public*/ bool addConditionalNG(ConditionalNG* conditionalNG) override;
+  /*public*/ ConditionalNG* getConditionalNG(QString systemName) override;
+  /*public*/ ConditionalNG* getConditionalNGByUserName(QString userName)override;
+  /*public*/ void deleteConditionalNG(ConditionalNG* conditionalNG) override;
+  /*public*/ bool isActive()override;
+  /*public*/ void execute()override;
+  /*public*/ void execute(bool allowRunDelayed)override;
+  /*public*/ ConditionalNG* getConditionalNG()override;
+  /*public*/ LogixNG* getLogixNG() override;
+  /*public*/ /*final*/ Base* getRoot()override;
+  /*public*/ bool setParentForAllChildren(QList<QString> errors) override;
+  /*public*/ void registerListeners()override;
+  /*public*/ void unregisterListeners()override;
+  /*public*/ void printTree(
+          PrintTreeSettings* settings,
+          PrintWriter* writer,
+          QString indent,
+          int* lineNumber)override;
+  /*public*/ void printTree(
+          PrintTreeSettings* settings,
+          QLocale locale,
+          PrintWriter* writer,
+          QString indent,
+          int* lineNumber)override;
+  /*public*/ void printTree(
+          PrintTreeSettings* settings,
+          QLocale locale,
+          PrintWriter* writer,
+          QString indent,
+          QString currentIndent,
+          int* lineNumber)override;
+  /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
 
   QObject* bself() override{return (QObject*)this;}
   QObject* self() override{return (QObject*)this;}
@@ -45,6 +83,15 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
   /*private*/ bool _enabled = false;
   /*private*/ /*final*/ QList<ConditionalNG_Entry*> _conditionalNG_Entries =  QList<ConditionalNG_Entry*>();
   static Logger* log;
+
+ protected:
+  /*protected*/ void printTreeRow(
+          PrintTreeSettings* settings,
+          QLocale locale,
+          PrintWriter* writer,
+          QString currentIndent,
+          int* lineNumber);
+
 };
 
 /*private*/ /*static*/ class ConditionalNG_Entry {
