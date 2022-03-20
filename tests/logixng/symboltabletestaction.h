@@ -10,10 +10,10 @@ class SymbolTableTestAction : public AbstractAction
     Q_OBJECT
 public:
     explicit SymbolTableTestAction(QObject *parent = nullptr);
-public slots:
- void actionPerformed();
-private:
- static Logger* log;
+ public slots:
+  void actionPerformed();
+ private:
+  static Logger* log;
 };
 
 #endif // SYMBOLTABLETESTACTION_H

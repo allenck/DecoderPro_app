@@ -152,7 +152,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString DefaultDigitalBooleanActionManager::getBeanTypeHandled(bool plural) const {
-        return plural ? tr("DigitalBooleanActions") : tr("DigitalBooleanAction");
+        return plural ? tr("Digital bool actions") : tr("Digital bool action");
     }
 
     /** {@inheritDoc} */

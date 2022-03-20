@@ -220,29 +220,30 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      * @return the value returned by ta
      */
     template<class E>
-    /*static*/ /*public*/ /*<E>*/ E ThreadingUtil::runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta) {
-#if 0 // TODO:
+    /*static*/ /*public*/ /*<E>*/ E ThreadingUtil::runOnGUIwithReturn(/*@Nonnull*/ ReturningThreadAction<E>* ta) {
+#if 1 // TODO:
         if (isGUIThread()) {
             // run now
-            return ta.run();
-        } else {
-            warnLocks();
-            // dispatch to Swing
-            final AtomicReference<E> result = new AtomicReference<>();
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    result.set(ta.run());
-                });
-            } catch (InterruptedException e) {
-                log.debug("Interrupted while running on GUI thread");
-                Thread.currentThread().interrupt();
-            } catch (InvocationTargetException e) {
-                log.error("Error while on GUI thread", e.getCause());
-                log.error("   Came from call to runOnGUIwithReturn:", e);
-                // should have been handled inside the ThreadAction
-            }
-            return result.get();
+            return ta->run();
         }
+//        else {
+//            warnLocks();
+//            // dispatch to Swing
+//            final AtomicReference<E> result = new AtomicReference<>();
+//            try {
+//                SwingUtilities.invokeAndWait(() -> {
+//                    result.set(ta.run());
+//                });
+//            } catch (InterruptedException* e) {
+//                log->debug("Interrupted while running on GUI thread");
+//                Thread.currentThread().interrupt();
+//            } catch (InvocationTargetException* e) {
+//                log.error("Error while on GUI thread", e.getCause());
+//                log.error("   Came from call to runOnGUIwithReturn:", e);
+//                // should have been handled inside the ThreadAction
+//            }
+//            return result.get();
+//        }
 #endif
     }
 
@@ -426,10 +427,15 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      *
      * @param <E> the type returned
      */
-    @FunctionalInterface
-    static /*public*/ interface ReturningThreadAction<E> {
+    //@FunctionalInterface
+    template<class E>
+    /*static*/ /*public*/ class ReturningThreadAction : public ThreadAction
+    {
+      Q_OBJECT
+      ReturningThreadAction() : ThreadAction() {}
+     public slots:
         /*public*/ E run();
-    }
+    };
 
     /**
      * Warn if a thread is holding locks. Used when transitioning to another context.

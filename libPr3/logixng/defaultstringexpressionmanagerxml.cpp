@@ -5,6 +5,9 @@
 #include "defaultmalestringexpressionsocket.h"
 #include "runtimeexception.h"
 #include "class.h"
+#include "defaultstringexpressionmanager.h"
+#include "appsconfigurationmanager.h"
+
 /**
  * Provides the functionality for configuring ExpressionManagers
  *
@@ -177,9 +180,23 @@
             cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_STRING_EXPRESSIONS);
         }
     });
+#else
+    ThreadingUtil::runOnGUI(new DSEMRun());
 #endif
 }
 
+void DSEMRun::run()
+{
+ // register new one with InstanceManager
+ DefaultStringExpressionManager* pManager = DefaultStringExpressionManager::instance();
+ InstanceManager::store(pManager, "StringExpressionManager");
+ // register new one for configuration
+ ConfigureManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cmOD != nullptr) {
+     cmOD->registerConfig(pManager, Manager::LOGIXNG_STRING_EXPRESSIONS);
+ }
+
+}
 //@Override
 /*public*/  int DefaultStringExpressionManagerXml::loadOrder() const {
     return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getXMLOrder();

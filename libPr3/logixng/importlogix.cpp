@@ -4,6 +4,8 @@
 #include "logixng.h"
 #include "defaultlogixngmanager.h"
 #include "instancemanager.h"
+#include "importconditional.h"
+#include "defaultconditionalngmanager.h"
 
 /**
  * Imports Logixs to LogixNG
@@ -64,15 +66,15 @@ void ImportLogix::common(Logix* logix, bool allowSystemImport, bool dryRun)
         if (!_dryRun) {
             log->warn(tr("Import Conditional '%1' to LogixNG '%2'").arg(c->getSystemName(), _logixNG->AbstractNamedBean::getSystemName()));
         }
-#if 0 // TODO:
+
 
         ImportConditional* ic = new ImportConditional(
                 _logix, c, _logixNG,
-                InstanceManager.getDefault(ConditionalNG_Manager.class).getAutoSystemName(),
+                ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->AbstractManager::getAutoSystemName(),
                 _dryRun);
 
         try {
-            ic.doImport();
+            ic->doImport();
         } catch (SocketAlreadyConnectedException* ex) {
             if (!_dryRun) {
                 log->warn(tr("Exception during import of Conditional %1 to ConditionalNG %2").arg(
@@ -80,7 +82,6 @@ void ImportLogix::common(Logix* logix, bool allowSystemImport, bool dryRun)
             }
         }
         if (!_dryRun) ic->getConditionalNG()->setEnabled(true);
-#endif
     }
 
 }

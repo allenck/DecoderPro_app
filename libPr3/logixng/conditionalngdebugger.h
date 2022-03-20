@@ -14,7 +14,11 @@
 #include "eventlistener.h"
 #include <QMenu>
 #include "actionlistener.h"
+#include "threadingutil.h"
+#include "symboltable.h"
 
+
+class AtomicBoolean;
 //class ConditionalNGEventListener;
 class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
 {
@@ -78,6 +82,8 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
  protected:
   /*protected*/ /*final*/ ConditionalNG* _conditionalNG;
  friend class PopupMenu;
+ friend class CDRun1;
+ friend class CDRun2;
 };
 
  /*protected*/ class PopupMenu : QMenu , public ActionListener {
@@ -104,8 +110,40 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
      /*private*/ void showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path);
      /*public*/  void actionPerformed(JActionEvent* e = nullptr) ;
      friend class TreePane;
+
  };
 
 Q_DECLARE_INTERFACE(ConditionalNGDebugger::ConditionalNGEventListener, "ConditionalNGEventListener")
+class CDRun1 : public ThreadAction
+{
+  Q_OBJECT
+  ConditionalNGDebugger* cb;
+  AtomicBoolean* enableMenuItems;
+ public:
+  CDRun1(AtomicBoolean* enableMenuItem, ConditionalNGDebugger* cb) {
+   this->cb = cb;
+   this->enableMenuItems = enableMenuItems;
+  }
+ public slots:
+  void run();
+};
+
+class CDRun2 : public ThreadAction
+{
+  Q_OBJECT
+  ConditionalNGDebugger* cb;
+  AtomicBoolean* enableMenuItems;
+  QString infStr;
+  QMap<QString, Symbol*>symbols;
+ public:
+  CDRun2(AtomicBoolean* enableMenuItem, QString infStr, QMap<QString, Symbol*>symbols, ConditionalNGDebugger* cb) {
+   this->cb = cb;
+   this->enableMenuItems = enableMenuItems;
+   this->infStr = infStr;
+   this->symbols = symbols;
+  }
+ public slots:
+  void run();
+};
 
 #endif // CONDITIONALNGDEBUGGER_H

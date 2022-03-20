@@ -184,7 +184,8 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
      * @return requested NamedBean object or NULL if none exists
      */
     /*public*/ NamedBean* AbstractManager::getBeanBySystemName(QString systemName)const{
-        return _tsys->value(systemName, nullptr);
+    NamedBean* bean = _tsys->value(systemName);
+        return _tsys->value(systemName);
     }
 
 //    /**
@@ -817,7 +818,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 
 /*public*/ QString AbstractManager::getAutoSystemName() {
     //int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
-    int nextAutoBlockRef = lastAutoNamedBeanRef++;
+    int nextAutoBlockRef = ++lastAutoNamedBeanRef;
     QString b = QString(getSubSystemNamePrefix() + ":AUTO:");
     QString nextNumber = paddedNumber.format(nextAutoBlockRef);
     b.append(nextNumber);

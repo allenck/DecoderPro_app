@@ -42,6 +42,86 @@
 //                     ITEM_TYPE_ENTRYEXIT        // TYPE_ENTRYEXIT_INACTIVE = 36
 //                     };
 //}
+/*static*/ QList<Conditional::Action::ACTS> Conditional::Action::values {
+ Conditional::Action::NONE,
+ Conditional::Action::SET_TURNOUT,
+ // allowed settings for turnout are Thrown and Closed (in data)
+ Conditional::Action::SET_SIGNAL_APPEARANCE,
+ // allowed settings for signal head are the seven Appearances (in data)
+ Conditional::Action::SET_SIGNAL_HELD,
+ Conditional::Action::CLEAR_SIGNAL_HELD,
+ Conditional::Action::SET_SIGNAL_DARK,
+ Conditional::Action::SET_SIGNAL_LIT,
+ Conditional::Action::TRIGGER_ROUTE,
+ Conditional::Action::SET_SENSOR,
+ // allowed settings for sensor are active and inactive (in data)
+ Conditional::Action::DELAYED_SENSOR,
+ // allowed settings for timed sensor are active and inactive (in data)
+ //   time in seconds before setting sensor should be in delay
+ Conditional::Action::SET_LIGHT,
+ // allowed settings for light are ON and OFF (in data)
+ Conditional::Action::SET_MEMORY,
+ // text to set into the memory variable should be in string
+ Conditional::Action::ENABLE_LOGIX,
+ Conditional::Action::DISABLE_LOGIX,
+ Conditional::Action::PLAY_SOUND,
+ // reference to sound should be in string
+ Conditional::Action::RUN_SCRIPT,
+ // reference to script should be in string
+ Conditional::Action::DELAYED_TURNOUT,
+ // allowed settings for timed turnout are Thrown and Closed (in data)
+ //   time in seconds before setting turnout should be in delay
+ Conditional::Action::LOCK_TURNOUT,
+ Conditional::Action::RESET_DELAYED_SENSOR,
+ // allowed settings for timed sensor are active and inactive (in data)
+ //   time in seconds before setting sensor should be in delay
+ Conditional::Action::CANCEL_SENSOR_TIMERS,
+ // cancels all timers delaying setting of specified sensor
+ Conditional::Action::RESET_DELAYED_TURNOUT,
+ // allowed settings for timed sensor are active and inactive (in data)
+ //   time in seconds before setting sensor should be in delay
+ Conditional::Action::CANCEL_TURNOUT_TIMERS,
+ // cancels all timers delaying setting of specified sensor
+ Conditional::Action::SET_FAST_CLOCK_TIME,
+ // sets the fast clock time to the time specified
+ Conditional::Action::START_FAST_CLOCK,
+ // starts the fast clock
+ Conditional::Action::STOP_FAST_CLOCK,
+ // stops the fast clock
+ Conditional::Action::COPY_MEMORY,
+ // copies value from memory variable (in name) to memory variable (in string)
+ Conditional::Action::SET_LIGHT_INTENSITY,
+ Conditional::Action::SET_LIGHT_TRANSITION_TIME,
+ // control the specified audio object
+ Conditional::Action::CONTROL_AUDIO,
+ // execute a jython command
+ Conditional::Action::JYTHON_COMMAND,
+ // Warrant actions
+ Conditional::Action::ALLOCATE_WARRANT_ROUTE,
+ Conditional::Action::DEALLOCATE_WARRANT_ROUTE,
+ Conditional::Action::SET_ROUTE_TURNOUTS,
+ Conditional::Action::AUTO_RUN_WARRANT,
+ Conditional::Action::MANUAL_RUN_WARRANT,
+ Conditional::Action::CONTROL_TRAIN,
+ Conditional::Action::SET_TRAIN_ID,
+ Conditional::Action::SET_TRAIN_NAME,
+ Conditional::Action::SET_SIGNALMAST_ASPECT,
+ Conditional::Action::THROTTLE_FACTOR,
+ Conditional::Action::SET_SIGNALMAST_HELD,
+ Conditional::Action::CLEAR_SIGNALMAST_HELD,
+ Conditional::Action::SET_SIGNALMAST_DARK,
+ Conditional::Action::SET_SIGNALMAST_LIT,
+ Conditional::Action::SET_BLOCK_VALUE,
+ Conditional::Action::SET_BLOCK_ERROR,
+ Conditional::Action::CLEAR_BLOCK_ERROR,
+ Conditional::Action::DEALLOCATE_BLOCK,
+ Conditional::Action::SET_BLOCK_OUT_OF_SERVICE,
+ Conditional::Action::SET_BLOCK_IN_SERVICE,
+ // EntryExit Actions
+ Conditional::Action::SET_NXPAIR_ENABLED,
+ Conditional::Action::SET_NXPAIR_DISABLED,
+ Conditional::Action::SET_NXPAIR_SEGMENT
+};
 
 /*static*/ QList<int> Conditional::TEST_TO_ITEM  = QList<int> ()
         << Conditional::TYPE_NONE    // TYPE_NONE                0
@@ -176,3 +256,23 @@ const /*static*/ QList<int> Conditional::ITEM_TO_OBLOCK_ACTION=QList<int>() << C
  const /*static*/  QList<int> Conditional::ITEM_TO_OTHER_ACTION=QList<int>() <<Conditional::ACTION_TRIGGER_ROUTE;
  const /*static*/  QList<int> Conditional::ITEM_TO_CLOCK_ACTION=QList<int>() <<Conditional::ACTION_SET_FAST_CLOCK_TIME <<
                              Conditional::ACTION_START_FAST_CLOCK << Conditional::ACTION_STOP_FAST_CLOCK;
+ /*private*/ static /*final*/ QList<Conditional::ItemType::TYPE>stateVarList = {Conditional::ItemType::NONE,      // There is no ITEM_TYPE_NONE so use TYPE_NONE instead
+                                                                          Conditional::ItemType::SENSOR,
+                                                                          Conditional::ItemType::TURNOUT,
+                                                                          Conditional::ItemType::LIGHT,
+                                                                          Conditional::ItemType::SIGNALHEAD,
+                                                                          Conditional::ItemType::SIGNALMAST,
+                                                                          Conditional::ItemType::MEMORY,
+                                                                          Conditional::ItemType::CONDITIONAL,         // used only by ConditionalVariable
+                                                                          Conditional::ItemType::LOGIX,               // used only by ConditionalAction
+                                                                          Conditional::ItemType::WARRANT,
+                                                                          Conditional::ItemType::CLOCK,
+                                                                          Conditional::ItemType::OBLOCK,
+                                                                          Conditional::ItemType::ENTRYEXIT};
+
+
+//          for (Conditional::ItemType itemType : Conditional::ItemType::values()) {
+//              if (itemType::_isStateVar == IsStateVar::IS_STATE_VAR) {
+//                  stateVarList.add(itemType);
+//              }
+//          }

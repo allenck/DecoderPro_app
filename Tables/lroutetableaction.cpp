@@ -1826,23 +1826,23 @@ void LRouteTableAction::updatePressed()
    name = elt->getSysName();
   }
   int state = elt->getState();    // actionData
-  int actionType = 0;
+  Conditional::Action::ACTS actionType = Conditional::Action::NONE;
   QString params = "";
   switch (elt->getType())
   {
         case SENSOR_TYPE:
-            actionType = Conditional::ACTION_SET_SENSOR;
+            actionType = Conditional::Action::SET_SENSOR;
             break;
         case TURNOUT_TYPE:
-            actionType = Conditional::ACTION_SET_TURNOUT;
+            actionType = Conditional::Action::SET_TURNOUT;
             break;
         case LIGHT_TYPE:
-            actionType = Conditional::ACTION_SET_LIGHT;
+            actionType = Conditional::Action::SET_LIGHT;
             break;
         case SIGNAL_TYPE:
-            actionType = Conditional::ACTION_SET_SIGNAL_APPEARANCE;
+            actionType = Conditional::Action::SET_SIGNAL_APPEARANCE;
             if (state > OFFSET) {
-                actionType = state & ~OFFSET;
+                actionType = Conditional::Action::getOperatorFromIntValue(state & ~OFFSET);
             }
             break;
         default:
@@ -1854,13 +1854,13 @@ void LRouteTableAction::updatePressed()
   QString file = scriptFile->text();
   if (file.length() > 0) {
    actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-                          Conditional::ACTION_RUN_SCRIPT, "", -1, file));
+                          Conditional::Action::RUN_SCRIPT, "", -1, file));
  }
  file = soundFile->text();
  if (file.length() > 0)
  {
   actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-                          Conditional::ACTION_PLAY_SOUND, "", -1, file));
+                          Conditional::Action::PLAY_SOUND, "", -1, file));
  }
  QList <ConditionalAction*>* onChangeList = cloneActionList(actionList, Conditional::ACTION_OPTION_ON_CHANGE);
 
@@ -1877,15 +1877,15 @@ void LRouteTableAction::updatePressed()
     name = elt->getSysName();
    }
    //int opern = newRouteType ? Conditional::OPERATOR_AND : Conditional::OPERATOR_OR;
-   int opern = Conditional::OPERATOR_AND;
+   Conditional::Operator::TYPE opern = Conditional::Operator::NONE;
    if (i==0)
    {
-    opern = Conditional::OPERATOR_NONE;
+    opern = Conditional::Operator::NONE;
    }
    int state = elt->getState();
    if (VETO < state)
    {
-     vetoList->append(new ConditionalVariable(true, opern, (state&~VETO), name, _newRouteType));
+     vetoList->append(new ConditionalVariable(true, opern, (Conditional::Type::TYPE)(state&~VETO), name, _newRouteType));
    }
   }
  }
@@ -1902,9 +1902,9 @@ void LRouteTableAction::updatePressed()
         if (name == NULL || name.length() == 0) {
              name = elt->getSysName();
         }
-        int opern = _newRouteType ? Conditional::OPERATOR_OR : Conditional::OPERATOR_AND;
+        Conditional::Operator::TYPE opern = _newRouteType ? Conditional::Operator::OR : Conditional::Operator::AND;
         if (i == 0) {
-            opern = Conditional::OPERATOR_NONE;
+            opern = Conditional::Operator::NONE;
         }
         int type = elt->getState();
         if (VETO > type) {
@@ -1925,9 +1925,9 @@ void LRouteTableAction::updatePressed()
                     default:
                         log->debug("updatePressed: Unknown state variable type "+QString::number(elt->getType()));
                 }
-                twoTriggerList->append(new ConditionalVariable(false, opern, type, name, true));
+                twoTriggerList->append(new ConditionalVariable(false, opern, (Conditional::Type::TYPE)type, name, true));
             } else {
-                oneTriggerList->append(new ConditionalVariable(false, opern, type, name, true));
+                oneTriggerList->append(new ConditionalVariable(false, opern, (Conditional::Type::TYPE)type, name, true));
             }
         }
   }
@@ -1942,8 +1942,8 @@ void LRouteTableAction::updatePressed()
  }
  else
  {
-  oneTriggerList->append(new ConditionalVariable(false, Conditional::OPERATOR_NONE,
-                                               Conditional::TYPE_NONE, LOGIX_INITIALIZER, true));
+  oneTriggerList->append(new ConditionalVariable(false, Conditional::Operator::NONE,
+                                               Conditional::Type::NONE, LOGIX_INITIALIZER, true));
  }
  if(log->isDebugEnabled())
  {
@@ -2026,14 +2026,14 @@ void LRouteTableAction::updatePressed()
          name = sensor->getSysName();
     }
     aList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-                                    Conditional::ACTION_SET_SENSOR, name, Sensor::ACTIVE, ""));
+                                    Conditional::Action::SET_SENSOR, name, Sensor::ACTIVE, ""));
     aList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE,
-                                    Conditional::ACTION_SET_SENSOR, name, Sensor::INACTIVE, ""));
+                                    Conditional::Action::SET_SENSOR, name, Sensor::INACTIVE, ""));
     int alignType = sensor->getState();
     for (int k=0; k<_includedOutputList->size(); k++)
     {
         LRouteOutputElement* elt = _includedOutputList->at(k);
-        int varType = 0;
+        Conditional::Type::TYPE varType = Conditional::Type::NONE;;
         bool add = (ALL_TYPE == alignType);
         switch (elt->getType()) {
             case SENSOR_TYPE:
@@ -2042,10 +2042,10 @@ void LRouteTableAction::updatePressed()
                 }
                 switch (elt->getState()){
                     case Sensor::INACTIVE:
-                        varType = Conditional::TYPE_SENSOR_INACTIVE;
+                        varType = Conditional::Type::SENSOR_INACTIVE;
                         break;
                     case Sensor::ACTIVE:
-                        varType = Conditional::TYPE_SENSOR_ACTIVE;
+                        varType = Conditional::Type::SENSOR_ACTIVE;
                         break;
                     case Route::TOGGLE:
                         add = false;
@@ -2058,10 +2058,10 @@ void LRouteTableAction::updatePressed()
                 }
                 switch (elt->getState()){
                     case Turnout::CLOSED:
-                        varType = Conditional::TYPE_TURNOUT_CLOSED;
+                        varType = Conditional::Type::TURNOUT_CLOSED;
                         break;
                     case Turnout::THROWN:
-                        varType = Conditional::TYPE_TURNOUT_THROWN;
+                        varType = Conditional::Type::TURNOUT_THROWN;
                         break;
                     case Route::TOGGLE:
                         add = false;
@@ -2074,10 +2074,10 @@ void LRouteTableAction::updatePressed()
                 }
                 switch (elt->getState()){
                     case Light::ON:
-                        varType = Conditional::TYPE_LIGHT_ON;
+                        varType = Conditional::Type::LIGHT_ON;
                         break;
                     case Light::OFF:
-                        varType = Conditional::TYPE_LIGHT_OFF;
+                        varType = Conditional::Type::LIGHT_OFF;
                         break;
                     case Route::TOGGLE:
                         add = false;
@@ -2090,38 +2090,38 @@ void LRouteTableAction::updatePressed()
                 }
                 switch (elt->getState()){
                     case SignalHead::DARK:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_DARK;
+                        varType = Conditional::Type::SIGNAL_HEAD_DARK;
                         break;
                     case SignalHead::RED:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_RED;
+                        varType = Conditional::Type::SIGNAL_HEAD_RED;
                         break;
                     case SignalHead::FLASHRED:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_FLASHRED;
+                        varType = Conditional::Type::SIGNAL_HEAD_FLASHRED;
                         break;
                     case SignalHead::YELLOW:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_YELLOW;
+                        varType = Conditional::Type::SIGNAL_HEAD_YELLOW;
                         break;
                     case SignalHead::FLASHYELLOW:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_FLASHYELLOW;
+                        varType = Conditional::Type::SIGNAL_HEAD_FLASHYELLOW;
                         break;
                     case SignalHead::GREEN:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_GREEN;
+                        varType = Conditional::Type::SIGNAL_HEAD_GREEN;
                         break;
                     case SignalHead::FLASHGREEN:
-                        varType = Conditional::TYPE_SIGNAL_HEAD_FLASHGREEN;
+                        varType = Conditional::Type::SIGNAL_HEAD_FLASHGREEN;
                         break;
                 default:
                     if(elt->getState() ==  SET_SIGNAL_HELD)
-                        varType = Conditional::TYPE_SIGNAL_HEAD_HELD;
+                        varType = Conditional::Type::SIGNAL_HEAD_HELD;
 //                        break;
                     if(elt->getState() ==  CLEAR_SIGNAL_HELD)
                         add = false;    // don't know how to test for this
 //                        break;
                     if(elt->getState() ==  SET_SIGNAL_DARK)
-                        varType = Conditional::TYPE_SIGNAL_HEAD_DARK;
+                        varType = Conditional::Type::SIGNAL_HEAD_DARK;
 //                        break;
                     if(elt->getState() ==   SET_SIGNAL_LIT)
-                        varType = Conditional::TYPE_SIGNAL_HEAD_LIT;
+                        varType = Conditional::Type::SIGNAL_HEAD_LIT;
                         break;
                 }
                 break;
@@ -2133,7 +2133,7 @@ void LRouteTableAction::updatePressed()
             if (eltName == NULL || eltName.length() == 0) {
                  eltName = elt->getSysName();
             }
-            vList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND,
+            vList->append(new ConditionalVariable(false, Conditional::Operator::AND,
                           varType, eltName, true));
         }
     }
@@ -2166,10 +2166,10 @@ void LRouteTableAction::updatePressed()
              eltName = elt->getSysName();
         }
         aList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-                                             Conditional::ACTION_LOCK_TURNOUT,
+                                             Conditional::Action::LOCK_TURNOUT,
                                              eltName, Turnout::LOCKED, ""));
         aList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE,
-                                             Conditional::ACTION_LOCK_TURNOUT,
+                                             Conditional::Action::LOCK_TURNOUT,
                                              eltName, Turnout::UNLOCKED, ""));
   }
   numConds = makeRouteConditional(numConds, /*false,*/ aList, oneTriggerList,
@@ -2981,7 +2981,7 @@ LRouteInputElement::LRouteInputElement(QString sysName, QString userName, int ty
 LRouteInputSensor::LRouteInputSensor (QString sysName, QString userName, QObject* parent) : LRouteInputElement(sysName, userName, LRouteTableAction::SENSOR_TYPE, parent)
 {
     //super(sysName, userName, SENSOR_TYPE );
-    setState(Conditional::TYPE_SENSOR_ACTIVE);
+    setState(Conditional::Type::SENSOR_ACTIVE);
 }
 QString LRouteInputSensor::getTestState() {
     switch (_state) {

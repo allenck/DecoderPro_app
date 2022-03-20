@@ -2,7 +2,7 @@
 #define DEFAULTSTRINGEXPRESSIONMANAGERXML_H
 
 #include "abstractmanagerxml.h"
-
+#include "threadingutil.h"
 class DefaultStringExpressionManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
@@ -25,4 +25,14 @@ class DefaultStringExpressionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultStringExpressionManagerXml)
+
+class DSEMRun : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DSEMRun() {}
+ public slots:
+  void run();
+
+};
 #endif // DEFAULTSTRINGEXPRESSIONMANAGERXML_H

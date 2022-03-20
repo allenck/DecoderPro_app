@@ -1138,6 +1138,17 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/actionsensor.cpp \
+    logixng/actionturnoutlock.cpp \
+    logixng/andxml.cpp \
+    logixng/antecedent.cpp \
+    logixng/antecedentswing.cpp \
+    logixng/antecedentxml.cpp \
+    logixng/executedelayed.cpp \
+    logixng/not.cpp \
+    logixng/protectedtimertask.cpp \
+    logixng/triggeronce.cpp \
+    logixng/true.cpp \
     logixng/logix.cpp \
     logixng/expressionsensor.cpp \
     logixng/expressionsensorswing.cpp \
@@ -2480,6 +2491,18 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionsensor.h \
+    logixng/actionturnoutlock.h \
+    logixng/andxml.h \
+    logixng/antecedent.h \
+    logixng/antecedentswing.h \
+    logixng/antecedentxml.h \
+    logixng/executedelayed.h \
+    logixng/not.h \
+    logixng/protectedtimertask.h \
+    logixng/timerunit.h \
+    logixng/triggeronce.h \
+    logixng/true.h \
     logixng/logix.h \
     logixng/expressionsensor.h \
     logixng/expressionsensorswing.h \

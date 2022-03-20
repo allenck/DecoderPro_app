@@ -1,7 +1,7 @@
 #ifndef DEFAULTANALOGEXPRESSIONMANAGERXML_H
 #define DEFAULTANALOGEXPRESSIONMANAGERXML_H
 #include "abstractmanagerxml.h"
-
+#include "threadingutil.h"
 
 class DefaultAnalogExpressionManagerXml : public AbstractManagerXml
 {
@@ -22,4 +22,13 @@ class DefaultAnalogExpressionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultAnalogExpressionManagerXml)
+
+class DAEMRun : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DAEMRun() : ThreadAction() {}
+ public slots:
+  void run();
+};
 #endif // DEFAULTANALOGEXPRESSIONMANAGERXML_H

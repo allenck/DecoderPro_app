@@ -2,7 +2,7 @@
 #include "category.h"
 #include "conditionalng.h"
 #include "loggerfactory.h"
-#include "conditionalng_manager.h"
+#include "defaultconditionalngmanager.h"
 #include "defaultlogixngmanager.h"
 /**
  * The default implementation of LogixNG.
@@ -36,7 +36,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ void DefaultLogixNG::setParent(Base* parent) {
-    throw  UnsupportedOperationException("A LogixNG cannot have a parent");
+    throw new UnsupportedOperationException("A LogixNG cannot have a parent");
 }
 
 //@Override
@@ -66,13 +66,13 @@
 }
 
 //@Override
-/*public*/ FemaleSocket* DefaultLogixNG::getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) {
-    throw  UnsupportedOperationException("Not supported.");
+/*public*/ FemaleSocket* DefaultLogixNG::getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ {
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 //@Override
 /*public*/ int DefaultLogixNG::getChildCount() {
-    throw  UnsupportedOperationException("Not supported.");
+    throw new UnsupportedOperationException("Not supported.");
 }
 
 //@Override
@@ -91,7 +91,7 @@
             QString systemName = entry->_systemName;
             if (systemName != nullptr) {
                 entry->_conditionalNG =
-                        (ConditionalNG*)((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))
+                        (ConditionalNG*)((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
                                 ->getBySystemName(systemName);
                 if (entry->_conditionalNG != nullptr) {
                     entry->_conditionalNG->setup();
@@ -164,6 +164,8 @@
 //@Override
 /*public*/ ConditionalNG* DefaultLogixNG::getConditionalNG(int order) {
     try {
+     if(order < 0 || order>=_conditionalNG_Entries.size())
+      throw new IndexOutOfBoundsException();
         return _conditionalNG_Entries.at(order)->_conditionalNG;
     } catch (IndexOutOfBoundsException* ioob) {
         return nullptr;
@@ -284,7 +286,7 @@
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
         if (entry->_conditionalNG != nullptr) {
             entry->_conditionalNG->setParent(this);
-            result = result && entry->_conditionalNG->setParentForAllChildren(errors);
+            result = result && ((AbstractBase*)entry->_conditionalNG)->setParentForAllChildren(errors);
         }
     }
     return result;

@@ -65,6 +65,8 @@
             log->warn(tr("Method getConditionalNG() returns null for class %1").arg(this->metaObject()->className()));
             log->error(tr("Method getConditionalNG() returns null for class %1").arg(this->metaObject()->className()));
         }
+        ConditionalNG* c1 = getConditionalNG();
+        ConditionalNG* c2 = _base->getConditionalNG();
         Assert::assertTrue("ConditionalNG is equal", getConditionalNG() == _base->getConditionalNG(), __FILE__, __LINE__);
 
         _base->getConditionalNG()->setEnabled(false);

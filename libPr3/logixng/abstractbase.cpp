@@ -45,7 +45,7 @@
     //@Override
     /*public*/ ConditionalNG* AbstractBase::getConditionalNG() {
         if (qobject_cast<ConditionalNG*>(this->self() )) return (ConditionalNG*)this;
-        if (getParent()->bself() == nullptr) return nullptr;
+        if (getParent() == nullptr) return nullptr;
         return getParent()->getConditionalNG();
     }
 

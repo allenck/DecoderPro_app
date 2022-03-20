@@ -36,6 +36,7 @@
 
     void DefaultConditionalNG::common(QString sys, QString user, int threadID)
     {
+     setObjectName("DefaultConditionalNG");
         _startupThreadId = threadID;
         _thread = LogixNG_Thread::getThread(threadID);
         _thread->setThreadInUse();
@@ -224,8 +225,8 @@
 
     //@Override
     /*public*/  void DefaultConditionalNG::connected(FemaleSocket* socket) {
-     QObject* connectedSocket = (QObject*)socket->getConnectedSocket();
-     QString name = ((AbstractMaleSocket*)connectedSocket)->getSystemName();
+     MaleSocket* connectedSocket = socket->getConnectedSocket();
+     QString name = connectedSocket->getSystemName();
        //_socketSystemName = socket->getConnectedSocket()->getSystemName();
      _socketSystemName = name;
     }

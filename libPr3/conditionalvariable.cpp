@@ -71,8 +71,8 @@ void ConditionalVariable::common()
  // as the default operator immediately to the left of this variable in the antecedent statement. 
  // It may be over written by the antecedent statement in the Conditional to which this variable 
  // belongs.
- _opern = Conditional::OPERATOR_NONE;
- _type   = Conditional::TYPE_NONE;
+ _opern = Conditional::Operator::NONE;
+ _type   = Conditional::Type::NONE;
  _name = "";
  _dataString = "";
  _num1 = 0;
@@ -88,7 +88,7 @@ void ConditionalVariable::common()
 
 }
 
-/*public*/ ConditionalVariable::ConditionalVariable(bool _not, int opern, int type, QString name, bool trigger, QObject *parent) :     QObject(parent)
+/*public*/ ConditionalVariable::ConditionalVariable(bool _not, Conditional::Operator::TYPE opern, Conditional::Type::TYPE type, QString name, bool trigger, QObject *parent) :     QObject(parent)
 {
  common();
  this->_not = _not;
@@ -220,27 +220,19 @@ void ConditionalVariable::common()
     this->_not = _not;
 }
 
-/*public*/ int ConditionalVariable::getOpern() {
+/*public*/ Conditional::Operator::TYPE ConditionalVariable::getOpern() {
     return _opern;
 }
 
-/*public*/ void ConditionalVariable::setOpern(int opern) {
-    if (opern == Conditional::OPERATOR_AND_NOT) {
-        _opern = Conditional::OPERATOR_AND;
-        _not = true;
-    } else if (opern == Conditional::OPERATOR_NOT) {
-        _opern = Conditional::OPERATOR_NONE;
-        _not = true;
-    } else {
+/*public*/ void ConditionalVariable::setOpern(Conditional::Operator::TYPE opern) {
         _opern = opern;
-    }
 }
 
-/*public*/ int ConditionalVariable::getType() {
+/*public*/ Conditional::Type::TYPE ConditionalVariable::getType() {
     return _type;
 }
 
-/*public*/ void ConditionalVariable::setType(int type) {
+/*public*/ void ConditionalVariable::setType(Conditional::Type::TYPE type) {
     _type = type;
 }
 
@@ -415,15 +407,11 @@ void ConditionalVariable::common()
 
 /*public*/ QString ConditionalVariable::getOpernString() {
     switch (_opern) {
-        case Conditional::OPERATOR_AND:
+        case Conditional::Operator::AND:
             return tr("AND");
-        case Conditional::OPERATOR_NOT:
-            return tr("NOT");
-        case Conditional::OPERATOR_AND_NOT:
-            return tr("AND");
-        case Conditional::OPERATOR_NONE:
+        case Conditional::Operator::NONE:
             return "";
-        case Conditional::OPERATOR_OR:
+        case Conditional::Operator::OR:
             return tr("OR");
         default : return "";
     }

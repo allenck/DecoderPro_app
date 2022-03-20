@@ -134,9 +134,8 @@
             femaleSocket->_connect(actionManySocket);
 //            femaleSocket->setLock(Base.Lock.HARD_LOCK);
 
-            QObject* o = (QObject*)actionManySocket;
             //femaleSocket = actionManySocket->getChild(0);
-            femaleSocket = ((AbstractDebuggerMaleSocket*)(o))->getChild(0);
+            femaleSocket = ((AbstractMaleSocket*)(actionManySocket)->bself())->getChild(0);
             MaleDigitalActionSocket* actionIfThenSocket = (MaleDigitalActionSocket*)((DefaultDigitalActionManager*)
                     InstanceManager::getDefault("DigitalActionManager"))
                             ->registerAction(new IfThenElse(digitalActionManager->AbstractManager::getAutoSystemName(), nullptr));
@@ -164,25 +163,20 @@
                 "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalActionSocket",
                 child->getClassName(), __FILE__, __LINE__);
         MaleSocket* maleSocket = child->getConnectedSocket();
-        QObject* obj = (QObject*)maleSocket;
-        //QString s = ((AbstractMaleSocket*)obj)->getClassName();
-        if(static_cast<AbstractDebuggerMaleSocket*>(obj))
-         maleSocket = ((AbstractDebuggerMaleSocket*)obj);
-        else
-         maleSocket = ((AbstractMaleSocket*)obj);
+        QString s = ((AbstractMaleSocket*)maleSocket->bself())->getClassName();
         Assert::assertEquals("action is of correct class",
                 "jmri.jmrit.logixng.tools.debugger.DebuggerMaleDigitalActionSocket",
-                maleSocket->getClassName(), __FILE__, __LINE__);
+                ((AbstractMaleSocket*)maleSocket->bself())->getClassName(), __FILE__, __LINE__);
         Assert::assertEquals("action is of correct class",
                 "Many",
-                maleSocket->getLongDescription(), __FILE__, __LINE__);
+                ((AbstractBase*)maleSocket->bself())->getLongDescription(), __FILE__, __LINE__);
         MaleSocket* maleSocket2 = maleSocket->getChild(0)->getConnectedSocket();
         Assert::assertEquals("action is of correct class",
                 "jmri.jmrit.logixng.tools.debugger.DebuggerMaleDigitalActionSocket",
-                maleSocket2->getClassName(), __FILE__, __LINE__);
+                ((AbstractMaleSocket*)maleSocket2->bself())->getClassName(), __FILE__, __LINE__);
         Assert::assertEquals("action is of correct class",
                 "If Then Else. Execute on change",
-                maleSocket2->getLongDescription(), __FILE__, __LINE__);
+                ((AbstractBase*)maleSocket2->bself())->getLongDescription(), __FILE__, __LINE__);
     }
 
     //@Test

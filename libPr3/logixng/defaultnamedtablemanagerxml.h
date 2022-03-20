@@ -2,6 +2,7 @@
 #define DEFAULTNAMEDTABLEMANAGERXML_H
 
 #include "abstractmanagerxml.h"
+#include "threadingutil.h"
 
 class DefaultNamedTableManagerXml : public AbstractManagerXml
 {
@@ -25,4 +26,13 @@ class DefaultNamedTableManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultNamedTableManagerXml)
+
+class DNTMRun : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DNTMRun() {}
+ public slots:
+  void run();
+};
 #endif // DEFAULTNAMEDTABLEMANAGERXML_H

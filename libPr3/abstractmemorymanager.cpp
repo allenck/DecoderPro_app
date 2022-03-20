@@ -48,11 +48,17 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 }
 
 /*public*/ Memory* AbstractMemoryManager::getBySystemName(QString name)  {
-    getBeanBySystemName(name);
+    NamedBean* nb = getBeanBySystemName(name);
+    if(nb)
+     return (Memory*)nb->self();
+    return nullptr;
 }
 
 /*public*/ Memory* AbstractMemoryManager::getByUserName(QString key)  {
-    getBeanByUserName(key);
+    NamedBean* nb = getBeanByUserName(key);
+    if(nb)
+     return (Memory*)nb->self();
+    return nullptr;
 }
 
 /*public*/ Memory* AbstractMemoryManager::newMemory(QString systemName, QString userName)

@@ -5,6 +5,7 @@
 #include "namedbeanhandle.h"
 #include "logger.h"
 #include "libPr3_global.h"
+#include "conditional.h"
 
 class NamedBeanHandleManager;
 class Conditional;
@@ -22,13 +23,13 @@ public:
      GREATER_THAN_OR_EQUAL = 4,
      GREATER_THAN       = 5
     };
-    /*public*/ ConditionalVariable(bool _not, int opern, int type, QString name, bool trigger, QObject *parent = 0);
+    /*public*/ ConditionalVariable(bool _not, Conditional::Operator::TYPE opern, Conditional::Type::TYPE type, QString name, bool trigger, QObject *parent = 0);
     /*public*/ bool isNegated() ;
     /*public*/ void setNegation(bool _not) ;
-    /*public*/ int getOpern();
-    /*public*/ void setOpern(int opern);
-    /*public*/ int getType();
-    /*public*/ void setType(int type);
+    /*public*/ Conditional::Operator::TYPE getOpern();
+    /*public*/ void setOpern(Conditional::Operator::TYPE opern);
+    /*public*/ Conditional::Type::TYPE getType();
+    /*public*/ void setType(Conditional::Type::TYPE type);
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
     /*public*/ NamedBeanHandle<NamedBean*>* getNamedBean();
@@ -70,8 +71,8 @@ public slots:
     // as the default operator immediately to the left of this variable in the antecedent statement. 
     // It may be over written by the antecedent statement in the Conditional to which this variable 
     // belongs.
-    /*private*/ int _opern;// = Conditional.OPERATOR_NONE;
-    /*private*/ int _type;//   = Conditional.TYPE_NONE;
+    /*private*/ Conditional::Operator::TYPE _opern;// = Conditional.OPERATOR_NONE;
+    /*private*/ Conditional::Type::TYPE _type;// = Conditional::TYPE_NONE;
     /*private*/ QString _name;// = "";
     /*private*/ QString _dataString;// = "";
     /*private*/ int _num1;// = 0;

@@ -5,33 +5,6 @@
 #include "runnable.h"
 
 class Logger;
-class ThreadAction;
-class ThreadActionWithJmriException;
-class ThreadingUtil : public QObject
-{
-  Q_OBJECT
- public:
-  explicit ThreadingUtil(QObject *parent = nullptr);
-  static /*public*/ QThread* newThread(Runnable* runner);
-  static /*public*/ QThread* newThread(Runnable* runner, QString name);
-  static /*public*/ void runOnGUI(/*@Nonnull*/ ThreadAction* ta);
-  template<class E>
-  static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta);
-  static /*public*/ void runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) ;
-  static /*public*/ void runOnLayout(/*@Nonnull*/ ThreadAction* ta);
-  static /*public*/ bool isLayoutThread();
-  static /*public*/ bool isGUIThread();
-  static /*public*/ void runOnLayoutWithJmriException(ThreadActionWithJmriException* ta);
-  static /*public*/ void runOnGUIWithJmriException(/*@Nonnull*/ ThreadActionWithJmriException* ta);
-
-
- signals:
-
- public slots:
-
- private:
-  static Logger* log;
-};
 /**
  * Interface for use in ThreadingUtil's lambda interfaces
  */
@@ -70,4 +43,48 @@ class ThreadingUtil : public QObject
      */
   /*public*/ void run() /*throws JmriException, RuntimeException*/{}
 };
+class ThreadingUtil : public QObject
+{
+  Q_OBJECT
+ public:
+
+  explicit ThreadingUtil(QObject *parent = nullptr);
+  static /*public*/ QThread* newThread(Runnable* runner);
+  static /*public*/ QThread* newThread(Runnable* runner, QString name);
+  static /*public*/ void runOnGUI(/*@Nonnull*/ ThreadAction* ta);
+  static /*public*/ void runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) ;
+  static /*public*/ void runOnLayout(/*@Nonnull*/ ThreadAction* ta);
+  static /*public*/ bool isLayoutThread();
+  static /*public*/ bool isGUIThread();
+  static /*public*/ void runOnLayoutWithJmriException(ThreadActionWithJmriException* ta);
+  static /*public*/ void runOnGUIWithJmriException(/*@Nonnull*/ ThreadActionWithJmriException* ta);
+  /**
+   * Interface for use in ThreadingUtil's lambda interfaces
+   *
+   * @param <E> the type returned
+   */
+  //@FunctionalInterface
+  template<class E>
+  /*static*/ /*public*/ class ReturningThreadAction : public ThreadAction
+  {
+    //Q_OBJECT
+   public:
+    ReturningThreadAction() : ThreadAction() {}
+   public:
+      /*public*/ void run();
+  };
+  template<class E>
+  static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ ReturningThreadAction<E>* ta);
+
+ signals:
+
+ public slots:
+
+ private:
+  static Logger* log;
+};
+
+
+
+
 #endif // THREADINGUTIL_H

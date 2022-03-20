@@ -2,6 +2,7 @@
 #define DEFAULTLOGIXNGMANAGERXML_H
 
 #include <abstractnamedbeanmanagerconfigxml.h>
+#include "threadingutil.h"
 
 class DefaultLogixNGManagerXml : public AbstractNamedBeanManagerConfigXML
 {
@@ -25,4 +26,14 @@ class DefaultLogixNGManagerXml : public AbstractNamedBeanManagerConfigXML
 
 };
 Q_DECLARE_METATYPE(DefaultLogixNGManagerXml);
+
+class DLMRun : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DLMRun() {}
+ public slots:
+  void run();
+};
+
 #endif // DEFAULTLOGIXNGMANAGERXML_H

@@ -20,6 +20,12 @@ class ConditionalNGTest : public QObject
   void testGetLogixNG();
   void testState();
   void testConnectDisconnect();
+  void testSetSocketName();
+  void testShortDescription();
+  void testLongDescription();
+  void testGetChild();
+  void testGetChildCount();
+  void testGetCategory();
 
  signals:
 

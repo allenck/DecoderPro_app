@@ -2,22 +2,22 @@
 #define DEFAULTCONDITIONALACTION_H
 #include "conditionalaction.h"
 #include "logger.h"
+#include "conditional.h"
 
 class Memory;
 class Sound;
 class NamedBeanHandleManager;
-class Conditional;
 class LIBPR3SHARED_EXPORT DefaultConditionalAction : public ConditionalAction
 {
     Q_OBJECT
 public:
     explicit DefaultConditionalAction(QObject *parent = 0);
-    /*public*/ DefaultConditionalAction(int option, int type, QString name, int actionData, QString actionStr, QObject *parent = 0);
+    /*public*/ DefaultConditionalAction(int option, Conditional::Action::ACTS type, QString name, int actionData, QString actionStr, QObject *parent = 0);
     /*public*/ bool equals(QObject* obj);
     /*public*/ int hashCode();
 
-    /*public*/ int getType();
-    /*public*/ void setType(int type);
+    /*public*/ Conditional::Action::ACTS getType();
+    /*public*/ void setType(Conditional::Action::ACTS type);
     /*public*/ void setType(QString type);
     /*public*/ QString getDeviceName();
     /*public*/ void setDeviceName(QString deviceName);
@@ -44,7 +44,7 @@ public:
     /*public*/ static QString getItemTypeString(int t);
     /*public*/ static QString getActionTypeString(int t);
     /*public*/ static QString getOptionString(int opt, bool type);
-    /*public*/ static int stringToActionType(QString str);
+    /*public*/ static Conditional::Action::ACTS stringToActionType(QString str);
     /*public*/ static int stringToActionData(QString str);
     /*public*/ static QString getActionDataString(int t, int data);
     /*public*/ QString description(bool triggerType);
@@ -53,7 +53,7 @@ signals:
 public slots:
 private:
     /*private*/ int _option;// = Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE;
-    /*private*/ int _type;// = Conditional::ACTION_NONE ;
+    /*private*/ Conditional::Action::ACTS _type;// = Conditional::ACTION_NONE ;
     /*private*/ QString _deviceName;// = " ";
     /*private*/ int _actionData = 0;
     /*private*/ QString _actionString;// = "";

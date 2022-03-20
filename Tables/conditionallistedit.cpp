@@ -1149,9 +1149,9 @@ void ConditionalListEdit::addVariablePressed(JActionEvent* /*e*/)
  if (size > 1)
  {
   if (_logicType == Conditional::ALL_OR)
-   variable->setOpern(Conditional::OPERATOR_OR);
+   variable->setOpern(Conditional::Operator::OR);
   else
-   variable->setOpern(Conditional::OPERATOR_AND);
+   variable->setOpern(Conditional::Operator::AND);
  }
  size--;
  _variableTableModel->fireTableRowsInserted(size, size);
@@ -1193,12 +1193,12 @@ void ConditionalListEdit::variableOperatorChanged(int row, QString oper) {
     if (row > 0)
     {
         if (oper==(tr("OR")))
-            variable->setOpern(Conditional::OPERATOR_OR);
+            variable->setOpern(Conditional::Operator::OR);
         else
-            variable->setOpern(Conditional::OPERATOR_AND);
+            variable->setOpern(Conditional::Operator::AND);
     }
     else
-        variable->setOpern(Conditional::OPERATOR_NONE);
+        variable->setOpern(Conditional::Operator::NONE);
     if (variable->getOpern() != oldOper )
         makeAntecedent();
 
@@ -1419,10 +1419,10 @@ bool ConditionalListEdit::logicTypeChanged(JActionEvent* /*e*/) {
             return false;
     }
     makeAntecedent();
-    int oper = Conditional::OPERATOR_OR;
+    Conditional::Operator::TYPE oper = Conditional::Operator::OR;
     switch (type) {
         case Conditional::ALL_AND:
-            oper = Conditional::OPERATOR_AND;
+            oper = Conditional::Operator::AND;
             // fall through
         case Conditional::ALL_OR:
             for (int i=1; i<_variableList->size(); i++)
@@ -1477,10 +1477,10 @@ void ConditionalListEdit::makeAntecedent()
         for (int i=1; i<_variableList->size(); i++) {
             ConditionalVariable* variable = _variableList->at(i);
             switch (variable->getOpern() ) {
-                case Conditional::OPERATOR_AND:
+                case Conditional::Operator::AND:
                     str = str + _and;
                     break;
-                case Conditional::OPERATOR_OR:
+                case Conditional::Operator::OR:
                     str = str + _or;
                     break;
                 default : break;
@@ -1504,7 +1504,7 @@ void ConditionalListEdit::appendToAntecedent(ConditionalVariable* /*variable*/)
 {
  if (_variableList->size() > 1)
  {
-  if (_logicType == Conditional::OPERATOR_OR)
+  if (_logicType == Conditional::Operator::OR)
   {
    _antecedent = _antecedent + " " + tr("OR").toLower() + " ";
   }
@@ -2662,7 +2662,7 @@ bool ConditionalListEdit::validateVariable() {
         QMessageBox::critical(_editConditionalFrame, tr("Error"), tr("Select a Variable Type or Cancel."));
             return false;
     }
-    _curVariable->setType(testType);
+    _curVariable->setType((Conditional::Type::TYPE)testType);
     if (log->isDebugEnabled()) log->debug("validateVariable: itemType= "+QString::number(itemType)+", testType= "+QString::number(testType));
     switch ( itemType ) {
         case Conditional::ITEM_TYPE_SENSOR:
@@ -2741,7 +2741,7 @@ bool ConditionalListEdit::validateVariable() {
                     QMessageBox::critical(_editConditionalFrame, tr("Error"), tr("Select an appearance.  You must hit the Enter/Return key\nafter entering a name with the cursor in the name field."));
                     return false;
                 }
-                _curVariable->setType(type);
+                _curVariable->setType((Conditional::Type::TYPE)type);
                 _curVariable->setDataString(appStr);
                 if (log->isDebugEnabled()) log->debug("SignalHead \""+name+"\"of type '"+testType+
                                                     "' _variableSignalBox->currentText()= "+
@@ -4310,7 +4310,7 @@ bool ConditionalListEdit::validateAction() {
          break;
      default : break;
     }
-    _curAction->setType(actionType);
+    _curAction->setType((Conditional::Action::ACTS)actionType);
     if (actionType != Conditional::ACTION_NONE) {
         _curAction->setOption(_actionOptionBox->currentIndex() + 1);
     }
@@ -4374,7 +4374,7 @@ void ActionTypeListener::actionPerformed()
  }
  if (_self->_curAction != nullptr) {
      if (select1 > 0 && _itemType == select1) {
-         _self->_curAction->setType(_self->getActionTypeFromBox(_itemType, select2));
+         _self->_curAction->setType((Conditional::Action::ACTS)_self->getActionTypeFromBox(_itemType, select2));
          if (select1 == _itemType) {
              QString text = _self->_actionNameField->text();
              if (text != "" && text.length() > 0) {

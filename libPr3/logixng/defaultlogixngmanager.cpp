@@ -74,7 +74,7 @@
             /*throw new (IllegalArgumentException)*/ {
 
         // Check that LogixNG does not already exist
-        LogixNG* x =nullptr;
+        DefaultLogixNG* x =nullptr;
         NamedBean* nb = nullptr;
         if (userName != nullptr && userName !=("")) {
             //x = (DefaultLogixNG*)getByUserName(userName)->bself();

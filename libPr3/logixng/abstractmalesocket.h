@@ -9,6 +9,7 @@
 #include "jmriexception.h"
 #include "abstractnamedbean.h"
 #include "abstractbase.h"
+#include "threadingutil.h"
 
 class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleSocket
 {
@@ -134,7 +135,20 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*abstract*/ /*protected*/virtual void unregisterListenersForThisClass()=0;
   /*abstract*/ /*protected*/ virtual void disposeMe()=0;
 };
+#if 0
+//template<class E>
+class AMSRun1 : public ThreadingUtil::ReturningThreadAction<bool>
+{
 
-
-
+  Base* item;
+  QString message;
+ public:
+  AMSRun1(Base* item, QString message) {
+   this->item = item;
+   this->message = message;
+  }
+ public slots:
+  void run();
+};
+#endif
 #endif // ABSTRACTMALESOCKET_H

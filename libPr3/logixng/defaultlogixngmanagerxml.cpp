@@ -10,6 +10,7 @@
 #include "defaultlogixng.h"
 #include "class.h"
 #include "threadingutil.h"
+#include "appsconfigurationmanager.h"
 
 /**
  * Provides the functionality for configuring LogixNGManagers
@@ -311,9 +312,23 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNGS);
             }
         });
+
+#else
+        ThreadingUtil::runOnGUI(new DLMRun());
 #endif
     }
 
+void DLMRun::run()
+{
+ // register new one with InstanceManager
+ DefaultLogixNGManager* pManager = DefaultLogixNGManager::instance();
+ InstanceManager::store(pManager, "LogixNG_Manager");
+ // register new one for configuration
+ ConfigureManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cmOD != nullptr) {
+     cmOD->registerConfig(pManager, Manager::LOGIXNGS);
+ }
+}
     //@Override
     /*public*/ int DefaultLogixNGManagerXml::loadOrder() const{
         return ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getXMLOrder();

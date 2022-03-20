@@ -21,7 +21,7 @@
     //@Override
     /*public*/  bool DefaultFemaleDigitalActionSocket::isCompatible(MaleSocket* socket) {
      QObject* obj = (QObject*)socket;
-     MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(obj);
+     MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(socket->bself());
         //return qobject_cast<MaleDigitalActionSocket*>(socket->bself());
      return mas;
     }

@@ -286,6 +286,10 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/digitalexpressionstest.cpp \
+    logixng/digitalexpressionstestaction.cpp \
+    logixng/logixngtest.cpp \
+    logixng/logixngtestaction.cpp \
     logixng/abstractbasetestbase.cpp \
     logixng/abstractdigitalbooleanactiontestbase.cpp \
     logixng/digitalbooleanactionmanagertest.cpp \
@@ -579,6 +583,10 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/digitalexpressionstest.h \
+    logixng/digitalexpressionstestaction.h \
+    logixng/logixngtest.h \
+    logixng/logixngtestaction.h \
     logixng/abstractbasetestbase.h \
     logixng/abstractdigitalbooleanactiontestbase.h \
     logixng/digitalbooleanactionmanagertest.h \

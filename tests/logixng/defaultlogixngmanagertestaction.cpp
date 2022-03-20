@@ -5,7 +5,8 @@
 #include "loggerfactory.h"
 #include "junitutil.h"
 
-DefaultLogixNGManagerTestAction::DefaultLogixNGManagerTestAction(QObject *parent) : AbstractAction(tr("DefaultLogixNGManagerTest"), parent)
+DefaultLogixNGManagerTestAction::DefaultLogixNGManagerTestAction(QObject *parent)
+ : AbstractAction(tr("DefaultLogixNG"), parent)
 {
 connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }

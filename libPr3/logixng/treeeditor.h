@@ -183,6 +183,7 @@ class TreeEditor : public TreeViewer
 };
 /*protected*/ class TEPopupMenu : public QMenu, public  ActionListener {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
   /*private*/ static /*final*/ QString ACTION_COMMAND_RENAME_SOCKET;// = "rename_socket";
   /*private*/ static /*final*/ QString ACTION_COMMAND_ADD;// = "add";
   /*private*/ static /*final*/ QString ACTION_COMMAND_REMOVE;// = "remove";

@@ -6773,17 +6773,17 @@ setSignalsAtTToTOpen = true;
             log->error("Trouble creating conditional "+cName+" while setting up Logix->");
             return "";
         }
-        int type = Conditional::TYPE_TURNOUT_THROWN;
-        if (!continuing) type = Conditional::TYPE_TURNOUT_CLOSED;
+        Conditional::Type::TYPE type = Conditional::Type::TURNOUT_THROWN;
+        if (!continuing) type = Conditional::Type::TURNOUT_CLOSED;
         QList <ConditionalVariable*>* variableList = c->getCopyOfStateVariables();
-        variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND, type, turnoutName, true));
+        variableList->append(new ConditionalVariable(false,  Conditional::Operator::AND, type, turnoutName, true));
         c->setStateVariables(variableList);
        QList <ConditionalAction*>* actionList = c->getCopyOfActions();
         actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-                                             Conditional::ACTION_SET_SENSOR, sensorName,
+                                             Conditional::Action::SET_SENSOR, sensorName,
                                              Sensor::ACTIVE, ""));
         actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE,
-                                             Conditional::ACTION_SET_SENSOR, sensorName,
+                                             Conditional::Action::SET_SENSOR, sensorName,
                                              Sensor::INACTIVE, ""));
         c->setAction(actionList);										// string data
         x->addConditional(cName,-1);
@@ -14527,28 +14527,28 @@ QWidget* BeanDetails::addIconPanel()
                  return "";
   }
  }
- int type = Conditional::TYPE_TURNOUT_THROWN;
+ Conditional::Type::TYPE type = Conditional::Type::TURNOUT_THROWN;
  if (nearState == Turnout::CLOSED) {
-     type = Conditional::TYPE_TURNOUT_CLOSED;
+     type = Conditional::Type::TURNOUT_CLOSED;
  }
 
  QList<ConditionalVariable*>* variableList = new QList<ConditionalVariable*>();
- variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND,
+ variableList->append(new ConditionalVariable(false, Conditional::Operator::AND,
          type, turnoutName, true));
 
- type = Conditional::TYPE_TURNOUT_THROWN;
+ type = Conditional::Type::TURNOUT_THROWN;
  if (farState == Turnout::CLOSED) {
-     type = Conditional::TYPE_TURNOUT_CLOSED;
+     type = Conditional::Type::TURNOUT_CLOSED;
  }
- variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND,
+ variableList->append(new ConditionalVariable(false, Conditional::Operator::AND,
          type, farTurnoutName, true));
  c->setStateVariables(variableList);
  QList<ConditionalAction*>* actionList = new QList<ConditionalAction*>();
  actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-         Conditional::ACTION_SET_SENSOR, sensorName,
+         Conditional::Action::SET_SENSOR, sensorName,
          Sensor::INACTIVE, ""));
  actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE,
-         Conditional::ACTION_SET_SENSOR, sensorName,
+         Conditional::Action::SET_SENSOR, sensorName,
          Sensor::ACTIVE, ""));
  c->setAction(actionList);        // string data
  if (newConditional) {

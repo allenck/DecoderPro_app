@@ -37,9 +37,9 @@
         hasThrown = false;
         try {
            _m->registerAction(maleSocket);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException* e) {
             hasThrown = true;
-            Assert::assertEquals("Error message is correct", "registerAction() cannot register a MaleDigitalBooleanActionSocket. Use the method register() instead.", e.getMessage(), __FILE__, __LINE__);
+            Assert::assertEquals("Error message is correct", "registerAction() cannot register a MaleDigitalBooleanActionSocket. Use the method register() instead.", e->getMessage(), __FILE__, __LINE__);
         }
         Assert::assertTrue("Exception thrown", hasThrown, __FILE__, __LINE__);
     }

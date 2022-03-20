@@ -170,10 +170,10 @@ QString ConditionalEditBase::makeAntecedent(QList<ConditionalVariable*> variable
         for (int i = 1; i < variableList.size(); i++) {
             ConditionalVariable* variable = variableList.at(i);
             switch (variable->getOpern()) {
-                case Conditional::AND:
+                case Conditional::Operator::AND:
                     antecedent.append(" and ");
                     break;
-                case Conditional::OR:
+                case Conditional::Operator::OR:
                     antecedent.append(" or ");
                     break;
                 default:

@@ -3,7 +3,7 @@
 #include <QObject>
 #include "namedbeanhandle.h"
 #include "libPr3_global.h"
-
+#include "conditional.h"
 /**
  * The consequent of the antecedent of the conditional proposition.
  * The data for the action to be taken when a Conditional calculates to True
@@ -52,7 +52,7 @@ public:
     /**
      * The consequent device or element type
      */
-    virtual int getType() = 0;
+    virtual Conditional::Action::ACTS getType() = 0;
 
     /**
      * return String name of this consequent type
@@ -77,7 +77,7 @@ public:
      */
     virtual void setType(QString type) = 0;
 
-    virtual void setType(int type) = 0;
+    virtual void setType(Conditional::Action::ACTS type) = 0;
 
     /*public*/ virtual QString description(bool triggerType) = 0;
 

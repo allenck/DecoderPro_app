@@ -17,7 +17,7 @@
 #include "digitalbooleanmanyswing.h"
 #include "digitalbooleanonchangeswing.h"
 #include "expressionsensorswing.h"
-
+#include "antecedentswing.h"
 
 /*static*/ bool Metatypes::ng_done = false;
 
@@ -46,5 +46,6 @@ Metatypes::Metatypes(QObject *parent) : QObject(parent)
 
    // AbstractDigitalExpressionSwing
    qRegisterMetaType<ExpressionSensorSwing>("ExpressionSensorSwing");
+   qRegisterMetaType<AntecedentSwing>("AntecedentSwing");
    Metatypes::ng_done = true;
 }

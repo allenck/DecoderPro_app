@@ -101,7 +101,10 @@ class NGThread : public Runnable
   Q_OBJECT
   LogixNG_Thread* thread;
  public:
-  NGThread(LogixNG_Thread* thread) {this->thread = thread;}
+  NGThread(LogixNG_Thread* thread) {
+   this->thread = thread;
+   setObjectName("NGThtread");
+  }
 
  public slots:
   void run()

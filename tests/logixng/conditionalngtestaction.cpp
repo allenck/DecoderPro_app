@@ -23,7 +23,12 @@ void ConditionalNGTestAction::actionPerformed()
    << "testGetLogixNG"
    << "testState"
    << "testConnectDisconnect"
-
+   << "testSetSocketName"
+   << "testShortDescription"
+   << "testLongDescription"
+   << "testGetChild"
+   << "testGetChildCount"
+   << "testGetCategory"
        ;
 
  JUnitUtil::runTests(test, testList);

@@ -43,6 +43,7 @@ SOURCES += javaqt.cpp \
     exceptioncontext.cpp \
     exceptiondisplayframe.cpp \
     filesystemview.cpp \
+    invalidconditionalactionexception.cpp \
     jeditorpane.cpp \
     jframe.cpp \
     jinputvalidator.cpp \
@@ -303,6 +304,8 @@ HEADERS += javaqt.h\
  exceptioncontext.h \
  exceptiondisplayframe.h \
  filesystemview.h \
+ invalidconditionalactionexception.h \
+ invalidconditionalvariableexception.h \
         javaqt_global.h \
     calendar.h \
     box.h \

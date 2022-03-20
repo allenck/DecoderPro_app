@@ -43,12 +43,12 @@ void DefaultConditionalAction::common()
 {
     log = new Logger("DefaultConditionalAction");
     _option = Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE;
-    _type = Conditional::ACTION_NONE ;
+    _type = Conditional::Action::NONE ;
     _deviceName = " ";
     _actionData = 0;
     _actionString = "";
     _namedBean = NULL;
-    _type = 0;
+    _type = Conditional::Action::NONE;
 
     _timer = NULL;
     _listener = NULL;
@@ -66,7 +66,7 @@ void DefaultConditionalAction::common()
 //    /*public*/ DefaultConditionalAction() {
 //    }
 
-/*public*/ DefaultConditionalAction::DefaultConditionalAction(int option, int type, QString name, int actionData, QString actionStr, QObject *parent) : ConditionalAction(parent)
+/*public*/ DefaultConditionalAction::DefaultConditionalAction(int option, Conditional::Action::ACTS type, QString name, int actionData, QString actionStr, QObject *parent) : ConditionalAction(parent)
 {
  common();
  _option = option;
@@ -271,11 +271,11 @@ default:
 /**
  * The consequent device or element type
  */
-/*public*/ int DefaultConditionalAction::getType() {
+/*public*/ Conditional::Action::ACTS DefaultConditionalAction::getType() {
     return _type;
 }
 
-/*public*/ void DefaultConditionalAction::setType(int type) {
+/*public*/ void DefaultConditionalAction::setType(Conditional::Action::ACTS type) {
     _type = type;
 }
 
@@ -654,19 +654,19 @@ default:
  * correspond to an action type as defined in
  * ConditionalAction, returns 0.
  */
-/*public*/ /*static*/ int DefaultConditionalAction::stringToActionType(QString str) {
+/*public*/ /*static*/ Conditional::Action::ACTS DefaultConditionalAction::stringToActionType(QString str) {
     Logger* log = new Logger("DefaultConditionalAction");
 
     if (str != NULL)
     {
-        for (int i = 1; i <= Conditional::NUM_ACTION_TYPES; i++) {
-            if (str==(getActionTypeString(i))) {
-                return (i);
-            }
-        }
+     for (Conditional::Action::ACTS action : Conditional::Action::values) {
+         if (str == (Conditional::Action::toString(action))) {
+             return action;
+         }
+     }
     }
     log->warn("Unexpected parameter to stringToActionType("+str+")");
-    return 0;
+    return Conditional::Action::NONE;
 }
 
 /**

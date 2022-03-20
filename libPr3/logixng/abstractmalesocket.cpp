@@ -633,6 +633,8 @@
             });
 
             if (abort) throw  AbortConditionalNGExecutionException(e);
+#else
+//     bool abort = ThreadingUtil::runOnGUIwithReturn(new AMSRun1(item, message));
 #endif
             break;
         }
@@ -655,6 +657,13 @@
             throw e;
     }
 }
+#if 0
+void AMSRun1::run()
+{
+ ErrorHandlingDialog* dialog = new ErrorHandlingDialog();
+  dialog->showDialog(item, message);
+}
+#endif
 
 /*public*/ void AbstractMaleSocket::handleError(
         Base* item,

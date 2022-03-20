@@ -84,10 +84,11 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     ConditionalVariable* variable = variableList->at(k);
     QDomElement vElem = doc.createElement("conditionalStateVariable");
     int oper = variable->getOpern();
-    if (oper == Conditional::OPERATOR_AND && variable->isNegated()) {
-        oper = Conditional::OPERATOR_AND_NOT;    // backward compatibility
-    } else if (oper == Conditional::OPERATOR_NONE && variable->isNegated()) {
-        oper = Conditional::OPERATOR_NOT;        // backward compatibility
+    vElem.setAttribute("operator", oper);  // NOI18N
+    if (variable->isNegated()) {
+        vElem.setAttribute("negated", "yes");  // NOI18N
+    } else {
+        vElem.setAttribute("negated", "no");  // NOI18N
     }
     vElem.setAttribute("operator",(oper));
     if (variable->isNegated())
@@ -265,17 +266,12 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     else
     {
      int oper = conditionalVarList.at(n).toElement().attribute("operator").toInt();
-     if (oper == Conditional::OPERATOR_AND_NOT)
-     {
-      variable->setNegation(true);
-      oper = Conditional::OPERATOR_AND;
-     }
-     else if (oper == Conditional::OPERATOR_NOT)
-     {
-      variable->setNegation(true);
-      oper = Conditional::OPERATOR_NONE;
-     }
-     variable->setOpern(oper);
+     // Adjust old, lt 4.13.4, xml content
+     if (oper == 2) oper = 4;
+     if (oper == 3) oper = 1;
+     if (oper == 6) oper = 5;
+     Conditional::Operator::TYPE _operator = (Conditional::Operator::TYPE)oper;
+     variable->setOpern(_operator);
     }
     if (conditionalVarList.at(n).toElement().attribute("negated") != "")
     {
@@ -284,7 +280,7 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
      else
       variable->setNegation(false);
     }
-    variable->setType(conditionalVarList.at(n).toElement()
+    variable->setType((Conditional::Type::TYPE)conditionalVarList.at(n).toElement()
                                        .attribute("type").toInt());
     variable->setName(conditionalVarList.at(n).toElement()
                                        .attribute("systemName"));
@@ -352,7 +348,9 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     attr = conditionalActionList.at(n).toElement().attribute("type");
     if ( attr != "")
     {
-     action->setType(attr.toInt());
+     action->setType((Conditional::Action::ACTS)attr.toInt());
+     // action.setType(Conditional.Action.getOperatorFromIntValue(Integer.parseInt(attr.getValue())));
+
     }
     else
     {

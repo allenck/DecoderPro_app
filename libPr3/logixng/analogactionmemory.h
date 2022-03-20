@@ -5,6 +5,7 @@
 #include "vetoablechangelistener.h"
 #include "namedbeanhandle.h"
 #include "memory.h"
+#include "threadingutil.h"
 
 class AnalogActionMemory : public AbstractAnalogAction, public VetoableChangeListener
 {
@@ -41,4 +42,17 @@ class AnalogActionMemory : public AbstractAnalogAction, public VetoableChangeLis
 
 };
 
+class AAMRun : public ThreadActionWithJmriException
+{
+  Q_OBJECT
+  NamedBeanHandle<Memory*>* _memoryHandle;
+  double value;
+ public:
+  AAMRun(NamedBeanHandle<Memory*>* _memoryHandle, double value) {
+   this->_memoryHandle = _memoryHandle;
+  this->value = value;
+  }
+ public slots:
+  void run();
+};
 #endif // ANALOGACTIONMEMORY_H

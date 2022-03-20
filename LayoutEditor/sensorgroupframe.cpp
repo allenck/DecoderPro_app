@@ -223,10 +223,10 @@ void SensorGroupFrame::addPressed() {
       if (_sensorModel->data(_sensorModel->index(i,BeanTableModel::INCLUDE_COLUMN),Qt::DisplayRole).toBool())
       {
        QString sensor = _sensorModel->data(_sensorModel->index(i,BeanTableModel::SNAME_COLUMN),Qt::DisplayRole).toString();
-            variableList.append(new ConditionalVariable(false, Conditional::OPERATOR_OR,
-                                                     Conditional::TYPE_SENSOR_ACTIVE, sensor, true));
+            variableList.append(new ConditionalVariable(false, Conditional::Operator::OR,
+                                                     Conditional::Type::SENSOR_ACTIVE, sensor, true));
             actionList.append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
-                                                 Conditional::ACTION_SET_SENSOR, sensor,
+                                                 Conditional::Action::SET_SENSOR, sensor,
                                                  Sensor::INACTIVE, ""));
             count++;
         }

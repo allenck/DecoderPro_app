@@ -14,6 +14,8 @@
 #include "abstractdebuggermalesocket.h"
 #include "logixng_thread.h"
 #include "femalesocket.h"
+#include "atomicboolean.h"
+
 /**
  * Editor of ConditionalNG
  *
@@ -290,7 +292,8 @@
 //            System.out.format("propertyChange: %s, %s, run: %b, currentState: %s, BP before: %b, BP after: %b%n", evt.getPropertyName(), ((MaleSocket)evt.getNewValue()).getLongDescription(), _run, _currentState.name(), _currentMaleSocket.getBreakpointBefore(), _currentMaleSocket.getBreakpointAfter());
 //            System.out.format("propertyChange: current: %s, root: %s%n", _currentMaleSocket, _rootSocket);
 
-            std::atomic<bool> enableMenuItems(true);
+            //std::atomic<bool> enableMenuItems(true);
+            AtomicBoolean* enableMenuItems = new AtomicBoolean(true);
 
             if(evt->getPropertyName() == Debugger::STEP_BEFORE)
             {
@@ -315,6 +318,8 @@
                                 _stepIntoItem->setEnabled(false);
                                 enableMenuItems=(false);
                             });
+#else
+             ThreadingUtil::runOnGUIEventually(new CDRun1(enableMenuItems, this));
 #endif
                         }
                         _currentState = State::None;
@@ -340,6 +345,8 @@
                 _treePane->updateTree(_currentMaleSocket);
                 _symbolTableModel->update(symbols);
             });
+#else
+             ThreadingUtil::runOnGUIEventually( new CDRun2(enableMenuItems, infStr, symbols,this));
 #endif
 
 //            System.out.format("propertyChange middle: %s, %s, run: %b, currentState: %s%n", evt.getPropertyName(), ((MaleSocket)evt.getNewValue()).getLongDescription(), _run, _currentState.name());
@@ -359,8 +366,25 @@
 //            System.out.format("propertyChange done: %s, %s, run: %b, currentState: %s%n", evt.getPropertyName(), ((MaleSocket)evt.getNewValue()).getLongDescription(), _run, _currentState.name());
         }
     }
+void CDRun1::run()
+{
+ cb->_runItem->setEnabled(false);
+ cb->_stepOverItem->setEnabled(false);
+ cb->_stepIntoItem->setEnabled(false);
+ enableMenuItems->set(false);
+}
 
-
+void CDRun2::run()
+{
+ if (enableMenuItems) {
+     cb->_runItem->setEnabled(true);
+     cb->_stepOverItem->setEnabled(true);
+     cb->_stepIntoItem->setEnabled(true);
+ }
+ cb->_actionExpressionInfoLabel->setText(infStr);
+ cb->_treePane->updateTree(cb->_currentMaleSocket);
+ cb->_symbolTableModel->update(symbols);
+}
 //    /*public*/  interface ConditionalNGEventListener extends EventListener {
 
 //        /*public*/  void conditionalNGEventOccurred();

@@ -4,7 +4,7 @@
 #include <abstractnamedbean.h>
 #include "logixng.h"
 #include "instancemanager.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "conditionalng.h"
 
 class Category;
@@ -24,7 +24,7 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
   /*public*/ int getState() override;
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale)override;
-  /*public*/ FemaleSocket* getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) override;
+  /*public*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount()override;
   /*public*/ Category* getCategory() override;
   /*final*/ /*public*/ void setup() override;
@@ -79,7 +79,7 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
   QObject* bself() override{return (QObject*)this;}
   QObject* self() override{return (QObject*)this;}
  private:
-  /*private*/ /*final*/ LogixNG_Manager* _manager = (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
+  /*private*/ /*final*/ LogixNG_Manager* _manager = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
   /*private*/ bool _enabled = false;
   /*private*/ /*final*/ QList<ConditionalNG_Entry*> _conditionalNG_Entries =  QList<ConditionalNG_Entry*>();
   static Logger* log;
@@ -99,6 +99,7 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
     /*private*/ ConditionalNG* _conditionalNG;
 
     /*private*/ ConditionalNG_Entry(ConditionalNG* conditionalNG, QString systemName) {
+
         _systemName = systemName;
         _conditionalNG = conditionalNG;
     }

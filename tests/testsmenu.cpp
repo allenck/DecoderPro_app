@@ -114,6 +114,8 @@
 #include "logixng/defaultmaledigitalexpressionsockettestaction.h"
 #include "logixng/digitalbooleanactionmanagertestaction.h"
 #include "logixng/digitalbooleanonchangetestaction.h"
+#include "logixng/logixngtestaction.h"
+#include "logixng/digitalexpressionstestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -296,6 +298,9 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 
     logixNGMenu->addAction(new ConditionalNGTestAction(this));
     logixNGMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
+    logixNGMenu->addAction(new LogixNGTestAction(this));
+    logixNGMenu->addAction(new DigitalExpressionsTestAction(this));
+
     logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));
 

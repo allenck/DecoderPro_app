@@ -246,8 +246,8 @@
 
  for (ActionEntry* entry : _actionEntries) {
   if (socket == entry->_socket) {
-   QObject* obj = (QObject*)socket->getConnectedSocket();
-   QString s = ((AbstractMaleSocket*)obj)->getSystemName();
+   MaleSocket* maleSocket= socket->getConnectedSocket();
+   QString s = ((AbstractNamedBean*)maleSocket->bself())->getSystemName();
 //   entry->_socketSystemName =
 //           socket->getConnectedSocket()->getSystemName();
     entry->_socketSystemName = s;

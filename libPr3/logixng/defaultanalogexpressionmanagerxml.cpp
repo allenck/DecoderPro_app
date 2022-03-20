@@ -6,6 +6,8 @@
 #include "loggingutil.h"
 #include "class.h"
 #include "defaultmaleanalogexpressionsocket.h"
+#include "defaultanalogexpressionmanager.h"
+#include "appsconfigurationmanager.h"
 
 /**
  * Provides the functionality for configuring ExpressionManagers
@@ -173,8 +175,22 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_ANALOG_EXPRESSIONS);
             }
         });
+#else
+       ThreadingUtil::runOnGUI(new DAEMRun());
 #endif
     }
+
+ void DAEMRun::run()
+ {
+  // register new one with InstanceManager
+  DefaultAnalogExpressionManager* pManager = DefaultAnalogExpressionManager::instance();
+  InstanceManager::store(pManager, "AnalogExpressionManager");
+  // register new one for configuration
+  ConfigureManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  if (cmOD != nullptr) {
+      cmOD->registerConfig(pManager, Manager::LOGIXNG_ANALOG_EXPRESSIONS);
+  }
+ }
 
     //@Override
     /*public*/  int DefaultAnalogExpressionManagerXml::loadOrder() const {

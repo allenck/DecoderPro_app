@@ -83,8 +83,15 @@
         ThreadingUtil::runOnLayoutWithJmriException(() -> {
             _memoryHandle.getBean().setValue(value);
         });
+#else
+     ThreadingUtil::runOnLayoutWithJmriException(new AAMRun(_memoryHandle,value));
 #endif
     }
+}
+
+void AAMRun::run()
+{
+ _memoryHandle->getBean()->setValue(value);
 }
 
 //@Override

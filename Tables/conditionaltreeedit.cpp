@@ -729,12 +729,12 @@
 
      int size = _variableList->size();
      _curVariable = _variableList->value(size - 1);
-     // default of operator for position 0 (row 1) is Conditional::OPERATOR_NONE
+     // default of operator for position 0 (row 1) is Conditional::Operator::NONE
      if (size > 1) {
          if (_logicType == Conditional::ALL_OR) {
-             _curVariable->setOpern(Conditional::OPERATOR_OR);
+             _curVariable->setOpern(Conditional::Operator::OR);
          } else {
-             _curVariable->setOpern(Conditional::OPERATOR_AND);
+             _curVariable->setOpern(Conditional::Operator::AND);
          }
      }
      appendToAntecedent(_curVariable);
@@ -976,11 +976,11 @@
      }
 
      makeAntecedent();
-     int oper;
+     Conditional::Operator::TYPE oper;
      if (newType != Conditional::MIXED) {
-         oper = Conditional::OPERATOR_OR;
+         oper = Conditional::Operator::OR;
          if (newType == Conditional::ALL_AND) {
-             oper = Conditional::OPERATOR_AND;
+             oper = Conditional::Operator::AND;
          }
 
          // Update the variable list and tree node entries
@@ -1049,10 +1049,10 @@
          for (int i = 1; i < _variableList->size(); i++) {
              ConditionalVariable* variable = _variableList->value(i);
              switch (variable->getOpern()) {
-                 case Conditional::OPERATOR_AND:
+                 case Conditional::Operator::AND:
                      str = str + _and;
                      break;
-                 case Conditional::OPERATOR_OR:
+                 case Conditional::Operator::OR:
                      str = str + _or;
                      break;
                  default:
@@ -1078,7 +1078,7 @@
  //@SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "Except for the root node, all nodes are ConditionalTreeNode")  // NOI18N
  void ConditionalTreeEdit::appendToAntecedent(ConditionalVariable* variable) {
      if (_variableList->size() > 1) {
-         if (_logicType == Conditional::OPERATOR_OR) {
+         if (_logicType == Conditional::Operator::OR) {
              _antecedent = _antecedent + " " + tr("OR").toLower() + " ";   // NOI18N
          } else {
              _antecedent = _antecedent + " " + tr("AND").toLower() + " ";  // NOI18N
@@ -1243,7 +1243,7 @@ bool ConditionalTreeEdit::validateAntecedent() {
 
              // Adjust operator
              if (_curNodeRow == 0 && _variableList->size() > 1) {
-                 _variableList->value(1)->setOpern(Conditional::OPERATOR_NONE);
+                 _variableList->value(1)->setOpern(Conditional::Operator::NONE);
              }
 
              // Remove the row, update and refresh the Variable list, update references
@@ -1334,9 +1334,9 @@ bool ConditionalTreeEdit::validateAntecedent() {
              _variableList->replace(newVarRow, tempVar);
              // Adjust operator
              if (newVarRow == 0) {
-                 _variableList->value(newVarRow)->setOpern(Conditional::OPERATOR_NONE);
-                 int newOper = (_logicType == Conditional::ALL_AND)
-                         ? Conditional::OPERATOR_AND : Conditional::OPERATOR_OR;
+                 _variableList->value(newVarRow)->setOpern(Conditional::Operator::NONE);
+                 Conditional::Operator::TYPE newOper = (_logicType == Conditional::ALL_AND)
+                         ? Conditional::Operator::AND : Conditional::Operator::OR;
                  _variableList->value(_curNodeRow)->setOpern(newOper);
              }
              updateVariableList();
@@ -1378,10 +1378,10 @@ else
              _variableList->replace(newVarRow, tempVar);
              // Adjust operator
              if (_curNodeRow == 0) {
-                 _variableList->value(_curNodeRow)->setOpern(Conditional::OPERATOR_NONE);
+                 _variableList->value(_curNodeRow)->setOpern(Conditional::Operator::NONE);
                  int newOper = (_logicType == Conditional::ALL_AND)
-                         ? Conditional::OPERATOR_AND : Conditional::OPERATOR_OR;
-                 _variableList->value(newVarRow)->setOpern(newOper);
+                         ? Conditional::Operator::AND : Conditional::Operator::OR;
+                 _variableList->value(newVarRow)->setOpern((Conditional::Operator::TYPE)newOper);
              }
              updateVariableList();
              moveTreeNode("Down");   // NOI18N
@@ -3081,7 +3081,7 @@ bool ConditionalTreeEdit::validateVariable() {
                      JOptionPane::ERROR_MESSAGE);
              return false;
      }
-     _curVariable->setType(testType);
+     _curVariable->setType((Conditional::Type::TYPE)testType);
      if (log->isDebugEnabled()) {
          log->debug("validateVariable: itemType= " + QString::number(itemType) + ", testType= " + QString::number(testType));  // NOI18N
      }
@@ -3173,7 +3173,7 @@ bool ConditionalTreeEdit::validateVariable() {
                              JOptionPane::ERROR_MESSAGE);
                      return false;
                  }
-                 _curVariable->setType(type);
+                 _curVariable->setType((Conditional::Type::TYPE)type);
                  _curVariable->setDataString(appStr);
                  if (log->isDebugEnabled()) {
                      log->debug("SignalHead \"" + name + "\"of type '" + QString::number(testType) // NOI18N
@@ -3260,12 +3260,12 @@ bool ConditionalTreeEdit::validateVariable() {
      int oldOper = _curVariable->getOpern();
      if (_curNodeRow > 0) {
          if (_variableOperBox->currentIndex() == 0) {
-             _curVariable->setOpern(Conditional::OPERATOR_AND);
+             _curVariable->setOpern(Conditional::Operator::AND);
          } else {
-             _curVariable->setOpern(Conditional::OPERATOR_OR);
+             _curVariable->setOpern(Conditional::Operator::OR);
          }
      } else {
-         _curVariable->setOpern(Conditional::OPERATOR_NONE);
+         _curVariable->setOpern(Conditional::Operator::NONE);
      }
      if (_curVariable->getOpern() != oldOper) {
          makeAntecedent();
@@ -4863,7 +4863,7 @@ else if(itemType == Conditional::ITEM_TYPE_OTHER)
              }
 
      }
-     _curAction->setType(actionType);
+     _curAction->setType((Conditional::Action::ACTS)actionType);
      if (actionType != Conditional::ACTION_NONE) {
          _curAction->setOption(_actionOptionBox->currentIndex() + 1);
      } else {
@@ -4906,7 +4906,7 @@ CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->ct
          }
          if (cte->_curAction !=  NULL) {
              if (select1 > 0 && _itemType == select1) {
-                 cte->_curAction->setType(cte->getActionTypeFromBox(_itemType, select2));
+                 cte->_curAction->setType((Conditional::Action::ACTS)cte->getActionTypeFromBox(_itemType, select2));
                  if (select1 == _itemType) {
                      QString text = cte->_actionNameField->text();
                      if (text !=  NULL && text.length() > 0) {

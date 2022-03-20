@@ -1,11 +1,12 @@
 #include "defaultnamedtablemanagerxml.h"
-#include "instancemanager.h"
 #include "loggerfactory.h"
-#include "namedtablemanager.h"
 #include "defaultnamedtablemanager.h"
 #include "runtimeexception.h"
 #include "class.h"
 #include "defaultnamedtablemanager.h"
+#include "defaultnamedtablemanager.h"
+#include "instancemanager.h"
+#include "appsconfigurationmanager.h"
 
 /**
  * Provides the functionality for configuring DefaultNamedTableManager
@@ -155,7 +156,21 @@
             cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_TABLES);
         }
     });
+#else
+ ThreadingUtil::runOnGUI(new DNTMRun());
 #endif
+}
+
+void DNTMRun::run()
+{
+ // register new one with InstanceManager
+ DefaultNamedTableManager* pManager = DefaultNamedTableManager::instance();
+ InstanceManager::store(pManager, "NamedTableManager");
+ // register new one for configuration
+ ConfigureManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cmOD != nullptr) {
+     cmOD->registerConfig(pManager, Manager::LOGIXNG_TABLES);
+ }
 }
 
 //@Override
