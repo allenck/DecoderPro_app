@@ -95,7 +95,7 @@
         // LogixNG does not exist, create a new LogixNG
         x = new DefaultLogixNG(systemName, userName);
         // save in the maps
-        AbstractManager::Register((NamedBean*)x);
+        AbstractManager::Register((AbstractNamedBean*)x);
 
         // Keep track of the last created auto system name
         updateAutoNumber(systemName);

@@ -920,12 +920,12 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ static void initDebugPowerManager() {
     InstanceManager::setDefault(PowerManager.class, new PowerManagerScaffold());
 }
-
-/*public*/ static void initIdTagManager() {
-    InstanceManager::reset(jmri.IdTagManager.class);
-    InstanceManager::store(new DefaultIdTagManager(InstanceManager::getDefault(InternalSystemConnectionMemo.class)), jmri.IdTagManager.class);
+#endif
+/*public*/ /*static*/ void JUnitUtil::initIdTagManager() {
+    InstanceManager::reset("IdTagManager");
+    InstanceManager::store(new DefaultIdTagManager(InstanceManager::getDefault("InternalSystemConnectionMemo")), "IdTagManager");
 }
-
+#if 0
 /*public*/ static void initRailComManager() {
     InstanceManager::reset(jmri.RailComManager.class);
     InstanceManager::store(new DefaultRailComManager(), jmri.RailComManager.class);

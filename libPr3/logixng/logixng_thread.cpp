@@ -114,10 +114,11 @@
     /*private*/ LogixNG_Thread::LogixNG_Thread(int threadID, QString name, QObject* parent) : QThread(parent){
         _threadID = threadID;
         _name = name;
+        setObjectName("LogixNG_Thread");
 #if 1
         /*synchronized(LogixNG_Thread.class)*/
         {
-
+          QMutexLocker locker(&mutex1);
             _eventQueue = new QQueue<ThreadEvent*>(/*1024*/);
 //            _logixNGThread = new Thread(() -> {
 //                while (!_stopThread) {
@@ -203,21 +204,22 @@
 //                    " event queue and the event is put on the event queue in"+
 //                    " the synchronize block.")
     /*public*/ void LogixNG_Thread::runOnLogixNG(/*@Nonnull*/  ThreadAction* ta) {
-#if 0
+#if 1
         if (_logixNGThread != nullptr) {
 
-            Object lock = new Object();
-            synchronized(lock) {
-                _eventQueue.add(new ThreadEvent(ta, lock));
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    log.debug("Interrupted while running on LogixNG thread");
-                    Thread.currentThread().interrupt();
-                }
+            QObject* lock = new QObject();
+            /*synchronized(lock)*/ {
+          QMutexLocker locker(&mutex);
+                _eventQueue->append(new ThreadEvent(ta, lock));
+//                try {
+//                    lock.wait();
+//                } catch (InterruptedException* e) {
+//                    log->debug("Interrupted while running on LogixNG thread");
+//                    Thread.currentThread().interrupt();
+//                }
             }
         } else {
-            throw new RuntimeException("LogixNG thread not started. ThreadID: "+Integer.toString(_threadID));
+            throw new RuntimeException("LogixNG thread not started. ThreadID: "+QString::number(_threadID));
         }
 #endif
     }

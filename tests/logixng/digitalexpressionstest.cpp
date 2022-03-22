@@ -6,6 +6,7 @@
 #include "junitappender.h"
 #include "antecedentxml.h"
 #include "logixng_thread.h"
+#include "truexml.h"
 
 /**
  * Test DigitalExpressions
@@ -20,12 +21,12 @@
 
         b = new AndXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b->load(QDomElement(), QDomElement());
+        b->load(QDomElement(), nullptr);
         JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new AntecedentXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b->load(QDomElement(), QDomElement());
+        b->load(QDomElement(), nullptr);
         JUnitAppender::assertMessage("Invalid method called");
 #if 0
         b = new ExpressionLightXml();
@@ -34,45 +35,45 @@
         JUnitAppender::assertMessage("Invalid method called");
 
         b = new ExpressionSensorXml();
-        Assert::assertNotNull("exists", b);
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b.load((Element) null, (Object) null);
         JUnitAppender::assertMessage("Invalid method called");
 
         b = new ExpressionTurnoutXml();
-        Assert::assertNotNull("exists", b);
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b.load((Element) null, (Object) null);
         JUnitAppender::assertMessage("Invalid method called");
 
         b = new FalseXml();
-        Assert::assertNotNull("exists", b);
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b.load((Element) null, (Object) null);
         JUnitAppender::assertMessage("Invalid method called");
 
         b = new HoldXml();
-        Assert::assertNotNull("exists", b);
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b.load((Element) null, (Object) null);
         JUnitAppender::assertMessage("Invalid method called");
 
         b = new OrXml();
-        Assert::assertNotNull("exists", b);
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b.load((Element) null, (Object) null);
         JUnitAppender::assertMessage("Invalid method called");
 
         b = new TriggerOnceXml();
         Assert::assertNotNull("exists", b);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
-
-        b = new TrueXml();
-        Assert::assertNotNull("exists", b);
-        b.load((Element) null, (Object) null);
+        b.load((Element) null, (Object) null, __FILE__, __LINE__);
         JUnitAppender::assertMessage("Invalid method called");
 #endif
+        b = new TrueXml();
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
+
     }
 
     // The minimal setup for log4J
     //@Before
-    /*public*/  void setUp() {
+    /*public*/  void DigitalExpressionsTest::setUp() {
         JUnitUtil::setUp();
         JUnitUtil::resetInstanceManager();
         JUnitUtil::resetProfileManager();
@@ -83,7 +84,7 @@
     }
 
     //@After
-    /*public*/  void tearDown() {
+    /*public*/  void DigitalExpressionsTest::tearDown() {
         LogixNG_Thread::stopAllLogixNGThreads();
         JUnitUtil::tearDown();
     }

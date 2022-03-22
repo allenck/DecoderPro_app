@@ -73,5 +73,10 @@
             return Row;
         }
     }
+    /*public*/ static QList<TYPE> values()
+    {
+     return QList<TYPE> {Row, Column};
+    }
+
 };
 #endif // TABLEROWORCOLUMN_H

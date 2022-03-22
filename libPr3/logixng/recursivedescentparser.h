@@ -18,7 +18,7 @@ class RecursiveDescentParser : public QObject
  signals:
 
  private:
-  /*private*/ QList<Token*> _tokens;
+  /*private*/ QList<Token*>* _tokens;
   /*private*/ /*final*/ QMap<QString, Variable*> _variables;
   /*private*/ /*static*/ class State
   {

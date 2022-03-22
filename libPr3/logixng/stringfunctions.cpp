@@ -1,5 +1,6 @@
 #include "stringfunctions.h"
 #include "wrongnumberofparametersexception.h"
+#include "typeconversionutil.h"
 
 /**
  * Implementation of string functions.
@@ -67,8 +68,8 @@
                 throw new WrongNumberOfParametersException(tr("WrongNumberOfParameters1").arg(getName()/*, 1)*/));
             }
 
-            QString formatStr = /*TypeConversionUtil.convertToString*/(
-                    parameterList.at(0)->calculate(symbolTable), false)?"true":"false";
+            QString formatStr = TypeConversionUtil::convertToString(
+                    parameterList.at(0)->calculate(symbolTable), false);
 
             QVariantList list = QVariantList();
             for (int i=1; i < parameterList.size(); i++) {

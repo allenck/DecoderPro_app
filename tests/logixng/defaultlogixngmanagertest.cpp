@@ -81,7 +81,7 @@
 
         // Correct system name
         LogixNG* logixNG = manager->createLogixNG("IQ1", "Some name");
-        Assert::assertNotNull("exists", logixNG, __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
         LogixNG* logixNG_2 = manager->getLogixNG("IQ1");
         Assert::assertEquals("logixNGs are the same", logixNG, logixNG_2, __FILE__, __LINE__);
         logixNG_2 = (LogixNG*)manager->getBySystemName("IQ1")->self();
@@ -91,19 +91,19 @@
         logixNG_2 = (LogixNG*)manager->getByUserName("Some name")->self();
         Assert::assertEquals("logixNGs are the same", logixNG, logixNG_2, __FILE__, __LINE__);
         logixNG_2 = manager->getLogixNG("Some other name");
-        Assert::assertNull("logixNG not found", logixNG_2, __FILE__, __LINE__);
+        Assert::assertNull("logixNG not found", logixNG_2->self(), __FILE__, __LINE__);
 
         // Correct system name. Neither system name or user name exists already
         logixNG = manager->createLogixNG("IQ2", "Other LogixNG");
-        Assert::assertNotNull("exists", logixNG, __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
 
         // System name exists
         logixNG = manager->createLogixNG("IQ1", "Another name");
-        Assert::assertNull("cannot create new", logixNG, __FILE__, __LINE__);
+        Assert::assertNull("cannot create new", logixNG->self(), __FILE__, __LINE__);
 
         // User name exists
         logixNG = manager->createLogixNG("IQ3", "Other LogixNG");
-        Assert::assertNull("cannot create new", logixNG, __FILE__, __LINE__);
+        Assert::assertNull("cannot create new", logixNG->self(), __FILE__, __LINE__);
 
         // Bad system name
         bool thrown = false;
@@ -117,8 +117,8 @@
 
         // Create LogixNG with user name
         logixNG = manager->createLogixNG("Only user name");
-        Assert::assertNotNull("exists", logixNG, __FILE__, __LINE__);
-        Assert::assertEquals("user name is correct", "Only user name", logixNG->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertEquals("user name is correct", "Only user name", logixNG->NamedBean::getUserName(), __FILE__, __LINE__);
 
 }
 
@@ -151,7 +151,7 @@
         // Correct system name
         LogixNG* logixNG = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))
                 ->createLogixNG("IQ1", "Some name");
-        Assert::assertNotNull("exists", logixNG, __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
 
         ConditionalNG* conditionalNG = (DefaultConditionalNG*)((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
                 ->createConditionalNG(logixNG, "A conditionalNG");  // NOI18N
@@ -192,7 +192,7 @@
         StringExpressionManager* stringExpressionManager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
 
         LogixNG* logixNG = logixNG_Manager->createLogixNG("IQ1", "Some name");
-        Assert::assertNotNull("exists", logixNG, __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
 
         ConditionalNG* conditionalNG = conditionalNG_Manager
                 ->createConditionalNG(logixNG, "A conditionalNG");  // NOI18N
@@ -268,7 +268,7 @@
         lastResultOfDigitalExpression->setDigitalExpression(expressionOrSocket);
 
 
-        Assert::assertNotNull(logixNG_Manager->getBySystemName(logixNG->AbstractNamedBean::getSystemName())->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(logixNG_Manager->getBySystemName(logixNG->NamedBean::getSystemName())->self(), __FILE__, __LINE__);
         Assert::assertNotNull(conditionalNG_Manager->getBySystemName(conditionalNG->NamedBean::getSystemName())->self(), __FILE__, __LINE__);
         Assert::assertNotNull(analogActionManager->getBySystemName(actionAnalogManySocket->NamedBean::getSystemName())->self(), __FILE__, __LINE__);
         Assert::assertNotNull(analogExpressionManager->getBySystemName(expressionAnalogExpressionConstantSocket->NamedBean::getSystemName())->self(), __FILE__, __LINE__);
@@ -294,7 +294,7 @@
         }
         logixNG_Manager->deleteBean(logixNG, "DoDelete");
 
-        Assert::assertNull(logixNG_Manager->getBySystemName(logixNG->AbstractNamedBean::getSystemName())->self(), __FILE__, __LINE__);
+        Assert::assertNull(logixNG_Manager->getBySystemName(logixNG->NamedBean::getSystemName())->self(), __FILE__, __LINE__);
         Assert::assertNull(conditionalNG_Manager->getBySystemName(conditionalNG->Base::getSystemName())->self(), __FILE__, __LINE__);
         Assert::assertNull(analogActionManager->getBySystemName(actionAnalogManySocket->NamedBean::getSystemName())->self(), __FILE__, __LINE__);
         Assert::assertNull(analogExpressionManager->getBySystemName(expressionAnalogExpressionConstantSocket->Base::getSystemName())->self(), __FILE__, __LINE__);

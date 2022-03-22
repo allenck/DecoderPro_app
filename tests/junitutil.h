@@ -51,6 +51,7 @@ public:
     /*public*/ static void initDefaultSignalMastManager();
     /*public*/ static void initDebugThrottleManager();
     /*public*/ static void initDebugProgrammerManager();
+    /*public*/ static void initIdTagManager();
     /*public*/ static void initLogixManager();
     /*public*/ static void initConditionalManager();
     /*public*/ static void initShutDownManager();

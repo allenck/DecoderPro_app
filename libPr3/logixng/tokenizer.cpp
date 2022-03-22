@@ -10,23 +10,23 @@
  */
 ///*public*/ class Tokenizer {
 
-    /*private*/ /*static*/ void Tokenizer::addToken(Token* currentToken, QList<Token*> tokens) {
+    /*private*/ /*static*/ void Tokenizer::addToken(Token* currentToken, QList<Token*>* tokens) {
         if ((currentToken->_tokenType == TokenType::FLOATING_NUMBER) && isIntegerNumber(currentToken->_string)) {
             currentToken->_tokenType = TokenType::INTEGER_NUMBER;
         }
 
-        tokens.append(currentToken);
+        tokens->append(currentToken);
     }
 
-    /*public*/ /*static*/ QList<Token*> Tokenizer::getTokens(QString expression) /*throws InvalidSyntaxException*/ {
+    /*public*/ /*static*/ QList<Token*>* Tokenizer::getTokens(QString expression) /*throws InvalidSyntaxException*/ {
 
-        QList<Token*> tokens = QList<Token*>();
+        QList<Token*>* tokens = new QList<Token*>();
         Token* currentToken = new Token();
 
 //        System.out.format("%n%n%n");
 //        System.out.format("getTokens(): %s%n", expression);
 
-        std::atomic<bool> eatNextChar(false);
+        AtomicBoolean* eatNextChar = new AtomicBoolean(false);
 
         QChar ch = ' ';
         QChar lastChar;
@@ -94,7 +94,7 @@
             }
 
 
-            TokenType::TTYPE nextToken = getTokenType(currentToken, ch, nextChar, &eatNextChar);
+            TokenType::TTYPE nextToken = getTokenType(currentToken, ch, nextChar, eatNextChar);
 //            System.out.format("index %d: %s, %c%n", i, nextToken.name(), ch);
 
             if (nextToken == TokenType::SAME_AS_LAST) {
@@ -173,7 +173,7 @@
                 currentToken->_string += ch;
             }
 
-            if (eatNextChar) {
+            if (eatNextChar->get()) {
                 i++;
             }
 //            System.out.format("New string: '%s'%n", currentToken->_string);
@@ -186,9 +186,9 @@
         return tokens;
     }
 
-    /*private*/ /*static*/ TokenType::TTYPE Tokenizer::getTokenType(Token* currentToken, QChar ch, QChar nextChar, std::atomic<bool>* eatNextChar) {
+    /*private*/ /*static*/ TokenType::TTYPE Tokenizer::getTokenType(Token* currentToken, QChar ch, QChar nextChar, AtomicBoolean* eatNextChar) {
 
-        *eatNextChar=(false);
+        eatNextChar->set(false);
 
         if (ch == '"') {
             return TokenType::STRING;
@@ -204,7 +204,7 @@
 
         if ((ch == '.') && (nextChar == '.')) {
             if ((currentToken->_tokenType != TokenType::DOT_DOT)) {
-                *eatNextChar=(true);
+                eatNextChar->set(true);
                 return TokenType::DOT_DOT;
             } else {
                 // Three dots in a row is an error
@@ -227,19 +227,19 @@
         if (nextChar == '=') {
             switch (ch.toLatin1()) {
                 case '+':
-                    *eatNextChar=(true);
+                    eatNextChar->set(true);
                     return TokenType::ASSIGN_ADD;
                 case '-':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::ASSIGN_SUBTRACKT;
                 case '*':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::ASSIGN_MULTIPLY;
                 case '/':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::ASSIGN_DIVIDE;
                 case '%':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::ASSIGN_MODULO;
 //                default:
                     // Do nothing
@@ -249,10 +249,10 @@
         if (ch == '<') {
             switch (nextChar.toLatin1()) {
                 case '=':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::LESS_OR_EQUAL;
                 case '<':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::SHIFT_LEFT;
                 default:
                     return TokenType::LESS_THAN;
@@ -262,10 +262,10 @@
         if (ch == '>') {
             switch (nextChar.toLatin1()) {
                 case '=':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::GREATER_OR_EQUAL;
                 case '>':
-                    *eatNextChar = (true);
+                    eatNextChar->set (true);
                     return TokenType::SHIFT_RIGHT;
                 default:
                     return TokenType::GREATER_THAN;
@@ -274,7 +274,7 @@
 
         if (ch == '=') {
             if (nextChar == '=') {
-                *eatNextChar = (true);
+                eatNextChar->set (true);
                 return TokenType::EQUAL;
             } else {
                 return TokenType::ERROR;
@@ -283,7 +283,7 @@
 
         if (ch == '!') {
             if (nextChar == '=') {
-                *eatNextChar = (true);
+                eatNextChar->set (true);
                 return TokenType::NOT_EQUAL;
             } else {
                 return TokenType::BOOLEAN_NOT;
@@ -292,7 +292,7 @@
 
         if (ch == '|') {
             if (nextChar == '|') {
-                *eatNextChar = (true);
+                eatNextChar->set (true);
                 return TokenType::BOOLEAN_OR;
             } else {
                 return TokenType::BINARY_OR;
@@ -301,7 +301,7 @@
 
         if (ch == '&') {
             if (nextChar == '&') {
-                *eatNextChar = (true);
+                eatNextChar->set (true);
                 return TokenType::BOOLEAN_AND;
             } else {
                 return TokenType::BINARY_AND;
@@ -397,7 +397,7 @@
         //return str.matches("\\d+");
      QRegularExpression re("\\d+");
      QRegularExpressionMatch match = re.match(str);
-     return match.hasMatch();
+     return match.hasMatch() && match.capturedLength() == str.length();
     }
 
     /*private*/ /*static*/ bool Tokenizer::isFloatingNumber(QString str) {
@@ -405,6 +405,6 @@
         QRegularExpression red("\\d+");
         QRegularExpression  ref("\\d+\\.\\d+");
         QRegularExpressionMatch matchd = red.match(str);
-        QRegularExpressionMatch matchf = red.match(str);
+        QRegularExpressionMatch matchf = ref.match(str);
         return matchd.hasMatch() || matchf.hasMatch();
     }

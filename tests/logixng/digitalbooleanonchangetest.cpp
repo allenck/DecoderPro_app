@@ -312,7 +312,7 @@
 
         logixNG = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N
         conditionalNG = new DefaultConditionalNGScaffold("IQC1", "A conditionalNG");  // NOI18N;
-        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register(conditionalNG);
+        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((NamedBean*)conditionalNG->self());
         conditionalNG->setEnabled(true);
         conditionalNG->setRunDelayed(false);
         logixNG->addConditionalNG(conditionalNG);

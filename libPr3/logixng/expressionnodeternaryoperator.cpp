@@ -1,6 +1,6 @@
 #include "expressionnodeternaryoperator.h"
 #include "calculateexception.h"
-
+#include "typeconversionutil.h"
 /**
  * A parsed expression
  */
@@ -23,7 +23,7 @@
         
         QVariant leftValue = _leftSide->calculate(symbolTable);
         if (!(leftValue.canConvert<bool>())) {
-         if (/*TypeConversionUtil.isIntegerNumber*/(leftValue.canConvert<int>())) {
+         if (TypeConversionUtil::isIntegerNumber(leftValue)) {
                 // Convert to true or false
                 leftValue = (/*(Number)*/leftValue).toInt() != 0;
             } else {

@@ -2,6 +2,7 @@
 #define DIGITALBOOLEANONCHANGETEST_H
 #include "abstractdigitalbooleanactiontestbase.h"
 
+class DefaultConditionalNG;
 class DigitalBooleanOnChange;
 class ActionTurnout;
 class DigitalBooleanOnChangeTest : public AbstractDigitalBooleanActionTestBase
@@ -35,7 +36,7 @@ class DigitalBooleanOnChangeTest : public AbstractDigitalBooleanActionTestBase
 
  private:
   LogixNG* logixNG;
-  ConditionalNG* conditionalNG;
+  DefaultConditionalNG* conditionalNG;
   DigitalBooleanOnChange* _actionOnChange;
   ActionTurnout* _actionTurnout;
 

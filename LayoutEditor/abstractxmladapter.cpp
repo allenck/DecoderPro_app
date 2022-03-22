@@ -54,6 +54,12 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  throw new UnsupportedOperationException("One of the other load methods must be implemented.");
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractXmlAdapter::load(QDomElement e, QObject* o) /*throws JmriConfigureXmlException*/ {
+    log->error("Invalid method called");
+}
+
 //@Override
 /*public*/ bool AbstractXmlAdapter::load(QDomElement shared, QDomElement perNode) //throws Exception
 {

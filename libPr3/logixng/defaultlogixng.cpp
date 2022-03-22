@@ -16,7 +16,7 @@
 
 
 /*public*/ DefaultLogixNG::DefaultLogixNG(QString sys, QString user, QObject *parent) /*throw (BadUserNameException, BadSystemNameException)*/
-  : LogixNG(sys, user, parent)
+  : AbstractNamedBean(sys, user, parent)
 {
     //super(sys, user);
  setObjectName("DefaultLogixNG");
@@ -85,13 +85,13 @@
 /*final*/ /*public*/ void DefaultLogixNG::setup() {
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
         if ( entry->_conditionalNG == nullptr
-                || entry->_conditionalNG->Base::getSystemName()
+                || entry->_conditionalNG->AbstractNamedBean::getSystemName()
                         !=(entry->_systemName)) {
 
             QString systemName = entry->_systemName;
             if (systemName != nullptr) {
                 entry->_conditionalNG =
-                        (ConditionalNG*)((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
+                        (DefaultConditionalNG*)((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
                                 ->getBySystemName(systemName);
                 if (entry->_conditionalNG != nullptr) {
                     entry->_conditionalNG->setup();
@@ -174,7 +174,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ bool DefaultLogixNG::addConditionalNG(ConditionalNG* conditionalNG) {
+/*public*/ bool DefaultLogixNG::addConditionalNG(DefaultConditionalNG* conditionalNG) {
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
         if (((AbstractNamedBean*)conditionalNG->self())->getSystemName() == (entry->_systemName)) {
             if (entry->_conditionalNG == nullptr) {
@@ -182,7 +182,7 @@
                 entry->_conditionalNG = conditionalNG;
                 return true;
             } else {
-                log->error(tr("ConditionalNG '%1' has already been added to LogixNG '%2'").arg(conditionalNG->NamedBean::getSystemName(), getSystemName()));  // NOI18N
+                log->error(tr("ConditionalNG '%1' has already been added to LogixNG '%2'").arg(conditionalNG->AbstractNamedBean::getSystemName(), getSystemName()));  // NOI18N
                 return false;
             }
         }
@@ -296,7 +296,7 @@
 //@Override
 /*public*/ void DefaultLogixNG::registerListeners() {
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
-        entry->_conditionalNG->registerListeners();
+        entry->_conditionalNG->AbstractBase::registerListeners();
     }
 }
 
@@ -304,7 +304,7 @@
 //@Override
 /*public*/ void DefaultLogixNG::unregisterListeners() {
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
-        entry->_conditionalNG->unregisterListeners();
+        entry->_conditionalNG->AbstractBase::unregisterListeners();
     }
 }
 

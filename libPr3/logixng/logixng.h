@@ -3,19 +3,21 @@
 #include "namedbean.h"
 #include "base.h"
 #include "abstractnamedbean.h"
+#include "defaultconditionalng.h"
+
 /**
  * LogixNG.
  *
  * @author Daniel Bergqvist Copyright 2018
  * @author Dave Sand        Copyright 2021
  */
-/*public*/ /*interface*/ class LogixNG : public AbstractNamedBean, public Base
+/*public*/ /*interface*/ class LogixNG : public NamedBean, public Base
 {
-  Q_OBJECT
-  Q_INTERFACES(Base /*NamedBean*/)
+  //Q_OBJECT
+  Q_INTERFACES(Base NamedBean)
 public:
-  LogixNG() {}
-  LogixNG(QString sys, QString user, QObject *parent = nullptr) : AbstractNamedBean(sys, user, parent) {}
+//  LogixNG() {}
+//  LogixNG(QString sys, QString user, QObject *parent = nullptr) : AbstractNamedBean(sys, user, parent) {}
     /**
      * Set whenether this LogixNG is enabled or disabled.
      * <P>
@@ -86,7 +88,7 @@ public:
      * @param conditionalNG The ConditionalNG object.
      * @return true if the ConditionalNG was added, false otherwise.
      */
-  /*public*/ virtual bool addConditionalNG(ConditionalNG* conditionalNG){return false;}
+  /*public*/ virtual bool addConditionalNG(DefaultConditionalNG* conditionalNG){return false;}
 
     /**
      * Get a ConditionalNG belonging to this LogixNG.

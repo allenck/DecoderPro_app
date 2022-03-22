@@ -12,6 +12,7 @@
 #include "expressionnodefloatingnumber.h"
 #include "expressionnodestring.h"
 #include "expressionnodefunction.h"
+
 /**
  * A recursive descent parser
  *
@@ -28,7 +29,7 @@
 
 /*private*/ RecursiveDescentParser::State* RecursiveDescentParser::next(State* state) {
     int newTokenIndex = state->_tokenIndex+1;
-    return new State(newTokenIndex, _tokens.value(newTokenIndex), state->_tokenIndex, state->_token);
+    return new State(newTokenIndex, _tokens->value(newTokenIndex), state->_tokenIndex, state->_token);
 }
 
 
@@ -40,8 +41,8 @@
         int newTokenIndex = state->_tokenIndex+1;
         Token* newToken;
         int lastTokenPos = state->_lastTokenPos;
-        if (newTokenIndex < _tokens.size()) {
-            newToken = _tokens.value(newTokenIndex);
+        if (newTokenIndex < _tokens->size()) {
+            newToken = _tokens->value(newTokenIndex);
         } else {
             lastTokenPos = state->_token->_pos + state->_token->_string.length();
             newToken = nullptr;
@@ -65,11 +66,11 @@
 /*public*/ ExpressionNode* RecursiveDescentParser::parseExpression(QString expression) /*throws ParserException */{
     _tokens = Tokenizer::getTokens(expression);
 
-    if (_tokens.isEmpty()) {
+    if (_tokens->isEmpty()) {
         return nullptr;
     }
 
-    ExpressionNodeAndState* exprNodeAndState = firstRule->parse(new State(0, _tokens.value(0), 0, new Token()));
+    ExpressionNodeAndState* exprNodeAndState = firstRule->parse(new State(0, _tokens->value(0), 0, new Token()));
 
     if (exprNodeAndState == nullptr) {
         return nullptr;
@@ -82,7 +83,7 @@
 //        }
 
     if ((exprNodeAndState->_state != nullptr)
-            && (exprNodeAndState->_state->_tokenIndex < _tokens.size())) {
+            && (exprNodeAndState->_state->_tokenIndex < _tokens->size())) {
 
         throw new InvalidSyntaxException(tr("Invalid syntax error. The expression is not fully parsed. It failed at column %1").arg(exprNodeAndState->_state->_tokenIndex));
     }

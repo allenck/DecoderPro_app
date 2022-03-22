@@ -1,5 +1,6 @@
 #include "expressionnodebooleanoperator.h"
 #include "calculateexception.h"
+#include "typeconversionutil.h"
 
 /**
  * A parsed expression
@@ -41,7 +42,7 @@
         
         QVariant rightValue = _rightSide->calculate(symbolTable);
         if (!(rightValue.canConvert<bool>())) {
-            if (/*TypeConversionUtil.isIntegerNumber(*/rightValue.canConvert<long>()) {
+            if (TypeConversionUtil::isIntegerNumber(rightValue)) {
                 // Convert to true or false
                 rightValue = rightValue.toInt() != 0;
             } else {
@@ -56,7 +57,7 @@
         
         QVariant leftValue = _leftSide->calculate(symbolTable);
         if (!(leftValue.canConvert<bool>())) {
-            if (/*TypeConversionUtil.isIntegerNumber(*/leftValue.canConvert<long>())  {
+            if (TypeConversionUtil::isIntegerNumber(leftValue))  {
                 // Convert to true or false
                 leftValue = leftValue.toBool() != 0;
             } else {

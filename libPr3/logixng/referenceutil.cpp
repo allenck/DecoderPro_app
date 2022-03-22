@@ -4,6 +4,7 @@
 #include "memorymanager.h"
 #include "instancemanager.h"
 #include "defaultnamedtablemanager.h"
+#include "typeconversionutil.h"
 
 /**
  * Utility methods to handle references
@@ -153,7 +154,7 @@
         if ((endIndex->v == reference.length()) || (reference.at(endIndex->v-1) == '}')) {
 
             if ((symbolTable != nullptr) && symbolTable->hasValue(leftValue)) {
-                return /*TypeConversionUtil::convertToString*/(symbolTable->getValue(leftValue).toString()/*, false*/);
+                return TypeConversionUtil::convertToString(symbolTable->getValue(leftValue).toString(), false);
             }
             MemoryManager* memoryManager = (MemoryManager*)InstanceManager::getDefault("MemoryManager");
             Memory* m = (Memory*)memoryManager->getNamedBean(leftValue.trimmed())->self();

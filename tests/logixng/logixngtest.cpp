@@ -253,6 +253,10 @@
         conditionalNG_3->setEnabled(false);
         if (! logixNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
 
+        Assert::assertFalse("conditionalNG_1 is enabled", conditionalNG_1->isEnabled(), __FILE__, __LINE__);
+        Assert::assertTrue("conditionalNG_2 is enabled", conditionalNG_2->isEnabled(), __FILE__, __LINE__);
+        Assert::assertFalse("conditionalNG_3 is enabled", conditionalNG_3->isEnabled(), __FILE__, __LINE__);
+
         Assert::assertFalse("listeners for conditionalNG_1 are not registered", conditionalNG_1->listenersAreRegistered, __FILE__, __LINE__);
         Assert::assertFalse("listeners for conditionalNG_2 are not registered", conditionalNG_2->listenersAreRegistered, __FILE__, __LINE__);
         Assert::assertFalse("listeners for conditionalNG_3 are not registered", conditionalNG_3->listenersAreRegistered, __FILE__, __LINE__);

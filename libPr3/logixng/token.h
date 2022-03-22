@@ -23,9 +23,9 @@ public:
         _pos = pos;
     }
 
-//    /*public*/  TokenType getTokenType() {
-//        return _tokenType;
-//    }
+    /*public*/  TokenType::TTYPE getTokenType() {
+        return _tokenType;
+    }
 
     /*public*/  QString getString() {
         return _string;

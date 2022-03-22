@@ -6,7 +6,7 @@
 #include "logixng_thread.h"
 #include "loggingutil.h"
 #include "defaultconditionalng.h"
-#include "logixng.h"
+#include "defaultlogixng.h"
 #include "vptr.h"
 #include "defaultlogixngmanager.h"
 
@@ -56,23 +56,23 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  ConditionalNG*  DefaultConditionalNGManager::createConditionalNG(
+    /*public*/  DefaultConditionalNG*  DefaultConditionalNGManager::createConditionalNG(
             LogixNG* logixNG, QString systemName, QString userName, int threadID)
             /*throws IllegalArgumentException*/ {
 
         // Check that ConditionalNG does not already exist
-        ConditionalNG* x;
+        DefaultConditionalNG* x;
         if (userName != "" && !userName.isEmpty()) {
             x = getByUserName(logixNG, userName);
             if (x != nullptr) {
-                log->error(tr("username '%1' already exists, conditionalNG is '%2'").arg(userName, x->getDisplayName()));
+                log->error(tr("username '%1' already exists, conditionalNG is '%2'").arg(userName, x->AbstractNamedBean::getDisplayName()));
                 return nullptr;
             }
         }
 
-        x = getBySystemName(systemName);
+        x = (DefaultConditionalNG*)getBySystemName(systemName);
         if (x != nullptr) {
-            log->error(tr("systemname '%1' already exists, conditionalNG is '%2'").arg(systemName, x->getDisplayName()));
+            log->error(tr("systemname '%1' already exists, conditionalNG is '%2'").arg(systemName, x->AbstractNamedBean::getDisplayName()));
             return nullptr;
         }
 
@@ -125,7 +125,7 @@
         }
 
         for (NamedBean* nb : ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->AbstractManager::getNamedBeanSet()) {
-         LogixNG* logixNG = (LogixNG*)nb->self();
+         DefaultLogixNG* logixNG = (DefaultLogixNG*)nb->self();
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {
                 if (systemName == (logixNG->getConditionalNG_SystemName(i))) {
                     return logixNG;
@@ -137,12 +137,12 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  ConditionalNG*  DefaultConditionalNGManager::getByUserName(LogixNG* logixNG, QString name) {
+    /*public*/  DefaultConditionalNG*  DefaultConditionalNGManager::getByUserName(LogixNG* logixNG, QString name) {
         if (logixNG != nullptr && name != "null" && !name.isEmpty()) {
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {
-                ConditionalNG* conditionalNG = logixNG->getConditionalNG(i);
+                DefaultConditionalNG* conditionalNG = (DefaultConditionalNG*)logixNG->getConditionalNG(i);
                 if (conditionalNG != nullptr) {
-                    if (name == (conditionalNG->Base::getUserName())) {
+                    if (name == (conditionalNG->AbstractNamedBean::getUserName())) {
                         return conditionalNG;
                     }
                 }
@@ -153,7 +153,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  ConditionalNG*  DefaultConditionalNGManager::getBySystemName(QString name) {
+    /*public*/  ConditionalNG *DefaultConditionalNGManager::getBySystemName(QString name) {
         LogixNG* logixNG = getParentLogixNG(name);
         if (logixNG != nullptr) {
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {

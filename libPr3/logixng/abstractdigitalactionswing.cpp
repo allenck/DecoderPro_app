@@ -59,6 +59,8 @@
         }
             conditionalNG->setSymbolTable(oldSymbolTable);
         });
+#else
+        conditionalNG->getCurrentThread()->runOnLogixNGEventually(new ADSRun1(conditionalNG, symbolTable, object, log));
 #endif
     }
 

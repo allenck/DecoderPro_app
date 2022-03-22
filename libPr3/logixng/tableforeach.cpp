@@ -66,14 +66,14 @@
             case NamedBeanAddressing::TYPE::LocalVariable:
             {
                 SymbolTable* symbolTable = AbstractBase::getConditionalNG()->getSymbolTable();
-                return /*TypeConversionUtil
-                        ::convertToString*/(symbolTable->getValue(_rowOrColumnLocalVariable)/*, false*/).toString();
+                return TypeConversionUtil
+                        ::convertToString(symbolTable->getValue(_rowOrColumnLocalVariable), false);
             }
             case NamedBeanAddressing::TYPE::Formula:
                 return _rowOrColumnExpressionNode != nullptr
-                        ? /*TypeConversionUtil::convertToString*/(
+                        ? TypeConversionUtil::convertToString(
                                 _rowOrColumnExpressionNode->calculate(
-                                        AbstractBase::getConditionalNG()->getSymbolTable())/*, false*/).toString()
+                                        AbstractBase::getConditionalNG()->getSymbolTable()), false)
                         : nullptr;
 
             default:

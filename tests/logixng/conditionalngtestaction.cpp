@@ -5,10 +5,9 @@
 #include "loggerfactory.h"
 #include "junitutil.h"
 
-ConditionalNGTestAction::ConditionalNGTestAction(QObject *parent) : AbstractAction(tr("ConditionalNGTest"), parent)
+ConditionalNGTestAction::ConditionalNGTestAction(QObject *parent) : AbstractAction(tr("ConditionalNG"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
-
 }
 
 void ConditionalNGTestAction::actionPerformed()

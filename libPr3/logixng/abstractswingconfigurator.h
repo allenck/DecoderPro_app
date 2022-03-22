@@ -11,7 +11,7 @@ class AbstractSwingConfigurator : public QObject, public SwingConfiguratorInterf
   Q_OBJECT
   Q_INTERFACES(SwingConfiguratorInterface)
  public:
-  explicit AbstractSwingConfigurator(QObject *parent = nullptr){}
+  explicit AbstractSwingConfigurator(QObject *parent = nullptr) : QObject(parent){}
   /*public*/  void getAllSymbols(/*@Nonnull*/ Base* object, SymbolTable* symbolTable);
   /*public*/  QString getExecuteEvaluateMenuText() override;
   /*public*/  void executeEvaluate(/*@Nonnull*/ Base* object)override;

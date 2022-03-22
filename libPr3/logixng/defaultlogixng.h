@@ -5,11 +5,11 @@
 #include "logixng.h"
 #include "instancemanager.h"
 #include "defaultlogixngmanager.h"
-#include "conditionalng.h"
+#include "defaultconditionalng.h"
 
 class Category;
 class ConditionalNG_Entry;
-class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
+class DefaultLogixNG : public AbstractNamedBean, public LogixNG
 {
  Q_OBJECT
  Q_INTERFACES(LogixNG)
@@ -42,7 +42,7 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
   /*public*/ int getNumConditionalNGs() override;
   /*public*/ void swapConditionalNG(int nextInOrder, int row)override;
   /*public*/ ConditionalNG* getConditionalNG(int order)override;
-  /*public*/ bool addConditionalNG(ConditionalNG* conditionalNG) override;
+  /*public*/ bool addConditionalNG(DefaultConditionalNG *conditionalNG) override;
   /*public*/ ConditionalNG* getConditionalNG(QString systemName) override;
   /*public*/ ConditionalNG* getConditionalNGByUserName(QString userName)override;
   /*public*/ void deleteConditionalNG(ConditionalNG* conditionalNG) override;
@@ -96,15 +96,15 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
 
 /*private*/ /*static*/ class ConditionalNG_Entry {
     /*private*/ QString _systemName;
-    /*private*/ ConditionalNG* _conditionalNG;
+    /*private*/ DefaultConditionalNG* _conditionalNG;
 
-    /*private*/ ConditionalNG_Entry(ConditionalNG* conditionalNG, QString systemName) {
+    /*private*/ ConditionalNG_Entry(DefaultConditionalNG* conditionalNG, QString systemName) {
 
         _systemName = systemName;
         _conditionalNG = conditionalNG;
     }
 
-    /*private*/ ConditionalNG_Entry(ConditionalNG* conditionalNG) {
+    /*private*/ ConditionalNG_Entry(DefaultConditionalNG* conditionalNG) {
         this->_conditionalNG = conditionalNG;
     }
 
@@ -117,7 +117,7 @@ public:
         QString sb = QString("ConditionalNG_Entry: name =");
         sb.append(_systemName);
         sb.append(", cdl = ");
-        sb.append(_conditionalNG == nullptr ? "----" : _conditionalNG->getDisplayName());
+        sb.append(_conditionalNG == nullptr ? "----" : _conditionalNG->AbstractNamedBean::getDisplayName());
         return sb/*.toString()*/;
     }
   friend class DefaultLogixNG;

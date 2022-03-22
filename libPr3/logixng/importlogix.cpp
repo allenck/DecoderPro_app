@@ -52,7 +52,7 @@ void ImportLogix::common(Logix* logix, bool allowSystemImport, bool dryRun)
 
         if (logixNG == nullptr) throw new RuntimeException("Cannot create new LogixNG with name: \"Logix: " + logix->getDisplayName()+"\"");
 
-        log->debug(tr("Import Logix %1 to LogixNG %2").arg(logix->AbstractNamedBean::getSystemName(), logixNG->AbstractNamedBean::getSystemName()));
+        log->debug(tr("Import Logix %1 to LogixNG %2").arg(logix->NamedBean::getSystemName(), logixNG->NamedBean::getSystemName()));
     }
 
     _logix = logix;
@@ -64,7 +64,7 @@ void ImportLogix::common(Logix* logix, bool allowSystemImport, bool dryRun)
         Conditional* c = _logix->getConditional(_logix->getConditionalByNumberOrder(i));
 
         if (!_dryRun) {
-            log->warn(tr("Import Conditional '%1' to LogixNG '%2'").arg(c->getSystemName(), _logixNG->AbstractNamedBean::getSystemName()));
+            log->warn(tr("Import Conditional '%1' to LogixNG '%2'").arg(c->getSystemName(), _logixNG->NamedBean::getSystemName()));
         }
 
 
@@ -78,7 +78,7 @@ void ImportLogix::common(Logix* logix, bool allowSystemImport, bool dryRun)
         } catch (SocketAlreadyConnectedException* ex) {
             if (!_dryRun) {
                 log->warn(tr("Exception during import of Conditional %1 to ConditionalNG %2").arg(
-                        c->getSystemName(), _logixNG->AbstractNamedBean::getSystemName()), ex);
+                        c->getSystemName(), _logixNG->NamedBean::getSystemName()), ex);
             }
         }
         if (!_dryRun) ic->getConditionalNG()->setEnabled(true);

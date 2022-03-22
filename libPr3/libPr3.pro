@@ -1138,7 +1138,15 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/false.cpp \
+    logixng/falseswing.cpp \
+    logixng/tableforeachswing.cpp \
     logixng/actionsensor.cpp \
+    logixng/digitalformula.cpp \
+    logixng/digitalformulaswing.cpp \
+    logixng/orswing.cpp \
+    logixng/trueswing.cpp \
+    logixng/truexml.cpp \
     logixng/actionturnoutlock.cpp \
     logixng/andxml.cpp \
     logixng/antecedent.cpp \
@@ -2491,6 +2499,14 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/false.h \
+    logixng/falseswing.h \
+    logixng/tableforeachswing.h \
+    logixng/digitalformula.h \
+    logixng/digitalformulaswing.h \
+    logixng/orswing.h \
+    logixng/trueswing.h \
+    logixng/truexml.h \
     logixng/actionsensor.h \
     logixng/actionturnoutlock.h \
     logixng/andxml.h \

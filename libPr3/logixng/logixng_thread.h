@@ -57,6 +57,8 @@ class LogixNG_Thread : public QThread
   /*private*/ /*final*/ /*BlockingQueue*/QQueue<ThreadEvent*>* _eventQueue=nullptr;
   /*private*/ LogixNG_Thread(int threadID, QString name, QObject* parent= nullptr);
   /*private*/ void stopLogixNGThread();
+  QMutex mutex;
+  QMutex mutex1;
 
   friend class LNGTimerActionListener;
   friend class NGThread;
@@ -102,6 +104,8 @@ class NGThread : public Runnable
   LogixNG_Thread* thread;
  public:
   NGThread(LogixNG_Thread* thread) {
+   if(!thread)
+    throw new NullPointerException("LogixNG_Thread is null!");
    this->thread = thread;
    setObjectName("NGThtread");
   }

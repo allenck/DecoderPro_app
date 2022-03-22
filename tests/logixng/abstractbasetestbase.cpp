@@ -79,7 +79,7 @@
         if (getLogixNG() == nullptr) {
             log->warn(tr("Method getLogixNG() returns null for class %1").arg(this->metaObject()->className()));
         }
-        Assert::assertTrue("LogixNG is equal", getLogixNG()->equals(_base->getLogixNG()), __FILE__, __LINE__);
+        Assert::assertTrue("LogixNG is equal", getLogixNG()->equals(_base->getLogixNG()->self()), __FILE__, __LINE__);
 
         _base->getConditionalNG()->setEnabled(false);
         _base->setParent(nullptr);

@@ -208,9 +208,9 @@
         }
         switch (index.column()) {
             case SYSTEM_NAME_COLUMN:
-                return _logixNGs.at(row)->AbstractNamedBean::getSystemName();
+                return _logixNGs.at(row)->NamedBean::getSystemName();
             case USER_NAME_COLUMN:
-                return _logixNGs.at(row)->AbstractNamedBean::getUserName();
+                return _logixNGs.at(row)->NamedBean::getUserName();
             case BUTTON_DELETE_COLUMN:
                 return tr("Delete");  // NOI18N
             case BUTTON_MOVE_UP_COLUMN:

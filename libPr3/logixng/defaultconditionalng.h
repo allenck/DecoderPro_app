@@ -14,7 +14,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
  Q_OBJECT
   Q_INTERFACES(ConditionalNG FemaleSocketListener)
  public:
-  explicit DefaultConditionalNG(QString sys, QString user, QObject *parent = nullptr);
+  DefaultConditionalNG(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  DefaultConditionalNG(QString sys, QString user, int threadID, QObject *parent=nullptr);
   /*public*/  LogixNG_Thread* getCurrentThread()override;
   /*public*/  int getStartupThreadId()override;

@@ -20,6 +20,7 @@
      * Create a new instance of DefaultSymbolTable with no previous symbol table.
      */
     /*public*/  DefaultSymbolTable::DefaultSymbolTable(QObject *parent) : SymbolTable(parent){
+     setObjectName("DefaultSymbolTable");
         _prevSymbolTable = nullptr;
         _stack = new DefaultStack();
         _firstSymbolIndex = _stack->getCount();

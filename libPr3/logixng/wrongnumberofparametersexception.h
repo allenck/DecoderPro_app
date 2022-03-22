@@ -7,7 +7,7 @@
  *
  * @author Daniel Bergqvist 2019
  */
-/*public*/ class WrongNumberOfParametersException : ParserException {
+/*public*/ class WrongNumberOfParametersException : public ParserException {
 
  public:
     /**

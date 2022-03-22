@@ -44,7 +44,8 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
-         tests.cpp \
+        tests.cpp \
+        logix/defaultconditionalmanagertest.cpp \
         junitutil.cpp \
         temporaryfolder.cpp \
         RosterTest/rosterentrytestaction.cpp \
@@ -286,6 +287,10 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/tokenizertest.cpp \
+    logixng/tokenizertestaction.cpp \
+    logixng/recursivedescentparsertest.cpp \
+    logixng/recursivedescentparsertestaction.cpp \
     logixng/digitalexpressionstest.cpp \
     logixng/digitalexpressionstestaction.cpp \
     logixng/logixngtest.cpp \
@@ -340,6 +345,7 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
+ logix/defaultconditionalmanagertest.h \
         tests.h \
         tests_global.h \
         junitutil.h \
@@ -583,6 +589,10 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/tokenizertest.h \
+    logixng/tokenizertestaction.h \
+    logixng/recursivedescentparsertest.h \
+    logixng/recursivedescentparsertestaction.h \
     logixng/digitalexpressionstest.h \
     logixng/digitalexpressionstestaction.h \
     logixng/logixngtest.h \

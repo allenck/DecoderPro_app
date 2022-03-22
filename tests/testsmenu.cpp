@@ -116,6 +116,8 @@
 #include "logixng/digitalbooleanonchangetestaction.h"
 #include "logixng/logixngtestaction.h"
 #include "logixng/digitalexpressionstestaction.h"
+#include "logixng/recursivedescentparsertestaction.h"
+#include "logixng/tokenizertestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -295,11 +297,16 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMenu->addMenu(logixNGMaleSocketMenu);
     QMenu* logixNGManagerMenu = new QMenu("Managers");
     logixNGMenu->addMenu(logixNGManagerMenu);
+    QMenu* logixNGMiscMenu = new QMenu("Misc");
+    logixNGMenu->addMenu(logixNGMiscMenu);
 
-    logixNGMenu->addAction(new ConditionalNGTestAction(this));
+
+    logixNGMiscMenu->addAction(new ConditionalNGTestAction(this));
     logixNGMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
     logixNGMenu->addAction(new LogixNGTestAction(this));
     logixNGMenu->addAction(new DigitalExpressionsTestAction(this));
+    logixNGMiscMenu->addAction(new RecursiveDescentParserTestAction(this));
+    logixNGMiscMenu->addAction(new TokenizerTestAction(this));
 
     logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));

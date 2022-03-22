@@ -1,5 +1,6 @@
 #include "expressionnodeassignmentoperator.h"
 #include "calculateexception.h"
+#include "typeconversionutil.h"
 /**
  * A parsed expression
  */
@@ -42,16 +43,16 @@
 
 
     /*private*/ QVariant ExpressionNodeAssignmentOperator::add(QVariant left, QVariant right) /*throws CalculateException*/ {
-        if (/*TypeConversionUtil.isIntegerNumber*/(left.canConvert<long>())
-                && /*TypeConversionUtil.isIntegerNumber*/(right).canConvert<long>()) {
+        if (TypeConversionUtil::isIntegerNumber(left)
+                && TypeConversionUtil::isIntegerNumber(right)) {
             return (left).toInt() + (right).toInt();
 
-        } else if (/*TypeConversionUtil.isFloatingNumber*/(left.canConvert<float>())
-                && /*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+        } else if (TypeConversionUtil::isFloatingNumber(left)
+                && TypeConversionUtil::isFloatingNumber(right)) {
             return (left).toDouble() + (right.toDouble());
 
         } else {
-            if (/*TypeConversionUtil.isString*/(left.canConvert<QString>()) && /*TypeConversionUtil.isString*/(right.canConvert<QString>())) {
+            if (TypeConversionUtil::isString(left) && TypeConversionUtil::isString(right)) {
                 return (left.toString()) + (right.toString());
             } else {
                 throw new CalculateException(tr("The two operands \"%1\" and \"%2\" have different types").arg(left.toString(), right.toString()));
@@ -61,16 +62,16 @@
 
 
     /*private*/ QVariant ExpressionNodeAssignmentOperator::subtract(QVariant left, QVariant right) /*throws CalculateException*/ {
-        if (/*TypeConversionUtil.isIntegerNumber*/(left.canConvert<long>())) {
-            if (/*TypeConversionUtil.isIntegerNumber*/(right.canConvert<long>())) {
+        if (TypeConversionUtil::isIntegerNumber(left)) {
+            if (TypeConversionUtil::isIntegerNumber(right)) {
                 return (left).toInt() - (right).toInt();
-            } else if (/*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+            } else if (TypeConversionUtil::isFloatingNumber(right)) {
                 return (left).toDouble() - (right).toDouble();
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" since it's not a number").arg(right.toString()));
             }
-        } else if (/*TypeConversionUtil.isFloatingNumber*/(left.canConvert<float>())) {
-            if (/*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+        } else if (TypeConversionUtil::isFloatingNumber(left)) {
+            if (TypeConversionUtil::isFloatingNumber(right)) {
                 return (left).toDouble() - (right.toDouble());
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" since it's not a number").arg(right.toString()));
@@ -82,16 +83,16 @@
 
 
     /*private*/ QVariant ExpressionNodeAssignmentOperator::multiply(QVariant left, QVariant right) /*throws CalculateException*/ {
-        if (/*TypeConversionUtil.isIntegerNumber*/(left.canConvert<long>())) {
-            if (/*TypeConversionUtil.isIntegerNumber*/(right.canConvert<long>())) {
+        if (TypeConversionUtil::isIntegerNumber(left)) {
+            if (TypeConversionUtil::isIntegerNumber(right)) {
                 return (left.toInt()) * (right).toInt();
-            } else if (/*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+            } else if (TypeConversionUtil::isFloatingNumber(right)) {
                 return (left).toDouble() * (right).toDouble();
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" since it's not a number").arg(right.toString()));
             }
-        } else if (/*TypeConversionUtil.isFloatingNumber*/(left.canConvert<float>())) {
-            if (/*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+        } else if (TypeConversionUtil::isFloatingNumber(left)) {
+            if (TypeConversionUtil::isFloatingNumber(right)) {
                 return (left).toDouble() * (right).toDouble();
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" sinse it's not a number").arg(right.toString()));
@@ -103,16 +104,16 @@
 
 
     /*private*/ QVariant ExpressionNodeAssignmentOperator::divide(QVariant left, QVariant right) /*throws CalculateException*/ {
-        if (/*TypeConversionUtil.isIntegerNumber*/(left.canConvert<long>())) {
-            if (/*TypeConversionUtil.isIntegerNumber*/(right.canConvert<long>())) {
+        if (TypeConversionUtil::isIntegerNumber(left)) {
+            if (TypeConversionUtil::isIntegerNumber(right)) {
                 return (left).toInt() / (right).toInt();
-            } else if (/*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+            } else if (TypeConversionUtil::isFloatingNumber(right)) {
                 return (left).toDouble() / (right.toDouble());
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" since it's not a number").arg(right.toString()));
             }
-        } else if (/*TypeConversionUtil.isFloatingNumber*/(left.canConvert<float>())) {
-            if (/*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+        } else if (TypeConversionUtil::isFloatingNumber(left)) {
+            if (TypeConversionUtil::isFloatingNumber(right)) {
                 return (left).toDouble() / (right).toDouble();
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" since it's not a number").arg(right.toString()));
@@ -124,8 +125,8 @@
 
 
     /*private*/ QVariant ExpressionNodeAssignmentOperator::modulo(QVariant left, QVariant right) /*throws CalculateException*/ {
-        if (/*TypeConversionUtil.isIntegerNumber*/(left.canConvert<long>())) {
-            if (/*TypeConversionUtil.isIntegerNumber*/(right.canConvert<long>())) {
+        if (TypeConversionUtil::isIntegerNumber(left)) {
+            if (TypeConversionUtil::isIntegerNumber(right)) {
                 return (left).toInt() % (right).toInt();
             } else {
                 throw new CalculateException(tr("Arithmetic operations cannot be done on the operand \"%1\" since it's not a number").arg(right.toString()));
@@ -164,9 +165,9 @@
         } else {
             // For the other arithmetic operators, except add, only numbers can
             // be handled. For other types, return 0.
-            if (! /*TypeConversionUtil.isFloatingNumber*/(left.canConvert<float>())) {
+            if (! TypeConversionUtil::isFloatingNumber(left)) {
                 result = 0;
-            } else if (! /*TypeConversionUtil.isFloatingNumber*/(right.canConvert<float>())) {
+            } else if (! TypeConversionUtil::isFloatingNumber(right)) {
                 result = 0;
             } else {
                 switch (_tokenType) {

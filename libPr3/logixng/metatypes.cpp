@@ -18,6 +18,11 @@
 #include "digitalbooleanonchangeswing.h"
 #include "expressionsensorswing.h"
 #include "antecedentswing.h"
+#include "trueswing.h"
+#include "orswing.h"
+#include "digitalformulaswing.h"
+#include "falseswing.h"
+#include "tableforeachswing.h"
 
 /*static*/ bool Metatypes::ng_done = false;
 
@@ -31,12 +36,14 @@ Metatypes::Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DefaultDigitalBooleanActionManagerXml>("DefaultDigitalBooleanActionManagerXml");
    qRegisterMetaType<DefaultDigitalExpressionManagerXml>("DefaultDigitalExpressionManagerXml");
 
+   // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
    qRegisterMetaType<AnalogExpressionAnalogIOSwing>("AnalogExpressionAnalogIOSwing");
    qRegisterMetaType<AnalogExpressionConstantSwing>("AnalogExpressionConstantSwing");
    qRegisterMetaType<AnalogExpressionMemorySwing>("AnalogExpressionMemorySwing");
    qRegisterMetaType<TimeSinceMidnightSwing>("TimeSinceMidnightSwing");
 
+   // AbstractAnalogActionSwing
    qRegisterMetaType<AnalogManySwing>("AnalogManySwing");
    qRegisterMetaType<AnalogActionMemorySwing>("AnalogActionMemorySwing");
 
@@ -45,7 +52,16 @@ Metatypes::Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DigitalBooleanOnChangeSwing>("DigitalBooleanOnChangeSwing");
 
    // AbstractDigitalExpressionSwing
-   qRegisterMetaType<ExpressionSensorSwing>("ExpressionSensorSwing");
    qRegisterMetaType<AntecedentSwing>("AntecedentSwing");
+   qRegisterMetaType<DigitalFormulaSwing>("DigitalFormulaSwing");
+   qRegisterMetaType<ExpressionSensorSwing>("ExpressionSensorSwing");
+   qRegisterMetaType<FalseSwing>("FalseSwing");
+   qRegisterMetaType<OrSwing>("OrSwing");
+   qRegisterMetaType<TrueSwing>("TrueSwing");
+
+   // AbstractDigitalActionSwing
+   qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
+
+
    Metatypes::ng_done = true;
 }

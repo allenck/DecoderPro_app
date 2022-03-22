@@ -21,6 +21,7 @@ public:
     QDomDocument doc;
     virtual void setDoc(QDomDocument doc);
     /*public*/ bool load(QDomElement e) /*throw (Exception)*/ override;
+    /*public*/ void load(QDomElement e, QObject* o) /*throws JmriConfigureXmlException*/override;
     /*public*/ bool load(QDomElement shared, QDomElement perNode) override; //throws Exception
     /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) /*throw (JmriConfigureXmlException)*/ override;
     /*public*/ QDomElement store(/*@Nonnull*/ QObject* o, bool shared)override;
@@ -35,9 +36,9 @@ signals:
 
 public slots:
 private:
+    static Logger* log;
     /*private*/ ConfigXmlManager* c;
     /*private*/ ErrorHandler* errorHandler;// = XmlAdapter::getDefaultExceptionHandler();
-    static Logger* log;
   protected:
     /*protected*/ ConfigXmlManager* getConfigXmlManager() ;
  QObject *parent;
