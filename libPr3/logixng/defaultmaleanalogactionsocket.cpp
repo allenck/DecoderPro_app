@@ -4,6 +4,7 @@
 #include "mathutil.h"
 #include "analogactionbean.h"
 #include "conditionalng.h"
+#include "abstractanalogaction.h"
 
 /**
  * Every AnalogActionBean has an DefaultMaleAnalogActionSocket as its parent.
@@ -33,7 +34,9 @@
         if (value == /*Double.POSITIVE_INFINITY*/INFINITY) {
             throw new IllegalArgumentException("The value is positive infinity");
         }
-        ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setValue(value);
+        Base* object  =AbstractMaleSocket::getObject();
+        //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setValue(value);
+        ((AbstractAnalogAction*)object->bself())->setValue(value);
     }
 
     /** {@inheritDoc} */
@@ -48,7 +51,7 @@
             return;
         }
 
-        ConditionalNG* conditionalNG = AbstractMaleSocket::getConditionalNG();
+        ConditionalNG* conditionalNG = getConditionalNG();
 
         int currentStackPos = conditionalNG->getStack()->getCount();
 

@@ -37,6 +37,7 @@ class DefaultMaleAnalogActionSocketTest : public MaleSocketTestBase
  public:
     MyAnalogAction(QString sysName) : AbstractAnalogAction(sysName, "") {
         //super(sysName, null);
+     setObjectName("MyAnalogAction");
     }
     QObject* bself() override {return (QObject*)this;}
  protected:

@@ -12,30 +12,36 @@
     /*public*/  JmriException::JmriException(QString s, Throwable* t) : Exception(s, t) {
         //super(s, t);
         errors = QList<QString>();
+        name = "JmriException";
     }
 
     /*public*/  JmriException::JmriException(QString s) : Exception(s){
         //super(s);
         errors = QList<QString>();
+        name = "JmriException";
     }
 
     /*public*/  JmriException::JmriException(Throwable* t) : Exception(t){
         //super(t);
         errors = QList<QString>();
+        name = "JmriException";
     }
 
     /*public*/  JmriException::JmriException() {
         errors = QList<QString>();
+        name = "JmriException";
     }
 
     /*public*/  JmriException::JmriException(QString s, QList<QString> errors) : Exception(s){
         //super(s);
         this->errors =QList<QString>(errors);
+        name = "JmriException";
     }
 
     /*public*/  JmriException::JmriException(QString s, QList<QString> errors, Throwable* t): Exception(s, t) {
         //super(s, t);
         this->errors =QList<QString>(errors);
+        name = "JmriException";
     }
 
     /*public*/  QList<QString> JmriException::getErrors() {

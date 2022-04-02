@@ -11,6 +11,7 @@
 #include "abstractbase.h"
 #include "abstractdigitalaction.h"
 #include "defaultconditionalng.h"
+#include "abstractbase.h"
 
 /**
  * The abstract class that is the base class for all LogixNG classes that
@@ -307,7 +308,7 @@
     if (getParent() == nullptr) return nullptr;
     //return getParent()->getConditionalNG();
     Base* parent = getParent();
-    return (DefaultConditionalNG*)parent->getParent()->bself();
+    return ((AbstractBase*)parent->bself())->getConditionalNG();
 }
 
 //@Override
