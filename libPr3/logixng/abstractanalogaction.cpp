@@ -14,7 +14,7 @@
 
 
 
-/*public*/  AbstractAnalogAction::AbstractAnalogAction(QString sys, QString user, QObject *parent) :AbstractBase(sys, user, parent)
+/*public*/  AbstractAnalogAction::AbstractAnalogAction(QString sys, QString user, QObject *parent) : AbstractBase(sys, user, parent)
         /*throws BadUserNameException, BadSystemNameException*/ {
     //super(sys, user);
     setObjectName("AbstractAnalogAction");

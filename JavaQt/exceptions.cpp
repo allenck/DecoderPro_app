@@ -84,11 +84,14 @@ UnsupportedCommOperationException::UnsupportedCommOperationException(QString s)
 UnsupportedOperationException::UnsupportedOperationException(QString s)
 {
  msg = s;
+ name = "UnsupportedOperationException";
 }
 UnsupportedOperationException::UnsupportedOperationException(QString s, Throwable* cause)
 {
  msg = s;
  this->cause = cause;
+ name = "UnsupportedOperationException";
+
 }
 
 NoSuchPortException::NoSuchPortException(QString s)

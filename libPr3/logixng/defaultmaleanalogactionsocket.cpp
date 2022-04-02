@@ -71,7 +71,7 @@
 
     //@Override
     /*public*/  QString DefaultMaleAnalogActionSocket::getDisplayName() {
-        return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+        return ((AbstractNamedBean*)getObject()->bself())->getDisplayName();
     }
 
     /**
@@ -92,12 +92,15 @@
 
     //@Override
     /*public*/  void DefaultMaleAnalogActionSocket::setState(int s) /*throws JmriException*/ {
-        ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+        //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+     ((AbstractBase*)getObject()->bself())->setState(s);
+
     }
 
     //@Override
     /*public*/  int DefaultMaleAnalogActionSocket::getState() {
-        return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+        //return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+     return ((AbstractBase*)getObject()->bself())->getState();
     }
 
     //@Override
@@ -107,32 +110,37 @@
 
     //@Override
     /*public*/  QString DefaultMaleAnalogActionSocket::getComment() {
-        return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
+        return ((AbstractNamedBean*)getObject()->bself())->getComment();
     }
 
     //@Override
     /*public*/  void DefaultMaleAnalogActionSocket::setComment(QString comment) {
-        ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+        //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+     ((AbstractNamedBean*)getObject()->bself())->setComment(comment);
     }
 
     //@Override
     /*public*/  void DefaultMaleAnalogActionSocket::setProperty(QString key, QVariant value) {
-        ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+        //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+     ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
     }
 
     //@Override
     /*public*/  QVariant DefaultMaleAnalogActionSocket::getProperty(QString key) {
-        return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+        //return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+      ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
     }
 
     //@Override
     /*public*/  void DefaultMaleAnalogActionSocket::removeProperty(QString key) {
         ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+     ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
     }
 
     //@Override
     /*public*/  QSet<QString> DefaultMaleAnalogActionSocket::getPropertyKeys() {
-        return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+        //return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+     return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
     }
 
     //@Override

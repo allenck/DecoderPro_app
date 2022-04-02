@@ -6,7 +6,7 @@
 #include "abstractnamedbean.h"
 #include "abstractbase.h"
 
-
+#include "defaultmaleanalogactionsocket.h"
 /**
  * Base class for test classes that tests MaleSockets
  */
@@ -123,13 +123,13 @@ QString sn2 = maleSocketA->getSystemName();
         Assert::assertEquals("getUserName() is correct",
                 "Def", maleSocketA->getUserName(), __FILE__, __LINE__);
 
-        QString dn1 = ((AbstractBase*)maleSocketA->getObject()->bself())->getDisplayName();
+        QString dn1 = ((AbstractMaleSocket*)maleSocketA->getObject()->bself())->getDisplayName();
         QString dn2 = ((AbstractBase*)maleSocketA->bself())->getDisplayName();
         QString dn3 = ((AbstractNamedBean*)maleSocketA->bself())->getDisplayName();
         Assert::assertEquals("getDisplayName() is correct",
-                ((AbstractBase*)maleSocketA->getObject()->bself())->getDisplayName(), ((AbstractBase*)maleSocketA->bself())->getDisplayName(), __FILE__, __LINE__);
+                ((AbstractMaleSocket*)maleSocketA->getObject()->bself())->getDisplayName(), ((AbstractBase*)maleSocketA->bself())->getDisplayName(), __FILE__, __LINE__);
         Assert::assertEquals("getDisplayName() is correct",
-                ((AbstractBase*)maleSocketB->getObject()->bself())->getDisplayName(), ((AbstractBase*)maleSocketB->bself())->getDisplayName(), __FILE__, __LINE__);
+                ((AbstractMaleSocket*)maleSocketB->getObject()->bself())->getDisplayName(), ((AbstractBase*)maleSocketB->bself())->getDisplayName(), __FILE__, __LINE__);
         Assert::assertNotEquals("getDisplayName() are different",
                ((AbstractBase*)maleSocketA->bself())->getDisplayName(), ((AbstractBase*)maleSocketB->bself())->getDisplayName(), __FILE__, __LINE__);
     }
@@ -149,6 +149,7 @@ QString sn2 = maleSocketA->getSystemName();
     //@Test
     /*public*/  void MaleSocketTestBase::testComment() /*throws JmriException*/ {
         ((AbstractBase*)maleSocketA->bself())->setComment("Abc");
+        QString cmt = ((AbstractBase*)maleSocketA->bself())->getComment();
         Assert::assertEquals("getComment() is correct",
                 "Abc", ((AbstractBase*)maleSocketA->bself())->getComment(), __FILE__, __LINE__);
 
@@ -165,27 +166,29 @@ QString sn2 = maleSocketA->getSystemName();
         }
 
         // Test set property and read it
-        ((AbstractBase*)maleSocketA->bself())->setProperty("Abc", "Something");
+        //((AbstractBase*)maleSocketA->bself())->setProperty("Abc", "Something");
+        ((AbstractNamedBean*)maleSocketA->getObject()->bself())->setProperty("Abc", "Something");
+        QString prop = ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getProperty("Abc").toString();
         Assert::assertEquals("getProperty() is correct",
-                "Something", ((AbstractBase*)maleSocketA->bself())->getProperty("Abc"), __FILE__, __LINE__);
+                QVariant("Something"), ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getProperty("Abc"), __FILE__, __LINE__);
         // Test set property to something else and read it
-        ((AbstractBase*)maleSocketA->bself())->setProperty("Abc", "Something else");
+        ((AbstractNamedBean*)maleSocketA->getObject()->bself())->setProperty("Abc", "Something else");
         Assert::assertEquals("getProperty() is correct",
-                "Something else", ((AbstractBase*)maleSocketA->bself())->getProperty("Abc"), __FILE__, __LINE__);
-        Assert::assertEquals("num properties", 1, ((AbstractBase*)maleSocketA->bself())->getPropertyKeys().size(), __FILE__, __LINE__);
+                QVariant("Something else"), ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getProperty("Abc"), __FILE__, __LINE__);
+        Assert::assertEquals("num properties", 1, ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getPropertyKeys().size(), __FILE__, __LINE__);
         // Test set property with another key and read it
-        ((AbstractBase*)maleSocketA->bself())->setProperty("Def", "Something different");
+        ((AbstractNamedBean*)maleSocketA->getObject()->bself())->setProperty("Def", "Something different");
         Assert::assertEquals("getProperty() is correct",
-                "Something different", ((AbstractBase*)maleSocketA->bself())->getProperty("Def"), __FILE__, __LINE__);
+                QVariant("Something different"), ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getProperty("Def"), __FILE__, __LINE__);
         // Test that the previous key hasn't been changed
         Assert::assertEquals("getProperty() is correct",
-                "Something else", ((AbstractBase*)maleSocketA->bself())->getProperty("Abc"), __FILE__, __LINE__);
-        Assert::assertEquals("num properties", 2, ((AbstractBase*)maleSocketA->bself())->getPropertyKeys().size(), __FILE__, __LINE__);
+                QVariant("Something else"), ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getProperty("Abc"), __FILE__, __LINE__);
+        Assert::assertEquals("num properties", 2, ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getPropertyKeys().size(), __FILE__, __LINE__);
         // Test removing the property and read it
-        ((AbstractBase*)maleSocketA->bself())->removeProperty("Abc");
+        ((AbstractNamedBean*)maleSocketA->getObject()->bself())->removeProperty("Abc");
         Assert::assertNull("getProperty() is null",
-                ((AbstractBase*)maleSocketA->bself())->getProperty("Abc"), __FILE__, __LINE__);
-        Assert::assertEquals("num properties", 1, ((AbstractBase*)maleSocketA->bself())->getPropertyKeys().size(), __FILE__, __LINE__);
+                ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getProperty("Abc"), __FILE__, __LINE__);
+        Assert::assertEquals("num properties", 1, ((AbstractNamedBean*)maleSocketA->getObject()->bself())->getPropertyKeys().size(), __FILE__, __LINE__);
     }
 
     //@Test

@@ -13,7 +13,7 @@ class JTextField;
 class Turnout;
 class LIBLAYOUTEDITORSHARED_EXPORT SimpleTurnoutCtrlFrame : public JmriJFrame, public PropertyChangeListener
 {
-    Q_OBJECT
+  Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SimpleTurnoutCtrlFrame(QWidget *parent = 0);

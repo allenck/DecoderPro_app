@@ -37,6 +37,7 @@
  */
 /*public*/ RuntimeException::RuntimeException(QString message) : Exception(message){
     //super(message);
+ name = "RuntimeException";
 }
 
 /**

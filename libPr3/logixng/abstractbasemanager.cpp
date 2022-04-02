@@ -121,8 +121,8 @@
         if(!s)
          throw new NullPointerException("required bean is null!");
         QString s1 = ((AbstractBase*)s->bself())->AbstractNamedBean::getSystemName();
-        NamedBean* nb = (AbstractNamedBean*)s->bself();
-        QString sys = nb->getSystemName();
+//        NamedBean* nb = (AbstractNamedBean*)s->bself();
+//        QString sys = nb->getSystemName();
         MaleSocket* bean;
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, s);
@@ -130,8 +130,8 @@
         if(!bean)
          throw new NullPointerException("required bean is null!");
         //AbstractMaleSocket* ams = (AbstractMaleSocket*)bean->bself();
-//        /*QString*/ sys = ((AbstractBase*)bean->getObject()->bself())->AbstractNamedBean::getSystemName();
-        AbstractNamedBean* nb2 = ((AbstractNamedBean*)bean->getObject()->bself());
+//        /*QString*/ sys = ((AbstractMaleSocket*)bean->bself())->getSystemName();
+        NamedBean* nb2 = ((AbstractNamedBean*)(s->getObject()->bself()));
         QString sys2 = nb2->getSystemName();
          AbstractManager::Register(nb2);
         return bean;

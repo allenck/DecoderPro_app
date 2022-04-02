@@ -79,14 +79,14 @@ class Exception : public Throwable
 // Q_OBJECT
 // Q_INTERFACES(Throwable)
 public:
- Exception() : Throwable() {}
- Exception(QString msg) : Throwable(msg) {}
- Exception(QString msg, Throwable* throwable) : Throwable(msg, throwable) {}
- Exception(QString msg, QString localMsg) : Throwable(msg, localMsg) {}
+ Exception() : Throwable() {name = "Exception";}
+ Exception(QString msg) : Throwable(msg) {name = "Exception";}
+ Exception(QString msg, Throwable* throwable) : Throwable(msg, throwable) {name = "Exception";}
+ Exception(QString msg, QString localMsg) : Throwable(msg, localMsg) {name = "Exception";}
  Exception(QString msg, QString localMsg, Exception* exception) : Throwable(msg, localMsg, exception)
- {}
- Exception(Exception* exception) : Throwable(exception) {}
- Exception(Throwable* exception) : Throwable(exception) {}
+ {name = "Exception";}
+ Exception(Exception* exception) : Throwable(exception) {name = "Exception";}
+ Exception(Throwable* exception) : Throwable(exception) {name = "Exception";}
 
 };
 

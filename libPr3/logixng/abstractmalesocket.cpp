@@ -133,10 +133,11 @@
 
 //@Override
 /*public*/ /*final*/ QString AbstractMaleSocket::getSystemName() const{
+ QString sys = ((AbstractMaleSocket*)_object->bself())->AbstractNamedBean::getSystemName();
+ if(sys.isEmpty())
     return _object->getSystemName();
 // QObject* obj = (QObject*)_object;
-// QString sys = ((AbstractMaleSocket*)_object->bself())->AbstractNamedBean::getSystemName();
-// return sys;
+ return sys;
 }
 
 //@Override
@@ -775,4 +776,11 @@ void AMSRun1::run()
     return getObject()->toString();
 }
 
+/*public*/ bool AbstractMaleSocket::equals(QObject* o ){
+ if(o == this) return true;
+ if(this->metaObject()->className() != o->metaObject()->className()) return false;
+ QString sn1 = this->getSystemName();
+ QString sn2 = ((AbstractMaleSocket*)o)->getSystemName();
+ return sn1 == sn2;
+}
 /*private*/ /*static*/ /*final*/ Logger* AbstractMaleSocket::log = LoggerFactory::getLogger("AbstractMaleSocket");

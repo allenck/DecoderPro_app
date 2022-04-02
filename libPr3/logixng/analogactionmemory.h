@@ -38,7 +38,7 @@ class AnalogActionMemory : public AbstractAnalogAction, public VetoableChangeLis
   //QString getSystemName()  const override{return mSystemName;}
  private:
   static Logger* log;
-  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle;
+  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle = nullptr;
 
 };
 

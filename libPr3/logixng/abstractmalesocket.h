@@ -105,6 +105,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
 
   QObject* bself() override {return (QObject*)this;}
 
+  bool equals(QObject* o)override;
  signals:
 
  private:
