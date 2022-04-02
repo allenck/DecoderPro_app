@@ -3,8 +3,10 @@
 
 #include "expressionnode.h"
 #include "token.h"
-class ExpressionNodeFloatingNumber : public ExpressionNode
+class ExpressionNodeFloatingNumber : public QObject, public ExpressionNode
 {
+  Q_OBJECT
+  Q_INTERFACES(ExpressionNode)
  public:
   ExpressionNodeFloatingNumber(Token* token);
   /*public*/  QVariant calculate(SymbolTable*)override;

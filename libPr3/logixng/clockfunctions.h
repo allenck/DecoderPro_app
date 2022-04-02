@@ -4,10 +4,10 @@
 #include "functionfactory.h"
 #include "timebase.h"
 #include "instancemanager.h"
-class ClockFunctions :public FunctionFactory
+class ClockFunctions : public QObject, public FunctionFactory
 {
   Q_OBJECT
-  Q_INTERFACES()
+  Q_INTERFACES(FunctionFactory)
  public:
   ClockFunctions() : FunctionFactory() {}
       /*public*/  QString getModule()override;

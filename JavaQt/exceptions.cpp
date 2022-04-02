@@ -98,6 +98,7 @@ NoSuchPortException::NoSuchPortException(QString s)
 NullPointerException::NullPointerException(QString s)
 {
  msg = s;
+ name= "NullPointerException";
 }
 DataConversionException::DataConversionException(QString s)
 {

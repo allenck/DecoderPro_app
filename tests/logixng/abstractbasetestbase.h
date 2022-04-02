@@ -5,6 +5,7 @@
 #include "base.h"
 #include "category.h"
 #include "abstractbase.h"
+#include "runnable.h"
 
 class RunnableWithIndex;
 class MyBase;
@@ -156,6 +157,20 @@ public:
   /*protected*/ Category* _category;
   /*protected*/ bool _isExternal;
 
+};
+/**
+ * Executes the method.
+ * This interface is used by the method
+ * {@link #assertIndexOutOfBoundsException(RunnableWithIndex, int, int)}
+ */
+/*public*/  /*interface*/class RunnableWithIndex  : public Runnable{
+  Q_OBJECT
+ public:
+    /**
+     * Run the method.
+     * @param index the index
+     */
+  /*public*/  void run(int index) {}
 };
 
 #endif // ABSTRACTBASETESTBASE_H

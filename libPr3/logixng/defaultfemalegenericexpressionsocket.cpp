@@ -4,10 +4,10 @@
 #include "maledigitalexpressionsocket.h"
 #include "maleanalogexpressionsocket.h"
 #include "malestringexpressionsocket.h"
-#include "analogexpressionmanager.h"
-#include "digitalexpressionmanager.h"
+#include "defaultanalogexpressionmanager.h"
+#include "defaultdigitalexpressionmanager.h"
 #include "instancemanager.h"
-#include "stringexpressionmanager.h"
+#include "defaultstringexpressionmanager.h"
 #include "defaultfemaleanalogexpressionsocket.h"
 #include "defaultfemaledigitalexpressionsocket.h"
 #include "defaultfemalestringexpressionsocket.h"
@@ -164,7 +164,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString DefaultFemaleGenericExpressionSocket::getLongDescription(QLocale locale) {
-        return tr(/*locale,*/ "?~ %1").arg(getName());
+        return tr(/*locale,*/ "?* %1").arg(getName());
     }
 
     /*private*/ void DefaultFemaleGenericExpressionSocket::addClassesToMap(
@@ -192,9 +192,9 @@
             classes.insert(category, QList<QString>());
         }
 
-        addClassesToMap(classes, ((AnalogExpressionManager*)InstanceManager::getDefault(/*AnalogExpressionManager*/))->getExpressionClasses());
-        addClassesToMap(classes, ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses());
-        addClassesToMap(classes, ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses());
+        addClassesToMap(classes, ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getExpressionClasses());
+        addClassesToMap(classes, ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses());
+        addClassesToMap(classes, ((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses());
 
         return classes;
     }

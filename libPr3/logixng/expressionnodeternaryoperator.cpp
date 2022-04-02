@@ -12,6 +12,7 @@
         _leftSide = leftSide;
         _middleSide = middleSide;
         _rightSide = rightSide;
+        setObjectName("ExpressionNodeTernaryOperator");
         
         if (_leftSide == nullptr) {
             throw new IllegalArgumentException("leftSide must not be null");

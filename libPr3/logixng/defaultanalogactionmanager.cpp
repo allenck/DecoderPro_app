@@ -24,6 +24,7 @@
 
 /*public*/  DefaultAnalogActionManager::DefaultAnalogActionManager(QObject* parent)
    : AbstractBaseManager(parent) {
+    setObjectName("DefaultAnalogActionManager");
     ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (AnalogActionFactory actionFactory : ServiceLoader.load(AnalogActionFactory.class)) {
@@ -99,7 +100,6 @@
 //@Override
 /*public*/  MaleAnalogActionSocket* DefaultAnalogActionManager::registerAction(/*@Nonnull*/ AnalogActionBean* action)
         /*throws IllegalArgumentException*/ {
-    setObjectName("DefaultAnalogActionManager");
 
     if (qobject_cast<MaleAnalogActionSocket*>(action->bself())) {
         throw new IllegalArgumentException("registerAction() cannot register a MaleAnalogActionSocket. Use the method register() instead.");
@@ -118,8 +118,8 @@
     AbstractNamedBean* nb = (AbstractNamedBean*)action->self();
     QString sys = nb->getSystemName();
     sys = maleSocket->getObject()->getSystemName();
-     registerBean(maleSocket);
-     return maleSocket;
+    registerBean(maleSocket);
+    return maleSocket;
 }
 
 //@Override

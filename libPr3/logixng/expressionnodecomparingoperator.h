@@ -4,8 +4,10 @@
 #include "expressionnode.h"
 #include "tokentype.h"
 
-class ExpressionNodeComparingOperator : public ExpressionNode
+class ExpressionNodeComparingOperator : public QObject, public ExpressionNode
 {
+  Q_OBJECT
+  Q_INTERFACES(ExpressionNode)
  public:
   ExpressionNodeComparingOperator(TokenType::TTYPE tokenType, ExpressionNode* leftSide, ExpressionNode* rightSide);
   /*public*/  QVariant calculateNull(QVariant left, QVariant right) /*throws JmriException*/;

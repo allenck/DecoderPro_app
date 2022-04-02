@@ -12,7 +12,7 @@ class DebuggerMaleAnalogExpressionSocket : public AbstractDebuggerMaleSocket, pu
   Q_INTERFACES(MaleAnalogExpressionSocket)
  public:
   explicit DebuggerMaleAnalogExpressionSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager,
-                                              NamedBean *maleSocket, QObject * parent = nullptr);
+                                              MaleSocket *maleSocket, QObject * parent = nullptr);
   /*public*/  QString getBeforeInfo()override;
   /*public*/  QString getAfterInfo()override;
   /*public*/  double evaluate() /*throws JmriException*/ override;

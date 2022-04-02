@@ -8,7 +8,6 @@ DefaultMaleAnalogActionSocketTestAction::DefaultMaleAnalogActionSocketTestAction
  : AbstractAction(tr("AnalogAction"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
-
 }
 
 void DefaultMaleAnalogActionSocketTestAction::actionPerformed()

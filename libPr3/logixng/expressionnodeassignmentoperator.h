@@ -7,6 +7,7 @@
 class ExpressionNodeAssignmentOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
+  Q_INTERFACES(ExpressionNode)
  public:
   ExpressionNodeAssignmentOperator(TokenType::TTYPE tokenType, ExpressionNode* leftSide, ExpressionNode* rightSide);
   /*public*/ QVariant calculate(SymbolTable* symbolTable) /*throws JmriException*/override;

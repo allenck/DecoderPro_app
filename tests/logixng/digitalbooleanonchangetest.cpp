@@ -220,7 +220,7 @@
     }
 
     //@Test
-    /*public*/  void testGetLongDescription() {
+    /*public*/  void DigitalBooleanOnChangeTest::testGetLongDescription() {
         DigitalBooleanActionBean* a1 = new DigitalBooleanOnChange("IQDB321", "", DigitalBooleanOnChange::DigitalBooleanOnChange::Trigger::CHANGE_TO_TRUE);
         Assert::assertEquals("strings are equal", "On change to true", a1->getLongDescription(), __FILE__, __LINE__);
         DigitalBooleanActionBean* a2 = new DigitalBooleanOnChange("IQDB322", "", DigitalBooleanOnChange::DigitalBooleanOnChange::Trigger::CHANGE_TO_FALSE);
@@ -312,7 +312,7 @@
 
         logixNG = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N
         conditionalNG = new DefaultConditionalNGScaffold("IQC1", "A conditionalNG");  // NOI18N;
-        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((NamedBean*)conditionalNG->self());
+        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((AbstractNamedBean*)conditionalNG->self());
         conditionalNG->setEnabled(true);
         conditionalNG->setRunDelayed(false);
         logixNG->addConditionalNG(conditionalNG);

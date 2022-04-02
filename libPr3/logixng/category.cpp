@@ -89,13 +89,13 @@
     }
 
     //@Override
-//    /*public*/  bool Category::operator==(QObject* o) {
-//        if (qobject_cast<Category*>(o)) {
-//            Category* c = (Category*)o;
-//            return _description ==(c->_description) && _name == (c->_name);
-//        }
-//        return false;
-//    }
+    /*public*/ bool Category::equals(QObject* o) {
+        if (qobject_cast<Category*>(o)) {
+            Category* c = (Category*)o;
+            return _description == (c->_description) && _name == (c->_name);
+        }
+        return false;
+    }
 
     //@Override
     /*public*/  uint Category::hashCode(){

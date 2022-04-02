@@ -89,13 +89,14 @@
         }
 
         // Check if system name is valid
-        if (this->validSystemNameFormat(action->NamedBean::getSystemName()) != NameValidity::VALID) {
-            log->warn("SystemName " + action->NamedBean::getSystemName() + " is not in the correct format");
-            throw new IllegalArgumentException(tr("System name is invalid: %1").arg(action->NamedBean::getSystemName()));
+        QString sn = ((AbstractBase*)action->self())->AbstractNamedBean::getSystemName();
+        if (this->validSystemNameFormat(((AbstractBase*)action->self())->AbstractNamedBean::getSystemName()) != NameValidity::VALID) {
+            log->warn("SystemName " + ((AbstractBase*)action->self())->AbstractNamedBean::getSystemName() + " is not in the correct format");
+            throw new IllegalArgumentException(tr("System name is invalid: %1").arg(((AbstractBase*)action->self())->AbstractNamedBean::getSystemName()));
         }
 
         // Keep track of the last created auto system name
-        updateAutoNumber(action->NamedBean::getSystemName());
+        updateAutoNumber(((AbstractBase*)action->self())->AbstractNamedBean::getSystemName());
 
         MaleStringActionSocket* maleSocket = createMaleActionSocket(action);
         registerBean(maleSocket);

@@ -78,7 +78,7 @@
      * {@link #getSystemNamePrefix() } and "AE";
      */
     //@Override
-    /*public*/ virtual /*default*/ QString getSubSystemNamePrefix() {
+    /*public*/ virtual /*default*/ QString getSubSystemNamePrefix()const {
         return getSystemNamePrefix() + "AE";
     }
 

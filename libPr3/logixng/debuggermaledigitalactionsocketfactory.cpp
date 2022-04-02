@@ -11,11 +11,11 @@
 //public class DebuggerMaleDigitalActionSocketFactory implements MaleDigitalActionSocketFactory {
 
     //@Override
-    /*public*/ NamedBean *DebuggerMaleDigitalActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, NamedBean *maleSocket) {
+    /*public*/ MaleSocket *DebuggerMaleDigitalActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, MaleSocket *maleSocket) {
 
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
         QString sys = maleSocket->getSystemName();
-        return new DebuggerMaleDigitalActionSocket(manager, (NamedBean*)maleSocket);
+        return new DebuggerMaleDigitalActionSocket(manager, (MaleDigitalActionSocket*)maleSocket->bself());
     }

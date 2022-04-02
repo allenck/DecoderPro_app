@@ -1,7 +1,7 @@
 #ifndef TABLEROWORCOLUMN_H
 #define TABLEROWORCOLUMN_H
 #include <QtCore>
-
+#include "exceptions.h"
 /**
  * Enum for row or column.
  *
@@ -48,7 +48,7 @@
 
     //@Override
     /*public*/ static QString toString(TYPE t) {
-     if(t==Row) return "Row";
+     if(t==Row) return tr("Row");
      else
       return "Column";
 
@@ -61,7 +61,7 @@
 
 
     /*public*/static   QString toStringLowerCase(TYPE t) {
-        if(t==Row) return "row";
+        if(t==Row) return tr("row");
         else
          return "column";
     }
@@ -76,6 +76,13 @@
     /*public*/ static QList<TYPE> values()
     {
      return QList<TYPE> {Row, Column};
+    }
+
+    /*public*/ static TYPE valueOf(QString s)
+    {
+     if(s == "Row") return Row;
+     if(s == "Column") return Column;
+     throw new IllegalArgumentException("invalid TYPE");
     }
 
 };

@@ -1,6 +1,7 @@
 ﻿#ifndef NAMEDBEANADDRESSING_H
 #define NAMEDBEANADDRESSING_H
 #include <QtCore>
+#include "exceptions.h"
 
 /**
  * How should a named bean be addressed by an action or expression?
@@ -85,5 +86,13 @@ public:
       break;
      }
     }
+    /*public*/static NamedBeanAddressing::TYPE valueOf(QString text) {
+     if(text == "Direct") return Direct;
+     if(text == "Reference") return Reference;
+     if(text == "LocalVariable") return LocalVariable;
+     if(text == "Formula") return Formula;
+     throw new IllegalArgumentException("invalid TYPE");
+    }
+
 };
 #endif // NAMEDBEANADDRESSING_H

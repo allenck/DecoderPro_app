@@ -11,7 +11,9 @@ class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public Female
 {
   Q_OBJECT
  public:
-  explicit DefaultFemaleAnalogExpressionSocketFactory(QObject *parent = nullptr);
+  explicit DefaultFemaleAnalogExpressionSocketFactory(QObject *parent = nullptr)
+   : QObject(parent) {setObjectName("DefaultFemaleAnalogExpressionSocketFactory");}
+
 
  signals:
 

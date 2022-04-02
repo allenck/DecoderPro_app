@@ -38,7 +38,7 @@ class DefaultFemaleDigitalActionSocketFactory : public QObject, public FemaleSoc
       }
   };
  public:
-  explicit DefaultFemaleDigitalActionSocketFactory(QObject *parent = nullptr);
+  explicit DefaultFemaleDigitalActionSocketFactory(QObject *parent = nullptr) : QObject(parent) {setObjectName("DefaultFemaleDigitalActionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
 
   private:

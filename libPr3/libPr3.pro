@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 unix:{
-QTSERIALPORT_PROJECT_ROOT = ~/Projects/qtserialport
+QTSERIALPORT_PROJECT_ROOT = ~/Projects/qtserialportlogixng
 }
 win32:{
 QTSERIALPORT_PROJECT_ROOT =C:/Users/Allen/Projects/qt-qtserialport-stable/qt-qtserialport
@@ -1138,8 +1138,16 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/defaultmaledigitalexpressionsocketswing.cpp \
+    logixng/actions/digitalfactory.cpp \
+    logixng/expressions/digitalfactory_expressions.cpp \
+    logixng/tableforeach.cpp \
+    logixng/tableforeachxml.cpp \
+    logixng/convertfunctions.cpp \
+    logixng/mathfunctions.cpp \
     logixng/false.cpp \
     logixng/falseswing.cpp \
+    logixng/logixng_metatypes.cpp \
     logixng/tableforeachswing.cpp \
     logixng/actionsensor.cpp \
     logixng/digitalformula.cpp \
@@ -1230,7 +1238,6 @@ equals(ENABLE_LOGIXNG, "Y") {
     logixng/defaultstringactionmanager.cpp \
     logixng/defaultstringexpressionmanager.cpp \
     logixng/digitalbooleanfactory.cpp \
-    logixng/digitalfactory.cpp \
     logixng/expressionfactory.cpp \
     logixng/logixng_analoginstanceinitializer.cpp \
     logixng/logixng_digitalinstanceinitializer.cpp \
@@ -1297,7 +1304,6 @@ equals(ENABLE_LOGIXNG, "Y") {
     logixng/defaultlogixngpreferences.cpp \
     logixng/executelock.cpp \
     logixng/logixng_instanceinitializer.cpp \
-    logixng/metatypes.cpp \
     logixng/actionsignalheadswing.cpp \
     logixng/abstractbasemanager.cpp \
     logixng/abstractnamedtable.cpp \
@@ -1348,7 +1354,6 @@ equals(ENABLE_LOGIXNG, "Y") {
     logixng/referenceutil.cpp \
     logixng/stringfunctions.cpp \
     logixng/tableeditor.cpp \
-    logixng/tableforeach.cpp \
     logixng/tokenizer.cpp \
     logixng/typeconversionutil.cpp \
     logixng/abortconditionalngexecutionexception.cpp \
@@ -2499,8 +2504,21 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/defaultaledigitalactionsocketswing.h \
+    logixng/defaultmaleanalogactionsocketswing.h \
+    logixng/defaultmaledigitalbooleanactionsocketswing.h \
+    logixng/defaultmaledigitalexpressionsocketswing.h \
+    logixng/defaultmalestringexpressionsocketswing.h \
+    logixng/moduleeditormalesocketswing.h \
+    logixng/actions/digitalfactory.h \
+    logixng/expressions/digitalfactory_expressions.h \
+    logixng/tableforeach.h \
+    logixng/tableforeachxml.h \
+    logixng/convertfunctions.h \
+    logixng/mathfunctions.h \
     logixng/false.h \
     logixng/falseswing.h \
+    logixng/logixng_metatypes.h \
     logixng/tableforeachswing.h \
     logixng/digitalformula.h \
     logixng/digitalformulaswing.h \
@@ -2592,7 +2610,6 @@ HEADERS += \
     logixng/defaultstringexpressionmanager.h \
     logixng/digitalbooleanfactory.h \
     logixng/digitalexpressionfactory.h \
-    logixng/digitalfactory.h \
     logixng/expressionfactory.h \
     logixng/logixng_analoginstanceinitializer.h \
     logixng/logixng_digitalinstanceinitializer.h \
@@ -2663,7 +2680,6 @@ HEADERS += \
     logixng/defaultlogixngpreferences.h \
     logixng/executelock.h \
     logixng/logixng_instanceinitializer.h \
-    logixng/metatypes.h \
     logixng/actionsignalheadswing.h \
     logixng/abstractbasemanager.h \
     logixng/abstractnamedtable.h \
@@ -2722,7 +2738,6 @@ HEADERS += \
     logixng/referenceutil.h \
     logixng/stringfunctions.h \
     logixng/tableeditor.h \
-    logixng/tableforeach.h \
     logixng/token.h \
     logixng/tokenizer.h \
     logixng/tokentype.h \

@@ -11,11 +11,11 @@
 //public class DebuggerMaleStringExpressionSocketFactory implements MaleStringExpressionSocketFactory {
 
     //@Override
-    /*public*/ MaleStringExpressionSocket* encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, MaleStringExpressionSocket* maleSocket) {
+    /*public*/ /*MaleStringExpressionSocket*/MaleSocket *DebuggerMaleStringExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, /*MaleStringExpressionSocket*/MaleSocket *maleSocket) {
 
         if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 
-        return new DebuggerMaleStringExpressionSocket(manager, maleSocket);
+        return new DebuggerMaleStringExpressionSocket(manager, (MaleStringExpressionSocket*)maleSocket->bself());
     }

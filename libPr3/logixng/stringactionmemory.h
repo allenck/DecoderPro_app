@@ -39,7 +39,7 @@ class StringActionMemory : public AbstractStringAction, public VetoableChangeLis
 
  private:
   static Logger* log;
-  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle;
+  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle = nullptr;
 
 };
 

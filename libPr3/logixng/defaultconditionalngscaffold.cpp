@@ -11,11 +11,13 @@
     /*public*/ DefaultConditionalNGScaffold::DefaultConditionalNGScaffold(QString sys, QString user, QObject* parent)
             /*throws BadUserNameException, BadSystemNameException*/ : DefaultConditionalNG(sys, user, parent){
         //super(sys, user);
+        setObjectName("DefaultConditionalNGScaffold");
         setSymbolTable(new DefaultSymbolTable((ConditionalNG*)this));
     }
 
     /*public*/ DefaultConditionalNGScaffold::DefaultConditionalNGScaffold(QString sys, QString user, int threadID, QObject* parent)
             /*throws BadUserNameException, BadSystemNameException*/ : DefaultConditionalNG(sys, user, threadID, parent){
         //super(sys, user, threadID);
+        setObjectName("DefaultConditionalNGScaffold");
         setSymbolTable(new DefaultSymbolTable((ConditionalNG*)this));
     }

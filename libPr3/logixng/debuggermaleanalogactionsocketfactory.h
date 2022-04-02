@@ -11,7 +11,7 @@ class DebuggerMaleAnalogActionSocketFactory : public QObject, public MaleAnalogA
   DebuggerMaleAnalogActionSocketFactory(QObject* parent = nullptr) : QObject(parent){
    setObjectName("DebuggerMaleAnalogActionSocketFactory");
   }
-  /*public*/ NamedBean *encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, NamedBean *maleSocket)override;
+  /*public*/ MaleSocket *encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, MaleSocket *maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 };

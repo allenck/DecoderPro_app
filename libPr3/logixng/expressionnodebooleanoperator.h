@@ -8,6 +8,7 @@
 class ExpressionNodeBooleanOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
+  Q_INTERFACES(ExpressionNode)
  public:
   ExpressionNodeBooleanOperator(TokenType::TTYPE tokenType, ExpressionNode* leftSide, ExpressionNode* rightSide);
   /*public*/ QVariant calculate(SymbolTable* symbolTable) /*throws JmriException */;

@@ -10,7 +10,9 @@ class FunctionManager : public QObject, public InstanceManagerAutoDefault
   Q_OBJECT
   Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  FunctionManager();
+  Q_INVOKABLE FunctionManager(QObject* parent = nullptr);
+  ~FunctionManager() {}
+  FunctionManager(const FunctionManager&) : QObject() {}
   /*public*/  QMap<QString, Function*> getFunctions();
       /*public*/  Function* get(QString name);
       /*public*/  Function* put(QString name, Function* function);
@@ -21,5 +23,5 @@ class FunctionManager : public QObject, public InstanceManagerAutoDefault
   /*private*/ /*final*/ QMap<QString, Function*> _functions = QMap<QString, Function*>();
 
 };
-
+Q_DECLARE_METATYPE(FunctionManager)
 #endif // FUNCTIONMANAGER_H

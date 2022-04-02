@@ -134,7 +134,7 @@ class Base;
      * Get the user name.
      * @param s the new user name
      */
-  /*public*/ virtual void setUserName(/*@CheckForNull*/ QString s) /*throw (NamedBean::BadUserNameException)*/{}
+  /*public*/ virtual void setUserName(/*@CheckForNull*/ QString s) /*throws (NamedBean::BadUserNameException)*/{}
 
     /**
      * Create a deep copy of myself and my children

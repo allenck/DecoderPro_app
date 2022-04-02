@@ -7,10 +7,11 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/  /*interface*/class FunctionFactory : public QObject{
- Q_OBJECT
+/*public*/  /*interface*/class FunctionFactory //: public QObject
+{
+ //Q_OBJECT
  public:
-  FunctionFactory(QObject* parent = nullptr) : QObject(parent) {}
+  //FunctionFactory(QObject* parent = nullptr) : QObject(parent) {}
     /**
      * Get the module of the functions in this factory, for example "Math" or
      * "Conversion".
@@ -40,5 +41,5 @@
 
 
 };
-//Q_DECLARE_INTERFACE(FunctionFactory, "FunctionFactory")
+Q_DECLARE_INTERFACE(FunctionFactory, "FunctionFactory")
 #endif // FUNCTIONFACTORY_H

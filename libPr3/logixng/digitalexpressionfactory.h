@@ -9,7 +9,7 @@ class Category;
  * @author Daniel Bergqvist Copyright 2018
  */
 /*public*/ /*interface*/class DigitalExpressionFactory {
-
+public:
     /**
      * Init the factory, for example create categories.
      */

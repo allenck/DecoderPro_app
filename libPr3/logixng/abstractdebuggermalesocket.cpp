@@ -10,8 +10,8 @@
 
 
 
-    /*public*/  AbstractDebuggerMaleSocket::AbstractDebuggerMaleSocket(BaseManager/*<? extends MaleSocket>*/* manager, NamedBean* maleSocket, QObject* parent)
-      :  AbstractMaleSocket(manager, (AbstractBase*)maleSocket->self(), parent){
+    /*public*/  AbstractDebuggerMaleSocket::AbstractDebuggerMaleSocket(BaseManager/*<? extends MaleSocket>*/* manager, MaleSocket *maleSocket, QObject* parent)
+      :  AbstractMaleSocket(manager, maleSocket, parent){
     }
 
     /**

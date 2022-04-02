@@ -34,8 +34,13 @@
 //                || (object instanceof Short)
 //                || (object instanceof Integer)
 //                || (object instanceof Long);
-      return object.canConvert<char>() || object.canConvert<short>() || object.canConvert<int>()
-        || object.canConvert<long>() || object.canConvert<qint64>();
+//      return object.canConvert<char>() || object.canConvert<short>() || object.canConvert<int>()
+//        || object.canConvert<long>() || object.canConvert<qint64>();
+     return object.type() == QMetaType::LongLong ||
+       object.type() == QMetaType::Short ||
+       object.type() == QMetaType::Long ||
+       object.type() == QMetaType::Int ||
+       object.type() == QMetaType::Char;
     }
 
     /**
@@ -59,10 +64,20 @@
      * float, false otherwise
      */
     /*public*/  /*static*/ bool TypeConversionUtil::isFloatingNumber(QVariant object) {
-        return object.canConvert<int>()
+//        return object.canConvert<int>()
 //                || (object instanceof java.math.BigDecimal)
-                || (object.canConvert<float>())
-                || (object.canConvert<double>());
+//                || (object.canConvert<float>())
+//                || (object.canConvert<double>());
+     return object.type() == QMetaType::Int
+       || object.type() == QMetaType::UInt
+       || object.type() == QMetaType::Long
+       || object.type() == QMetaType::ULong
+       || object.type() == QMetaType::LongLong
+       || object.type() == QMetaType::ULongLong
+       || object.type() == QMetaType::Short
+       || object.type() == QMetaType::UShort
+       || object.type() == QMetaType::Float
+       || object.type() == QMetaType::Double;
     }
 
     /**

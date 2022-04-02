@@ -105,6 +105,8 @@
 #ifdef HAVE_LOGIXNG
 #include "defaultlogixngmanager.h"
 #include "defaultlogixngpreferences.h"
+#include "../libPr3/logixng/logixng_metatypes.h"
+
 #endif // HAVE_LOGIXNG
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -528,6 +530,8 @@ bool Apps::configDeferredLoadOK = false;
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 
 #ifdef HAVE_LOGIXNG
+ if(!LogixNG_Metatypes::ng_done)
+  new LogixNG_Metatypes();
  LogixNG_Manager* logixNG_Manager = (DefaultLogixNGManager*) InstanceManager::getDefault("LogixNG_Manager");
  logixNG_Manager->setupAllLogixNGs();
  if (((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getStartLogixNGOnStartup()) {

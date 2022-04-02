@@ -24,8 +24,8 @@
 //@Override
 /*public*/  Base* AnalogActionMemory::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
     AnalogActionManager* manager = (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
-    QString sysName = systemNames.value(getSystemName());
-    QString userName = userNames.value(getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     AnalogActionMemory* copy = new AnalogActionMemory(sysName, userName);
     copy->setComment(getComment());

@@ -24,6 +24,8 @@
  */
 /*public*/ RuntimeException::RuntimeException() {
     //super();
+ name = "RuntimeException";
+
 }
 
 /** Constructs a new runtime exception with the specified detail message.
@@ -51,10 +53,11 @@
  *         unknown.)
  * @since  1.4
  */
-/*public*/ RuntimeException::RuntimeException(QString message, Throwable* cause) {
-    Exception(message, cause);
+/*public*/ RuntimeException::RuntimeException(QString message, Throwable* cause) : Exception(message, cause) {
+    //Exception(message, cause);
+    name = "RuntimeException";
 }
-#if 0
+
 /** Constructs a new runtime exception with the specified cause and a
  * detail message of <tt>(cause==null ? null : cause.toString())</tt>
  * (which typically contains the class and detail message of
@@ -67,10 +70,12 @@
  *         unknown.)
  * @since  1.4
  */
-/*public*/ RuntimeException(Throwable cause) {
-    super(cause);
-}
+/*public*/ RuntimeException::RuntimeException(Throwable* cause) : Exception(cause) {
+ //Exception(cause)
+ name = "RuntimeException";
 
+}
+#if 0
 /**
  * Constructs a new runtime exception with the specified detail
  * message, cause, suppression enabled or disabled, and writable

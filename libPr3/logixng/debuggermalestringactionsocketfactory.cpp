@@ -11,11 +11,11 @@
 //public class DebuggerMaleStringActionSocketFactory implements MaleStringActionSocketFactory {
 
     //@Override
-    /*public*/ MaleStringActionSocket* DebuggerMaleStringActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, MaleStringActionSocket* maleSocket) {
+    /*public*/ /*MaleStringActionSocket*/MaleSocket *DebuggerMaleStringActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, /*MaleStringActionSocket*/MaleSocket *maleSocket) {
 
         if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 
-        return new DebuggerMaleStringActionSocket(manager, maleSocket);
+        return new DebuggerMaleStringActionSocket(manager, (MaleStringActionSocket*)maleSocket->bself());
     }

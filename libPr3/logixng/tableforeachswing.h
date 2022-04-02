@@ -10,10 +10,11 @@
 
 class TableForEachSwing : public AbstractDigitalActionSwing
 {
+  Q_OBJECT
  public:
-  Q_INVOKABLE explicit TableForEachSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit TableForEachSwing(QObject *parent = nullptr) : AbstractDigitalActionSwing(parent) {setObjectName("TableForEachSwing");}
   ~TableForEachSwing() {}
-  TableForEachSwing(const TableForEachSwing&) : AbstractDigitalActionSwing() {}
+  TableForEachSwing(const TableForEachSwing&) : AbstractDigitalActionSwing() {setObjectName("TableForEachSwing");}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull */QString systemName, QString userName);
   /*public*/  void updateObject(/*@Nonnull*/ Base* object) override;

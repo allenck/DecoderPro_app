@@ -4,6 +4,7 @@
 #include <QObject>
 #include "variable.h"
 
+class Logger;
 class RecursiveDescentParserTest : public QObject
 {
   Q_OBJECT
@@ -18,6 +19,7 @@ class RecursiveDescentParserTest : public QObject
 
  signals:
 private:
+  static Logger* log;
   /*private*/ /*static*/ class MyVariable : public Variable {
 
       /*private*/ /*final*/ QString _name;

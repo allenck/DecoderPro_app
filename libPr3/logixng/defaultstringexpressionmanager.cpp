@@ -77,7 +77,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  MaleSocket* DefaultStringExpressionManager::registerBean(/*MaleStringExpressionSocket*/MaleSocket* maleSocket) {
-        MaleSocket* bean = registerBean(maleSocket);
+        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
         return bean;
     }
@@ -97,9 +97,9 @@
         }
 
         // Check if system name is valid
-        if (this->validSystemNameFormat(expression->NamedBean::getSystemName()) != NameValidity::VALID) {
-            log->warn("SystemName " + expression->NamedBean::getSystemName() + " is not in the correct format");
-            throw new IllegalArgumentException(tr("System name is invalid: %1").arg(expression->NamedBean::getSystemName()));
+        if (this->validSystemNameFormat(((AbstractNamedBean*)expression->bself())->getSystemName()) != NameValidity::VALID) {
+            log->warn("SystemName " + ((AbstractNamedBean*)expression->bself())->getSystemName() + " is not in the correct format");
+            throw new IllegalArgumentException(tr("System name is invalid: %1").arg(((AbstractNamedBean*)expression->bself())->getSystemName()));
         }
 
         // Keep track of the last created auto system name

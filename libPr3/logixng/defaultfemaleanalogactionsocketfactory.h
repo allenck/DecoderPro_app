@@ -39,7 +39,7 @@ class DefaultFemaleAnalogActionSocketFactory : public QObject, public FemaleSock
       }
   };
  public:
-  explicit DefaultFemaleAnalogActionSocketFactory(QObject *parent = nullptr);
+  explicit DefaultFemaleAnalogActionSocketFactory(QObject *parent = nullptr) : QObject(parent) {setObjectName("DefaultFemaleAnalogActionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType()override;
 
  signals:

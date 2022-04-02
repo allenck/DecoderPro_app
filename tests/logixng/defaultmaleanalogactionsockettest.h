@@ -9,6 +9,7 @@
 
 class DefaultMaleAnalogActionSocketTest : public MaleSocketTestBase
 {
+  Q_OBJECT
  public:
   explicit DefaultMaleAnalogActionSocketTest(QObject *parent = nullptr);
   Q_INVOKABLE /*public*/  void setUp()override;

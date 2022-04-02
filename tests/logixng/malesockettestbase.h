@@ -11,8 +11,8 @@ class MaleSocketTestBase : public QObject
  public:
   explicit MaleSocketTestBase(QObject *parent = nullptr) : QObject(parent) {}
 
-  /*abstract*/ /*public*/ virtual void setUp()=0;
-  /*abstract*/ /*public*/ virtual void tearDown()=0;
+  Q_INVOKABLE /*abstract*/ /*public*/ virtual void setUp()=0;
+  Q_INVOKABLE /*abstract*/ /*public*/ virtual void tearDown()=0;
 
  public slots:
   /*public*/  void testExists() /*throws JmriException*/;

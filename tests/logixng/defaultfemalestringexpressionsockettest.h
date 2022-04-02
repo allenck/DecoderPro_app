@@ -10,7 +10,7 @@ class DefaultFemaleStringExpressionSocketTest : public FemaleSocketTestBase
 {
   Q_OBJECT
  public:
-  explicit DefaultFemaleStringExpressionSocketTest(QObject *parent = nullptr);
+  explicit DefaultFemaleStringExpressionSocketTest(QObject *parent = nullptr) : FemaleSocketTestBase(parent) {}
   Q_INVOKABLE /*public*/  void setUp();
   Q_INVOKABLE /*public*/  void tearDown();
 

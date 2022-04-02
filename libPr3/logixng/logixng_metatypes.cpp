@@ -1,4 +1,4 @@
-#include "metatypes.h"
+#include "logixng_metatypes.h"
 #include "defaultlogixngmanager.h"
 #include "defaultlogixngmanagerxml.h"
 #include "defaultanalogactionmanagerxml.h"
@@ -23,10 +23,13 @@
 #include "digitalformulaswing.h"
 #include "falseswing.h"
 #include "tableforeachswing.h"
+#include  "functionmanager.h"
+#include "tableforeachxml.h"
 
-/*static*/ bool Metatypes::ng_done = false;
 
-Metatypes::Metatypes(QObject *parent) : QObject(parent)
+/*static*/ bool LogixNG_Metatypes::ng_done = false;
+
+LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
 {
    qRegisterMetaType<DefaultLogixNGManager>("DefaultLogixNGManager");
    qRegisterMetaType<DefaultLogixNGManagerXml>("DefaultLogixNGManagerXml");
@@ -35,6 +38,8 @@ Metatypes::Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DefaultStringExpressionManagerXml>("DefaultStringExpressionManagerXml");
    qRegisterMetaType<DefaultDigitalBooleanActionManagerXml>("DefaultDigitalBooleanActionManagerXml");
    qRegisterMetaType<DefaultDigitalExpressionManagerXml>("DefaultDigitalExpressionManagerXml");
+   qRegisterMetaType<FunctionManager>("FunctionManager");
+   qRegisterMetaType<TableForEachXml>("TableForEachXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -63,5 +68,5 @@ Metatypes::Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
 
 
-   Metatypes::ng_done = true;
+   LogixNG_Metatypes::ng_done = true;
 }

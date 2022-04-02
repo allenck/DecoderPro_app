@@ -12,6 +12,7 @@
         _tokenType = tokenType;
         _leftSide = leftSide;
         _rightSide = rightSide;
+        setObjectName("ExpressionNodeBooleanOperator");
         
         if (_rightSide == nullptr) {
             throw new IllegalArgumentException("rightSide must not be null");

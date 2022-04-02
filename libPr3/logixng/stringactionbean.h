@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2019
  */
-/*public*/ class StringActionBean : public NamedBean, public StringAction {
+/*public*/ class StringActionBean : public virtual NamedBean, public StringAction {
   Q_INTERFACES(NamedBean StringAction)
  public:
 };

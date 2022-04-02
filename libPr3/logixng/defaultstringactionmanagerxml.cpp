@@ -31,7 +31,7 @@
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleStringActionSocket* action = (MaleStringActionSocket*)nb;
+             MaleStringActionSocket* action = (MaleStringActionSocket*)nb->self();
                 log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
 //                log.error("action system name is " + action.getSystemName() + ", " + action.getLongDescription());  // NOI18N
                 try {

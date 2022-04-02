@@ -9,7 +9,8 @@
 class ExpressionSensorSwing : public AbstractDigitalExpressionSwing
 {
  public:
-  Q_INVOKABLE explicit ExpressionSensorSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionSensorSwing(QObject *parent = nullptr)
+   : AbstractDigitalExpressionSwing(parent) {setObjectName("ExpressionSensorSwing");}
   ~ExpressionSensorSwing() {}
   ExpressionSensorSwing(const ExpressionSensorSwing&) :AbstractDigitalExpressionSwing () {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;

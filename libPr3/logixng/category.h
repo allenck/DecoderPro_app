@@ -36,7 +36,7 @@ class Other;
   /*public*/  QString name() const;
   /*public*/  /*final*/ QString toString();
   /*public*/  int order();
-//  /*public*/  bool operator==(QObject* o);
+  /*public*/ bool equals(QObject* o);
   /*public*/  uint hashCode();
   inline bool operator==(const Category &e1)
   {

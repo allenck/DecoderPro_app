@@ -8,7 +8,7 @@ public:
  RuntimeException();
  /*public*/ RuntimeException(QString message);
  /*public*/ RuntimeException(QString string, Throwable* thrwbl) ;
-
+ /*public*/ RuntimeException(Throwable* thrwbl) ;
 };
 
 #endif // RUNTIMEEXCEPTION_H

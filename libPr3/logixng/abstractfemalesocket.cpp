@@ -211,7 +211,11 @@
     _listenersAreRegistered = true;
     registerListenersForThisClass();
     if (isConnected()) {
-        getConnectedSocket()->registerListeners();
+        //getConnectedSocket()->registerListeners();
+     MaleSocket* ms = getConnectedSocket();
+     QObject* obj = (QObject*)ms;
+
+     ((AbstractBase*)obj)->registerListeners();
     }
 }
 

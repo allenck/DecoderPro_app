@@ -287,6 +287,17 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/defaultmaledigitalbooleanactionsockettest.cpp \
+    logixng/defaultmaledigitalbooleanactionsockettestaction.cpp \
+    logixng/defaultfemalegenericexpressionsocket2_testaction.cpp \
+    logixng/defaultmalestringexpressionsockettest.cpp \
+    logixng/defaultmalestringexpressionsockettestaction.cpp \
+    logixng/abstractdigitalactiontestbase.cpp \
+    logixng/defaultfemalegenericexpressionsocket1_test.cpp \
+    logixng/defaultfemalegenericexpressionsocket1_testaction.cpp \
+    logixng/defaultfemalegenericexpressionsocket2_test.cpp \
+    logixng/tableforeachtest.cpp \
+    logixng/tableforeachtestaction.cpp \
     logixng/tokenizertest.cpp \
     logixng/tokenizertestaction.cpp \
     logixng/recursivedescentparsertest.cpp \
@@ -345,7 +356,6 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
- logix/defaultconditionalmanagertest.h \
         tests.h \
         tests_global.h \
         junitutil.h \
@@ -462,6 +472,7 @@ HEADERS += \
         misc/defaultmemorymanagertestaction.h \
         misc/lightcontroltest.h \
         misc/lightcontroltestaction.h \
+        logix/defaultconditionalmanagertest.h \
     NamedBeans/namedbeanusernamecomparatortest.h \
     NamedBeans/namedbeanusernamecomparatortestaction.h \
     loconet/loconetmessageexceptiontest.h \
@@ -589,6 +600,17 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/defaultmaledigitalbooleanactionsockettest.h \
+    logixng/defaultmaledigitalbooleanactionsockettestaction.h \
+    logixng/defaultfemalegenericexpressionsocket2_testaction.h \
+    logixng/defaultmalestringexpressionsockettest.h \
+    logixng/defaultmalestringexpressionsockettestaction.h \
+    logixng/abstractdigitalactiontestbase.h \
+    logixng/defaultfemalegenericexpressionsocket1_test.h \
+    logixng/defaultfemalegenericexpressionsocket1_testaction.h \
+    logixng/defaultfemalegenericexpressionsocket2_test.h \
+    logixng/tableforeachtest.h \
+    logixng/tableforeachtestaction.h \
     logixng/tokenizertest.h \
     logixng/tokenizertestaction.h \
     logixng/recursivedescentparsertest.h \

@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "runtimeexception.h"
 #include "class.h"
-#include "logixng/metatypes.h"
+#include "logixng/logixng_metatypes.h"
 #include "abstractswingconfigurator.h"
 /**
  * LogixNG Swing tools.
@@ -91,8 +91,8 @@
      */
     /*static*/ /*public*/  SwingConfiguratorInterface* SwingTools::getSwingConfiguratorForClass(QString clazz) {
         SwingConfiguratorInterface* adapter = nullptr;
-        if(!Metatypes::ng_done)
-         new Metatypes();
+        if(!LogixNG_Metatypes::ng_done)
+         new LogixNG_Metatypes();
         try {
             adapter = (AbstractSwingConfigurator*) Class::forName(adapterNameForClass(clazz))/*->getDeclaredConstructor()*/->newInstance();
         }

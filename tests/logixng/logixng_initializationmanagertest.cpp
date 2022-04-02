@@ -120,7 +120,7 @@
                 long delay) : ActionAtomicBoolean(ab, false){
 
             //super(ab, false);
-            setUserName(userName);
+            AbstractNamedBean::setUserName(userName);
             _ab = ab;
             _printWriter = printWriter;
             _delay = delay;

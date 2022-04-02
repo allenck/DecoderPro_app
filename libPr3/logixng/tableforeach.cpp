@@ -1,6 +1,6 @@
 #include "tableforeach.h"
 #include "loggerfactory.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
 #include "namedtablemanager.h"
 #include "referenceutil.h"
@@ -23,13 +23,14 @@
 
     /*public*/  TableForEach::TableForEach(QString sys, QString user, QObject* parent) : AbstractDigitalAction(sys, user, parent) {
         //super(sys, user);
-        _socket = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))
+        setObjectName("TableForEach");
+        _socket = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))
                 ->createFemaleSocket(this, this, "A1");
     }
 
     //@Override
     /*public*/  Base* TableForEach::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
-        DigitalActionManager* manager = (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
+        DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
         QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
         QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
@@ -501,7 +502,7 @@
                  _socket->_disconnect();
                 if (socketSystemName != nullptr) {
                     MaleSocket* maleSocket =
-                            (MaleSocket*)((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))
+                            (MaleSocket*)((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))
                                     ->getBySystemName(socketSystemName);
                      _socket->_disconnect();
                     if (maleSocket != nullptr) {

@@ -6,6 +6,7 @@
 class Logger;
 class DefaultMaleAnalogActionSocketTestAction : public AbstractAction
 {
+  Q_OBJECT
  public:
   explicit DefaultMaleAnalogActionSocketTestAction(QObject *parent = nullptr);
  public slots:

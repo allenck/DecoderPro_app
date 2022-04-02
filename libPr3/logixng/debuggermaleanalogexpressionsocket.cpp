@@ -10,8 +10,8 @@
 
 
 /*public*/  DebuggerMaleAnalogExpressionSocket::DebuggerMaleAnalogExpressionSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager,
-                                               NamedBean* maleSocket, QObject* parent)
- : AbstractDebuggerMaleSocket(manager, maleSocket, parent)
+                                               MaleSocket *maleSocket, QObject* parent)
+ : AbstractDebuggerMaleSocket(manager, (MaleSocket*)maleSocket, parent)
 {
     //super(manager, maleSocket);
  QString sys = maleSocket->getSystemName();

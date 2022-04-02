@@ -342,9 +342,13 @@ private static bool isEquals(Object expected, Object actual) {
                return;
            }
          }
+         else
+          return;
         }
         else
         {
+         if(actual != unexpected)
+          return;
          fail(tr("%2\nClass %1 should not be equal.\nThere is no 'equals method! ").arg(unexpected->metaObject()->className()).arg(message), file, line);
         }
     }

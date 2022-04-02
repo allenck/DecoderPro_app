@@ -3,7 +3,7 @@
 #include "instancemanager.h"
 #include "defaultlogixngmanager.h"
 #include "actionfactory.h"
-#include "digitalfactory.h"
+#include "actions/digitalfactory.h"
 #include "digitalactionmanager.h"
 #include "debuggermaledigitalactionsocketfactory.h"
 #include "threadingutil.h"

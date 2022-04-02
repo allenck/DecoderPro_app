@@ -14,7 +14,7 @@ class DebuggerMaleDigitalActionSocketFactory : public QObject, public MaleDigita
    : QObject(parent) {
    setObjectName("DebuggerMaleDigitalActionSocketFactory");
   }
-  /*public*/ NamedBean* encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, NamedBean* maleSocket)override;
+  /*public*/ MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, MaleSocket* maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 

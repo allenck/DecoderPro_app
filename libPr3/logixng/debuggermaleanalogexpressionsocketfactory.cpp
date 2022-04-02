@@ -12,7 +12,7 @@
 //public class DebuggerMaleAnalogExpressionSocketFactory implements MaleAnalogExpressionSocketFactory {
 
     //@Override
-    /*public*/ NamedBean *DebuggerMaleAnalogExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, NamedBean *maleSocket) {
+    /*public*/ MaleSocket *DebuggerMaleAnalogExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, MaleSocket *maleSocket) {
 
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;

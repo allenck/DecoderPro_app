@@ -5,6 +5,7 @@
 
 class DefaultMaleDigitalActionSocketTestAction : public AbstractAction
 {
+  Q_OBJECT
  public:
   explicit DefaultMaleDigitalActionSocketTestAction(QObject *parent = nullptr);
  public slots:

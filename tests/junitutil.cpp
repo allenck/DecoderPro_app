@@ -1496,13 +1496,13 @@ static void checkThreads() {
   foreach(QString testName, testList)
   {
    testClassName = "setup";
-   log->info(tr("begin '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
     throw new Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
    testClassName = testName;
+   log->info(tr("-----------------> begin '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection))
     throw new Exception(tr("can't invoke '%1' method when running test ").arg(testName));
-   log->info(tr("end '%1'").arg(testName));
+   log->info(tr("-----------------> end '%1'").arg(testName));
    testClassName = "tearDown";
    if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
     throw new Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
@@ -1511,8 +1511,8 @@ static void checkThreads() {
  }
  catch(Exception* ex)
  {
-  JOptionPane::showMessageDialog(nullptr, tr("Unhandled exception while running test '%1'\n%2")
-     .arg(testClassName, ex->getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
+  JOptionPane::showMessageDialog(nullptr, tr("Unhandled %3 exception while running test '%1'\n%2")
+     .arg(testClassName, ex->getMessage(), ex->name), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
   if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
    throw new Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testClassName));
  }

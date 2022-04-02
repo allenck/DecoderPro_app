@@ -175,7 +175,7 @@ class MutableInt;
      * {@link #getSystemNamePrefix() } and "DA";
      */
     //@Override
-    /*public*/ /*default*/ QString getSubSystemNamePrefix() {
+    /*public*/ /*default*/ QString getSubSystemNamePrefix() const override{
         return getSystemNamePrefix() + "M";
     }
 

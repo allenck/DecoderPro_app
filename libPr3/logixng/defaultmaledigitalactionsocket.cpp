@@ -4,6 +4,7 @@
 #include "runtimeexception.h"
 #include "conditionalng.h"
 #include "digitalactionbean.h"
+#include "abstractdigitalaction.h"
 
 /**
  * Every DigitalActionBean has an DefaultMaleDigitalActionSocket as its parent.
@@ -64,7 +65,10 @@
  */
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::registerListenersForThisClass() {
-    ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+    //((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+ Base* ams = getObject();
+ QObject* obj = (QObject*)ams->bself();
+ ((AbstractDigitalAction*)obj)->registerListeners();
 }
 
 /**
@@ -72,7 +76,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::unregisterListenersForThisClass() {
-    ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+    //((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+AbstractMaleSocket::getObject()->unregisterListeners();
 }
 
 //@Override

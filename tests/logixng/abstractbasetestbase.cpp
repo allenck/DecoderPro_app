@@ -65,13 +65,17 @@
             log->warn(tr("Method getConditionalNG() returns null for class %1").arg(this->metaObject()->className()));
             log->error(tr("Method getConditionalNG() returns null for class %1").arg(this->metaObject()->className()));
         }
-        ConditionalNG* c1 = getConditionalNG();
-        ConditionalNG* c2 = _base->getConditionalNG();
-        Assert::assertTrue("ConditionalNG is equal", getConditionalNG() == _base->getConditionalNG(), __FILE__, __LINE__);
-
-        _base->getConditionalNG()->setEnabled(false);
-        _base->setParent(nullptr);
-        Assert::assertNull("ConditionalNG is null", _base->getConditionalNG()->bself(), __FILE__, __LINE__);
+        AbstractNamedBean* c1 = (AbstractNamedBean*)getConditionalNG()->self();
+        QString sn1 = c1->getSystemName();
+        AbstractNamedBean* c2 = (AbstractNamedBean*)((AbstractBase*)_base->bself())->getConditionalNG();
+        QString sn2 = c2->getSystemName();
+        //Assert::assertTrue("ConditionalNG is equal", getConditionalNG()->equals(((DefaultConditionalNG*) _base->getConditionalNG())->bself()), __FILE__, __LINE__);
+        bool b = c1->equals(c2);
+        Assert::assertTrue("ConditionalNG is equal",c1->equals(c2), __FILE__, __LINE__);
+        ((DefaultConditionalNG*)c2)->setEnabled(false);
+        ((DefaultConditionalNG*)c2)->setParent(nullptr);
+        c2 = (AbstractNamedBean*)((AbstractBase*)_base->bself())->getConditionalNG();
+        Assert::assertNull("ConditionalNG is null", ((AbstractBase*)_base->bself())->getConditionalNG()->bself(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -81,8 +85,12 @@
         }
         Assert::assertTrue("LogixNG is equal", getLogixNG()->equals(_base->getLogixNG()->self()), __FILE__, __LINE__);
 
-        _base->getConditionalNG()->setEnabled(false);
-        _base->setParent(nullptr);
+//        _base->getConditionalNG()->setEnabled(false);
+//        _base->setParent(nullptr);
+        AbstractNamedBean* c2 = (AbstractNamedBean*)((AbstractBase*)_base->bself())->getConditionalNG();
+        ((DefaultConditionalNG*)c2)->setEnabled(false);
+        c2->setParent(nullptr);
+
         Assert::assertNull("LogixNG is null", _base->getLogixNG()->bself(), __FILE__, __LINE__);
     }
 
@@ -976,13 +984,13 @@
 #endif
 
 
-
+#if 0
     /**
      * Executes the method.
      * This interface is used by the method
      * {@link #assertIndexOutOfBoundsException(RunnableWithIndex, int, int)}
      */
-    /*public*/  /*interface*/class RunnableWithIndex {
+    /*public*/  /*interface*/class RunnableWithIndex  public Runnable{
      public:
         /**
          * Run the method.
@@ -990,7 +998,7 @@
          */
         /*public*/  void run(int index);
     };
-
+#endif
     /**
      * Assert that an IndexOutOfBoundsException is thrown and has the correct
      * error message.

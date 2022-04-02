@@ -74,6 +74,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   friend class ExecuteTask;
   friend class DCThreadAction;
 };
+
 /*private*/ /*static*/ class ExecuteTask : public ThreadAction {
 Q_OBJECT
     /*private*/ /*final*/ ConditionalNG* _conditionalNG;
@@ -96,6 +97,7 @@ Q_OBJECT
     }
     friend class DefaultConditionalNG;
 };
+
 class DCThreadAction : public ThreadAction
 {
   Q_OBJECT

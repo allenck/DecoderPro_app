@@ -8,9 +8,9 @@
 #include "femalesocketmanager.h"
 #include "defaultfemaledigitalexpressionsocket.h"
 
-class DefaultFemaleDigitalExpressionSocketFactory : public FemaleSocketFactory
+class DefaultFemaleDigitalExpressionSocketFactory : public QObject, public FemaleSocketFactory
 {
-    //Q_OBJECT
+    Q_OBJECT
     Q_INTERFACES(FemaleSocketFactory)
   /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
 
@@ -40,7 +40,7 @@ class DefaultFemaleDigitalExpressionSocketFactory : public FemaleSocketFactory
       }
   };
  public:
-  DefaultFemaleDigitalExpressionSocketFactory();
+  DefaultFemaleDigitalExpressionSocketFactory(QObject* parent = nullptr) : QObject(parent){setObjectName("DefaultFemaleDigitalExpressionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
 
  private:

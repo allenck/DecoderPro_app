@@ -74,7 +74,7 @@ public:
      * {@link #getSystemNamePrefix() } and "SA";
      */
     //@Override
-    /*public*/  /*default*/ QString getSubSystemNamePrefix() {
+    /*public*/  /*default*/ QString getSubSystemNamePrefix() const override {
         return getSystemNamePrefix() + "SA";
     }
 

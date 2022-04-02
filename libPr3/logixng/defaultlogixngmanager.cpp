@@ -144,7 +144,7 @@
         QList<QString> errors = QList<QString>();
         bool result = true;
         for (/*LogixNG* logixNG*/NamedBean* nb : _tsys->values()) {
-         LogixNG* logixNG = (LogixNG*)nb->self();
+         LogixNG* logixNG = (DefaultLogixNG*)nb->self();
             logixNG->setup();
             result = result && logixNG->setParentForAllChildren(errors);
         }

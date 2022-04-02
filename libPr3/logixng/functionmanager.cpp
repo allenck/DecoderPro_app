@@ -5,6 +5,9 @@
 #include "runtimeexception.h"
 #include "stringfunctions.h"
 #include "clockfunctions.h"
+#include "mathfunctions.h"
+#include "convertfunctions.h"
+
 /**
  * Manager for LogixNG formula functions.
  *
@@ -14,9 +17,10 @@
 
 
 
-    /*public*/  FunctionManager::FunctionManager() {
+    /*public*/  FunctionManager::FunctionManager(QObject* parent) : QObject(parent){
+     setObjectName("FunctionManager");
         //for (FunctionFactory* actionFactory : ServiceLoader::load("FunctionFactory"))
-        QList<FunctionFactory*> list = {new StringFunctions(), new ClockFunctions() };
+        QList<FunctionFactory*> list = {new StringFunctions(), new ClockFunctions() , new MathFunctions(), new ConvertFunctions()};
         foreach (FunctionFactory* actionFactory, list)
         {
             //actionFactory.getConstants().forEach((constant) -> {

@@ -17,6 +17,7 @@
 
     /*public*/  StringActionMemory::StringActionMemory(QString sys, QString user, QObject *parent) : AbstractStringAction(sys, user, parent) {
         //super(sys, user);
+     setObjectName("StringActionMemory");
     }
 
     //@Override

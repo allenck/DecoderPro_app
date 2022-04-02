@@ -118,6 +118,12 @@
 #include "logixng/digitalexpressionstestaction.h"
 #include "logixng/recursivedescentparsertestaction.h"
 #include "logixng/tokenizertestaction.h"
+#include "logixng/tableforeachtestaction.h"
+#include "logixng/defaultfemalegenericexpressionsocket1_testaction.h"
+#include "logixng/defaultfemalegenericexpressionsocket2_testaction.h"
+#include "logixng/defaultmalestringexpressionsockettestaction.h"
+#include "logixng/defaultmaledigitalbooleanactionsockettestaction.h"
+
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -307,6 +313,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMenu->addAction(new DigitalExpressionsTestAction(this));
     logixNGMiscMenu->addAction(new RecursiveDescentParserTestAction(this));
     logixNGMiscMenu->addAction(new TokenizerTestAction(this));
+    logixNGMiscMenu->addAction(new TableForEachTestAction());
 
     logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));
@@ -323,12 +330,17 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleDigitalBooleanActionSocketTestAction(this));
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleStringActionSocketTestAction(this));
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleStringExpressionSocketTestAction(this));
+    logixNGFemaleSocketMenu->addAction(new DefaultFemaleGenericExpressionSocket1_TestAction(this));
+    logixNGFemaleSocketMenu->addAction(new DefaultFemaleGenericExpressionSocket2_TestAction(this));
 
     logixNGMaleSocketMenu->addAction(new DefaultMaleAnalogActionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleAnalogExpressionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleDigitalActionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleDigitalExpressionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleDigitalBooleanActionSocketTestAction(this));
     logixNGMaleSocketMenu->addAction(new DefaultMaleStringActionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleStringExpressionSocketTestAction(this));
+
     logixNGMenu->addAction(new SymbolTableTestAction(this));
 
 #endif

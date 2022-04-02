@@ -4,7 +4,7 @@
 #include "runtimeexception.h"
 #include "conditionalng.h"
 #include "logixng.h"
-
+#include "abstractmalesocket.h"
 /**
  * The abstract class that is the base class for all LogixNG classes that
  * implements the Base interface.
@@ -75,15 +75,18 @@
             FemaleSocket* femaleSocket = getChild(i);
             femaleSocket->setParent(this);
             if (femaleSocket->isConnected()) {
-                MaleSocket* connectedSocket = femaleSocket->getConnectedSocket();
+                MaleSocket* cs = femaleSocket->getConnectedSocket();
+                QObject* obj = (QObject*)cs;
+                AbstractBase* connectedSocket= (AbstractBase*)obj;
+                Base* p = connectedSocket->getParent();
                 if ((connectedSocket->getParent() != nullptr)
                         && (connectedSocket->getParent() != femaleSocket)) {
                     errors.append(tr("The child %1 already has the parent %2 so it cannot be added to %3").arg(
-                            connectedSocket->getSystemName(),
+                            connectedSocket->AbstractNamedBean::getSystemName(),
                             connectedSocket->getParent()->getSystemName(),
                             Base::getSystemName()));
                     log->error(tr("The child %1 already has the parent %2 so it cannot be added to %3").arg(
-                            connectedSocket->getSystemName(),
+                            connectedSocket->AbstractNamedBean::getSystemName(),
                             connectedSocket->getParent()->getSystemName(),
                             Base::getSystemName()));
                     femaleSocket->_disconnect();
@@ -119,7 +122,9 @@
         if (isActive()) {
             registerListenersForThisClass();
             for (int i=0; i < getChildCount(); i++) {
-                getChild(i)->registerListeners();
+                //getChild(i)->registerListeners();
+             Base* b = getChild(i);
+             b->registerListeners();
             }
         }
     }

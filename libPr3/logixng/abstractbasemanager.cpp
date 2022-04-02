@@ -1,7 +1,7 @@
 #include "abstractbasemanager.h"
 #include "femalesocket.h"
 #include "abstractmalesocket.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "malesocketfactory.h"
 #include "vptr.h"
 #include "abstractdebuggermalesocket.h"
@@ -105,8 +105,10 @@
      */
     //@Override
     /*public*/  /*final*/ Manager::NameValidity AbstractBaseManager::validSystemNameFormat(QString systemName) {
-        return LogixNG_Manager::ng_validSystemNameFormat(
+     QString pfx = getSubSystemNamePrefix();
+     return LogixNG_Manager::ng_validSystemNameFormat(
                 getSubSystemNamePrefix(), systemName);
+
     }
 
     //@Override
@@ -118,15 +120,21 @@
     /*public*/  MaleSocket* AbstractBaseManager::registerBean(/*@Nonnull*/ MaleSocket* s) {
         if(!s)
          throw new NullPointerException("required bean is null!");
-        QString s1 = ((AbstractMaleSocket*)s->bself())->getSystemName();
-        NamedBean* bean = (AbstractNamedBean*)s->bself();
-        QString sys = bean->getSystemName();
+        QString s1 = ((AbstractBase*)s->bself())->AbstractNamedBean::getSystemName();
+        NamedBean* nb = (AbstractNamedBean*)s->bself();
+        QString sys = nb->getSystemName();
+        MaleSocket* bean;
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
-            bean = factory->encapsulateMaleSocket(this, bean);
+            bean = factory->encapsulateMaleSocket(this, s);
         }
-        /*QString*/ sys = bean->getSystemName();
-         AbstractManager::Register(bean);
-        return s;
+        if(!bean)
+         throw new NullPointerException("required bean is null!");
+        //AbstractMaleSocket* ams = (AbstractMaleSocket*)bean->bself();
+//        /*QString*/ sys = ((AbstractBase*)bean->getObject()->bself())->AbstractNamedBean::getSystemName();
+        AbstractNamedBean* nb2 = ((AbstractNamedBean*)bean->getObject()->bself());
+        QString sys2 = nb2->getSystemName();
+         AbstractManager::Register(nb2);
+        return bean;
     }
 
     //@Override

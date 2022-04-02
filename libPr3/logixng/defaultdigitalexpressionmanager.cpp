@@ -4,7 +4,7 @@
 #include "loggingutil.h"
 #include "instancemanager.h"
 #include "defaultlogixngmanager.h"
-#include "digitalfactory.h"
+#include "expressions/digitalfactory_expressions.h"
 #include "expressionfactory.h"
 #include "maledigitalexpressionsocket.h"
 #include "defaultmaledigitalexpressionsocket.h"
@@ -30,7 +30,7 @@
 //        for (DigitalExpressionFactory expressionFactory : ServiceLoader.load(DigitalExpressionFactory.class)) {
 //            expressionFactory.init();
 //        }
-          (new DigitalFactory())->init();
+          (new DigitalFactory_Expressions())->init();
           (new ExpressionFactory())->init();
         for (Category* category : Category::values()) {
             expressionClassList.insert(category, QList<QString>());
@@ -42,22 +42,30 @@
 ////                System.out.format("Add expression: %s, %s%n", entry.getKey().name(), entry.getValue().getName());
 //                expressionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
-//        }
-#if 0 // TODO:
-        // for DigitalFactory
-        //QSetIterator<QMap<Category*, QString>> map((new DigitalFactory())->getExpressionClasses());
-        foreach(QMap<Category* QString> map, (new DigitalFactory())->getExpressionClasses());
-        QMapIterator<Category*, QString> entry(map);
-        while(entry.hasNext())
+//        };
+        QList<DigitalExpressionFactory*> list {new DigitalFactory_Expressions(), new ExpressionFactory() };
+#if 1 // TODO:
+        for (DigitalExpressionFactory* expressionFactory : list)
         {
-         entry.next();
-           expressionClassList.value(entry.key()).append(entry.value());
+         //QSetIterator<QMap<Category*, QString>> map((new DigitalFactory())->getExpressionClasses());
+         for(QHash<Category*, QString> map : expressionFactory->getExpressionClasses())
+         {
+          QHashIterator<Category*, QString> entry(map);
+          while(entry.hasNext())
+          {
+           entry.next();
+             //expressionClassList.value(entry.key()).append(entry.value());
+           QList<QString> temp = expressionClassList.value(entry.key());
+           temp.append(entry.value());
+           expressionClassList.insert(entry.key(), temp);
+          }
+         }
         }
 #endif
 //        for (MaleDigitalExpressionSocketFactory* maleSocketFactory : ServiceLoader.load(MaleDigitalExpressionSocketFactory.class)) {
 //            _maleSocketFactories.add(maleSocketFactory);
 //        }
-        DebuggerMaleDigitalExpressionSocketFactory();
+        _maleSocketFactories.append(new DebuggerMaleDigitalExpressionSocketFactory());
     }
 
     /** {@inheritDoc} */

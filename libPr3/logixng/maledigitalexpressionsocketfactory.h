@@ -7,7 +7,7 @@
  * 
  * @author Daniel Bergqvist Copyright 2020
  */
-/*public*/ /*interface*/class  MaleDigitalExpressionSocketFactory : MaleSocketFactory/*<MaleDigitalExpressionSocket>*/ {
+/*public*/ /*interface*/class  MaleDigitalExpressionSocketFactory : public MaleSocketFactory/*<MaleDigitalExpressionSocket>*/ {
 
 };
 Q_DECLARE_INTERFACE(MaleDigitalExpressionSocketFactory, "MaleDigitalExpressionSocketFactory")

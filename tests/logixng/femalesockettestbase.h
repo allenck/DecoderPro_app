@@ -53,12 +53,12 @@ private:
         }
 
         //@Override
-        /*public*/  bool isEnabled() {
+        /*public*/  bool isEnabled() override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  Base* getObject() {
+        /*public*/  Base* getObject() override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
@@ -68,7 +68,7 @@ private:
         }
 
         //@Override
-        /*public*/  DebugConfig* getDebugConfig() {
+        /*public*/  DebugConfig* getDebugConfig()override {
             throw new UnsupportedOperationException("Not supported.");
         }
 
@@ -88,37 +88,37 @@ private:
         }
 
         //@Override
-        /*public*/  void setUserName(QString s) /*throws NamedBean.BadUserNameException*/ {
+        /*public*/  void setUserName(QString s) /*throws NamedBean.BadUserNameException*/ override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  QString getComment() {
+        /*public*/  QString getComment() override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  void setComment(QString s) {
+        /*public*/  void setComment(QString s) override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  QString getShortDescription(QLocale locale) {
+        /*public*/  QString getShortDescription(QLocale locale)override {
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  QString getLongDescription(QLocale locale) {
+        /*public*/  QString getLongDescription(QLocale locale) override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  ConditionalNG* getConditionalNG() {
+        /*public*/  ConditionalNG* getConditionalNG() override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  LogixNG* getLogixNG() {
+        /*public*/  LogixNG* getLogixNG() override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
@@ -133,12 +133,12 @@ private:
         }
 
         //@Override
-        /*public*/  void setParent(Base* parent) {
+        /*public*/  void setParent(Base* parent) override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  bool setParentForAllChildren(QList<QString> errors) {
+        /*public*/  bool setParentForAllChildren(QList<QString> errors) override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
@@ -158,7 +158,7 @@ private:
         }
 
         //@Override
-        /*public*/  void dispose() {
+        /*public*/  void dispose() override{
             throw new UnsupportedOperationException("Not supported.");
         }
 /*
@@ -203,7 +203,7 @@ private:
         }
 
         //@Override
-        /*public*/  QVector<PropertyChangeListener*> getPropertyChangeListeners() {
+        /*public*/  QVector<PropertyChangeListener*> getPropertyChangeListeners() const override{
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -218,7 +218,7 @@ private:
         }
 
         //@Override
-        /*public*/  void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+        /*public*/  void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override{
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -228,12 +228,12 @@ private:
         }
 
         //@Override
-        /*public*/  void setErrorHandlingType(ErrorHandlingType errorHandlingType) {
+        /*public*/  void setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType) override{
             throw new UnsupportedOperationException("Not supported");
         }
 
         //@Override
-        /*public*/  void addPropertyChangeListener(PropertyChangeListener* listener, QString name, QString listenerRef) {
+        /*public*/  void addPropertyChangeListener(PropertyChangeListener* listener, QString name, QString listenerRef)override {
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -253,7 +253,7 @@ private:
         }
 
         //@Override
-        /*public*/  QString getListenerRef(PropertyChangeListener* l) {
+        /*public*/  QString getListenerRef(PropertyChangeListener* l) override{
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -314,12 +314,12 @@ private:
         }
 
         //@Override
-        /*public*/  Base* getDeepCopy(QHash<QString, QString> map, QHash<QString, QString> map1) /*throws JmriException*/ {
+        /*public*/  Base* getDeepCopy(QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException*/override {
             throw new UnsupportedOperationException("Not supported");
         }
 
         //@Override
-        /*public*/  Base* deepCopyChildren(Base* base, QHash<QString, QString> map, QHash<QString, QString> map1) /*throws JmriException*/ {
+        /*public*/  Base* deepCopyChildren(Base* base, QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException*/override{
             throw new UnsupportedOperationException("Not supported");
         }
 

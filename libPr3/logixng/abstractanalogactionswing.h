@@ -8,7 +8,7 @@ class AbstractAnalogActionSwing : public AbstractSwingConfigurator
   Q_OBJECT
 
  public:
-  explicit AbstractAnalogActionSwing(QObject *parent = nullptr);
+  explicit AbstractAnalogActionSwing(QObject *parent = nullptr) : AbstractSwingConfigurator(parent) {}
   /*public*/  QString getExecuteEvaluateMenuText()override;
   /*public*/  void executeEvaluate(/*@Nonnull*/ Base* object) override;
   /*public*/  BaseManager/*<? extends NamedBean>*/* getManager()override;

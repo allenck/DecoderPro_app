@@ -10,7 +10,7 @@ class DebuggerMaleAnalogExpressionSocketFactory : public QObject, public MaleAna
   Q_INTERFACES(MaleAnalogExpressionSocketFactory)
  public:
   explicit DebuggerMaleAnalogExpressionSocketFactory(QObject *parent = nullptr) : QObject(parent){}
-  /*public*/ NamedBean* encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, NamedBean* maleSocket) override;
+  /*public*/ MaleSocket *encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, MaleSocket *maleSocket) override;
 
   QObject* self() override {return (QObject*)this;}
  signals:

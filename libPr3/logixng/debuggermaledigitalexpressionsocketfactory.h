@@ -8,7 +8,7 @@ class DebuggerMaleDigitalExpressionSocketFactory : public QObject, public MaleDi
 {
  public:
   DebuggerMaleDigitalExpressionSocketFactory() {setObjectName("DebuggerMaleDigitalExpressionSocketFactory");}
-  /*public*/ MaleDigitalExpressionSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, MaleDigitalExpressionSocket* maleSocket);
+  /*public*/ /*MaleDigitalExpressionSocket*/MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, /*MaleDigitalExpressionSocket*/MaleSocket* maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 

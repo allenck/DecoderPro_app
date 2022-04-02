@@ -10,6 +10,7 @@
 #include "errorhandlingdialog_multiline.h"
 #include "abstractbase.h"
 #include "abstractdigitalaction.h"
+#include "defaultconditionalng.h"
 
 /**
  * The abstract class that is the base class for all LogixNG classes that
@@ -30,10 +31,10 @@
   mSystemName = ((AbstractNamedBean*)object->bself())->getSystemName();
 
  _manager = manager;
-//        QObject* obj = (QObject*)object;
-//        if(static_cast<AbstractMaleSocket*>(obj))
-//         _object = (AbstractMaleSocket*) obj;
-//        else
+        QObject* obj = (QObject*)object;
+        if(static_cast<AbstractMaleSocket*>(obj))
+         _object = (AbstractMaleSocket*) obj;
+        else
  _object = object;
 }
 
@@ -122,20 +123,20 @@
 
 //@Override
 /*public*/ /*final*/ QString AbstractMaleSocket::getUserName() const{
-    return _object->getUserName();
+    return ((AbstractBase*)_object->bself())->AbstractNamedBean::getUserName();
 }
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::setUserName(QString s) throw (NamedBean::BadUserNameException) {
-    _object->setUserName(s);
+    ((AbstractBase*)_object->bself())->AbstractNamedBean::setUserName(s);
 }
 
 //@Override
 /*public*/ /*final*/ QString AbstractMaleSocket::getSystemName() const{
-    //return _object->getSystemName();
- QObject* obj = (QObject*)_object->bself();
- QString sys = ((AbstractNamedBean*)obj)->getSystemName();
- return sys;
+    return _object->getSystemName();
+// QObject* obj = (QObject*)_object;
+// QString sys = ((AbstractMaleSocket*)_object->bself())->AbstractNamedBean::getSystemName();
+// return sys;
 }
 
 //@Override
@@ -303,7 +304,9 @@
 //@Override
 /*public*/ /*final*/ ConditionalNG* AbstractMaleSocket::getConditionalNG() {
     if (getParent() == nullptr) return nullptr;
-    return getParent()->getConditionalNG();
+    //return getParent()->getConditionalNG();
+    Base* parent = getParent();
+    return (DefaultConditionalNG*)parent->getParent()->bself();
 }
 
 //@Override
@@ -347,8 +350,11 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::registerListeners() {
+ Base* bo = getObject();
+ QObject* obj = (QObject*)bo;
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
-        getObject()->registerListeners();
+        //getObject()->registerListeners();
+     ((AbstractMaleSocket*)obj)->registerListeners();
     } else {
         if (_listen) {
             registerListenersForThisClass();

@@ -11,7 +11,8 @@ class DefaultFemaleStringActionSocketFactory : public QObject, public FemaleSock
 {
   Q_OBJECT
  public:
-  explicit DefaultFemaleStringActionSocketFactory(QObject *parent = nullptr);
+  explicit DefaultFemaleStringActionSocketFactory(QObject *parent = nullptr)
+   : QObject(parent) {setObjectName("DefaultFemaleStringActionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
 
  signals:

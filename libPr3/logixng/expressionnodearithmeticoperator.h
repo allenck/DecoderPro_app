@@ -7,6 +7,7 @@
 class ExpressionNodeArithmeticOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
+  Q_INTERFACES(ExpressionNode)
  public:
   ExpressionNodeArithmeticOperator(TokenType::TTYPE tokenType, ExpressionNode* leftSide, ExpressionNode* rightSide);
   /*public*/  QVariant calculate(SymbolTable* symbolTable) /*throws JmriException*/;

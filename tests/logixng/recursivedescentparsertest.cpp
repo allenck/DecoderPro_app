@@ -12,7 +12,7 @@
 #include "simpletimebase.h"
 #include "instancemanager.h"
 #include "invalidsyntaxexception.h"
-
+#include "loggerfactory.h"
 /**
  * Test ExpressionParser
  *
@@ -53,13 +53,13 @@
         Assert::assertTrue("calculate is correct", "a little string" == ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
         exprNode = t->parseExpression("123*1233");
         Assert::assertTrue("expression matches", "(IntNumber:123)*(IntNumber:1233)" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
-        Assert::assertTrue("calculate is correct", ((int)151659) == ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
+        Assert::assertEquals("calculate is correct", ((int)151659), ( exprNode->calculate(symbolTable).toString()), __FILE__, __LINE__);
         exprNode = t->parseExpression("123+2123");
         Assert::assertTrue("expression matches", "(IntNumber:123)+(IntNumber:2123)" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
         Assert::assertTrue("calculate is correct", ((qint32)2246) == ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
         exprNode = t->parseExpression("123*3.2331");
         Assert::assertTrue("expression matches", "(IntNumber:123)*(FloatNumber:3.2331)" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
-        Assert::assertTrue("calculate is correct", ((double)397.6713) == ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
+        Assert::assertEquals("calculate is correct", ((double)397.6713), ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
         exprNode = t->parseExpression("12+45*12.2");
         Assert::assertTrue("expression matches", "(IntNumber:12)+((IntNumber:45)*(FloatNumber:12.2))" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
         Assert::assertTrue("calculate is correct", ((double)561.0) == ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
@@ -154,15 +154,17 @@
         Assert::assertTrue("expression matches", "Function:random()" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
         QVariant result =  exprNode->calculate(symbolTable);
 //        System.err.format("Result: %s, %s%n", result, result->getClass().getName());
-        Assert::assertTrue("calculate is probably correct", (result.canConvert<double>()) && ((result.toDouble()) >= 0.0) && ((result.toDouble()) <= 1.0), __FILE__, __LINE__);
+        log->debug(tr("Result: %1, %2 Line %3").arg(result.toDouble()).arg(result.typeName()).arg(__LINE__));
+        Assert::assertTrue("calculate is probably correct", (result.type() == QMetaType::Double) && ((result.toDouble()) >= 0.0) && ((result.toDouble()) <= 1.0), __FILE__, __LINE__);
         exprNode = t->parseExpression("int(23.56)");
         Assert::assertTrue("expression matches", "Function:int(FloatNumber:23.56)" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
-//        System.err.format("Result: %s, %s%n", result, result->getClass().getName());
-        Assert::assertTrue("calculate is correct", ((int)23) == ( exprNode->calculate(symbolTable)), __FILE__, __LINE__);
+        result = exprNode->calculate(symbolTable);
+        log->debug(tr("Result: %1, %2 Line %3").arg(result.toString(), result.typeName()).arg(__LINE__));
+        Assert::assertEquals("calculate is correct", ((int)23), ( exprNode->calculate(symbolTable).toInt()), __FILE__, __LINE__);
         exprNode = t->parseExpression("sin(180,\"deg\")");
         Assert::assertTrue("expression matches", "Function:sin(IntNumber:180,String:deg)" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
 //        System.err.format("Result: %s, %s%n", result, result->getClass().getName());
-        Assert::assertEquals("calculate is correct", 0,  exprNode->calculate(symbolTable).canConvert<double>(), 1e-15, __FILE__, __LINE__);
+        Assert::assertEquals("calculate is correct", 0,  exprNode->calculate(symbolTable).toDouble(), 1e-15, __FILE__, __LINE__);
         exprNode = t->parseExpression("int(x*2+5)");
         Assert::assertTrue("expression matches", "Function:int(((Identifier:x)*(IntNumber:2))+(IntNumber:5))" == ( exprNode->getDefinitionString()), __FILE__, __LINE__);
         exprNode = t->parseExpression("int((x))");
@@ -220,7 +222,7 @@
              exprNode->calculate(symbolTable);
         } catch (CalculateException* e) {
 //            System.err.format("Error message: %s%n", e.getMessage());
-            Assert::assertTrue("exception message matches", "The two operands \"123\" and \"abc\" have different types" == (e->getMessage()), __FILE__, __LINE__);
+            Assert::assertEquals("exception message matches", "The two operands \"123\" and \"abc\" have different types",(e->getMessage()), __FILE__, __LINE__);
             exceptionIsThrown->set(true);
         }
         Assert::assertTrue("exception is thrown", exceptionIsThrown->get(), __FILE__, __LINE__);
@@ -256,5 +258,5 @@
         LogixNG_Thread::stopAllLogixNGThreads();
         JUnitUtil::tearDown();
     }
-
+Logger* RecursiveDescentParserTest::log = LoggerFactory::getLogger("RecursiveDescentParserTest");
 
