@@ -65,6 +65,7 @@
         // Test evaluate() when connected
         _femaleSocket->_connect(maleSocket);
         _memory->setValue(0.0);
+        double result = ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate();
         Assert::assertTrue("values are equals", 0.0 == ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate(), __FILE__, __LINE__);
         _memory->setValue(1.2);
         Assert::assertTrue("values are equals", 1.2 == ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate(), __FILE__, __LINE__);

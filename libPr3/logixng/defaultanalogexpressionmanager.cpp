@@ -19,7 +19,7 @@
 #include "exceptions.h"
 #include "debuggermaleanalogexpressionsocketfactory.h"
 #include "analogexpressionanalogio.h"
-#include "analogfactory.h"
+#include "analogfactory_expressions.h"
 
 /**
  * Class providing the basic logic of the ExpressionManager interface.
@@ -34,7 +34,7 @@
     /*public*/  DefaultAnalogExpressionManager::DefaultAnalogExpressionManager(QObject* parent) : AbstractBaseManager(parent) {
         ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
-        QList<AnalogExpressionFactory*> factories = {new AnalogFactory()};
+        QList<AnalogExpressionFactory*> factories = {new AnalogFactory_Expressions()};
 
 //        for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load("AnalogExpressionFactory")*/aList) {
 //            expressionFactory->init();

@@ -1,7 +1,7 @@
 #include "defaultfemaleanalogexpressionsocket.h"
 #include "femalesocketlistener.h"
 #include "maleanalogexpressionsocket.h"
-#include "analogexpressionmanager.h"
+#include "defaultanalogexpressionmanager.h"
 #include "instancemanager.h"
 /**
  * Default implementation of the Female Analog Expression socket
@@ -48,19 +48,19 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString DefaultFemaleAnalogExpressionSocket::getShortDescription(QLocale locale) {
-        return tr(/*locale,*/ "?");
+        return tr(/*locale,*/ "?~");
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString DefaultFemaleAnalogExpressionSocket::getLongDescription(QLocale locale) {
-        return tr(/*locale,*/ "? %1").arg(AbstractFemaleSocket::getName());
+        return tr(/*locale,*/ "?~ %1").arg(AbstractFemaleSocket::getName());
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultFemaleAnalogExpressionSocket::getConnectableClasses() {
-        return ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getExpressionClasses();
+        return ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getExpressionClasses();
     }
 
     /** {@inheritDoc} */
