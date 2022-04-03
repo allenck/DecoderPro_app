@@ -118,7 +118,7 @@ class ExpressionTurnout : public AbstractDigitalExpression, public PropertyChang
  private:
   static Logger* log;
   /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-  /*private*/ NamedBeanHandle<Turnout*>* _turnoutHandle;
+  /*private*/ NamedBeanHandle<Turnout*>* _turnoutHandle = nullptr;
   /*private*/ QString _reference = "";
   /*private*/ QString _localVariable = "";
   /*private*/ QString _formula = "";

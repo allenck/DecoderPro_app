@@ -2,6 +2,7 @@
 #include "loggerfactory.h"
 #include "digitalexpressionbean.h"
 #include "conditionalng.h"
+#include "abstractdigitalexpression.h"
 
 /**
  * Every DigitalExpressionBean has an DefaultMaleDigitalExpressionSocket as its parent.
@@ -26,8 +27,10 @@
 
     /*private*/ void DefaultMaleDigitalExpressionSocket::checkChangedLastResult(bool savedLastResult) {
         if (savedLastResult != lastEvaluationResult) {
-            ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())
-                    ->notifyChangedResult(savedLastResult, lastEvaluationResult);
+//            ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())
+//                    ->notifyChangedResult(savedLastResult, lastEvaluationResult);
+         Base* object  =AbstractMaleSocket::getObject();
+         ((AbstractDigitalExpression*)object->bself())->notifyChangedResult(savedLastResult, lastEvaluationResult);
         }
     }
 
@@ -54,7 +57,9 @@
 
         try {
             conditionalNG->getSymbolTable()->createSymbols(_localVariables);
-            lastEvaluationResult = ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
+            //lastEvaluationResult = ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
+            Base* object  =AbstractMaleSocket::getObject();
+            lastEvaluationResult = ((AbstractDigitalExpression*)object->bself())->evaluate();
         } catch (JmriException* e) {
             if (!e->getErrors().isEmpty()) {
                 handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate:"), e->getErrors(), e, log);
@@ -81,12 +86,12 @@
 
     //@Override
     /*public*/  int DefaultMaleDigitalExpressionSocket::getState() {
-        return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+        return ((AbstractNamedBean*)getObject()->bself())->getState();
     }
 
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::setState(int s) /*throws JmriException*/ {
-        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+        ((AbstractNamedBean*)getObject()->bself())->setState(s);
     }
 
     //@Override
@@ -96,22 +101,22 @@
 
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::setProperty(QString key, QVariant value) {
-        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+        ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
     }
 
     //@Override
     /*public*/  QVariant DefaultMaleDigitalExpressionSocket::getProperty(QString key) {
-        return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+        return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
     }
 
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::removeProperty(QString key) {
-        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+       ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
     }
 
     //@Override
     /*public*/  QSet<QString> DefaultMaleDigitalExpressionSocket::getPropertyKeys() {
-        return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+        return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
     }
 
     //@Override
@@ -121,7 +126,8 @@
 
     //@Override
     /*public*/  int DefaultMaleDigitalExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        //return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+     return ((AbstractBase*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }
 
     /** {@inheritDoc} */
@@ -188,7 +194,7 @@
 
     //@Override
     /*public*/  QString DefaultMaleDigitalExpressionSocket::getDisplayName() {
-        return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+        return ((AbstractNamedBean*)getObject()->bself())->getDisplayName();
     }
 
     /*private*/ /*final*/ /*static*/ /*org.slf4j.*/Logger* DefaultMaleDigitalExpressionSocket::log = LoggerFactory::getLogger("DefaultMaleDigitalExpressionSocket");
