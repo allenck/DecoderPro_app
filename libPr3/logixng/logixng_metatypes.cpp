@@ -25,7 +25,8 @@
 #include "tableforeachswing.h"
 #include  "functionmanager.h"
 #include "tableforeachxml.h"
-
+#include "analogmanyxml.h"
+#include "analogactionlightintensityswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -40,6 +41,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DefaultDigitalExpressionManagerXml>("DefaultDigitalExpressionManagerXml");
    qRegisterMetaType<FunctionManager>("FunctionManager");
    qRegisterMetaType<TableForEachXml>("TableForEachXml");
+   qRegisterMetaType<AnalogManyXml>("AnalogManyXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -51,6 +53,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    // AbstractAnalogActionSwing
    qRegisterMetaType<AnalogManySwing>("AnalogManySwing");
    qRegisterMetaType<AnalogActionMemorySwing>("AnalogActionMemorySwing");
+   qRegisterMetaType<AnalogActionLightIntensitySwing>("AnalogActionLightIntensitySwing");
 
    // AbstractBooleanActionSwing classes
    qRegisterMetaType<DigitalBooleanManySwing>("DigitalBooleanManySwing");

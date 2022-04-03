@@ -11,6 +11,8 @@ class AnalogActionLightIntensitySwing : public AbstractAnalogActionSwing
  public:
   Q_INVOKABLE AnalogActionLightIntensitySwing(QObject* parent = nullptr)
    : AbstractAnalogActionSwing(parent) {setObjectName("AnalogActionLightIntensitySwing");}
+  ~AnalogActionLightIntensitySwing() {}
+  AnalogActionLightIntensitySwing(const AnalogActionLightIntensitySwing&) : AbstractAnalogActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages) override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object) override;
@@ -33,5 +35,5 @@ class AnalogActionLightIntensitySwing : public AbstractAnalogActionSwing
   /*protected*/ void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel)override;
 
 };
-
+Q_DECLARE_METATYPE(AnalogActionLightIntensitySwing);
 #endif // ANALOGACTIONLIGHTINTENSITYSWING_H

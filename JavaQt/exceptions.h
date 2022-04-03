@@ -271,7 +271,7 @@ class JAVAQTSHARED_EXPORT ClassNotFoundException : public Exception
 {
  public:
     ClassNotFoundException(QString s = "");
-    ~ClassNotFoundException() throw() {}
+    ~ClassNotFoundException() throw() {name = "ClassNotFoundException";}
 };
 class JAVAQTSHARED_EXPORT NoClassDefFoundError : public Exception
 {
@@ -438,7 +438,7 @@ class JAVAQTSHARED_EXPORT InvocationTargetException : public Exception
 {
 public:
    InvocationTargetException(QString s = "");
-   ~InvocationTargetException() throw() {}
+   ~InvocationTargetException() throw() {name = "InvocationTargetException";}
 };
 class JAVAQTSHARED_EXPORT TransformerFactoryConfigurationError : public Exception
 {

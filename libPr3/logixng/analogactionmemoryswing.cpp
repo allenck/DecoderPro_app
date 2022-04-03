@@ -18,7 +18,9 @@
 
     //@Override
 /*protected*/ void AnalogActionMemorySwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-    AnalogActionMemory* action = (AnalogActionMemory*)object->bself();
+    AnalogActionMemory* action = nullptr;
+    if(object)
+      action = (AnalogActionMemory*)object->bself();
 
     panel = new JPanel(new FlowLayout);
     memoryBeanPanel = new BeanSelectPanel((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr);
@@ -43,7 +45,9 @@
 //@Override
 /*public*/  MaleSocket* AnalogActionMemorySwing::createNewObject(/*@Nonnull*/ QString systemName, /*CheckForNull*/ QString userName) {
     AnalogActionMemory* action = new AnalogActionMemory(systemName, userName);
-    Memory* memory = (Memory*)memoryBeanPanel->getNamedBean()->self();
+    Memory* memory = nullptr;
+    if(memoryBeanPanel->getNamedBean())
+      memory = (Memory*)memoryBeanPanel->getNamedBean()->self();
     if (memory != nullptr) {
         NamedBeanHandle<Memory*>* handle
                 = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
@@ -61,7 +65,9 @@
     if (! (qobject_cast<AnalogActionMemory*>(object->bself()))) {
         throw new IllegalArgumentException(QString("object must be an ActionMemory but is a: ")+object->bself()->metaObject()->className());
     }
-    AnalogActionMemory* action = (AnalogActionMemory*)object->bself();
+    AnalogActionMemory* action= nullptr;
+    if(memoryBeanPanel->getNamedBean())
+     action = (AnalogActionMemory*)object->bself();
     Memory* memory = (Memory*)memoryBeanPanel->getNamedBean()->self();
     if (memory != nullptr) {
         NamedBeanHandle<Memory*>* handle

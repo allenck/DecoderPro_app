@@ -6,6 +6,7 @@
 class BeanSelectPanel;
 class AnalogActionMemorySwing : public AbstractAnalogActionSwing
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit AnalogActionMemorySwing(QObject *parent = nullptr)
    : AbstractAnalogActionSwing(parent) { setObjectName("AnalogActionMemorySwing");}

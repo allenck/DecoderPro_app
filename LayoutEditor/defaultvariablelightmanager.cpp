@@ -1,6 +1,6 @@
 #include "defaultvariablelightmanager.h"
 #include "vptr.h"
-
+#include "proxylightmanager.h"
 /**
  * Default implementation of a VariableLightManager.
  *
@@ -18,6 +18,7 @@
     /*public*/ DefaultVariableLightManager::DefaultVariableLightManager(SystemConnectionMemo* memo, QObject* parent)
      : AbstractManager(memo, parent){
         //super(memo);
+      setObjectName("DefaultVariableLightManager");
     }
 
     /**
@@ -25,9 +26,9 @@
      * @return itself
      */
     /*public*/ DefaultVariableLightManager* DefaultVariableLightManager::init() {
-        LightManager* lm = (LightManager*)InstanceManager::getDefault("LightManager");
+        LightManager* lm = (ProxyLightManager*)InstanceManager::getDefault("LightManager");
        ((AbstractManager*)lm->self())->PropertyChangeSupport::addPropertyChangeListener("beans", this);
-        for (NamedBean* nb : ((AbstractManager*)lm->self())->getNamedBeanSet()) {
+        for (NamedBean* nb : ((AbstractProxyManager*)lm->self())->getNamedBeanSet()) {
          Light* l = (Light*)nb->self();
             if (qobject_cast<VariableLight*>(l->self())) {
                 Register((NamedBean*) l->self());

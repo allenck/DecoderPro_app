@@ -92,6 +92,7 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
         classes = QList</*Class<? extends Base>*/QString>();
         map.insert(Category::OTHER, classes);
 
+        QHash<Category*, QList<QString> > expected = _femaleSocket->getConnectableClasses();
         Assert::assertTrue("maps are equal",
                 isConnectionClassesEquals(map, _femaleSocket->getConnectableClasses()), __FILE__, __LINE__);
     }

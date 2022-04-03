@@ -20,16 +20,18 @@
 
     //@Override
     /*protected*/ void AnalogActionLightIntensitySwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        AnalogActionLightIntensity* action = (AnalogActionLightIntensity*)object->bself();
+        AnalogActionLightIntensity* action = nullptr;
+        if(object)
+          action = (AnalogActionLightIntensity*)object->bself();
 
         panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
 
         _tabbedPaneLight = new JTabbedPane();
-        _panelLightDirect = new JPanel();
-        _panelLightReference = new JPanel();
-        _panelLightLocalVariable = new JPanel();
-        _panelLightFormula = new JPanel();
+        _panelLightDirect = new JPanel(new FlowLayout());
+        _panelLightReference = new JPanel(new FlowLayout());
+        _panelLightLocalVariable = new JPanel(new FlowLayout());
+        _panelLightFormula = new JPanel(new FlowLayout());
 
         _tabbedPaneLight->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelLightDirect);
         _tabbedPaneLight->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Reference), _panelLightReference);
@@ -133,7 +135,10 @@ between 0.0 and 1.0.                                                \
         }
         AnalogActionLightIntensity* action = (AnalogActionLightIntensity*)object->bself();
         if (_tabbedPaneLight->getSelectedComponent() == _panelLightDirect) {
-            VariableLight* light = (VariableLight*)lightBeanPanel->getNamedBean()->self();
+         NamedBean* nb = lightBeanPanel->getNamedBean();
+            VariableLight* light  = nullptr;
+            if(nb)
+              light = (VariableLight*)lightBeanPanel->getNamedBean()->self();
             if (light != nullptr) {
                 NamedBeanHandle<VariableLight*>* handle
                         = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))

@@ -214,7 +214,7 @@
    #else
       obj = (QObject*)QMetaType::create(id);
    #endif
-      if(obj)
+      if(obj->objectName() == "")
        obj->setObjectName(className);
       //obj = (QObject*)obj->qt_metacast(className.toStdString().c_str());
       return (Class*)obj;

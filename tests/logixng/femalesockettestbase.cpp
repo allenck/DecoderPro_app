@@ -49,18 +49,18 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
     /*private*/ bool FemaleSocketTestBase::isSetsEqual(Category* category, /*SortedSet*/QSet<QString> set1, /*SortedSet*/QSet<QString> set2) {
         for (QString s1 : set1) {
             if (!set2.contains(s1)) {
-                System::out(tr("set1 contains %s in category %s which is missing in set2%n").arg(s1, category->name()));
+                System::out(tr("set1 contains %1 in category %2 which is missing in set2%n").arg(s1, category->name()));
                 return false;
             }
         }
         for (QString s2 : set2) {
             if (!set1.contains(s2)) {
-                System::out(tr("set2 contains %s in category %s which is missing in set1%n").arg(s2, category->name()));
+                System::out(tr("set2 contains %1 in category %2 which is missing in set1%n").arg(s2, category->name()));
                 return false;
             }
         }
         if (set1.size() != set2.size()) {
-            System::out(tr("set1 and set2 has different sizes: %d, %d%n").arg(set1.size(), set2.size()));
+            System::out(tr("set1 and set2 has different sizes: %1, %2%n").arg(set1.size(), set2.size()));
             return false;
         }
         return true;
@@ -107,7 +107,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
                 classes = _femaleSocket->getConnectableClasses().value(category);
                 for (/*Class<? extends Base>*/QString clazz : classes) {
                     System::err(tr("Set of classes are different:%1"));
-                    System::err(tr("FemaleSocket: %s, category: %s, class: %s%n").arg(
+                    System::err(tr("FemaleSocket: %1, category: %2, class: %3%n").arg(
                             _femaleSocket->bself()->metaObject()->className(),
                             category->name(),
                             clazz/*.getName()*/));
@@ -421,7 +421,7 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
                 QString cn = oIface->metaObject()->className();
                 AbstractAnalogExpressionSwing* iface = (AbstractAnalogExpressionSwing*)oIface;
 
-                iface0->getConfigPanel(new JPanel());
+                iface0->getConfigPanel(new JPanel(new FlowLayout()));
                 QString sys = iface0->getAutoSystemName();
                 Base* obj = iface0->createNewObject(sys, nullptr);
                 QString cn2 = obj->bself()->metaObject()->className();

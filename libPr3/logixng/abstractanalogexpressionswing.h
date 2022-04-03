@@ -10,7 +10,8 @@ class AbstractAnalogExpressionSwing : public AbstractSwingConfigurator
   Q_OBJECT
 
  public:
-  explicit AbstractAnalogExpressionSwing(QObject *parent = nullptr) : AbstractSwingConfigurator(parent) {};
+  explicit AbstractAnalogExpressionSwing(QObject *parent = nullptr)
+   : AbstractSwingConfigurator(parent) {};
 //  ~AbstractAnalogExpressionSwing() {}
 //  AbstractAnalogExpressionSwing(const AbstractAnalogExpressionSwing&) : AbstractSwingConfigurator() {}
   /*public*/  QString getExecuteEvaluateMenuText()override;

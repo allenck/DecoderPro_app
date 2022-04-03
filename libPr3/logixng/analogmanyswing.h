@@ -5,6 +5,7 @@
 
 class AnalogManySwing : public AbstractAnalogActionSwing
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit AnalogManySwing(QObject *parent = nullptr) : AbstractAnalogActionSwing(parent){setObjectName("AnalogManySwing");}
   ~AnalogManySwing() {}
