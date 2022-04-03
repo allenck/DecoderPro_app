@@ -17,11 +17,12 @@
  * @param mess Descriptive message
  * @param evt A PropertyChangeEvent describing the vetoed change.
  */
-/*public*/ PropertyVetoException::PropertyVetoException(QString mess, PropertyChangeEvent* evt, Throwable *cause)
+/*public*/ PropertyVetoException::PropertyVetoException(QString mess, PropertyChangeEvent* evt)
  : Exception(mess)
 {
     //super(mess);
     this->evt = evt;
+ name = "PropertyVetoException";
 }
 
  /**

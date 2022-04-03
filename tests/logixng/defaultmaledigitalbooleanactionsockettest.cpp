@@ -157,7 +157,9 @@ DefaultMaleDigitalBooleanActionSocketTest::DefaultMaleDigitalBooleanActionSocket
         Throwable* thrown = nullptr;
         try{
          socket->vetoableChange(evt);
-        }catch(Throwable* thrown) {}
+        }
+        catch(Throwable* thrown) {}
+        catch(PropertyVetoException* thrown) {}
         bool b = thrown && static_cast<Throwable*>(thrown) && (thrown->getMessage() == "Veto change");
         Assert::assertTrue("vetoableChange() does throw", (QObject*)thrown, __FILE__, __LINE__);
         action->_vetoChange = false;

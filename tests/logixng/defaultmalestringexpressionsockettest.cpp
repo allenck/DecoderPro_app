@@ -71,9 +71,9 @@ DefaultMaleStringExpressionSocketTest::DefaultMaleStringExpressionSocketTest(QOb
         try{
          socket->evaluate();
         }
-        catch(Throwable* e)
+        catch(Throwable* thrown)
         {
-         Assert::assertEquals("Fail message correct", "Evaluate throws an exception", thrown->getMessage(), __FILE__, __LINE__);
+         Assert::assertEquals("Evaluate throws an exception", "Test JmriException", thrown->getMessage(), __FILE__, __LINE__);
          Assert::assertNotNull("Test JmriException", (QObject*)static_cast<JmriException*>(thrown), __FILE__, __LINE__);
         }
 
@@ -95,7 +95,7 @@ DefaultMaleStringExpressionSocketTest::DefaultMaleStringExpressionSocketTest(QOb
         catch(Throwable* e)
         {
          thrown = e;
-         Assert::assertEquals("Fail message correct", "Evaluate throws an exception", e->getMessage(), __FILE__, __LINE__);
+         Assert::assertEquals("Evaluate throws an exception", "Test RuntimeException", e->getMessage(), __FILE__, __LINE__);
          Assert::assertNotNull("Test RuntimeException", (QObject*)static_cast<RuntimeException*>(thrown), __FILE__, __LINE__);
         }
 

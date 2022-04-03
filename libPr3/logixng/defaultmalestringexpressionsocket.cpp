@@ -2,6 +2,7 @@
 #include "loggerfactory.h"
 #include "conditionalng.h"
 #include "jmriexception.h"
+#include "abstractstringexpression.h"
 
 /**
  * Every StringExpressionBean has an DefaultMaleStringExpressionSocket as its parent.
@@ -50,7 +51,9 @@
     QString result = "";
     try {
         currentConditionalNG->getSymbolTable()->createSymbols(_localVariables);
-        result = ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
+        //result = ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
+        Base* object = AbstractMaleSocket::getObject();
+        result = ((AbstractStringExpression*)AbstractMaleSocket::getObject()->bself())->evaluate();
     } catch (JmriException* e) {
         if (!e->getErrors().isEmpty()) {
             handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate:"), e->getErrors(), e, log);
@@ -70,12 +73,13 @@
 //@Override
 /*public*/  int DefaultMaleStringExpressionSocket::getState() {
     //return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getState();
- return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getState();
+ return ((AbstractNamedBean*)getObject()->bself())->getState();
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringExpressionSocket::getDisplayName() {
-    return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+    //return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+ return ((AbstractNamedBean*)getObject()->bself())->getDisplayName();
 }
 
 //@Override
@@ -102,7 +106,7 @@
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setState(int s) /*throws JmriException*/ {
     //((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
-  ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->setState(s);
+  ((AbstractNamedBean*)getObject()->bself())->setState(s);
 }
 
 //@Override
@@ -113,49 +117,49 @@
 //@Override
 /*public*/  QString DefaultMaleStringExpressionSocket::getComment() {
     //return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
-  return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getComment();
+  return ((AbstractNamedBean*)getObject()->bself())->getComment();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setComment(QString comment) {
     //((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
- ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->setComment(comment);
+ ((AbstractNamedBean*)getObject()->bself())->setComment(comment);
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setProperty(QString key, QVariant value) {
     //((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
- ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+ ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
 }
 
 //@Override
 /*public*/  QVariant DefaultMaleStringExpressionSocket::getProperty(QString key) {
     //return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
- return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+ return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::removeProperty(QString key) {
     //((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
- ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+ ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
 }
 
 //@Override
 /*public*/  QSet<QString> DefaultMaleStringExpressionSocket::getPropertyKeys() {
     //return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
-    return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+    return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringExpressionSocket::getBeanType() {
     //return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getBeanType();
- ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->getBeanType();
+ ((AbstractNamedBean*)getObject()->bself())->getBeanType();
 }
 
 //@Override
 /*public*/  int DefaultMaleStringExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
     //return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
- return ((AbstractBase*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+ return ((AbstractNamedBean*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 /** {@inheritDoc} */

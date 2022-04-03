@@ -2,6 +2,7 @@
 #include "loggerfactory.h"
 #include "stringactionbean.h"
 #include "conditionalng.h"
+#include "abstractstringaction.h"
 
 /**
  * Every StringActionBean has an DefaultMaleStringActionSocket as its parent.
@@ -40,7 +41,9 @@
 
     try {
         conditionalNG->getSymbolTable()->createSymbols(_localVariables);
-        ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->setValue(value);
+        //((AbstractNamedBean*)getObject()->bself())->setValue(value);
+        Base* object  =AbstractMaleSocket::getObject();
+        ((AbstractStringAction*)object->bself())->setValue(value);
     } catch (JmriException* e) {
         if (!e->getErrors().isEmpty()) {
             handleError((AbstractMaleSocket*)this, tr("An exception has occurred during execute:"), e->getErrors(), e, log);
@@ -57,12 +60,12 @@
 
 //@Override
 /*public*/  QString DefaultMaleStringActionSocket::getDisplayName() {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+    return ((AbstractNamedBean*)getObject()->bself())->getDisplayName();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::disposeMe() {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::dispose();
+    ((AbstractNamedBean*)getObject()->bself())->NamedBean::dispose();
 }
 
 /**
@@ -70,7 +73,7 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::registerListenersForThisClass() {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+ ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
 }
 
 /**
@@ -78,62 +81,62 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::unregisterListenersForThisClass() {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+    ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::setState(int s) /*throws JmriException*/ {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+    ((AbstractNamedBean*)getObject()->bself())->setState(s);
 }
 
 //@Override
 /*public*/  int DefaultMaleStringActionSocket::getState() {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+    return ((AbstractNamedBean*)getObject()->bself())->getState();
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringActionSocket::describeState(int state) {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->describeState(state);
+    return ((AbstractNamedBean*)getObject()->bself())->describeState(state);
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringActionSocket::getComment() {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
+    return ((AbstractNamedBean*)getObject()->bself())->getComment();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::setComment(QString comment) {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+    ((AbstractNamedBean*)getObject()->bself())->setComment(comment);
 }
 
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::setProperty(QString key, QVariant value) {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+    ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
 }
 
 //@Override
 /*public*/  QVariant DefaultMaleStringActionSocket::getProperty(QString key) {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+    return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
 }
 
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::removeProperty(QString key) {
-    ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+    ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
 }
 
 //@Override
 /*public*/  QSet<QString> DefaultMaleStringActionSocket::getPropertyKeys() {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+    return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringActionSocket::getBeanType() {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->getBeanType();
+    return ((AbstractNamedBean*)getObject()->bself())->getBeanType();
 }
 
 //@Override
 /*public*/  int DefaultMaleStringActionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-    return ((StringActionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    return ((AbstractBase*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 /** {@inheritDoc} */

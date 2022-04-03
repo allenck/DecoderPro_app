@@ -4,6 +4,7 @@
 #include "conditionalng.h"
 #include "symboltable.h"
 #include "digitalbooleanactionbean.h"
+#include "abstractdigitalbooleanaction.h"
 
 /**
  * Every DigitalBooleanActionBean has an DefaultMaleDigitalBooleanActionSocket as its parent.
@@ -39,7 +40,9 @@
 
         try {
             conditionalNG->getSymbolTable()->createSymbols(_localVariables);
-            ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->execute(hasChangedToTrue, hasChangedToFalse);
+            //((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->execute(hasChangedToTrue, hasChangedToFalse);
+          Base* object  =AbstractMaleSocket::getObject();
+          ((AbstractDigitalBooleanAction*)object->bself())->execute(hasChangedToTrue, hasChangedToFalse);
         } catch (JmriException* e) {
             if (!e->getErrors().isEmpty()) {
                 handleError((AbstractMaleSocket*)this, tr("An exception has occurred during execute:"), e->getErrors(), e, log);
@@ -56,7 +59,8 @@
 
     //@Override
     /*public*/  QString DefaultMaleDigitalBooleanActionSocket::getDisplayName() {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+        //return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+     return ((AbstractNamedBean*)getObject()->bself())->getDisplayName();
     }
 
     //@Override
@@ -82,47 +86,52 @@
 
     //@Override
     /*public*/  void DefaultMaleDigitalBooleanActionSocket::setState(int s) /*throws JmriException */{
-        ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+        //((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+     ((AbstractNamedBean*)getObject()->bself())->setState(s);
     }
 
     //@Override
     /*public*/  int DefaultMaleDigitalBooleanActionSocket::getState() {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+        //return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+        return ((AbstractNamedBean*)getObject()->bself())->getState();
     }
 
     //@Override
     /*public*/  QString DefaultMaleDigitalBooleanActionSocket::describeState(int state) {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->describeState(state);
+        return ((AbstractNamedBean*)getObject()->bself())->describeState(state);
     }
 
     //@Override
     /*public*/  QString DefaultMaleDigitalBooleanActionSocket::getComment() {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
+        //return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
+        return ((AbstractNamedBean*)getObject()->bself())->getComment();
     }
 
     //@Override
     /*public*/  void DefaultMaleDigitalBooleanActionSocket::setComment(QString comment) {
-        ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+        //((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+     ((AbstractNamedBean*)getObject()->bself())->setComment(comment);
     }
 
     //@Override
     /*public*/  void DefaultMaleDigitalBooleanActionSocket::setProperty(QString key, QVariant value) {
-        ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+        ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
     }
 
     //@Override
     /*public*/  QVariant DefaultMaleDigitalBooleanActionSocket::getProperty(QString key) {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+        return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
     }
 
     //@Override
     /*public*/  void DefaultMaleDigitalBooleanActionSocket::removeProperty(QString key) {
-        ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+//        ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+        ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
     }
 
     //@Override
     /*public*/  QSet<QString> DefaultMaleDigitalBooleanActionSocket::getPropertyKeys() {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+        return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
     }
 
     //@Override
@@ -132,7 +141,8 @@
 
     //@Override
     /*public*/  int DefaultMaleDigitalBooleanActionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+//        return ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        return ((AbstractBase*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }
 
     /** {@inheritDoc} */
