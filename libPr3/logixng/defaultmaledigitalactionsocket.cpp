@@ -40,7 +40,9 @@
 
     try {
         conditionalNG->getSymbolTable()->createSymbols(_localVariables);
-        ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->execute();
+        Base* object  =AbstractMaleSocket::getObject();
+        //((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->execute();
+        ((AbstractDigitalAction*)object->bself())->execute();
     } catch (JmriException* e) {
         if (!e->getErrors().isEmpty()) {
             handleError((AbstractMaleSocket*)this, tr("An exception has occurred during execute:"), e->getErrors(), e, log);
@@ -82,12 +84,14 @@ AbstractMaleSocket::getObject()->unregisterListeners();
 
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::setState(int s) /*throws JmriException*/ {
-    ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+    //((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+ ((AbstractBase*)getObject()->bself())->setState(s);
 }
 
 //@Override
 /*public*/  int DefaultMaleDigitalActionSocket::getState() {
-    return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+    //return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+ return ((AbstractBase*)getObject()->bself())->getState();
 }
 
 //@Override
@@ -97,32 +101,32 @@ AbstractMaleSocket::getObject()->unregisterListeners();
 
 //@Override
 /*public*/  QString DefaultMaleDigitalActionSocket::getComment() {
-    return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
+    return ((AbstractNamedBean*)getObject()->bself())->getComment();
 }
 
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::setComment(QString comment) {
-    ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+    ((AbstractNamedBean*)getObject()->bself())->setComment(comment);
 }
 
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::setProperty(QString key, QVariant value) {
-    ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+    ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
 }
 
 //@Override
 /*public*/  QVariant DefaultMaleDigitalActionSocket::getProperty(QString key) {
-    return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+    return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
 }
 
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::removeProperty(QString key) {
-    ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+    ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
 }
 
 //@Override
 /*public*/  QSet<QString> DefaultMaleDigitalActionSocket::getPropertyKeys() {
-    return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+    return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
 }
 
 //@Override
@@ -132,7 +136,8 @@ AbstractMaleSocket::getObject()->unregisterListeners();
 
 //@Override
 /*public*/  int DefaultMaleDigitalActionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-    return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    //return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    return ((AbstractBase*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 /** {@inheritDoc} */

@@ -117,17 +117,17 @@ class ActionTurnout : public AbstractDigitalAction, public VetoableChangeListene
  private:
   static Logger* log;
   /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-  /*private*/ NamedBeanHandle<Turnout*>* _turnoutHandle;
+  /*private*/ NamedBeanHandle<Turnout*>* _turnoutHandle = nullptr;
   /*private*/ QString _reference = "";
   /*private*/ QString _localVariable = "";
   /*private*/ QString _formula = "";
-  /*private*/ ExpressionNode* _expressionNode;
+  /*private*/ ExpressionNode* _expressionNode = nullptr;
   /*private*/ NamedBeanAddressing::TYPE _stateAddressing = NamedBeanAddressing::Direct;
   /*private*/ TurnoutState::STATE _turnoutState = TurnoutState::Thrown;
   /*private*/ QString _stateReference = "";
   /*private*/ QString _stateLocalVariable = "";
   /*private*/ QString _stateFormula = "";
-  /*private*/ ExpressionNode* _stateExpressionNode;
+  /*private*/ ExpressionNode* _stateExpressionNode=nullptr;
   // This constant is only used internally in TurnoutState but must be outside
   // the enum.
   /*private*/ static /*final*/ int TOGGLE_ID;// = -1;
