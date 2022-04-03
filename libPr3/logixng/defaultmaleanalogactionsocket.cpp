@@ -131,7 +131,7 @@
     //@Override
     /*public*/  QVariant DefaultMaleAnalogActionSocket::getProperty(QString key) {
         //return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
-      ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
+      return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
     }
 
     //@Override
@@ -153,7 +153,8 @@
 
     //@Override
     /*public*/  int DefaultMaleAnalogActionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        //return ((AnalogActionBean*)AbstractMaleSocket::geObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+     return ((AbstractBase*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }
 
     /** {@inheritDoc} */

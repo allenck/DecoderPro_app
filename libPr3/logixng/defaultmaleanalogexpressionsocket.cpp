@@ -2,6 +2,7 @@
 #include "loggerfactory.h"
 #include <cmath>
 #include "conditionalng.h"
+#include "abstractanalogexpression.h"
 
 /**
  * Every AnalogExpressionBean has an DefaultMaleAnalogExpressionSocket as its parent.
@@ -36,7 +37,9 @@
  * Get the value of the AnalogExpressionBean.
  */
 /*private*/ double DefaultMaleAnalogExpressionSocket::internalEvaluate() /*throws JmriException*/ {
-    double result = ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
+    //double result = ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
+    Base* object  =AbstractMaleSocket::getObject();
+    double result = ((AbstractAnalogExpression*)object->bself())->evaluate();
 
     if (/*Double.isNaN*/std::isnan(result)) {
         throw new IllegalArgumentException("The result is NaN");
@@ -88,12 +91,12 @@
 
 //@Override
 /*public*/  int DefaultMaleAnalogExpressionSocket::getState() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getState();
+    return ((AbstractBase*)getObject()->bself())->getState();
 }
 
 //@Override
 /*public*/  QString DefaultMaleAnalogExpressionSocket::getDisplayName() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
+    return ((AbstractNamedBean*)getObject()->bself())->getDisplayName();
 }
 
 //@Override
@@ -119,7 +122,7 @@
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setState(int s) /*throws JmriException*/ {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
+    ((AbstractBase*)getObject()->bself())->setState(s);
 }
 
 //@Override
@@ -129,32 +132,33 @@
 
 //@Override
 /*public*/  QString DefaultMaleAnalogExpressionSocket::getComment() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
+    return ((AbstractNamedBean*)getObject()->bself())->getComment();
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setComment(QString comment) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
+    return ((AbstractNamedBean*)getObject()->bself())->setComment(comment);
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setProperty(QString key, QVariant value) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
+    return ((AbstractNamedBean*)getObject()->bself())->setProperty(key, value);
 }
 
 //@Override
 /*public*/  QVariant DefaultMaleAnalogExpressionSocket::getProperty(QString key) {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+    //return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
+ return ((AbstractNamedBean*)getObject()->bself())->getProperty(key);
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::removeProperty(QString key) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
+    return ((AbstractNamedBean*)getObject()->bself())->removeProperty(key);
 }
 
 //@Override
 /*public*/  QSet<QString> DefaultMaleAnalogExpressionSocket::getPropertyKeys() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
+    return ((AbstractNamedBean*)getObject()->bself())->getPropertyKeys();
 }
 
 //@Override
@@ -164,7 +168,8 @@
 
 //@Override
 /*public*/  int DefaultMaleAnalogExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    //return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+ return ((AbstractBase*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 /** {@inheritDoc} */

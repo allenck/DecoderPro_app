@@ -44,7 +44,7 @@ class AnalogExpressionMemory : public AbstractAnalogExpression, public PropertyC
 
  private:
   static Logger* log;
-  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle;
+  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle = nullptr;
 
 };
 
