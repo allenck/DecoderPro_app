@@ -13,6 +13,7 @@ public:
      * Creates a new instance of <code>ParserException</code> without detail message.
      */
     /*public*/ ParserException() :  JmriException(){
+     name = "ParserException";
     }
 
 
@@ -22,6 +23,8 @@ public:
      */
     /*public*/ ParserException(QString msg) :  JmriException(msg){
         //super(msg);
+     name = "ParserException";
+
     }
 };
 #endif // PARSEREXCEPTION_H

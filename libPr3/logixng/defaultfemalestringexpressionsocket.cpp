@@ -1,6 +1,6 @@
 #include "defaultfemalestringexpressionsocket.h"
-#include "malestringexpressionsocket.h"
-#include "stringexpressionmanager.h"
+#include "defaultmalestringexpressionsocket.h"
+#include "defaultstringexpressionmanager.h"
 #include "instancemanager.h"
 
 /**
@@ -24,7 +24,7 @@
     //@Override
     /*public*/   QString DefaultFemaleStringExpressionSocket::evaluate() /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->evaluate();
+            return ((DefaultMaleStringExpressionSocket*)getConnectedSocket()->bself())->evaluate();
         } else {
             return "";
         }
@@ -57,7 +57,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/   QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultFemaleStringExpressionSocket::getConnectableClasses() {
-        return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses();
+        return ((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses();
     }
 
     /** {@inheritDoc} */

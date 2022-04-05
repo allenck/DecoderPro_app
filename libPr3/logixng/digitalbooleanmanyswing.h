@@ -5,6 +5,7 @@
 
 class DigitalBooleanManySwing : public AbstractBooleanActionSwing
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit DigitalBooleanManySwing(QObject *parent = nullptr)
    : AbstractBooleanActionSwing(parent) {setObjectName("DigitalBooleanManySwing");}

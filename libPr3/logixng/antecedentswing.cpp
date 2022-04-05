@@ -16,7 +16,9 @@
 
 //@Override
 /*protected*/ void AntecedentSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-    Antecedent* expression = (Antecedent*)object->bself();
+    Antecedent* expression = nullptr;
+    if(object)
+     expression = (Antecedent*)object->bself();
     panel = new JPanel();
     panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
     JPanel* antecedentPanel = new JPanel(new FlowLayout());

@@ -12,6 +12,7 @@
      * Creates a new instance of <code>SocketAlreadyConnectedException</code> without detail message.
      */
     /*public*/ SocketAlreadyConnectedException::SocketAlreadyConnectedException() : JmriException() {
+     name = "SocketAlreadyConnectedException";
     }
 
     /**
@@ -20,6 +21,7 @@
      */
     /*public*/ SocketAlreadyConnectedException::SocketAlreadyConnectedException(QString msg) : JmriException(msg)  {
         //super(msg);
+     name = "SocketAlreadyConnectedException";
     }
 
 

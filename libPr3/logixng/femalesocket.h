@@ -190,7 +190,7 @@
             getConnectedSocket()->setup();
         }
     }
-  /*public*/ virtual QString getClassName() {return "jmri.jmrit.logixng.FemaleSocket";}
+  /*public*/ virtual QString getClassName() =0;//{return "jmri.jmrit.logixng.FemaleSocket";}
 
  //virtual QObject* self() =0;
 };

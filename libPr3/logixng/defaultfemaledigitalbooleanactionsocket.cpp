@@ -1,6 +1,6 @@
 #include "defaultfemaledigitalbooleanactionsocket.h"
 #include "instancemanager.h"
-#include "digitalbooleanactionmanager.h"
+#include "defaultdigitalbooleanactionmanager.h"
 
 /**
  * Default implementation of the Female Digital Boolean Action socket
@@ -14,6 +14,7 @@
       : AbstractFemaleSocket(parent, listener, name, parentObj)
     {
         //super(parent, listener, name);
+     setObjectName("DefaultFemaleDigitalBooleanActionSocket");
     }
 
     //@Override
@@ -31,17 +32,17 @@
 
     //@Override
     /*public*/  QString DefaultFemaleDigitalBooleanActionSocket::getShortDescription(QLocale locale) {
-        return tr(/*locale,*/ " ");
+        return tr(/*locale,*/ "!b ");
     }
 
     //@Override
     /*public*/  QString DefaultFemaleDigitalBooleanActionSocket::getLongDescription(QLocale locale) {
-        return tr(/*locale, */"DefaultFemaleDigitalBooleanActionSocket_Long %1").arg(getName());
+        return tr(/*locale, */"!b %1").arg(getName());
     }
 
     //@Override
     /*public*/  QHash<Category *, QList<QString> > DefaultFemaleDigitalBooleanActionSocket::getConnectableClasses() {
-        return ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getActionClasses();
+        return ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getActionClasses();
     }
 
     /** {@inheritDoc} */

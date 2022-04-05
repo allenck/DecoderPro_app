@@ -232,7 +232,7 @@
 
     //@Test
     /*public*/  void DefaultFemaleGenericExpressionSocket1_Test::testGetAndSetSocketType() /*throws SocketAlreadyConnectedException*/ {
-        bool exceptionThrown;
+        bool exceptionThrown = false;
 
         AnalogExpressionMemory* analogExpression = new AnalogExpressionMemory("IQAE351", "");
         MaleSocket* analogMaleSocket = ((DefaultAnalogExpressionManager*)

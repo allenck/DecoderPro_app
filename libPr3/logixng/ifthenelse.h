@@ -25,6 +25,7 @@ class IfThenElse : public AbstractDigitalAction, public FemaleSocketListener
    * is currently running.
    */
   /*public*/ class Type {
+   public:
     enum ETYPE {
       /**
        * The "then" or "else" action is executed when the expression changes
@@ -61,6 +62,10 @@ class IfThenElse : public AbstractDigitalAction, public FemaleSocketListener
           }
           return "?";
       }
+    /*public*/ static QList<ETYPE> values()
+    {
+     return QList<ETYPE> {ExecuteOnChange, AlwaysExecute};
+    }
     friend class IfThenElse;
   };
   explicit IfThenElse(QString sys, QString user, QObject *parent = nullptr);

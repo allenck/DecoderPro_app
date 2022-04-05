@@ -1138,6 +1138,14 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/abstractmalesocketxml.cpp \
+    logixng/defaultmaleanalogexpressionsocketxml.cpp \
+    logixng/actionfactory_loconet.cpp \
+    logixng/digitalmanyswing.cpp \
+    logixng/triggeronceswing.cpp \
+    logixng/ifthenelseswing.cpp \
+    logixng/for.cpp \
+    logixng/forswing.cpp \
     logixng/analogactionmemoryxml.cpp \
     logixng/analogfactory_expressions.cpp \
     logixng/analogmanyxml.cpp \
@@ -2507,6 +2515,14 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/abstractmalesocketxml.h \
+    logixng/defaultmaleanalogexpressionsocketxml.h \
+    logixng/actionfactory_loconet.h \
+    logixng/digitalmanyswing.h \
+    logixng/triggeronceswing.h \
+    logixng/ifthenelseswing.h \
+    logixng/for.h \
+    logixng/forswing.h \
     logixng/analogactionmemoryxml.h \
     logixng/analogfactory_expressions.h \
     logixng/analogmanyxml.h \

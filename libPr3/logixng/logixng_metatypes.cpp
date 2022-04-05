@@ -27,6 +27,10 @@
 #include "tableforeachxml.h"
 #include "analogmanyxml.h"
 #include "analogactionlightintensityswing.h"
+#include "forswing.h"
+#include "ifthenelseswing.h"
+#include "actionpositionableswing.h"
+#include "digitalmanyswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -69,7 +73,10 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
 
    // AbstractDigitalActionSwing
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
-
+   qRegisterMetaType<ForSwing>("ForSwing");
+   qRegisterMetaType<IfThenElseSwing>("IfThenElseSwing");
+   qRegisterMetaType<ActionPositionableSwing>("ActionPositionableSwing");
+   qRegisterMetaType<DigitalManySwing>("DigitalManySwing");
 
    LogixNG_Metatypes::ng_done = true;
 }

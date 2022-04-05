@@ -1,6 +1,6 @@
 #include "abstractbooleanactionswing.h"
 #include "runtimeexception.h"
-#include "digitalbooleanactionmanager.h"
+#include "defaultdigitalbooleanactionmanager.h"
 #include "instancemanager.h"
 
 /**
@@ -26,7 +26,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  BaseManager/*<? extends NamedBean>*/* AbstractBooleanActionSwing::getManager() {
-        return (DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager");
+        return (DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager");
     }
 
     /** {@inheritDoc} */
@@ -48,11 +48,11 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString AbstractBooleanActionSwing::getExampleSystemName() {
-        return ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getSystemNamePrefix() + "DB10";
+        return ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getSystemNamePrefix() + "DB10";
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString AbstractBooleanActionSwing::getAutoSystemName() {
-        return ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getAutoSystemName();
+        return ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->AbstractManager::getAutoSystemName();
     }

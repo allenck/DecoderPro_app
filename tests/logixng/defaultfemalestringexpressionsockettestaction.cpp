@@ -6,7 +6,7 @@
 #include "junitutil.h"
 
 DefaultFemaleStringExpressionSocketTestAction::DefaultFemaleStringExpressionSocketTestAction(QObject *parent)
-    : AbstractAction(tr("FemaleStringExpression"), parent)
+    : AbstractAction(tr("StringExpression"), parent)
 {
 connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }

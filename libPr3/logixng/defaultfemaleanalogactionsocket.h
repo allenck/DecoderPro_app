@@ -20,6 +20,8 @@ class DefaultFemaleAnalogActionSocket : public AbstractFemaleSocket, public Fema
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  void disposeMe()override;
+  /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.implementation.DefaultFemaleAnalogActionSocket";}
+
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}

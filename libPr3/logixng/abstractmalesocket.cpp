@@ -308,7 +308,7 @@
     if (getParent() == nullptr) return nullptr;
     //return getParent()->getConditionalNG();
     Base* parent = getParent();
-    return ((AbstractBase*)parent->bself())->getConditionalNG();
+    return parent->getConditionalNG();
 }
 
 //@Override

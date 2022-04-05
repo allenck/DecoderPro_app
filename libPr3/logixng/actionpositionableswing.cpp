@@ -5,7 +5,7 @@
 #include "instancemanager.h"
 #include "vptr.h"
 #include "jtextfield.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "runtimeexception.h"
 /**
  * Configures an ActionPositionable object with a Swing JPanel.
@@ -19,9 +19,11 @@
 
     //@Override
     /*protected*/ void ActionPositionableSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionPositionable* action = (ActionPositionable*)object->bself();
+        ActionPositionable* action = nullptr;
+        if(object)
+         action =(ActionPositionable*)object->bself();
 
-        panel = new JPanel();
+        panel = new JPanel(new FlowLayout());
 
         _selectedEditor = action != nullptr ? action->getEditorName() : nullptr;
 
@@ -34,10 +36,10 @@
         connect(_editorComboBox, &JComboBox::currentTextChanged, [=] { updatePositionables();});
 
         _tabbedPanePositionable = new JTabbedPane();
-        _panelPositionableDirect = new JPanel();
-        _panelPositionableReference = new JPanel();
-        _panelPositionableLocalVariable = new JPanel();
-        _panelPositionableFormula = new JPanel();
+        _panelPositionableDirect = new JPanel(new FlowLayout());
+        _panelPositionableReference = new JPanel(new FlowLayout());
+        _panelPositionableLocalVariable = new JPanel(new FlowLayout());
+        _panelPositionableFormula = new JPanel(new FlowLayout());
 
         _tabbedPanePositionable->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelPositionableDirect);
         _tabbedPanePositionable->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Reference), _panelPositionableReference);
@@ -62,10 +64,10 @@
 
 
         _tabbedPanePositionableState = new JTabbedPane();
-        _panelPositionableStateDirect = new JPanel();
-        _panelPositionableStateReference = new JPanel();
-        _panelPositionableStateLocalVariable = new JPanel();
-        _panelPositionableStateFormula = new JPanel();
+        _panelPositionableStateDirect = new JPanel(new FlowLayout());
+        _panelPositionableStateReference = new JPanel(new FlowLayout());
+        _panelPositionableStateLocalVariable = new JPanel(new FlowLayout());
+        _panelPositionableStateFormula = new JPanel(new FlowLayout());
 
         _tabbedPanePositionableState->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelPositionableStateDirect);
         _tabbedPanePositionableState->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Reference), _panelPositionableStateReference);
@@ -197,7 +199,7 @@
     /*public*/  MaleSocket* ActionPositionableSwing::createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) {
         ActionPositionable* action = new ActionPositionable(systemName, userName);
         updateObject(action);
-        return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->registerAction(action);
+        return ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->registerAction(action);
     }
 
     /** {@inheritDoc} */

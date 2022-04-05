@@ -116,8 +116,8 @@
         _action->setMemory(_memory);
         StringActionMemory* otherAction = new StringActionMemory("IQSA322", "");
         manager = (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
-        maleSocket = ((StringActionManager*)manager->mself())->registerAction(_action);
-        otherMaleSocket = ((StringActionManager*)manager->mself())->registerAction(otherAction);
+        maleSocket = ((DefaultStringActionManager*)manager->mself())->registerAction(_action);
+        otherMaleSocket = ((DefaultStringActionManager*)manager->mself())->registerAction(otherAction);
         _femaleSocket = new DefaultFemaleStringActionSocket(conditionalNG, new MyFemaleSocketListener10(this)
 //        {
 //            //@Override

@@ -3,6 +3,7 @@
 #include "instancemanager.h"
 #include "defaultlogixngmanager.h"
 #include "actionfactory.h"
+#include "actionfactory_loconet.h"
 #include "actions/digitalfactory.h"
 #include "digitalactionmanager.h"
 #include "debuggermaledigitalactionsocketfactory.h"
@@ -29,7 +30,7 @@
 //        }
     (new ActionFactory())->init();
     (new DigitalFactory())->init();
-
+    (new ActionFactory_LocoNet())->init();
 
     for (Category* category : Category::values()) {
         actionClassList.insert(category, QList<QString>());

@@ -49,6 +49,7 @@ class DefaultMaleAnalogActionSocket : public AbstractMaleSocket, public MaleAnal
   /*public*/  void setEnabledFlag(bool enable) override;
   /*public*/  bool isEnabled()override;
   /*public*/  void disposeMe()override;
+  /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DefaultMaleAnalogActionSocket";}
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}

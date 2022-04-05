@@ -7,7 +7,7 @@
 class DigitalFormulaSwing : public AbstractDigitalExpressionSwing
 {
  public:
-  explicit DigitalFormulaSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("DigitalFormulaSwing");}
+  Q_INVOKABLE explicit DigitalFormulaSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("DigitalFormulaSwing");}
   ~DigitalFormulaSwing() {}
   DigitalFormulaSwing(const DigitalFormulaSwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;

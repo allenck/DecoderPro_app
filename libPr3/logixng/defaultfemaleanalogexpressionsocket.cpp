@@ -15,6 +15,7 @@
      : AbstractFemaleSocket(parent, listener, name, parentObject)
     {
         //super(parent, listener, name);
+     setObjectName("DefaultFemaleAnalogExpressionSocket");
     }
 
     /** {@inheritDoc} */
@@ -67,4 +68,8 @@
     //@Override
     /*public*/  void DefaultFemaleAnalogExpressionSocket::disposeMe() {
         // Do nothing
+    }
+
+    /*public*/ QString DefaultFemaleAnalogExpressionSocket::getClassName(){
+     return "jmri.jmrit.logixng.implementation.DefaultFemaleAnalogExpressionSocket";
     }

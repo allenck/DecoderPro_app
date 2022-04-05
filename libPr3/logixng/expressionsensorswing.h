@@ -8,6 +8,7 @@
 
 class ExpressionSensorSwing : public AbstractDigitalExpressionSwing
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit ExpressionSensorSwing(QObject *parent = nullptr)
    : AbstractDigitalExpressionSwing(parent) {setObjectName("ExpressionSensorSwing");}

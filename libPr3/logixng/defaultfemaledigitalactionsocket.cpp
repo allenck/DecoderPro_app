@@ -1,6 +1,6 @@
 #include "defaultfemaledigitalactionsocket.h"
 #include "instancemanager.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 
 /**
  * Default implementation of the Female Digital Action socket
@@ -21,7 +21,7 @@
     //@Override
     /*public*/  bool DefaultFemaleDigitalActionSocket::isCompatible(MaleSocket* socket) {
      QObject* obj = (QObject*)socket;
-     MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(obj);
+     MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(socket->bself());
         //return qobject_cast<MaleDigitalActionSocket*>(socket->bself());
      return mas;
     }
@@ -45,7 +45,7 @@
 
     //@Override
     /*public*/  QHash<Category *, QList<QString> > DefaultFemaleDigitalActionSocket::getConnectableClasses() {
-        return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getActionClasses();
+        return ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getActionClasses();
     }
 
     /** {@inheritDoc} */

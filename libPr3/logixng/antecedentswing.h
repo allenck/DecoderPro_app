@@ -8,7 +8,7 @@ class AntecedentSwing : public AbstractDigitalExpressionSwing
 {
   Q_OBJECT
  public:
-  explicit AntecedentSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent){}
+  Q_INVOKABLE explicit AntecedentSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent){}
   ~AntecedentSwing() {}
   AntecedentSwing(const AntecedentSwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;

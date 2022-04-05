@@ -113,7 +113,7 @@
         StringExpressionMemory* otherExpression = new StringExpressionMemory("IQSE322", "");
         manager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
         maleSocket = ((DefaultStringExpressionManager*)manager->mself())->registerExpression(_expression);
-        otherMaleSocket = ((StringExpressionManager*)manager->mself())->registerExpression(otherExpression);
+        otherMaleSocket = ((DefaultStringExpressionManager*)manager->mself())->registerExpression(otherExpression);
         _femaleSocket = new DefaultFemaleStringExpressionSocket(_conditionalNG, new MyFemaleSocketListener04(this)
 //        {
 //            //@Override

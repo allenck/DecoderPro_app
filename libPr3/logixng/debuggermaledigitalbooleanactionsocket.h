@@ -22,6 +22,7 @@ class DebuggerMaleDigitalBooleanActionSocket : public AbstractDebuggerMaleSocket
   /*public*/  QSet<QString> getPropertyKeys()override;
   /*public*/  QString getBeanType()override;
   /*public*/  int compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2)override;
+  /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DebuggerMaleDigitalBooleanActionSocket";}
 
   QObject* self() override {return (QObject*)this;}
  private:

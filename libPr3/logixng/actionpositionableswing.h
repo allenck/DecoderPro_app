@@ -8,14 +8,18 @@
 
 class ActionPositionableSwing : public AbstractDigitalActionSwing
 {
+  Q_OBJECT
  public:
-  ActionPositionableSwing();
+  Q_INVOKABLE ActionPositionableSwing() : AbstractDigitalActionSwing() {}
+  ~ActionPositionableSwing() {}
+  ActionPositionableSwing(const ActionPositionableSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString toString()override;
   /*public*/  void dispose();
 
+  QObject* sself() override{return (QObject*)this;}
  private:
   /*private*/ QString _selectedEditor;
 
@@ -99,5 +103,5 @@ class ActionPositionableSwing : public AbstractDigitalActionSwing
   /*protected*/ void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel)override;
 
 };
-
+Q_DECLARE_METATYPE(ActionPositionableSwing)
 #endif // ACTIONPOSITIONABLESWING_H

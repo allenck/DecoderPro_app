@@ -46,6 +46,7 @@ class DefaultMaleDigitalBooleanActionSocket : public AbstractMaleSocket, public 
   /*public*/  void setEnabled(bool enable) override;
   /*public*/  void setEnabledFlag(bool enable) override;
   /*public*/  bool isEnabled()override;
+  /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DefaultMaleDigitalBooleanActionSocket";}
 
   QObject* self() override {return (QObject*)this;}
 

@@ -1,6 +1,6 @@
 #include "defaultfemaledigitalexpressionsocket.h"
 #include "maledigitalexpressionsocket.h"
-#include "digitalexpressionmanager.h"
+#include "defaultdigitalexpressionmanager.h"
 #include "instancemanager.h"
 /**
  * Default implementation of the Female Digital Expression socket
@@ -13,6 +13,7 @@
      : AbstractFemaleSocket(parent, listener, name, parentObj)
     {
         //super(parent, listener, name);
+     setObjectName("DefaultFemaleDigitalExpressionSocket");
     }
 
     /** {@inheritDoc} */
@@ -46,7 +47,7 @@
 
     //@Override
     /*public*/  QHash<Category*, QList<QString> > DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
-        return ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses();
+        return ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses();
     }
 
     /** {@inheritDoc} */

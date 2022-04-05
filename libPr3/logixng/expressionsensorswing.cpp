@@ -18,22 +18,24 @@
 
 //@Override
 /*protected*/ void ExpressionSensorSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-    ExpressionSensor* expression = (ExpressionSensor*)object->bself();
+    ExpressionSensor* expression = nullptr;
+    if(object)
+      expression = (ExpressionSensor*)object->bself();
 
-    panel = new JPanel();
+    panel = new JPanel(new FlowLayout());
 
     _tabbedPaneSensor = new JTabbedPane();
-    _panelSensorDirect = new JPanel();
-    _panelSensorReference = new JPanel();
-    _panelSensorLocalVariable = new JPanel();
-    _panelSensorFormula = new JPanel();
+    _panelSensorDirect = new JPanel(new FlowLayout());
+    _panelSensorReference = new JPanel(new FlowLayout());
+    _panelSensorLocalVariable = new JPanel(new FlowLayout());
+    _panelSensorFormula = new JPanel(new FlowLayout());
 
     _tabbedPaneSensor->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelSensorDirect);
     _tabbedPaneSensor->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Reference), _panelSensorReference);
     _tabbedPaneSensor->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::LocalVariable), _panelSensorLocalVariable);
     _tabbedPaneSensor->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Formula), _panelSensorFormula);
 
-    sensorBeanPanel = new BeanSelectPanel((Manager*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->mself(), nullptr);
+    sensorBeanPanel = new BeanSelectPanel((AbstractManager*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->mself(), nullptr);
     _panelSensorDirect->layout()->addWidget(sensorBeanPanel);
 
     _sensorReferenceTextField = new JTextField();
@@ -57,10 +59,10 @@
 
 
     _tabbedPaneSensorState = new JTabbedPane();
-    _panelSensorStateDirect = new JPanel();
-    _panelSensorStateReference = new JPanel();
-    _panelSensorStateLocalVariable = new JPanel();
-    _panelSensorStateFormula = new JPanel();
+    _panelSensorStateDirect = new JPanel(new FlowLayout());
+    _panelSensorStateReference = new JPanel(new FlowLayout());
+    _panelSensorStateLocalVariable = new JPanel(new FlowLayout());
+    _panelSensorStateFormula = new JPanel(new FlowLayout());
 
     _tabbedPaneSensorState->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelSensorStateDirect);
     _tabbedPaneSensorState->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Reference), _panelSensorStateReference);
@@ -126,6 +128,7 @@
     QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
             tr("Sensor %1 %2 %3"), components);
 
+    if(panel->layout())
     for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c);
 }
 

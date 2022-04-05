@@ -372,6 +372,7 @@ private:
         /*public*/  void setCatchAbortExecution(bool catchAbortExecution) override{
             throw new UnsupportedOperationException("Not supported");
         }
+    /*public*/ QString getClassName()override {return "IncompatiblealeSocket";}
      QObject* bself() override {return (QObject*)this;}
     };
 protected:

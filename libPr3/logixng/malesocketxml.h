@@ -14,5 +14,5 @@ class MaleSocket;
     /*public*/ virtual bool load(QDomElement maleSocketElement, MaleSocket* maleSocket)=0;
 
 };
-
+Q_DECLARE_INTERFACE(MaleSocketXml, "MaleSocketXml")
 #endif // MALESOCKETXML_H

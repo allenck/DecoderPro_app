@@ -57,6 +57,8 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/ int getChildCount() override;
   /*public*/ Category* getCategory()override;
+  /*public*/ QString getClassName() {return "jmri.jmrit.logixng.tools.debugger.DefaultClipboard";}
+
   QObject* self() override {return (QObject*)this;}
  QObject* bself() override {return (QObject*)this;}
 
@@ -91,6 +93,7 @@ public:
    this->defaultClipboard = defaultClipboard;
         }
   /*public*/ bool add(MaleSocket* maleSocket, QList<QString> errors);
+  /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.MaleRootSocket";}
 
  protected:
         //@Override

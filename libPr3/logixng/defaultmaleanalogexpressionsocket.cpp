@@ -16,6 +16,7 @@
 /*public*/  DefaultMaleAnalogExpressionSocket::DefaultMaleAnalogExpressionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
    /*@Nonnull*/ AnalogExpressionBean* expression, QObject *parent) : AbstractMaleSocket(manager, expression, parent) {
     //super(manager, expression);
+ setObjectName("DefaultMaleAnalogExpressionSocket");
  if(objectName().isEmpty())
   setObjectName("DefaultMaleAnalogExpressionSocket");
  //mSystemName = ((AbstractNamedBean*)expression->self())->getSystemName();
@@ -65,7 +66,7 @@
         return ((AnalogExpressionDebugConfig*)_debugConfig)->_result;
     }
 
-    ConditionalNG* conditionalNG = AbstractMaleSocket::getConditionalNG();
+    ConditionalNG* conditionalNG = getConditionalNG();
 
     int currentStackPos = conditionalNG->getStack()->getCount();
 

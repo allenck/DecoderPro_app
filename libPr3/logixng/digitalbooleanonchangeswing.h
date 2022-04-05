@@ -9,7 +9,7 @@ class DigitalBooleanOnChangeSwing : public AbstractBooleanActionSwing
 {
   Q_OBJECT
  public:
-  explicit DigitalBooleanOnChangeSwing(QObject *parent = nullptr)
+  Q_INVOKABLE explicit DigitalBooleanOnChangeSwing(QObject *parent = nullptr)
    : AbstractBooleanActionSwing(parent) {setObjectName("DigitalBooleanOnChangeSwing");}
   ~DigitalBooleanOnChangeSwing() {}
   DigitalBooleanOnChangeSwing(const DigitalBooleanOnChangeSwing&) : AbstractBooleanActionSwing() {}

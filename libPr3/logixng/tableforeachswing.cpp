@@ -22,7 +22,9 @@
             throw new IllegalArgumentException(QString("object must be an TableForEach but is a: ")+object->bself()->metaObject()->className());
         }
 
-        TableForEach* action = (TableForEach*)object->bself();
+        TableForEach* action = nullptr;
+        if(object)
+         action = (TableForEach*)object->bself();
 
         panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
@@ -131,7 +133,7 @@
 
         panel->layout()->addWidget(tabbedPanesPanel);
 
-        JPanel* localVariablePanel = new JPanel();
+        JPanel* localVariablePanel = new JPanel(new FlowLayout());
         localVariablePanel->layout()->addWidget(new JLabel(tr("Local variable")));
         _localVariable = new JTextField(20);
         localVariablePanel->layout()->addWidget(_localVariable);
@@ -311,7 +313,7 @@
 
             action->setLocalVariableName(_localVariable->text());
         } catch (ParserException* e) {
-            throw new RuntimeException("ParserException: "+e->getMessage(), e);
+            throw new RuntimeException("ParserException: " + e->getMessage(), e);
         }
     }
 

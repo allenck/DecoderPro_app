@@ -5,8 +5,9 @@
 
 class TrueSwing : public AbstractDigitalExpressionSwing
 {
+  Q_OBJECT
  public:
-  explicit TrueSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("TrueSwing");}
+  Q_INVOKABLE explicit TrueSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("TrueSwing");}
   ~TrueSwing() {}
   TrueSwing(const TrueSwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;

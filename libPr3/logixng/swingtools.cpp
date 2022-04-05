@@ -96,9 +96,9 @@
         try {
             adapter = (AbstractSwingConfigurator*) Class::forName(adapterNameForClass(clazz))/*->getDeclaredConstructor()*/->newInstance();
         }
-        catch (ClassNotFoundException* ex) {
-            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
-        }
+//        catch (ClassNotFoundException* ex) { // temp
+//            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
+//        }
         catch (IllegalAccessException* ex) {
             log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }

@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include"instancemanager.h"
 #include "runtimeexception.h"
-#include "digitalexpressionmanager.h"
+#include "defaultdigitalexpressionmanager.h"
 #include "defaultsymboltable.h"
 
 /**
@@ -53,7 +53,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  BaseManager/*<? extends NamedBean>*/* AbstractDigitalExpressionSwing::getManager() {
-        return (DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
+        return (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
     }
 
     /** {@inheritDoc} */
@@ -74,13 +74,13 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString AbstractDigitalExpressionSwing::getExampleSystemName() {
-        return ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getSystemNamePrefix() + "DE10";
+        return ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getSystemNamePrefix() + "DE10";
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString AbstractDigitalExpressionSwing::getAutoSystemName() {
-        return ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getAutoSystemName();
+        return ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->AbstractManager::getAutoSystemName();
     }
 
 

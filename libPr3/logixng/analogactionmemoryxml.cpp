@@ -2,12 +2,9 @@
 #include "analogactionmemory.h"
 #include "instancemanager.h"
 #include "defaultmemorymanager.h"
+#include "defaultanalogactionmanager.h"
+#include "namedbeanhandle.h"
 
-AnalogActionMemoryXml::AnalogActionMemoryXml(QObject *parent) : AbstractNamedBeanManagerConfigXML(parent)
-{
-
-}
-#if 0
 /**
  * Handle XML configuration for ActionLightXml objects.
  *
@@ -26,16 +23,16 @@ AnalogActionMemoryXml::AnalogActionMemoryXml(QObject *parent) : AbstractNamedBea
      * @return Element containing the complete info
      */
     //@Override
-    /*public*/  QDomElement store(QObject* o) {
+    /*public*/  QDomElement AnalogActionMemoryXml::store(QObject* o) {
         AnalogActionMemory* p = (AnalogActionMemory*) o;
 
         QDomElement element = doc.createElement("AnalogActionMemory");
         element.setAttribute("class", ".jmri.jmrit.actions.configurexml.AnalogActionMemoryXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
 
         storeCommon(p, element);
 
-        NamedBeanHandle* memory = p->getMemory();
+        NamedBeanHandle<Memory*>* memory = p->getMemory();
         if (memory != nullptr) {
             element.appendChild(doc.createElement("memory").appendChild(doc.createTextNode(memory->getName())));
         }
@@ -44,7 +41,7 @@ AnalogActionMemoryXml::AnalogActionMemoryXml(QObject *parent) : AbstractNamedBea
     }
 
     //@Override
-    /*public*/  bool load(QDomElement shared, QDomElement perNode) /*throws JmriConfigureXmlException*/ {     // Test class that inherits this class throws exception
+    /*public*/  bool AnalogActionMemoryXml::load(QDomElement shared, QDomElement perNode) /*throws JmriConfigureXmlException*/ {     // Test class that inherits this class throws exception
         QString sys = getSystemName(shared);
         QString uname = getUserName(shared);
         AnalogActionMemory* h;
@@ -52,17 +49,17 @@ AnalogActionMemoryXml::AnalogActionMemoryXml(QObject *parent) : AbstractNamedBea
 
         loadCommon(h, shared);
 
-        QDomElement memoryName = shared.getChild("memory");
-        if (memoryName != "") {
-            Memory* m = ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(memoryName.getTextTrim());
-            if (m != null) h.setMemory(m);
-            else h.removeMemory();
+        QDomElement memoryName = shared.firstChildElement("memory");
+        if (!memoryName.isNull()) {
+            Memory* m = ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(memoryName.text().trimmed());
+            if (m != nullptr) h->setMemory(m);
+            else h->removeMemory();
         }
 
         // this.checkedNamedBeanReference()
         // <T extends NamedBean> T checkedNamedBeanReference(String name, @Nonnull T type, @Nonnull Manager<T> m) {
 
-        InstanceManager.getDefault(AnalogActionManager.class).registerAction(h);
+        ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->registerAction(h);
         return true;
     }
-    #endif
+

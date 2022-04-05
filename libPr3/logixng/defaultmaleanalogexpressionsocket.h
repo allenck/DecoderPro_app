@@ -38,6 +38,7 @@ class DefaultMaleAnalogExpressionSocket : public AbstractMaleSocket, public Male
   /*public*/  void setEnabled(bool enable)override;
   /*public*/  void setEnabledFlag(bool enable)override;
   /*public*/  bool isEnabled()override;
+  /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.implementation.DefaultMaleAnalogExpressionSocket";}
 
   QObject* self() override {return (QObject*)this;}
 

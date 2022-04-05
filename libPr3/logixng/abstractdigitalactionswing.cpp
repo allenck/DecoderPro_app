@@ -6,7 +6,7 @@
 #include "threadingutil.h"
 #include "joptionpane.h"
 #include "instancemanager.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "runtimeexception.h"
 
 /**
@@ -67,7 +67,7 @@
     /** {@inheritDoc} */
      //QOverride
      /*public*/ BaseManager/*<? extends NamedBean>*/* AbstractDigitalActionSwing::getManager() {
-        return (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
+        return (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
     }
 
     /** {@inheritDoc} */
@@ -89,13 +89,13 @@
     /** {@inheritDoc} */
      //QOverride
      /*public*/ QString AbstractDigitalActionSwing::getExampleSystemName() {
-        return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getSystemNamePrefix() + "DA10";
+        return ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getSystemNamePrefix() + "DA10";
     }
 
     /** {@inheritDoc} */
      //QOverride
      /*public*/ QString AbstractDigitalActionSwing::getAutoSystemName() {
-        return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getAutoSystemName();
+        return ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->AbstractManager::getAutoSystemName();
     }
 
 

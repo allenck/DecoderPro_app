@@ -1,9 +1,9 @@
 #include "defaultfemalegenericexpressionsocket.h"
 #include "runtimeexception.h"
 #include "femalegenericexpressionsocket.h"
-#include "maledigitalexpressionsocket.h"
-#include "maleanalogexpressionsocket.h"
-#include "malestringexpressionsocket.h"
+#include "defaultmaledigitalexpressionsocket.h"
+#include "defaultmaleanalogexpressionsocket.h"
+#include "defaultmalestringexpressionsocket.h"
 #include "defaultanalogexpressionmanager.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "instancemanager.h"
@@ -133,18 +133,18 @@
     //@Override
     //@CheckForNull
     /*public*/  QVariant DefaultFemaleGenericExpressionSocket::evaluateGeneric() /*throws JmriException*/ {
-        if (AbstractFemaleSocket::isConnected()) {
+        if (isConnected()) {
             switch (_currentSocketType) {
                 case DIGITAL:
-                    return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
+                    return ((DefaultMaleDigitalExpressionSocket*)getConnectedSocket()->bself())
                             ->evaluate();
 
                 case ANALOG:
-                    return ((MaleAnalogExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
+                    return ((DefaultMaleAnalogExpressionSocket*)getConnectedSocket()->bself())
                             ->evaluate();
 
                 case STRING:
-                    return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
+                    return ((DefaultMaleStringExpressionSocket*)getConnectedSocket()->bself())
                             ->evaluate();
 
                 default:

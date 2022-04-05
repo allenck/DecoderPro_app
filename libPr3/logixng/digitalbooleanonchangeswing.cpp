@@ -13,7 +13,9 @@
 
     //@Override
     /*protected*/ void DigitalBooleanOnChangeSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        DigitalBooleanOnChange* action = (DigitalBooleanOnChange*)object->bself();
+        DigitalBooleanOnChange* action = nullptr;
+        if(object)
+         action = (DigitalBooleanOnChange*)object->bself();
 
         panel = new JPanel(new FlowLayout());
         _triggerComboBox = new JComboBox();

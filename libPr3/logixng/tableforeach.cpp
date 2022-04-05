@@ -299,7 +299,7 @@
      * @param rowOrColumnName name of row or column
      */
     /*public*/  void TableForEach::setRowOrColumnName(/*@Nonnull*/ QString rowOrColumnName) {
-        if (rowOrColumnName == nullptr) throw new RuntimeException("Daniel");
+// TODO:        if (rowOrColumnName == "") throw new RuntimeException("Daniel");
         _rowOrColumnName = rowOrColumnName;
     }
 
