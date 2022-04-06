@@ -287,6 +287,15 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/abstractanalogactiontestbase.cpp \
+    logixng/abstractanalogexpressiontestbase.cpp \
+    logixng/abstractdigitalexpressiontestbase.cpp \
+    logixng/abstractstringactiontestbase.cpp \
+    logixng/abstractstringexpressiontestbase.cpp \
+    logixng/analogactionmemorytest.cpp \
+    logixng/analogactionmemorytestaction.cpp \
+    logixng/analogformulatest.cpp \
+    logixng/analogformulatestaction.cpp \
     logixng/defaultmaledigitalbooleanactionsockettest.cpp \
     logixng/defaultmaledigitalbooleanactionsockettestaction.cpp \
     logixng/defaultfemalegenericexpressionsocket2_testaction.cpp \
@@ -600,6 +609,15 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/abstractanalogactiontestbase.h \
+    logixng/abstractanalogexpressiontestbase.h \
+    logixng/abstractdigitalexpressiontestbase.h \
+    logixng/abstractstringactiontestbase.h \
+    logixng/abstractstringexpressiontestbase.h \
+    logixng/analogactionmemorytest.h \
+    logixng/analogactionmemorytestaction.h \
+    logixng/analogformulatest.h \
+    logixng/analogformulatestaction.h \
     logixng/defaultmaledigitalbooleanactionsockettest.h \
     logixng/defaultmaledigitalbooleanactionsockettestaction.h \
     logixng/defaultfemalegenericexpressionsocket2_testaction.h \

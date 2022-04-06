@@ -211,11 +211,11 @@
     _listenersAreRegistered = true;
     registerListenersForThisClass();
     if (isConnected()) {
-        //getConnectedSocket()->registerListeners();
-     MaleSocket* ms = getConnectedSocket();
-     QObject* obj = (QObject*)ms;
+        getConnectedSocket()->registerListeners();
+//     MaleSocket* ms = getConnectedSocket();
+//     QObject* obj = (QObject*)ms;
 
-     ((AbstractBase*)obj)->registerListeners();
+//     ((AbstractBase*)obj)->registerListeners();
     }
 }
 
@@ -291,7 +291,9 @@
 //@Override
 /*public*/ /*final*/ ConditionalNG* AbstractFemaleSocket::getConditionalNG() {
     if (_parent == nullptr) return nullptr;
-    return _parent->getConditionalNG();
+    //return ((AbstractBase*)_parent->bself())->getConditionalNG();
+    Base* parent = _parent;
+    return parent->getConditionalNG();
 }
 
 /** {@inheritDoc} */

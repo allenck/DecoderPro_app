@@ -152,10 +152,10 @@ public:
    friend class AbstractBaseTestBase;
   };
  protected:
-  /*protected*/ Base* _base;
-  /*protected*/ MaleSocket* _baseMaleSocket;
-  /*protected*/ Category* _category;
-  /*protected*/ bool _isExternal;
+  /*protected*/ Base* _base = nullptr;
+  /*protected*/ MaleSocket* _baseMaleSocket = nullptr;
+  /*protected*/ Category* _category = nullptr;
+  /*protected*/ bool _isExternal = false;
 
 };
 /**

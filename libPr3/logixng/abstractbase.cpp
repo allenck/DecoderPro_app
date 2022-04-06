@@ -44,7 +44,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ ConditionalNG* AbstractBase::getConditionalNG() {
-        if (qobject_cast<DefaultConditionalNG*>(this->self() )) return (DefaultConditionalNG*)this;
+        if (qobject_cast<DefaultConditionalNG*>(this->bself() )) return (DefaultConditionalNG*)this;
         if (getParent() == nullptr) return nullptr;
         return getParent()->getConditionalNG();
     }
@@ -75,18 +75,16 @@
             FemaleSocket* femaleSocket = getChild(i);
             femaleSocket->setParent(this);
             if (femaleSocket->isConnected()) {
-                MaleSocket* cs = femaleSocket->getConnectedSocket();
-                QObject* obj = (QObject*)cs;
-                AbstractBase* connectedSocket= (AbstractBase*)obj;
+                MaleSocket* connectedSocket = femaleSocket->getConnectedSocket();
                 Base* p = connectedSocket->getParent();
                 if ((connectedSocket->getParent() != nullptr)
                         && (connectedSocket->getParent() != femaleSocket)) {
                     errors.append(tr("The child %1 already has the parent %2 so it cannot be added to %3").arg(
-                            connectedSocket->AbstractNamedBean::getSystemName(),
+                            connectedSocket->getSystemName(),
                             connectedSocket->getParent()->getSystemName(),
                             Base::getSystemName()));
                     log->error(tr("The child %1 already has the parent %2 so it cannot be added to %3").arg(
-                            connectedSocket->AbstractNamedBean::getSystemName(),
+                            connectedSocket->getSystemName(),
                             connectedSocket->getParent()->getSystemName(),
                             Base::getSystemName()));
                     femaleSocket->_disconnect();

@@ -9,6 +9,7 @@
 #include "stringwriter.h"
 #include "printwriter.h"
 #include "atomicboolean.h"
+#include "abstractmalesocket.h"
 
 /**
  * Test AbstractAnalogExpression
@@ -51,10 +52,10 @@
 
     /*public*/  /*static*/ MaleSocket* AbstractBaseTestBase::getLastMaleSocket(MaleSocket* socket) {
         MaleSocket* lastMaleSocket = socket;
-        Base* base = (Base*)socket;
+        Base* base = socket;
         while ((base != nullptr) && qobject_cast<MaleSocket*>(base->bself())) {
             lastMaleSocket = (MaleSocket*) base->bself();
-            base = ((MaleSocket*)base->bself())->getObject();
+            base = ((AbstractMaleSocket*)base->bself())->getObject();
         }
         return lastMaleSocket;
     }
@@ -65,17 +66,14 @@
             log->warn(tr("Method getConditionalNG() returns null for class %1").arg(this->metaObject()->className()));
             log->error(tr("Method getConditionalNG() returns null for class %1").arg(this->metaObject()->className()));
         }
-        AbstractNamedBean* c1 = (AbstractNamedBean*)getConditionalNG()->self();
-        QString sn1 = c1->getSystemName();
-        AbstractNamedBean* c2 = (AbstractNamedBean*)((AbstractBase*)_base->bself())->getConditionalNG();
-        QString sn2 = c2->getSystemName();
-        //Assert::assertTrue("ConditionalNG is equal", getConditionalNG()->equals(((DefaultConditionalNG*) _base->getConditionalNG())->bself()), __FILE__, __LINE__);
-        bool b = c1->equals(c2);
-        Assert::assertTrue("ConditionalNG is equal",c1->equals(c2), __FILE__, __LINE__);
-        ((DefaultConditionalNG*)c2)->setEnabled(false);
-        ((DefaultConditionalNG*)c2)->setParent(nullptr);
-        c2 = (AbstractNamedBean*)((AbstractBase*)_base->bself())->getConditionalNG();
-        Assert::assertNull("ConditionalNG is null", ((AbstractBase*)_base->bself())->getConditionalNG()->bself(), __FILE__, __LINE__);
+        ConditionalNG* conditionalng1 = getConditionalNG();
+        ConditionalNG* conditionalng2 = _base->getConditionalNG();
+        bool b = conditionalng1 == (conditionalng2);
+        Assert::assertTrue("ConditionalNG is equal",conditionalng1 == conditionalng2, __FILE__, __LINE__);
+        _base->getConditionalNG()->setEnabled(false);
+        _base->setParent(nullptr);
+        conditionalng2 = _base->getConditionalNG();
+        Assert::assertNull("ConditionalNG is null", (QObject*)_base->getConditionalNG(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -83,15 +81,12 @@
         if (getLogixNG() == nullptr) {
             log->warn(tr("Method getLogixNG() returns null for class %1").arg(this->metaObject()->className()));
         }
-        Assert::assertTrue("LogixNG is equal", getLogixNG()->equals(_base->getLogixNG()->self()), __FILE__, __LINE__);
+        Assert::assertTrue("LogixNG is equal", getLogixNG() == _base->getLogixNG(), __FILE__, __LINE__);
 
-//        _base->getConditionalNG()->setEnabled(false);
-//        _base->setParent(nullptr);
-        AbstractNamedBean* c2 = (AbstractNamedBean*)((AbstractBase*)_base->bself())->getConditionalNG();
-        ((DefaultConditionalNG*)c2)->setEnabled(false);
-        c2->setParent(nullptr);
+        _base->getConditionalNG()->setEnabled(false);
+        _base->setParent(nullptr);
 
-        Assert::assertNull("LogixNG is null", _base->getLogixNG()->bself(), __FILE__, __LINE__);
+        Assert::assertNull("LogixNG is null", (QObject*)_base->getLogixNG(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -124,6 +119,8 @@
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testGetParent() {
+        MaleSocket* lastMaleSocket = getLastMaleSocket(_baseMaleSocket);
+        Base* base = lastMaleSocket->getObject();
         Assert::assertTrue("Object of _baseMaleSocket is _base", _base == getLastMaleSocket(_baseMaleSocket)->getObject(), __FILE__, __LINE__);
         Assert::assertTrue("Parent of _base is _baseMaleSocket", _base->getParent() == getLastMaleSocket(_baseMaleSocket), __FILE__, __LINE__);
     }

@@ -15,6 +15,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   Q_INTERFACES(FemaleSocketListener)
  public:
   /*public*/  /*static*/ class SocketData {
+   public:
       /*public*/  /*final*/ QString _socketName;
       /*public*/  /*final*/ QString _socketSystemName;
       /*public*/  /*final*/ QString _manager;

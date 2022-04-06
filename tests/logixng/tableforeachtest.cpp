@@ -262,8 +262,8 @@
         _isExternal = false;
 
         _logixNG = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N
-        _conditionalNG = (DefaultConditionalNG*)new DefaultConditionalNGScaffold("IQC1", "A conditionalNG");  // NOI18N;
-        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register(_conditionalNG);
+        _conditionalNG = /*(DefaultConditionalNG*)*/new DefaultConditionalNGScaffold("IQC1", "A conditionalNG");  // NOI18N;
+        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((AbstractNamedBean*)_conditionalNG->self());
         _conditionalNG->setEnabled(true);
         _conditionalNG->setRunDelayed(false);
         _logixNG->addConditionalNG((DefaultConditionalNG*)_conditionalNG->bself());

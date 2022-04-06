@@ -31,6 +31,12 @@
 #include "ifthenelseswing.h"
 #include "actionpositionableswing.h"
 #include "digitalmanyswing.h"
+#include "defaultmaleanalogactionsocketxml.h"
+#include "defaultmaleanalogexpressionsocketxml.h"
+#include "defaultmaledigitalbooleanactionsocketxml.h"
+#include "defaultmaledigitalexpressionsocketxml.h"
+#include "defaultmalestringactionsocketxml.h"
+#include "defaultmalestringexpressionsocketxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -46,6 +52,13 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<FunctionManager>("FunctionManager");
    qRegisterMetaType<TableForEachXml>("TableForEachXml");
    qRegisterMetaType<AnalogManyXml>("AnalogManyXml");
+
+   qRegisterMetaType<DefaultMaleAnalogActionSocketXml>("DefaultMaleAnalogActionSocketXml");
+   qRegisterMetaType<DefaultMaleAnalogExpressionSocketXml>("DefaultMaleAnalogExpressionSocketXml");
+   qRegisterMetaType<DefaultMaleDigitalBooleanActionSocketXml>("DefaultMaleDigitalBooleanActionSocketXml");
+   qRegisterMetaType<DefaultMaleDigitalExpressionSocketXml>("DefaultMaleDigitalExpressionSocketXml");
+   qRegisterMetaType<DefaultMaleStringActionSocketXml>("DefaultMaleStringActionSocketXml");
+   qRegisterMetaType<DefaultMaleStringExpressionSocketXml>("DefaultMaleStringExpressionSocketXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");

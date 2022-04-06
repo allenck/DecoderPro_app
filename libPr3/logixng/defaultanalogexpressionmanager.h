@@ -35,6 +35,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
   /*public*/  QString getBeanTypeHandled(bool plural)const override;
   static /*public*/  DefaultAnalogExpressionManager* instance();
   /*public*/  /*Class<MaleAnalogExpressionSocket>*/QString getNamedBeanClass()const override;
+  /*public*/ QString getClassName() {return "jmri.jmrit.logixng.implementation.DefaultAnalogExpressionManager";}
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}

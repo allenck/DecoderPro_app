@@ -90,6 +90,7 @@
      */
     /*public*/ virtual void deleteAnalogExpression(MaleAnalogExpressionSocket* x)=0;
 
+    /*public*/ virtual QString getClassName() =0;
 };
 Q_DECLARE_INTERFACE(AnalogExpressionManager, "AnalogExpressionManager")
 #endif // ANALOGEXPRESSIONMANAGER_H

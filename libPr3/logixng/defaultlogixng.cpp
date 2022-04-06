@@ -286,7 +286,7 @@
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
         if (entry->_conditionalNG != nullptr) {
             entry->_conditionalNG->setParent(this);
-            result = result && ((AbstractBase*)entry->_conditionalNG)->setParentForAllChildren(errors);
+            result = result && entry->_conditionalNG->AbstractBase::setParentForAllChildren(errors);
         }
     }
     return result;

@@ -70,7 +70,8 @@
     //((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
  Base* ams = getObject();
  QObject* obj = (QObject*)ams->bself();
- ((AbstractDigitalAction*)obj)->registerListeners();
+ //((AbstractDigitalAction*)obj)->registerListeners();
+ AbstractMaleSocket::getObject()->registerListeners();
 }
 
 /**
@@ -79,7 +80,7 @@
 //@Override
 /*public*/  void DefaultMaleDigitalActionSocket::unregisterListenersForThisClass() {
     //((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
-AbstractMaleSocket::getObject()->unregisterListeners();
+ AbstractMaleSocket::getObject()->unregisterListeners();
 }
 
 //@Override

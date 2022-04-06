@@ -208,7 +208,7 @@ class Base;
      * Get the ConditionalNG of this item.
      * @return the ConditionalNG that owns this item
      */
-    /*public*/ virtual ConditionalNG* getConditionalNG(){return nullptr;}
+    /*public*/ virtual ConditionalNG* getConditionalNG(){return (ConditionalNG*)this;}
 
     /**
      * Get the LogixNG of this item.

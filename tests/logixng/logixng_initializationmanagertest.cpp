@@ -159,7 +159,7 @@
                             ->AbstractManager::getAutoSystemName();
             DefaultConditionalNG* conditionalNG =
                     new DefaultConditionalNGScaffold(systemName, "", threadID);
-            ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((NamedBean*)conditionalNG->self());
+            ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((AbstractNamedBean*)conditionalNG->self());
             conditionalNG->setEnabled(true);
             logixNG->addConditionalNG(conditionalNG);
 

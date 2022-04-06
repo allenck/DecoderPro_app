@@ -4,6 +4,8 @@ PropertyChangeEvent::PropertyChangeEvent(QObject* source, QString propertyName,
                                          QVariant oldValue, QVariant newValue, QObject *parent)
  : EventObject(source, parent)
 {
+ setObjectName("PropertyChangeEvent");
+
  this->parent = parent;
  this->source = source;
  this->propertyName = propertyName;

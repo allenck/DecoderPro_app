@@ -123,7 +123,8 @@
 #include "logixng/defaultfemalegenericexpressionsocket2_testaction.h"
 #include "logixng/defaultmalestringexpressionsockettestaction.h"
 #include "logixng/defaultmaledigitalbooleanactionsockettestaction.h"
-
+#include "logixng/analogformulatestaction.h"
+#include "logixng/analogactionmemorytestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -305,7 +306,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMenu->addMenu(logixNGManagerMenu);
     QMenu* logixNGMiscMenu = new QMenu("Misc");
     logixNGMenu->addMenu(logixNGMiscMenu);
-
+    QMenu* logixNGTypesMenu = new QMenu("Types");
+    logixNGMenu->addMenu(logixNGTypesMenu);
 
     logixNGMiscMenu->addAction(new ConditionalNGTestAction(this));
     logixNGMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
@@ -313,7 +315,10 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMenu->addAction(new DigitalExpressionsTestAction(this));
     logixNGMiscMenu->addAction(new RecursiveDescentParserTestAction(this));
     logixNGMiscMenu->addAction(new TokenizerTestAction(this));
-    logixNGMiscMenu->addAction(new TableForEachTestAction());
+
+    logixNGTypesMenu->addAction(new AnalogActionMemoryTestAction(this));
+    logixNGTypesMenu->addAction(new AnalogFormulaTestAction(this));
+    logixNGTypesMenu->addAction(new TableForEachTestAction());
 
     logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));

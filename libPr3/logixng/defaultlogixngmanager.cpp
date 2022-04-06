@@ -286,11 +286,17 @@
 //                }
 //            });
 //        };
-        QRunnable* runnable = new DLMRunnable(this);
-
+        Runnable* runnable = new DLMRunnable(this);
+#if 0 // TODO:
         if (runOnSeparateThread) //new Thread(runnable)->start();
-         QThreadPool::globalInstance()->start(runnable);
+        {
+         //QThreadPool::globalInstance()->start(runnable);
+         QThread* newThread = new QThread();
+         runnable->moveToThread(newThread);
+         newThread->start();
+        }
         else runnable->run();
+#endif
     }
 
 void DLMRunnable::run()

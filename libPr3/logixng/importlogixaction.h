@@ -6,6 +6,7 @@
 class ImportLogixFrame;
 class ImportLogixAction : public AbstractAction
 {
+  Q_OBJECT
  public:
   explicit ImportLogixAction(QObject *parent = nullptr);
   /*public*/  ImportLogixAction(QString s, QObject* parent);

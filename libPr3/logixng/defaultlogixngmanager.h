@@ -71,7 +71,7 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
 };
 Q_DECLARE_METATYPE(DefaultLogixNGManager)
 
-class DLMRunnable : public QRunnable
+class DLMRunnable : public Runnable
 {
   //Q_OBJECT
   DefaultLogixNGManager* dlm;

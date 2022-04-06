@@ -110,7 +110,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::registerListenersForThisClass() {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+    //((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+ AbstractMaleSocket::getObject()->registerListeners();
 }
 
 /**
@@ -118,8 +119,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::unregisterListenersForThisClass() {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
-}
+    //((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+AbstractMaleSocket::getObject()->unregisterListeners();}
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setState(int s) /*throws JmriException*/ {

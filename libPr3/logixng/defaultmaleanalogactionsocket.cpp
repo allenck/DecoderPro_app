@@ -90,8 +90,8 @@
      */
     //@Override
     /*public*/  void DefaultMaleAnalogActionSocket::unregisterListenersForThisClass() {
-        ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
-    }
+        //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+    ((AbstractBase*)getObject()->bself())->unregisterListeners();}
 
     //@Override
     /*public*/  void DefaultMaleAnalogActionSocket::setState(int s) /*throws JmriException*/ {

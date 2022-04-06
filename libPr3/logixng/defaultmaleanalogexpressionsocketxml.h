@@ -7,8 +7,11 @@ class DefaultMaleAnalogExpressionSocketXml : public AbstractMaleSocketXml
 {
   Q_OBJECT
  public:
-  explicit DefaultMaleAnalogExpressionSocketXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultMaleAnalogExpressionSocketXml(QObject *parent = nullptr);
+  ~DefaultMaleAnalogExpressionSocketXml() {}
+  DefaultMaleAnalogExpressionSocketXml(const DefaultMaleAnalogExpressionSocketXml&) : AbstractMaleSocketXml() {}
   /*public*/ QString getClassName() override;
 };
+Q_DECLARE_METATYPE(DefaultMaleAnalogExpressionSocketXml)
 
 #endif // DEFAULTMALEANALOGEXPRESSIONSOCKETXML_H
