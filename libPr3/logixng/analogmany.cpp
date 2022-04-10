@@ -31,13 +31,13 @@
 }
 
 //@Override
-/*public*/  Base* AnalogMany::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */{
+/*public*/  Base* AnalogMany::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException */{
     AnalogActionManager* manager = (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     AnalogMany* copy = new AnalogMany(sysName, userName);
-    copy->setComment(getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setNumSockets(getChildCount());
     return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
 }

@@ -7,7 +7,7 @@ class False : public AbstractDigitalExpression
 {
  public:
   explicit False(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
   /*public*/  Category* getCategory()override;
   /*public*/  bool evaluate()override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;

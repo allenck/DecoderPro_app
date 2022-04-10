@@ -26,13 +26,13 @@
 }
 
 //@Override
-/*public*/  Base* ExpressionTurnout::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/ {
+/*public*/  Base* ExpressionTurnout::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/ {
     DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == nullptr) sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == nullptr) sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     ExpressionTurnout* copy = new ExpressionTurnout(sysName, userName);
-    copy->AbstractBase::setComment(AbstractBase::getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     if (_turnoutHandle != nullptr) copy->setTurnout(_turnoutHandle);
     copy->setBeanState(_turnoutState);
     copy->setAddressing(_addressing);

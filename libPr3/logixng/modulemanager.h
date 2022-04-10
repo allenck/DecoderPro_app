@@ -71,7 +71,7 @@ class MutableInt;
      * @param errors a list of potential errors
      * @return true if success, false otherwise
      */
-    /*public*/ virtual bool resolveAllTrees(QList<QString> errors) =0;
+    /*public*/ virtual bool resolveAllTrees(QList<QString>* errors) =0;
 
     /**
      * Setup all Modules. This method is called after a configuration file is

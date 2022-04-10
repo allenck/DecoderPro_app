@@ -37,6 +37,7 @@
 #include "defaultmaledigitalexpressionsocketxml.h"
 #include "defaultmalestringactionsocketxml.h"
 #include "defaultmalestringexpressionsocketxml.h"
+#include "stringformulaswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -90,6 +91,9 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<IfThenElseSwing>("IfThenElseSwing");
    qRegisterMetaType<ActionPositionableSwing>("ActionPositionableSwing");
    qRegisterMetaType<DigitalManySwing>("DigitalManySwing");
+
+   // AbstractStringExpressionSwing
+   qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
 
    LogixNG_Metatypes::ng_done = true;
 }

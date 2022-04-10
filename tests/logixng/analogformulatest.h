@@ -60,4 +60,16 @@ class AFTPropertyChangeListener : public QObject, public PropertyChangeListener
   QObject* pself() override {return (QObject*)this;}
 };
 
+class RWI01 : public RunnableWithIndex
+{
+  Q_OBJECT
+  AnalogFormula* expression;
+ public:
+  RWI01(AnalogFormula* expression) { this->expression = expression;}
+  void run(int index)
+  {
+
+  }
+};
+
 #endif // ANALOGFORMULATEST_H

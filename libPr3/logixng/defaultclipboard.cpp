@@ -35,7 +35,7 @@
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        if (!_femaleSocket->setParentForAllChildren(QList<QString>())) {
+        if (!_femaleSocket->setParentForAllChildren(new QList<QString>())) {
             throw new RuntimeException("Failed to set parent for all children");
         }
         _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
@@ -47,7 +47,7 @@
     }
 
     //@Override
-    /*public*/ bool DefaultClipboard::add(MaleSocket* maleSocket, QList<QString> errors) {
+    /*public*/ bool DefaultClipboard::add(MaleSocket* maleSocket, QList<QString>* errors) {
         _clipboardItems->ensureFreeSocketAtTop();
         try {
             _clipboardItems->getChild(0)->_connect(maleSocket);
@@ -103,7 +103,7 @@
         _clipboardItems->setup();
     }
 
-    /*public*/ bool DefaultClipboard::replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors) {
+    /*public*/ bool DefaultClipboard::replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString>* errors) {
         _clipboardItems = clipboardItems;
 
         _femaleSocket->_disconnect();
@@ -150,7 +150,7 @@
     }
 
     //@Override
-    /*public*/ Base* DefaultClipboard::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+    /*public*/ Base* DefaultClipboard::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
         throw new UnsupportedOperationException("Not supported");
     }
 

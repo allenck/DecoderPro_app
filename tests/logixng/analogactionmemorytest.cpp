@@ -262,7 +262,7 @@
         _base = analogActionMemory;
         _baseMaleSocket = maleSocketAnalogActionMemory;
 
-        if (! logixNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! logixNG->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         logixNG->setEnabled(true);
 
         ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))

@@ -73,7 +73,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::registerListenersForThisClass() {
- ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+ //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+ ((AbstractBase*)getObject()->bself())->registerListeners();
 }
 
 /**
@@ -81,7 +82,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringActionSocket::unregisterListenersForThisClass() {
-    ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+    //((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+ ((AbstractBase*)getObject()->bself())->unregisterListeners();
 }
 
 //@Override

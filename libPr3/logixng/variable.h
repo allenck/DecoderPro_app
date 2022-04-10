@@ -5,16 +5,17 @@
 /**
  * A variable
  */
-/*public*/ /*interface*/ class Variable {
-
+/*public*/ /*interface*/ class Variable : public QObject{
+ Q_OBJECT
  public:
+  Variable(QObject* parent = nullptr) : QObject(parent) {}
     /*public*/ virtual QString getName()=0;
 
     /*public*/ virtual QVariant getValue(SymbolTable* symbolTable) /*throws JmriException*/=0;
 
     /*public*/ virtual void setValue(SymbolTable* symbolTable, QVariant value) /*throws JmriException*/=0;
 
-  virtual QObject* vself() =0;
+  //virtual QObject* vself() =0;
 };
-Q_DECLARE_INTERFACE(Variable, "Variable")
+//Q_DECLARE_INTERFACE(Variable, "Variable")
 #endif // VARIABLE_H

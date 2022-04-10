@@ -26,11 +26,11 @@
     }
 
     //@Override
-    /*public*/  Base*  ActionPositionable::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/ {
+    /*public*/  Base*  ActionPositionable::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws ParserException*/ {
         DigitalActionManager* manager = (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == nullptr) sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == nullptr) sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         ActionPositionable* copy = new ActionPositionable(sysName, userName);
         copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         copy->setEditor(_editorName);

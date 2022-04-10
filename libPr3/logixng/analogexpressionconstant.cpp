@@ -21,13 +21,13 @@
     }
 
     //@Override
-    /*public*/  Base* AnalogExpressionConstant::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    /*public*/  Base* AnalogExpressionConstant::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         AnalogExpressionConstant* copy = new AnalogExpressionConstant(sysName, userName);
-        copy->AbstractBase::setComment(AbstractBase::getComment());
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         copy->setValue(_value);
         return manager->registerExpression(copy);
     }

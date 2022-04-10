@@ -26,13 +26,13 @@
 /*static*/ QList<TimeSinceMidnight::Type::TYPE> TimeSinceMidnight::Type::values {FastClock, SystemClock};
 
     //@Override
-    /*public*/  Base* TimeSinceMidnight::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+    /*public*/  Base* TimeSinceMidnight::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         TimeSinceMidnight* copy = new TimeSinceMidnight(sysName, userName);
-        copy->AbstractBase::setComment(AbstractBase::getComment());
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         copy->setType(_type);
         return manager->registerExpression(copy)->deepCopyChildren(this, systemNames, userNames);
     }

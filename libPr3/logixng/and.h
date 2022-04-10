@@ -13,7 +13,7 @@ class And : public AbstractDigitalExpression, public FemaleSocketListener
  public:
   explicit And(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  And(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /* This class is public  since ExpressionAndXml needs to access it. */
   /*private*/ /*static*/ class ExpressionEntry {
       /*private*/ QString _socketSystemName;

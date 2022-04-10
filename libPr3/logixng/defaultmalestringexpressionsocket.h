@@ -7,6 +7,7 @@
 class DefaultMaleStringExpressionSocket : public AbstractMaleSocket, public MaleStringExpressionSocket
 {
   Q_OBJECT
+  Q_INTERFACES(MaleStringExpressionSocket)
  public:
   DefaultMaleStringExpressionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager, /*@Nonnull*/ StringExpressionBean* stringExpression, QObject* parent = nullptr);
   /*public*/  bool getTriggerOnChange()override;

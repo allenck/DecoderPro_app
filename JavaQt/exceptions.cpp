@@ -80,6 +80,7 @@ TimebaseRateException::TimebaseRateException(QString s)
 UnsupportedCommOperationException::UnsupportedCommOperationException(QString s)
 {
  msg = s;
+ name = "UnsupportedCommOperationException";
 }
 UnsupportedOperationException::UnsupportedOperationException(QString s)
 {

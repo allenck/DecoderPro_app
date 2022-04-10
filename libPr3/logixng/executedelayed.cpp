@@ -27,13 +27,13 @@
 }
 
 //@Override
-/*public*/  Base* ExecuteDelayed::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/  Base* ExecuteDelayed::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
     DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     ExecuteDelayed* copy = new ExecuteDelayed(sysName, userName);
-    copy->setComment(getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setDelayAddressing(_stateAddressing);
     copy->setDelay(_delay);
     copy->setDelayFormula(_stateFormula);

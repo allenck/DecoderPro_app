@@ -49,13 +49,13 @@
     }
 
     //@Override
-    /*public*/  Base* AnalogFormula::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+    /*public*/  Base* AnalogFormula::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         AnalogFormula* copy = new AnalogFormula(sysName, userName);
-        copy->AbstractBase::setComment(AbstractBase::getComment());
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         copy->setNumSockets(getChildCount());
         copy->setFormula(_formula);
         return manager->registerExpression(copy)->Base::deepCopyChildren(this, systemNames, userNames);

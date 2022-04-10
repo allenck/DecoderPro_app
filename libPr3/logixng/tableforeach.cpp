@@ -29,15 +29,16 @@
     }
 
     //@Override
-    /*public*/  Base* TableForEach::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+    /*public*/  Base* TableForEach::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/ {
         DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(getSystemName());
+        QString userName = userNames->value(getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         TableForEach* copy = new TableForEach(sysName, userName);
-        copy->Base::setComment(AbstractNamedBean::getComment());
+        copy->NamedBean::setComment(NamedBean::getComment());
         copy->setAddressing(_addressing);
-        copy->setTable(_tableHandle->getBean());
+        if(_tableHandle)
+         copy->setTable(_tableHandle->getBean());
         copy->setTableReference(_tableReference);
         copy->setTableLocalVariable(_tableLocalVariable);
         copy->setTableFormula(_tableFormula);

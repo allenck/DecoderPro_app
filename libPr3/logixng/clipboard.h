@@ -31,7 +31,7 @@ class MaleSocket;
      * @param errors a list of potential errors
      * @return true if success, false otherwise
      */
-  /*public*/ virtual bool add(MaleSocket* maleSocket, QList<QString> errors){return false;}
+  /*public*/ virtual bool add(MaleSocket* maleSocket, QList<QString>* errors){return false;}
 
     /**
      * Get the top item on the clipboard and remove it from the clipboard.

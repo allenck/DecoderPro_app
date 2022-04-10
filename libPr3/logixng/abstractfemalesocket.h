@@ -19,7 +19,7 @@ class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
   /*public*/ bool getEnableListeners()override;
   /*public*/ Base* getParent() const override;
   /*public*/ void setParent(/*@Nonnull*/ Base* parent)override;
-  /*public*/ bool setParentForAllChildren(QList<QString> errors)override;
+  /*public*/ bool setParentForAllChildren(QList<QString>* errors)override;
   /*public*/ void _connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/override;
   /*public*/ void _disconnect()override;
   /*public*/ MaleSocket* getConnectedSocket()override;
@@ -78,8 +78,8 @@ class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
   /*public*/ int getNumPropertyChangeListeners()override;
   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString name)override;
   /*public*/ void forEntireTree(RunnableWithBase* r)override;
-  /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ override;
-  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/  override;
+  /*public*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/ override;
+  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/  override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list) override;
 
   //QObject* bself() override {return (QObject*)this;}

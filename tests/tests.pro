@@ -287,6 +287,20 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/expressionlighttest.cpp \
+    logixng/expressionlocalvariabletest.cpp \
+    logixng/truetest.cpp \
+    logixng/truetestaction.cpp \
+    logixng/andtest.cpp \
+    logixng/antecedenttest.cpp \
+    logixng/digitalformulatest.cpp \
+    logixng/digitalformulatestaction.cpp \
+    logixng/stringactionmemorytest.cpp \
+    logixng/stringmanytest.cpp \
+    logixng/actionsensortest.cpp \
+    logixng/actionsensortestaction.cpp \
+    logixng/stringformulatest.cpp \
+    logixng/stringformulatestaction.cpp \
     logixng/abstractanalogactiontestbase.cpp \
     logixng/abstractanalogexpressiontestbase.cpp \
     logixng/abstractdigitalexpressiontestbase.cpp \
@@ -609,6 +623,20 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/expressionlighttest.h \
+    logixng/expressionlocalvariabletest.h \
+    logixng/truetest.h \
+    logixng/truetestaction.h \
+    logixng/andtest.h \
+    logixng/antecedenttest.h \
+    logixng/digitalformulatest.h \
+    logixng/digitalformulatestaction.h \
+    logixng/stringactionmemorytest.h \
+    logixng/stringmanytest.h \
+    logixng/actionsensortest.h \
+    logixng/actionsensortestaction.h \
+    logixng/stringformulatest.h \
+    logixng/stringformulatestaction.h \
     logixng/abstractanalogactiontestbase.h \
     logixng/abstractanalogexpressiontestbase.h \
     logixng/abstractdigitalexpressiontestbase.h \

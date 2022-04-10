@@ -105,12 +105,12 @@ public:
     }
 
     //@Override
-    /*public*/  Base* getDeepCopy(QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException*/ override{
+    /*public*/  Base* getDeepCopy(QMap<QString, QString>* map, QMap<QString, QString>* map1) /*throws JmriException*/ override{
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/  Base* deepCopyChildren(Base* base, QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException*/override {
+    /*public*/  Base* deepCopyChildren(Base* base, QMap<QString, QString>* map, QMap<QString, QString>* map1) /*throws JmriException*/override {
         throw new UnsupportedOperationException("Not supported");
     }
     friend class DefaultMaleDigitalExpressionSocketTest;

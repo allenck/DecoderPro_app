@@ -5,6 +5,7 @@
 #include "fileoutputstream.h"
 #include <QFile>
 #include "stringwriter.h"
+#include <QTextStream>
 
 /**
  * Prints formatted representations of objects to a text-output stream.  This
@@ -320,7 +321,8 @@
 //                out->close();
 //                out = nullptr;
 //            }
-          psOut->device()->close();
+          if(psOut)
+           psOut->device()->close();
         }
         catch (IOException* x) {
             trouble = true;
@@ -456,6 +458,9 @@
     }
 #endif
     /*private*/ void PrintWriter::newLine() {
+     if(sw)
+      sw->append(lineSeparator);
+     else
      if(psOut)
      {
       *psOut << lineSeparator;
@@ -585,14 +590,20 @@
      *
      * @param      s   The <code>String</code> to be printed
      */
-    /*public*/ void PrintWriter::print(QString s) {
-        if (s == NULL) {
-            s = "";
+    /*public*/ void PrintWriter::print(const QString s) {
+//        if (s == NULL) {
+//            s = "";
+//        }
+        if(sw)
+        {
+         sw->append(s);
         }
+        else
         if(psOut)
          *psOut << s;
         else
          write(s);
+
     }
 #if 0
     /**
@@ -1068,6 +1079,8 @@
 /*Public*/ PrintWriter::PrintWriter(StringWriter* sw)
 {
  this->sw = sw;
+
+
 }
 
 /*Public*/ void PrintWriter::format(const char* fmt, ...)

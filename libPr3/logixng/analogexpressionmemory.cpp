@@ -24,13 +24,13 @@
     }
 
     //@Override
-    /*public*/  Base* AnalogExpressionMemory::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */{
+    /*public*/  Base* AnalogExpressionMemory::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException */{
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         AnalogExpressionMemory* copy = new AnalogExpressionMemory(sysName, userName);
-        copy->AbstractBase::setComment(AbstractBase::getComment());
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         if (_memoryHandle != nullptr) copy->setMemory(_memoryHandle);
         return manager->registerExpression(copy)->Base::deepCopyChildren(this, systemNames, userNames);
     }

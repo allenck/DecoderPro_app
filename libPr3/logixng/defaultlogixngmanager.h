@@ -64,7 +64,7 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   /*private*/ bool _isActive = false;
   static /*volatile*/ DefaultLogixNGManager* _instance;// = null;
   /*private*/ void checkItemsHaveParents();
-  /*private*/ void messageDialog(QString titleKey, QList<QString> messages, QString helpKey);
+  /*private*/ void messageDialog(QString titleKey, QList<QString> *messages, QString helpKey);
   /*private*/ void checkItemsHaveParents(QSet</*? extends*/ MaleSocket*> set, QList<MaleSocket*> beansWithoutParentList);
 
   friend class DLMRunnable;

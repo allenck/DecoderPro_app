@@ -31,13 +31,13 @@
 }
 
 //@Override
-/*public*/  Base* Or::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/  Base* Or::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
     DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     Or* copy = new Or(sysName, userName);
-    copy->AbstractBase::setComment(AbstractBase::getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setNumSockets(getChildCount());
     return manager->registerExpression(copy)->deepCopyChildren(this, systemNames, userNames);
 }

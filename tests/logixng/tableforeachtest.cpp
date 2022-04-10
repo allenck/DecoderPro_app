@@ -44,20 +44,20 @@
     //@Override
     /*public*/  QString TableForEachTest::getExpectedPrintedTree() {
         return QString(
-                "Table: For each column of row \"\" in table \"''\" set variable \"\" and execute action A1 ::: Use default%n" \
-                "   ! A1%n" \
-                "      MyAction ::: Use default%n");
+                "Table: For each column of row \"\" in table \"''\" set variable \"\" and execute action A1 ::: Use default\n" \
+                "   ! A1\n" \
+                "      MyAction ::: Use default\n");
     }
 
     //@Override
     /*public*/  QString TableForEachTest::getExpectedPrintedTreeFromRoot() {
         return QString(
-                "LogixNG: A new logix for test%n" \
-                "   ConditionalNG: A conditionalNG%n" \
-                "      ! A%n" \
-                "         Table: For each column of row \"\" in table \"''\" set variable \"\" and execute action A1 ::: Use default%n" \
-                "            ! A1%n" \
-                "               MyAction ::: Use default%n");
+                "LogixNG: A new logix for test\n" \
+                "   ConditionalNG: A conditionalNG\n" \
+                "      ! A\n" \
+                "         Table: For each column of row \"\" in table \"''\" set variable \"\" and execute action A1 ::: Use default\n" \
+                "            ! A1\n" \
+                "               MyAction ::: Use default\n");
     }
 
     //@Override
@@ -282,7 +282,7 @@
         MaleDigitalActionSocket* socket = mgr->registerAction(new MyAction04("IQDA999", "", _cells));
         _tableForEach->getChild(0)->_connect(socket);
 
-        if (! _logixNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! _logixNG->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         _logixNG->setEnabled(false);
     }
 

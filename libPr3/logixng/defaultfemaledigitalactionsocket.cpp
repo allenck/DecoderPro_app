@@ -1,7 +1,7 @@
 #include "defaultfemaledigitalactionsocket.h"
 #include "instancemanager.h"
 #include "defaultdigitalactionmanager.h"
-
+#include "defaultmaledigitalactionsocket.h"
 /**
  * Default implementation of the Female Digital Action socket
  */
@@ -20,8 +20,9 @@
 
     //@Override
     /*public*/  bool DefaultFemaleDigitalActionSocket::isCompatible(MaleSocket* socket) {
-     QObject* obj = (QObject*)socket;
-     MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(socket->bself());
+         //MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(socket->bself());
+     MaleDigitalActionSocket* mas = (MaleDigitalActionSocket*)(socket->bself());
+
         //return qobject_cast<MaleDigitalActionSocket*>(socket->bself());
      return mas;
     }

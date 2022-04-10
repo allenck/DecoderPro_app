@@ -41,10 +41,10 @@
     /*public*/  void DefaultFemaleGenericExpressionSocket1_Test::testSetParentForAllChildren() /*throws SocketAlreadyConnectedException */{
         // This female socket has child female sockets, which requires special treatment
         Assert::assertFalse("femaleSocket is not connected", _femaleSocket->isConnected(), __FILE__, __LINE__);
-        if (! _femaleSocket->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! _femaleSocket->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         Assert::assertNull("malesocket->getParent() is null", (QObject*)maleSocket->getParent(), __FILE__, __LINE__);
         _femaleSocket->_connect(maleSocket);
-        if (! _femaleSocket->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! _femaleSocket->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         Assert::assertEquals("malesocket->getParent() is femaleSocket",
                 _femaleGenericSocket,
                 maleSocket->getParent(), __FILE__, __LINE__);

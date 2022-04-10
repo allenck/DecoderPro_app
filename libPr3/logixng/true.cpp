@@ -15,13 +15,13 @@
     }
 
     //@Override
-    /*public*/  Base* True::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    /*public*/  Base* True::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) {
         DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         DigitalExpressionBean* copy = new True(sysName, userName);
-        copy->NamedBean::setComment(AbstractBase::getComment());
+        copy->NamedBean::setComment(NamedBean::getComment());
         return manager->registerExpression(copy);
     }
 
@@ -49,7 +49,7 @@
 
     //@Override
     /*public*/  QString True::getShortDescription(QLocale locale) {
-        return tr(/*locale,*/ "True");
+        return tr(/*locale,*/ "Always true");
     }
 
     //@Override

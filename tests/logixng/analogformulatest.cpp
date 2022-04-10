@@ -364,8 +364,10 @@
 
             Assert::assertNotNull("getChild(0) returns a non null value",
                    (QObject*) expression2->getChild(0), __FILE__, __LINE__);
-#if 0
-            assertIndexOutOfBoundsException(expression2::getChild, i+1, i+1);
+#if 1
+            //assertIndexOutOfBoundsException(expression2::getChild, i+1, i+1);
+          assertIndexOutOfBoundsException(new RWI01(expression2), i+1, i+1);
+
 #endif
             // Connect a new child expression
             AnalogExpressionConstant* expr = new AnalogExpressionConstant("IQAE"+i, "");
@@ -723,7 +725,7 @@
         MaleSocket* socketAnalogActionMemory = ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->registerAction(analogActionMemory);
         doAnalogAction->getChild(1)->_connect(socketAnalogActionMemory);
 
-        if (! logixNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! logixNG->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         logixNG->setEnabled(true);
     }
 

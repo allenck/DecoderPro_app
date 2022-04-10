@@ -74,13 +74,13 @@ class TableForEachTest : public AbstractDigitalActionTestBase
     }
 public:
     //@Override
-    /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */{
+    /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException */{
         DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         MyAction04* copy = new MyAction04(sysName, userName, _cells);
-        copy->setComment(getComment());
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
     }
 

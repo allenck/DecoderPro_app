@@ -16,11 +16,11 @@
     }
 
     //@Override
-    /*public*/  Base* False::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    /*public*/  Base* False::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) {
         DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         DigitalExpressionBean* copy = new False(sysName, userName);
         copy->Base::setComment(Base::getComment());
         return manager->registerExpression(copy);

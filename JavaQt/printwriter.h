@@ -29,11 +29,13 @@ public:
 private:
  //void common(Writer* out, bool AutoFlush);
 
- /*private*/ /*final*/ bool autoFlush;
- /*private*/ bool trouble;// = false;
+ /*private*/ /*final*/ bool autoFlush = false;
+ /*private*/ bool trouble = false;
  /*private*/ Formatter* formatter = nullptr;
  /*private*/ QTextStream* psOut = nullptr;
- /*private*/ StringWriter* sw;
+ /*private*/ StringWriter* sw = nullptr;
+  bool bOpen;
+  qint64 cpos;
  /**
   * Line separator string.  This is the value of the line.separator
   * property at the moment that the stream was created.

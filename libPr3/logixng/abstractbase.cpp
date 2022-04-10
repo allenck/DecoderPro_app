@@ -26,7 +26,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Base* AbstractBase::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
+    /*public*/ Base* AbstractBase::deepCopyChildren(Base* original, QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throw (JmriException)*/ {
         for (int i=0; i < original->getChildCount(); i++) {
             // Copy the name of the socket.
             // Ignore duplicate errors since these errors might happen temporary in this loop.
@@ -35,7 +35,7 @@
             // Copy the child
             if (original->getChild(i)->isConnected()) {
                 Base* childTree = original->getChild(i)->getConnectedSocket()->getDeepCopy(systemNames, userNames);
-                getChild(i)->_connect((MaleSocket*) childTree->bself());
+                getChild(i)->_connect((AbstractMaleSocket*) childTree->bself());
             }
         }
         return this;
@@ -69,7 +69,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*final*/ bool AbstractBase::setParentForAllChildren(QList<QString> errors) {
+    /*public*/ /*final*/ bool AbstractBase::setParentForAllChildren(QList<QString>* errors) {
         bool result = true;
         for (int i=0; i < getChildCount(); i++) {
             FemaleSocket* femaleSocket = getChild(i);
@@ -79,7 +79,7 @@
                 Base* p = connectedSocket->getParent();
                 if ((connectedSocket->getParent() != nullptr)
                         && (connectedSocket->getParent() != femaleSocket)) {
-                    errors.append(tr("The child %1 already has the parent %2 so it cannot be added to %3").arg(
+                    errors->append(tr("The child %1 already has the parent %2 so it cannot be added to %3").arg(
                             connectedSocket->getSystemName(),
                             connectedSocket->getParent()->getSystemName(),
                             Base::getSystemName()));
@@ -139,6 +139,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ /*final*/ bool AbstractBase::isActive() {
+        Base* parent = getParent();
         return isEnabled() && ((getParent() == nullptr) || getParent()->isActive());
     }
 

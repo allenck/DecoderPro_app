@@ -147,7 +147,7 @@ class Base;
      * @return a deep copy
      * @throws jmri.JmriException in case of an error
      */
-    /*public*/ virtual Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
+    /*public*/ virtual Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)
             /*throw (JmriException)*/ {return nullptr;}
 
     /**
@@ -161,8 +161,8 @@ class Base;
      */
     /*public*/ virtual Base* deepCopyChildren(
             Base* original,
-            QMap<QString, QString> systemNames,
-            QMap<QString, QString> userNames)
+            QMap<QString, QString>* systemNames,
+            QMap<QString, QString>* userNames)
             /*throw (JmriException)*/{return nullptr;}
 
     /**
@@ -265,7 +265,7 @@ class Base;
      * @param errors a list of potential errors
      * @return true if success, false otherwise
      */
-  /*public*/ virtual bool setParentForAllChildren(QList<QString> errors){return false;}
+  /*public*/ virtual bool setParentForAllChildren(QList<QString>* errors){return false;}
 
     /**
      * Get a child of this item
@@ -350,7 +350,7 @@ class Base;
      *
      * @return true if the object is enabled, false otherwise
      */
-    /*public*/ /*default*/ bool isEnabled() {
+    /*public*/ /*default*/virtual bool isEnabled() {
         return true;
     }
 

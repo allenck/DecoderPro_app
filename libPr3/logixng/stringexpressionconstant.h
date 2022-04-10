@@ -8,7 +8,7 @@ class StringExpressionConstant : public AbstractStringExpression
   Q_OBJECT
  public:
   StringExpressionConstant(QString sys, QString user, QObject* parent= nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
   /*public*/  Category* getCategory() override;
   /*public*/  void setValue(QString value);
   /*public*/  QString getValue();

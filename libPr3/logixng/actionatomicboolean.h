@@ -12,7 +12,7 @@ class ActionAtomicBoolean : public AbstractDigitalAction
   /*public*/  ActionAtomicBoolean(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  ActionAtomicBoolean(QString sys, QString user, AtomicBoolean* atomicBoolean,
                                   bool newValue, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) override;
   /*public*/  void setAtomicBoolean(AtomicBoolean* atomicBoolean);
   /*public*/  AtomicBoolean* getAtomicBoolean();
   /*public*/  void setNewValue(bool newValue);

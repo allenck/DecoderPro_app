@@ -42,7 +42,7 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
     }
    static QList<QString> values () {return QList<QString> {"Disable", "Enable", "Hide", "Show"}; }
   };
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setEditor(/*@CheckForNull*/ QString editorName);
   /*public*/  QString getEditorName();
   /*public*/  void setPositionable(/*@CheckForNull*/ QString positionableName);

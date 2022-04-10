@@ -52,7 +52,7 @@ class LogixNG_Thread : public QThread
   /*private*/ volatile bool _stopThread = false;
   /*private*/ volatile bool _threadIsStopped = false;
 
-  /*private*/ /*final*/ /*Thread*/QThread* _logixNGThread;
+  /*private*/ /*final*/ /*Thread*/QThread* _logixNGThread = nullptr;
   /*private*/ bool _threadInUse = false;
   /*private*/ /*final*/ /*BlockingQueue*/QQueue<ThreadEvent*>* _eventQueue=nullptr;
   /*private*/ LogixNG_Thread(int threadID, QString name, QObject* parent= nullptr);
@@ -69,13 +69,15 @@ class LogixNG_Thread : public QThread
     /*private*/ /*final*/ ThreadAction* _threadAction;
     /*private*/ /*final*/ QObject* _lock;
 public:
-    /*public*/ ThreadEvent(ThreadAction* threadAction) {
+    /*public*/ ThreadEvent(ThreadAction* threadAction) : QObject() {
+     setObjectName("ThreadEvent");
         _threadAction = threadAction;
         _lock = nullptr;
     }
 
     /*public*/ ThreadEvent(ThreadAction* threadAction,
-            QObject* lock) {
+            QObject* lock) : QObject(){
+     setObjectName("ThreadEvent");
         _threadAction = threadAction;
         _lock = lock;
     }
@@ -115,8 +117,14 @@ class NGThread : public Runnable
   {
    while (!thread->_stopThread) {
        try {
+           QMutexLocker locker(&thread->mutex);
+
            if(thread->_eventQueue->isEmpty())
             continue;
+           ThreadEvent* te = thread->_eventQueue->head();
+           if(!te)
+            continue;
+           int cnt = thread->_eventQueue->size();
            ThreadEvent* event = thread->_eventQueue->dequeue();
            if (event->_lock != nullptr) {
               /* synchronized(event->_lock)*/ {

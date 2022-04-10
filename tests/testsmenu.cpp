@@ -125,6 +125,10 @@
 #include "logixng/defaultmaledigitalbooleanactionsockettestaction.h"
 #include "logixng/analogformulatestaction.h"
 #include "logixng/analogactionmemorytestaction.h"
+#include "logixng/stringformulatestaction.h"
+#include "logixng/actionsensortestaction.h"
+#include "logixng/digitalformulatestaction.h"
+#include "logixng/truetestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -318,7 +322,11 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 
     logixNGTypesMenu->addAction(new AnalogActionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new AnalogFormulaTestAction(this));
+    logixNGTypesMenu->addAction(new ActionSensorTestAction(this));
+    logixNGTypesMenu->addAction(new DigitalFormulaTestAction(this));
+    logixNGTypesMenu->addAction(new StringFormulaTestAction(this));
     logixNGTypesMenu->addAction(new TableForEachTestAction());
+    logixNGTypesMenu->addAction(new TrueTestAction(this));
 
     logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));

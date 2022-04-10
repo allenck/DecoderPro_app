@@ -96,8 +96,9 @@
 
     //@Override
     /*public*/  QString DefaultMaleDigitalExpressionSocket::describeState(int state) {
-        return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->describeState(state);
-    }
+        //return ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->describeState(state);
+        return ((AbstractNamedBean*)getObject()->bself())->describeState(state);
+}
 
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::setProperty(QString key, QVariant value) {
@@ -181,7 +182,8 @@
      */
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::registerListenersForThisClass() {
-        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+//        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+      ((AbstractBase*)getObject()->bself())->registerListeners();
     }
 
     /**
@@ -189,7 +191,8 @@
      */
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::unregisterListenersForThisClass() {
-        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+        //((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+     ((AbstractBase*)getObject()->bself())->unregisterListeners();
     }
 
     //@Override

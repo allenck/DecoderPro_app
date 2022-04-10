@@ -23,7 +23,7 @@ class DefaultModuleManager : public AbstractManager, public ModuleManager
   /*public*/  Module* getByUserName(QString name)override;
   /*public*/  Module* getBySystemName(QString name) override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
-  /*public*/  bool resolveAllTrees(QList<QString> errors)override;
+  /*public*/  bool resolveAllTrees(QList<QString> *errors)override;
   /*public*/  void setupAllModules()override;
   /*public*/  void deleteModule(Module* x) override;
   /*public*/  void printTree(

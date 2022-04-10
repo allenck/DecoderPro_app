@@ -9,7 +9,7 @@
 ///*public*/  class LocalVariableExpressionVariable implements Variable {
 
 
-    /*public*/  LocalVariableExpressionVariable::LocalVariableExpressionVariable(QString name) {
+    /*public*/  LocalVariableExpressionVariable::LocalVariableExpressionVariable(QString name, QObject* parent) : Variable(parent){
         _name = name;
     }
 

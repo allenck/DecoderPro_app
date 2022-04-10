@@ -14,11 +14,11 @@ class AbstractBase : public AbstractNamedBean, public virtual Base
   /*public*/ AbstractBase(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
   /*public*/ AbstractBase(QString sys, QObject* parent = nullptr) /*throw (BadSystemNameException)*/ ;
   /*public*/ AbstractBase(QString sys, QString user, QObject* parent = nullptr) /*throw (BadUserNameException, BadSystemNameException)*/;
-  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/override;
+  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/override;
   /*public*/ ConditionalNG* getConditionalNG()override;
   /*public*/ /*final*/ LogixNG* getLogixNG()override;
   /*public*/ /*final*/ Base* getRoot()override;
-  /*public*/ /*final*/ bool setParentForAllChildren(QList<QString> errors)override;
+  /*public*/ /*final*/ bool setParentForAllChildren(QList<QString> *errors)override;
   /*public*/ /*final*/ void registerListeners() override;
   /*public*/ /*final*/ void unregisterListeners()override;
   /*public*/ /*final*/ bool isActive() override;
@@ -50,9 +50,9 @@ class AbstractBase : public AbstractNamedBean, public virtual Base
 
   //QString getSystemName() const override {return mSystemName;}
   //QString getUserName() const override {return AbstractNamedBean::getUserName();}
-  QString getComment() override {return AbstractNamedBean::getComment();}
+  //QString getComment() override {return AbstractNamedBean::getComment();}
   //void setUserName(QString name) override {AbstractNamedBean::setUserName(name);}
-  void setComment(QString name) override {AbstractNamedBean::setComment(name);}
+  //void setComment(QString name) override {AbstractNamedBean::setComment(name);}
 
   QString toString() override {return metaObject()->className();}
  private:

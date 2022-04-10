@@ -26,13 +26,13 @@
 }
 
 //@Override
-/*public*/   Base* StringExpressionMemory::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/   Base* StringExpressionMemory::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
     StringExpressionManager* manager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     StringExpressionMemory* copy = new StringExpressionMemory(sysName, userName);
-    copy->setComment(getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     if (_memoryHandle != nullptr) copy->setMemory(_memoryHandle);
     return manager->registerExpression(copy)->deepCopyChildren(this, systemNames, userNames);
 }

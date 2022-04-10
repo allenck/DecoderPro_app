@@ -210,7 +210,7 @@
             QObject* lock = new QObject();
             /*synchronized(lock)*/ {
           QMutexLocker locker(&mutex);
-                _eventQueue->append(new ThreadEvent(ta, lock));
+                _eventQueue->enqueue(new ThreadEvent(ta, lock));
 //                try {
 //                    lock.wait();
 //                } catch (InterruptedException* e) {

@@ -141,7 +141,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultLogixNGManager::setupAllLogixNGs() {
-        QList<QString> errors = QList<QString>();
+        QList<QString>* errors = new QList<QString>();
         bool result = true;
         for (/*LogixNG* logixNG*/NamedBean* nb : _tsys->values()) {
          LogixNG* logixNG = (DefaultLogixNG*)nb->self();
@@ -154,7 +154,7 @@
             result = result && module->setParentForAllChildren(errors);
         }
         _clipboard->setup();
-        if (errors.size() > 0) {
+        if (errors->size() > 0) {
             messageDialog("SetupErrorsTitle", errors, nullptr);
         }
         checkItemsHaveParents();
@@ -166,11 +166,11 @@
      * @param messages A ArrayList of messages that have been localized.
      * @param helpKey The bundle key for additional information about the errors
      */
-    /*private*/ void DefaultLogixNGManager::messageDialog(QString titleKey, QList<QString> messages, QString helpKey) {
+    /*private*/ void DefaultLogixNGManager::messageDialog(QString titleKey, QList<QString>* messages, QString helpKey) {
 //        if (/*!GraphicsEnvironment.isHeadless() &&*/ !bool->getBoolean("jmri.test.no-dialogs")) {
             QString sb =  QString("<html>");
             //messages.forEach(msg ->
-            for(QString msg : messages)
+            for(QString msg : *messages)
             {
                 sb.append(msg);
                 sb.append("<br>");
@@ -206,8 +206,8 @@
         checkItemsHaveParents(InstanceManager.getDefault(StringExpressionManager.class).getNamedBeanSet(), beansWithoutParentList);
 #endif
         if (!beansWithoutParentList.isEmpty()) {
-            QList<QString> errors = QList<QString>();
-            QList<QString> msgs =QList<QString>();
+            QList<QString>* errors = new QList<QString>();
+            QList<QString>* msgs = new QList<QString>();
             for (Base* b : beansWithoutParentList) {
                 b->setup();
                 b->setParentForAllChildren(errors);
@@ -218,7 +218,7 @@
                             b->getSystemName(),
                             b->getUserName(),
                             b->getLongDescription()));
-                    msgs.append(tr("Item has no parent: %1, %2, %3").arg(
+                    msgs->append(tr("Item has no parent: %1, %2, %3").arg(
                             b->getSystemName(),
                             b->getUserName(),
                             b->getLongDescription()));
@@ -232,7 +232,7 @@
                         }
                     }
                     log->error("                                                                 ");
-                    QList<QString> cliperrors = QList<QString>();
+                    QList<QString>* cliperrors = new QList<QString>();
                     _clipboard->add((MaleSocket*) b->bself(), cliperrors);
                 }
             }

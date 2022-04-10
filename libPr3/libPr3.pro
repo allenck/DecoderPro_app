@@ -1138,6 +1138,9 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/stringformula.cpp \
+    logixng/stringformulaswing.cpp \
+    logixng/stringformulaxml.cpp \
     logixng/defaultmaleanalogactionsocketxml.cpp \
     logixng/defaultmaledigitalactionsocketxml.cpp \
     logixng/defaultmaledigitalbooleanactionsocketxml.cpp \
@@ -1438,7 +1441,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- logixng/stringio.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2522,6 +2524,10 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/stringformula.h \
+    logixng/stringformulaswing.h \
+    logixng/stringformulaxml.h \
+    logixng/stringio.h \
     logixng/defaultmaleanalogactionsocketxml.h \
     logixng/defaultmaledigitalactionsocketxml.h \
     logixng/defaultmaledigitalbooleanactionsocketxml.h \

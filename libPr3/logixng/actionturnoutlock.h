@@ -46,7 +46,7 @@ class ActionTurnoutLock : public AbstractDigitalAction, public VetoableChangeLis
      throw new IllegalArgumentException();
     }
   };
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setTurnout(/*@Nonnull*/ QString turnoutName);
   /*public*/  void setTurnout(/*@Nonnull*/ NamedBeanHandle<Turnout*>* handle);
   /*public*/  void setTurnout(/*@Nonnull*/ Turnout* turnout);

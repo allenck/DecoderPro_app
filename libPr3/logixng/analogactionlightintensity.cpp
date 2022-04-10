@@ -26,13 +26,13 @@
 }
 
 //@Override
-/*public*/  Base* AnalogActionLightIntensity::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/  Base* AnalogActionLightIntensity::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
     AnalogActionManager* manager = (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     AnalogActionLightIntensity* copy = new AnalogActionLightIntensity(sysName, userName);
-    copy->setComment(getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     if (_lightHandle != nullptr) copy->setLight(_lightHandle);
     copy->setAddressing(_addressing);
     copy->setFormula(_formula);

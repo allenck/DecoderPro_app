@@ -45,7 +45,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/  QString AbstractDigitalExpression::getBeanType() {
-    return tr("DigitalExpression");
+    return tr("Digital expression");
 }
 
 /** {@inheritDoc} */

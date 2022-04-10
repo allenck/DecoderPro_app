@@ -43,11 +43,11 @@
 }
 
 //@Override
-/*public*/  Base* Antecedent::getDeepCopy(QMap<QString, QString> systemNames,QMap<QString, QString> userNames) /*throws JmriException */{
+/*public*/  Base* Antecedent::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException */{
     DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     Antecedent* copy = new Antecedent(sysName, userName);
     copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setNumSockets(getChildCount());

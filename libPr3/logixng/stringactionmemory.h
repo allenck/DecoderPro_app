@@ -14,7 +14,7 @@ class StringActionMemory : public AbstractStringAction, public VetoableChangeLis
   Q_INTERFACES(VetoableChangeListener)
  public:
   explicit StringActionMemory(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
   /*public*/  void setMemory(/*@Nonnull*/ QString memoryName);
   /*public*/  void setMemory(/*@Nonnull*/ NamedBeanHandle<Memory*>* handle) ;
   /*public*/  void setMemory(/*@Nonnull*/ Memory* memory);

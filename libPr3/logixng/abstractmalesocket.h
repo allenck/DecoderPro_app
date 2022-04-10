@@ -61,7 +61,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ void setParent(Base* parent)override;
   /*public*/ /*final*/ ConditionalNG* getConditionalNG()override;
   /*public*/ /*final*/ LogixNG* getLogixNG()override;
-  /*public*/ /*final*/ bool setParentForAllChildren(QList<QString> errors)override;
+  /*public*/ /*final*/ bool setParentForAllChildren(QList<QString> *errors)override;
   /*public*/ /*final*/ void registerListeners()override;
   /*public*/ /*final*/ void unregisterListeners()override;
   /*public*/ /*final*/ bool isActive()override;
@@ -85,9 +85,9 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager()override;
-  /*public*/ /*final*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
+  /*public*/ /*final*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)
           /*throw (JmriException)*/override;
-  /*public*/ /*final*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/;
+  /*public*/ /*final*/ Base* deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/;
   /*public*/ /*final*/ void dispose()override;
   /*public*/ ErrorHandlingType::TYPES getErrorHandlingType()override;
   /*public*/ void setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType)override;

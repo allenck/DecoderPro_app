@@ -25,7 +25,7 @@ class Or : public AbstractDigitalExpression, public FemaleSocketListener
       }
     friend class Or;
   };
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  QString getExpressionSystemName(int index);
   /*public*/  Category* getCategory() override;
   /*public*/  bool evaluate() /*throws JmriException*/override;

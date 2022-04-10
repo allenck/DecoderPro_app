@@ -2,6 +2,7 @@
 
 StringWriter::StringWriter() : QByteArray()
 {
+
 }
 
 /*public*/ QString StringWriter::toString()

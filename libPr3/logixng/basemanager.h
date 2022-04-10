@@ -72,6 +72,8 @@ class MaleSocketFactory;
      */
   /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory){throw new UnsupportedOperationException("registerMaleSocketFactory not implemented");}
 
+  virtual QString getClassName() =0;
+
   //virtual QObject* self() =0;
 
   friend class TreeEditor;

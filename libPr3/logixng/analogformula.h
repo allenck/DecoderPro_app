@@ -29,7 +29,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   };
    AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QObject* parent=nullptr);
   /*public*/ AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QList<SocketData*> expressionSystemNames, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  QString getExpressionSystemName(int index);
   /*public*/  QString getExpressionManager(int index);
   /*public*/  /*final*/ void setFormula(QString formula) /*throws ParserException*/;

@@ -30,13 +30,13 @@
 }
 
 //@Override
-/*public*/  Base* StringMany::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/  Base* StringMany::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
     StringActionManager* manager = (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     StringMany* copy = new StringMany(sysName, userName);
-    copy->AbstractBase::setComment(AbstractBase::getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setNumSockets(getChildCount());
     return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
 }

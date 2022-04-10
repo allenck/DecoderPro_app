@@ -30,7 +30,7 @@ public:
      * Create a new system name for an DigitalBooleanActionBean.
      * @return a new system name
      */
-  /*public*/ virtual QString getAutoSystemName(){return "?";}
+  /*public*/ virtual QString getAutoSystemName(){return "";}
 
     /*public*/ virtual FemaleDigitalBooleanActionSocket* createFemaleSocket(
             Base* parent, FemaleSocketListener* listener, QString socketName)=0;

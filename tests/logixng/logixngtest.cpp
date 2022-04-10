@@ -251,7 +251,7 @@
         MyConditionalNG* conditionalNG_3 = new MyConditionalNG("IQC3", "");
         logixNG->addConditionalNG(conditionalNG_3);
         conditionalNG_3->setEnabled(false);
-        if (! logixNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! logixNG->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
 
         Assert::assertFalse("conditionalNG_1 is enabled", conditionalNG_1->isEnabled(), __FILE__, __LINE__);
         Assert::assertTrue("conditionalNG_2 is enabled", conditionalNG_2->isEnabled(), __FILE__, __LINE__);

@@ -50,7 +50,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ bool AbstractFemaleSocket::setParentForAllChildren(QList<QString> errors) {
+/*public*/ bool AbstractFemaleSocket::setParentForAllChildren(QList<QString> *errors) {
     if (isConnected()) {
         getConnectedSocket()->Base::setParent(this);
         return getConnectedSocket()->setParentForAllChildren(errors);
@@ -470,12 +470,12 @@
 }
 
 //@Override
-/*public*/ Base* AbstractFemaleSocket::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
+/*public*/ Base* AbstractFemaleSocket::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/ {
     throw new UnsupportedOperationException("Not supported");
 }
 
 //@Override
-/*public*/ Base* AbstractFemaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
+/*public*/ Base* AbstractFemaleSocket::deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/ {
     throw new UnsupportedOperationException("Not supported");
 }
 

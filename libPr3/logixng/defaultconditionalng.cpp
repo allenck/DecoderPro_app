@@ -350,7 +350,7 @@
     }
 
     //@Override
-    /*public*/  Base* DefaultConditionalNG::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    /*public*/  Base* DefaultConditionalNG::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

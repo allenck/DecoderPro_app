@@ -281,7 +281,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ bool DefaultLogixNG::setParentForAllChildren(QList<QString> errors) {
+/*public*/ bool DefaultLogixNG::setParentForAllChildren(QList<QString> *errors) {
     bool result = true;
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
         if (entry->_conditionalNG != nullptr) {
@@ -359,18 +359,20 @@
     printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 
     for (int i=0; i < this->getNumConditionalNGs(); i++) {
-        getConditionalNG(i)->printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
+        //getConditionalNG(i)->printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
+     ConditionalNG* conditionalNG = getConditionalNG(i);
+     conditionalNG->printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
 //            writer.println();
     }
 }
 
 //@Override
-/*public*/ Base* DefaultLogixNG::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+/*public*/ Base* DefaultLogixNG::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //@Override
-/*public*/ Base* DefaultLogixNG::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/ Base* DefaultLogixNG::deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/ {
     throw new UnsupportedOperationException("Not supported");
 }
 

@@ -21,13 +21,13 @@
 }
 
 //@Override
-/*public*/  Base* StringExpressionConstant::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+/*public*/  Base* StringExpressionConstant::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) {
     StringExpressionManager* manager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     StringExpressionConstant* copy = new StringExpressionConstant(sysName, userName);
-    copy->AbstractBase::setComment(AbstractBase::getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setValue(_value);
     return manager->registerExpression(copy);
 }

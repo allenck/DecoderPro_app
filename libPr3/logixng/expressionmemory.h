@@ -87,7 +87,7 @@ class ExpressionMemory : public AbstractDigitalExpression, public PropertyChange
 };
 
   explicit ExpressionMemory(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  void setMemory(/*@Nonnull*/ QString memoryName);
   /*public*/  void setMemory(/*@Nonnull*/ NamedBeanHandle<Memory*>* handle);
   /*public*/  void setMemory(/*@Nonnull*/ Memory* memory);

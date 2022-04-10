@@ -30,7 +30,7 @@ private:
           _value = value;
       }
 public:
-    QObject* vself() override {return (QObject*)this;}
+    //QObject* vself() override {return (QObject*)this;}
       //@Override
       /*public*/  QString getName() {
           return _name;

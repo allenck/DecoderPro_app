@@ -148,14 +148,14 @@ QString sn2 = maleSocketA->getSystemName();
 
     //@Test
     /*public*/  void MaleSocketTestBase::testComment() /*throws JmriException*/ {
-        ((AbstractBase*)maleSocketA->bself())->setComment("Abc");
-        QString cmt = ((AbstractBase*)maleSocketA->bself())->getComment();
+        ((AbstractBase*)maleSocketA->bself())->AbstractNamedBean::setComment("Abc");
+        QString cmt = ((AbstractBase*)maleSocketA->bself())->AbstractNamedBean::getComment();
         Assert::assertEquals("getComment() is correct",
-                "Abc", ((AbstractBase*)maleSocketA->bself())->getComment(), __FILE__, __LINE__);
+                "Abc", ((AbstractBase*)maleSocketA->bself())->AbstractNamedBean::getComment(), __FILE__, __LINE__);
 
-        ((AbstractBase*)maleSocketA->bself())->setComment("Def");
+        ((AbstractBase*)maleSocketA->bself())->AbstractNamedBean::setComment("Def");
         Assert::assertEquals("getComment() is correct",
-                "Def", ((AbstractBase*)maleSocketA->bself())->getComment(), __FILE__, __LINE__);
+                "Def", ((AbstractBase*)maleSocketA->bself())->AbstractNamedBean::getComment(), __FILE__, __LINE__);
     }
 
     //@Test

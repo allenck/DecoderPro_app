@@ -26,13 +26,13 @@
     }
 
     //@Override
-    /*public*/  Base* IfThenElse::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */{
+    /*public*/  Base* IfThenElse::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException */{
         DigitalActionManager* manager = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"));
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         IfThenElse* copy = new IfThenElse(sysName, userName);
-        copy->AbstractBase::setComment(AbstractBase::getComment());
+        copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         copy->setType(_type);
         return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
     }

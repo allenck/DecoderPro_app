@@ -39,17 +39,17 @@ class DefaultClipboard : public AbstractBase, public Clipboard
  public:
   DefaultClipboard(QObject* parent = nullptr);
   /*public*/ bool isEmpty()override;
-  /*public*/ bool add(MaleSocket* maleSocket, QList<QString> errors)override;
+  /*public*/ bool add(MaleSocket* maleSocket, QList<QString> *errors)override;
   /*public*/ MaleSocket* fetchTopItem()override;
   /*public*/ MaleSocket* getTopItem()override;
   /*public*/ FemaleSocket *getFemaleSocket()override;
   /*public*/ void moveItemToTop(MaleSocket* maleSocket)override;
   /*public*/ void setup()override;
-  /*public*/ bool replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors);
+  /*public*/ bool replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> *errors);
   /*public*/ void setState(int s) /*throws JmriException*/override;
   /*public*/ int getState() override;
   /*public*/ QString getBeanType()override;
-  /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale)override;
   /*public*/ Base* getParent() const override;
@@ -142,8 +142,8 @@ public:
         }
 
         //@Override
-        /*public*/ QString getComment() {
-            return defaultClipboard->_clipboardItems->getComment();
+        /*public*/ QString getComment() override {
+            return defaultClipboard->_clipboardItems->AbstractNamedBean::getComment();
         }
 
         //@Override

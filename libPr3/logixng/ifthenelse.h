@@ -69,7 +69,7 @@ class IfThenElse : public AbstractDigitalAction, public FemaleSocketListener
     friend class IfThenElse;
   };
   explicit IfThenElse(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException */override;
   /*public*/  Category* getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  Type::ETYPE getType();

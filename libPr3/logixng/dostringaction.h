@@ -13,7 +13,7 @@ class DoStringAction : public AbstractDigitalAction, public FemaleSocketListener
   Q_INTERFACES(FemaleSocketListener)
  public:
   explicit DoStringAction(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/override;
   /*public*/  Category* getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override;

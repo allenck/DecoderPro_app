@@ -33,13 +33,13 @@
 }
 
 //@Override
-/*public*/  Base* DigitalBooleanMany::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+/*public*/  Base* DigitalBooleanMany::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/ {
     DigitalBooleanActionManager* manager = (DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     DigitalBooleanMany* copy = new DigitalBooleanMany(sysName, userName);
-    copy->setComment(getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     copy->setNumSockets(getChildCount());
     return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
 }
@@ -81,9 +81,9 @@
                 QString socketSystemName = ae->_socketSystemName;
                 ae->_socket->_disconnect();
                 if (socketSystemName != "") {
-                    MaleSocket* maleSocket = (MaleSocket*)((DefaultDigitalBooleanActionManager)
+                    MaleSocket* maleSocket = (MaleSocket*)((DefaultDigitalBooleanActionManager*)
                             InstanceManager::getDefault("DigitalBooleanActionManager"))
-                                    .getBySystemName(socketSystemName)->self();
+                                    ->getBySystemName(socketSystemName)->self();
                     if (maleSocket != nullptr) {
                         ae->_socket->_connect(maleSocket);
                         maleSocket->setup();

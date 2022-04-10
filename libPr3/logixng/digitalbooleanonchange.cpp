@@ -24,13 +24,13 @@
 }
 
 //@Override
-/*public*/  Base* DigitalBooleanOnChange::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */{
+/*public*/  Base* DigitalBooleanOnChange::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException */{
     DigitalBooleanActionManager* manager = (DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager");
-    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-    QString userName = userNames.value(AbstractNamedBean::getSystemName());
-    if (sysName == "") sysName = manager->getAutoSystemName();
+    QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+    QString userName = userNames->value(AbstractNamedBean::getSystemName());
+    if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
     DigitalBooleanOnChange* copy = new DigitalBooleanOnChange(sysName, userName, _trigger);
-    copy->setComment(getComment());
+    copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
 }
 

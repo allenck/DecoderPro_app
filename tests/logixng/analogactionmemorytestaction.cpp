@@ -45,20 +45,20 @@ void AnalogActionMemoryTestAction::actionPerformed()
     << "testDescribeState"
     << "testAddAndRemoveSocket"
 
-    // in AbstractDigitalActionTestBase
+    // in AbstractAnalogActionTestBase
     << "testBadSystemName"
     << "testGetBeanType"
+    << "testState"
 
-    // in TableForEachTest
+    // in AnalogActionMemoryTest
     << "testCtor"
-  //  << "testCtorAndSetup2"
-  //  << "testCtorAndSetup3"""
-    << "testGetChild"
+    << "testAction"
+    << "testMemory"
+    << "testVetoableChange"
     << "testCategory"
-    << "testDescription"
-    << "testExecute"
-    << "testIsActive"
-    << "testMaleSocketIsActive"
+    << "testShortDescription"
+    << "testLongDescription"
+    << "testChild"
   ;
 
   JUnitUtil::runTests(test, testList);

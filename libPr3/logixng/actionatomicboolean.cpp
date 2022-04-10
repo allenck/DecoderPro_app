@@ -36,11 +36,11 @@
     }
 
     //@Override
-    /*public*/  Base* ActionAtomicBoolean::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    /*public*/  Base* ActionAtomicBoolean::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) {
         DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         DigitalActionBean* copy = new ActionAtomicBoolean(sysName, userName, new AtomicBoolean, _newValue);
 // TODO:        copy->NamedBean::setComment(NamedBean::getComment());
         return manager->registerAction(copy);

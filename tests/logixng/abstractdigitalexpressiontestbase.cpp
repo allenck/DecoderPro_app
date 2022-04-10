@@ -36,12 +36,15 @@
 
     //@Test
     /*public*/  void AbstractDigitalExpressionTestBase::testGetBeanType() {
-        Assert::assertTrue("String matches", "Digital expression" ==(((DigitalExpressionBean*)_base->bself())->getBeanType()), __FILE__, __LINE__);
+        Assert::assertEquals("String matches", "Digital expression" ,
+        //(((DigitalExpressionBean*)_base->bself())->getBeanType()), __FILE__, __LINE__);
+        (((AbstractBase*)_base->bself())->getBeanType()), __FILE__, __LINE__);
+
     }
 
     //@Test
     /*public*/  void AbstractDigitalExpressionTestBase::testEnableAndEvaluate() /*throws Exception*/ {
-        DigitalExpressionBean* _expression = (DigitalExpressionBean*)_baseMaleSocket;
+        DigitalExpressionBean* _expression = (/*DigitalExpressionBean*/DefaultMaleDigitalExpressionSocket*)_baseMaleSocket->bself();
         Assert::assertTrue("male socket is enabled", _baseMaleSocket->isEnabled(), __FILE__, __LINE__);
         Assert::assertTrue("evaluate() returns true", _expression->evaluate(), __FILE__, __LINE__);
         _baseMaleSocket->setEnabled(false);
@@ -54,7 +57,7 @@
 
     //@Test
     /*public*/  void AbstractDigitalExpressionTestBase::testDebugConfig() /*throws Exception*/ {
-        DigitalExpressionBean* _expression = (DigitalExpressionBean*)_baseMaleSocket;
+        DigitalExpressionBean* _expression = (/*DigitalExpressionBean*/DefaultMaleDigitalExpressionSocket*)_baseMaleSocket->bself();
         Assert::assertTrue("evaluate() returns true", _expression->evaluate(), __FILE__, __LINE__);
         DefaultMaleDigitalExpressionSocket::DigitalExpressionDebugConfig* debugConfig = new DefaultMaleDigitalExpressionSocket::DigitalExpressionDebugConfig();
         debugConfig->_forceResult = true;

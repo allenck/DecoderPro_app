@@ -226,7 +226,7 @@
 //        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
 //            return ((AbstractMaleSocket*)getObject()->bself())->getListen();
  QObject* obj = (QObject*) getObject();
- if(qobject_cast<AbstractMaleSocket*>(obj))
+ if(static_cast<AbstractMaleSocket*>(obj))
   return ((AbstractMaleSocket*)obj)->getListen();
 //        }
     return _listen;
@@ -320,7 +320,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*final*/ bool AbstractMaleSocket::setParentForAllChildren(QList<QString> errors) {
+/*public*/ /*final*/ bool AbstractMaleSocket::setParentForAllChildren(QList<QString>* errors) {
     bool result = true;
     for (int i=0; i < getChildCount(); i++) {
         FemaleSocket* femaleSocket = getChild(i);
@@ -558,10 +558,10 @@
 }
 
 //@Override
-/*public*/ /*final*/ Base* AbstractMaleSocket::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
+/*public*/ /*final*/ Base* AbstractMaleSocket::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)
         /*throw (JmriException)*/ {
 
-    MaleSocket* maleSocket = (MaleSocket*)getObject()->getDeepCopy(systemNames, userNames)->bself();
+    MaleSocket* maleSocket = (AbstractMaleSocket*)getObject()->getDeepCopy(systemNames, userNames)->bself();
 
     maleSocket->setComment(this->getComment());
     if (maleSocket->getDebugConfig() != nullptr) {
@@ -582,7 +582,7 @@
 }
 
 //@Override
-/*public*/ /*final*/ Base* AbstractMaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
+/*public*/ /*final*/ Base* AbstractMaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throw (JmriException)*/ {
     getObject()->deepCopyChildren(original, systemNames, userNames);
     return this;
 }

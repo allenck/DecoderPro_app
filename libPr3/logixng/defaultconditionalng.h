@@ -48,7 +48,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   /*public*/  bool isEnabled()override;
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}

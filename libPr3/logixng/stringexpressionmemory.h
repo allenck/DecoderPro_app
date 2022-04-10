@@ -14,7 +14,7 @@ class StringExpressionMemory : public AbstractStringExpression, public PropertyC
  public:
   explicit StringExpressionMemory(QString sys, QString user, QObject *parent = nullptr);
 
-  /*public*/   Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/   Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/   void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ override;
   /*public*/   Category* getCategory()override;
   /*public*/   void setMemory(/*@Nonnull*/QString memoryName);

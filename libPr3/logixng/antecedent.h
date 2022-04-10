@@ -31,7 +31,7 @@ class Antecedent : public AbstractDigitalExpression, public FemaleSocketListener
   };
   /*public*/  Antecedent(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user,
           QList<QMap<QString, QString>> expressionSystemNames, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames,QMap<QString, QString> userNames) /*throws JmriException */override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames,QMap<QString, QString>* userNames) /*throws JmriException */override;
   /*public*/  QString getExpressionSystemName(int index);
   /*public*/  Category* getCategory()override;
   /*public*/  bool evaluate()/* throws JmriException */override;

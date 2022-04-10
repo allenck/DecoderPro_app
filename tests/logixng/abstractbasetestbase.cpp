@@ -57,7 +57,8 @@
             lastMaleSocket = (MaleSocket*) base->bself();
             base = ((AbstractMaleSocket*)base->bself())->getObject();
         }
-        return lastMaleSocket;
+        QObject* o = (QObject*)lastMaleSocket;
+        return (AbstractMaleSocket*)o;
     }
 
     //@Test
@@ -213,6 +214,7 @@
         PrintWriter* printWriter = new PrintWriter(stringWriter);
         int mutableInt=0;
         _baseMaleSocket->printTree(QLocale("English"), printWriter, TREE_INDENT, &mutableInt);
+//        QString sw = stringWriter->toString();
         Assert::assertEquals("Tree is equal", getExpectedPrintedTree(), stringWriter->toString(), __FILE__, __LINE__);
     }
 
@@ -258,14 +260,15 @@
         StringWriter* stringWriter = new StringWriter();
         PrintWriter* printWriter = new PrintWriter(stringWriter);
         int mutableInt=0;
-        _base->getRoot()->printTree(QLocale("English"), printWriter, TREE_INDENT,&mutableInt);
+        Base* b = ((AbstractBase*)_base->bself());
+        b->printTree(QLocale("English"), printWriter, TREE_INDENT,&mutableInt);
         Assert::assertEquals("Tree is equal", getExpectedPrintedTreeFromRoot(), stringWriter->toString(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testGetDeepCopy() /*throws JmriException*/ {
-        QMap<QString, QString> systemNames = QMap<QString, QString>();
-        QMap<QString, QString> userNames = QMap<QString, QString>();
+        QMap<QString, QString>* systemNames = new QMap<QString, QString>();
+        QMap<QString, QString>* userNames =  new QMap<QString, QString>();
         QMap<QString, QString> comments = QMap<QString, QString>();
 
         // The copy is not a male socket so it will not get the local variables
@@ -286,9 +289,9 @@
         mutableInt =0;
         copy->printTree(QLocale("English"), printWriter, TREE_INDENT, &mutableInt);
         QString copyTree = stringWriter->toString();
-#if 0 // TODO:
+#if 1 // TODO:
         if ( originalTree !=(copyTree)) {
-            System.out.format("---------------------%n%nOriginal tree:%n%s%n---------------------%n%nCopy tree:%n%s%n---------------------%n%n", originalTree, copyTree);
+            QString("---------------------\n\nOriginal tree:\n%1\n---------------------\n\nCopy tree:\n%2\n---------------------\n\n").arg(originalTree, copyTree);
         }
 #endif
         // REMOVE LATER!!!!!!!!
@@ -357,10 +360,10 @@
         Assert::assertTrue("_base is active", _base->isActive(), __FILE__, __LINE__);
 
         Assert::assertTrue(_base->isActive(), __FILE__, __LINE__);
-        ConditionalNG* conditionalNG = _base->getConditionalNG();
+        ConditionalNG* conditionalNG = ((AbstractBase*)_base->bself())->getConditionalNG();
         if (conditionalNG != nullptr) {
             conditionalNG->setEnabled(false);
-            Assert::assertFalse("_base is not active", _base->isActive(), __FILE__, __LINE__);
+            Assert::assertFalse("_base is not active", ((AbstractBase*)_base->bself())->isActive(), __FILE__, __LINE__);
             conditionalNG->setEnabled(true);
         } else {
             log->error("_base has no ConditionalNG as ancestor");
@@ -395,9 +398,9 @@
             parent = parent->getParent();
         }
         if (parent != nullptr) {
-            ((MaleSocket*)parent->bself())->setEnabled(false);
+            ((AbstractMaleSocket*)parent->bself())->setEnabled(false);
             Assert::assertFalse("_baseMaleSocket is not active", _baseMaleSocket->isActive(), __FILE__, __LINE__);
-            ((MaleSocket*)parent->bself())->setEnabled(true);
+            ((AbstractMaleSocket*)parent->bself())->setEnabled(true);
         }
 
         Assert::assertTrue("_baseMaleSocket is active", _baseMaleSocket->isActive(), __FILE__, __LINE__);
@@ -437,29 +440,31 @@
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testNames() {
-        Assert::assertNotNull("system name not null", _base->getSystemName(), __FILE__, __LINE__);
-        Assert::assertFalse("system name is not empty string", _base->getSystemName().isEmpty(), __FILE__, __LINE__);
+        Assert::assertNotNull("system name not null", ((AbstractBase*)_base->bself())->AbstractNamedBean::getSystemName(), __FILE__, __LINE__);
+        Assert::assertFalse("system name is not empty string", ((AbstractBase*)_base->bself())->AbstractNamedBean::getSystemName().isEmpty(), __FILE__, __LINE__);
 
-        _base->setUserName("One user name");
-        Assert::assertTrue("User name matches", "One user name" == (_base->getUserName()), __FILE__, __LINE__);
-        _base->setUserName("Another user name");
-        Assert::assertTrue("User name matches", "Another user name" ==(_base->getUserName()), __FILE__, __LINE__);
-        _base->setUserName("");
-        Assert::assertNull("User name matches", _base->getUserName(), __FILE__, __LINE__);
-        _base->setUserName("One user name");
-        Assert::assertTrue("User name matches", "One user name" == (_base->getUserName()), __FILE__, __LINE__);
+        ((AbstractBase*)_base->bself())->AbstractNamedBean::setUserName("One user name");
+        Assert::assertTrue("User name matches", "One user name" == (((AbstractBase*)_base->bself())->AbstractNamedBean::getUserName()), __FILE__, __LINE__);
+        ((AbstractBase*)_base->bself())->AbstractNamedBean::setUserName("Another user name");
+        Assert::assertTrue("User name matches", "Another user name" ==(((AbstractBase*)_base->bself())->AbstractNamedBean::getUserName()), __FILE__, __LINE__);
+        ((AbstractBase*)_base->bself())->AbstractNamedBean::setUserName("");
+        Assert::assertNull("User name matches", ((AbstractBase*)_base->bself())->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
+        ((AbstractBase*)_base->bself())->AbstractNamedBean::setUserName("One user name");
+        Assert::assertTrue("User name matches", "One user name" == (((AbstractBase*)_base->bself())->AbstractNamedBean::getUserName()), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testParent() {
-        _base->getConditionalNG()->setEnabled(false);
+        ((AbstractBase*)_base->bself())->getConditionalNG()->setEnabled(false);
         MyBase* a = new MyBase();
         _base->setParent(nullptr);
-        Assert::assertNull("Parent matches", _base->getParent()->bself(), __FILE__, __LINE__);
-        _base->setParent(a);
-        Assert::assertTrue("Parent matches", a == _base->getParent(), __FILE__, __LINE__);
+        Base* b = _base->getParent();
+        Assert::assertNull("Parent matches", (QObject*)_base->getParent(), __FILE__, __LINE__);
+       _base->setParent(a);
+        b = _base->getParent();
+        Assert::assertTrue("Parent matches", a ==_base->getParent(), __FILE__, __LINE__);
         _base->setParent(nullptr);
-        Assert::assertNull("Parent matches", _base->getParent()->bself(), __FILE__, __LINE__);
+        Assert::assertNull("Parent matches", (QObject*)_base->getParent(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -471,7 +476,7 @@
     //@Test
     /*public*/  void AbstractBaseTestBase::testDispose() {
         _baseMaleSocket->setEnabled(false);
-        _base->dispose();
+        ((AbstractBase*)_base->bself())->dispose();
     }
 
     //@Test
@@ -481,30 +486,33 @@
         // If a test want to test with runOnGUIDelayed true, that test can
         // set runOnGUIDelayed to true.
         Assert::assertFalse("runOnGUIDelayed is false",
-                _base->getConditionalNG()->getRunDelayed(), __FILE__, __LINE__);
+                ((AbstractBase*)_base->bself())->getConditionalNG()->getRunDelayed(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testChildAndChildCount() {
         Assert::assertEquals("childCount is equal", _base->getChildCount(), _baseMaleSocket->getChildCount(), __FILE__, __LINE__);
-        for (int i=0; i < _base->getChildCount(); i++) {
-            Assert::assertTrue("child is equal", _base->getChild(i) == _baseMaleSocket->getChild(i), __FILE__, __LINE__);
+        for (int i=0; i < ((AbstractBase*)_base->bself())->getChildCount(); i++) {
+            Assert::assertTrue("child is equal", ((AbstractBase*)_base->bself())->getChild(i) == _baseMaleSocket->getChild(i), __FILE__, __LINE__);
         }
     }
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testBeanType() {
         Assert::assertEquals("getbeanType() is equal",
-                ((NamedBean*)_base->bself())->getBeanType(),
-                ((NamedBean*)_baseMaleSocket->bself())->getBeanType(), __FILE__, __LINE__);
+                //((NamedBean*)_base->bself())->getBeanType(),
+                ((AbstractBase*)_base->bself())->NamedBean::getBeanType(),
+                //((NamedBean*)_baseMaleSocket->bself())->getBeanType(), __FILE__, __LINE__);
+                ((AbstractMaleSocket*)_baseMaleSocket->bself())->NamedBean::getBeanType(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testDescribeState() {
         Assert::assertEquals("description matches",
                 "Unknown",
-                ((NamedBean*)_baseMaleSocket->bself())->describeState(NamedBean::UNKNOWN), __FILE__, __LINE__);
-    }
+//                ((NamedBean*)_baseMaleSocket->bself())->describeState(NamedBean::UNKNOWN), __FILE__, __LINE__);
+                ((AbstractMaleSocket*)_baseMaleSocket->bself())->describeState(NamedBean::UNKNOWN), __FILE__, __LINE__);
+}
 
     //@Test
     /*public*/  void AbstractBaseTestBase::testAddAndRemoveSocket() /*throws SocketAlreadyConnectedException*/ {

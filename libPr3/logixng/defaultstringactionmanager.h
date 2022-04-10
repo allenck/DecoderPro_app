@@ -24,6 +24,7 @@ class DefaultStringActionManager : public AbstractBaseManager, public StringActi
   /*public*/  void deleteStringAction(MaleStringActionSocket* x)override;
   static /*public*/  DefaultStringActionManager* instance();
   /*public*/  /*Class<MaleStringActionSocket>*/QString getNamedBeanClass() const override;
+QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultStringActionManager";}
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}

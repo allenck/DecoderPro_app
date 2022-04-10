@@ -114,7 +114,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool DefaultModuleManager::resolveAllTrees(QList<QString> errors) {
+    /*public*/  bool DefaultModuleManager::resolveAllTrees(QList<QString>* errors) {
         bool result = true;
         for (NamedBean* nb : _tsys->values()) {
          Module* logixNG_Module = (Module*)nb->self();

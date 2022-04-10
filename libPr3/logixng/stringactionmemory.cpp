@@ -21,11 +21,11 @@
     }
 
     //@Override
-    /*public*/  Base* StringActionMemory::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
+    /*public*/  Base* StringActionMemory::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) {
         StringActionManager* manager = (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         StringActionMemory* copy = new StringActionMemory(sysName, userName);
         copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         if (_memoryHandle != nullptr) copy->setMemory(_memoryHandle);

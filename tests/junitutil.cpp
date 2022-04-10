@@ -1495,9 +1495,9 @@ static void checkThreads() {
  {
   foreach(QString testName, testList)
   {
-   testClassName = "setup";
+   testClassName = "setUp";
    if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
-    throw new Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
+    throw new Exception(tr("can't invoke 'setUp' method when running test '%1").arg(testName));
    testClassName = testName;
    log->info(tr("-----------------> begin '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection))

@@ -13,7 +13,7 @@ class AnalogActionLightIntensity : public AbstractAnalogAction, public VetoableC
  public:
   explicit AnalogActionLightIntensity(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  static /*final*/ int INTENSITY_SOCKET;// = 0;
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  void setLight(/*@Nonnull*/ QString lightName) ;
   /*public*/  void setLight(/*@Nonnull*/ NamedBeanHandle<VariableLight*>* handle);
   /*public*/  void setLight(/*@Nonnull*/ VariableLight* light) ;

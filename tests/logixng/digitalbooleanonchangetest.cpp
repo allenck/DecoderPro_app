@@ -339,7 +339,7 @@
         _base = _actionOnChange;
         _baseMaleSocket = maleSocketActionOnChange;
 
-        if (! logixNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! logixNG->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         logixNG->setEnabled(true);
     }
 

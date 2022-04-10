@@ -11,7 +11,7 @@ class LastResultOfDigitalExpression : public AbstractDigitalExpression, public P
   Q_INTERFACES(PropertyChangeListener VetoableChangeListener)
  public:
   explicit LastResultOfDigitalExpression(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
   /*public*/  void setDigitalExpression(/*@Nonnull*/ QString digitalExpressionName) ;
   /*public*/  void setDigitalExpression(/*@Nonnull*/ NamedBeanHandle<DigitalExpressionBean*>* handle) ;
   /*public*/  void setDigitalExpression(/*@Nonnull*/ DigitalExpressionBean* digitalExpression);

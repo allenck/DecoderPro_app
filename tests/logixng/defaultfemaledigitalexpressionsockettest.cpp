@@ -64,7 +64,7 @@
         Assert::assertFalse("result is false", ((DefaultFemaleDigitalExpressionSocket*)_femaleSocket->bself())->evaluate(), __FILE__, __LINE__);
         // Test evaluate() when connected
         _femaleSocket->_connect(maleSocket);
-        if (! _conditionalNG->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! _conditionalNG->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         Turnout* t = ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provideTurnout("IT1");
         _expression->setTurnout(t);
         _expression->setBeanState(ExpressionTurnout::TurnoutState::Thrown);

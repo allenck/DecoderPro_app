@@ -92,7 +92,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::registerListenersForThisClass() {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+    //((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
+ ((AbstractBase*)getObject()->bself())->registerListeners();
 }
 
 /**
@@ -100,7 +101,8 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::unregisterListenersForThisClass() {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+    //((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+ ((AbstractBase*)getObject()->bself())->unregisterListeners();
 }
 
 //@Override

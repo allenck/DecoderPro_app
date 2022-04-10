@@ -28,7 +28,7 @@ class DigitalMany : public AbstractDigitalAction, public FemaleSocketListener
  public:
   explicit DigitalMany(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  DigitalMany(QString sys, QString user, QList<QMap<QString, QString>> actionSystemNames, QObject* parent);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/;
   /*public*/  QString getActionSystemName(int index);
   /*public*/  void setup()override;
   /*public*/  Category* getCategory()override;

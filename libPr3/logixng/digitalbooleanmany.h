@@ -13,7 +13,7 @@ class DigitalBooleanMany : public AbstractDigitalBooleanAction, public FemaleSoc
  public:
   explicit DigitalBooleanMany(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  DigitalBooleanMany(QString sys, QString user, QList<QMap<QString, QString>> actionSystemNames, QObject *parent = nullptr);
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  QString getActionSystemName(int index) ;
   /*public*/  void setup()override;
   /*public*/  Category* getCategory()override;

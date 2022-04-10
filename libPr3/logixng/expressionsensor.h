@@ -66,7 +66,7 @@ public:
       }
 
   };
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setSensor(/*@Nonnull*/ QString sensorName);
   /*public*/  void setSensor(/*@Nonnull*/ NamedBeanHandle<Sensor*>* handle);
   /*public*/  void setSensor(/*@Nonnull*/ Sensor* sensor);

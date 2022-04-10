@@ -249,10 +249,10 @@ FemaleSocketTestBase::FemaleSocketTestBase(QObject *parent) : QObject(parent)
     //@Test
     /*public*/  void FemaleSocketTestBase::testSetParentForAllChildren() /*throws SocketAlreadyConnectedException */{
         Assert::assertFalse("femaleSocket is not connected", _femaleSocket->isConnected(), __FILE__, __LINE__);
-        if (! _femaleSocket->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! _femaleSocket->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         Assert::assertNull("malesocket->getParent() is null", (QObject*)maleSocket->getParent(), __FILE__, __LINE__);
         _femaleSocket->_connect(maleSocket);
-        if (! _femaleSocket->setParentForAllChildren(QList<QString>())) throw new RuntimeException();
+        if (! _femaleSocket->setParentForAllChildren(new QList<QString>())) throw new RuntimeException();
         Assert::assertEquals("malesocket.getParent() is femaleSocket", (QObject*)_femaleSocket->bself(), (QObject*)maleSocket->getParent()->bself(), __FILE__, __LINE__);
     }
 

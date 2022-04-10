@@ -45,7 +45,7 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
    }
 
   };
-  /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/override;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setMemory(/*@Nonnull*/ QString memoryName);
   /*public*/  void setMemory(/*@Nonnull*/ NamedBeanHandle<Memory*>* handle);
   /*public*/  void setMemory(/*@Nonnull*/ Memory* memory);

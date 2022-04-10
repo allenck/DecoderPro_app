@@ -24,6 +24,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
   /*public*/  void deleteDigitalExpression(MaleDigitalExpressionSocket* x)override;
   static /*public*/  DefaultDigitalExpressionManager* instance();
   /*public*/  /*Class<MaleDigitalExpressionSocket>*/QString getNamedBeanClass() const override;
+  QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultDigitalExpressionManager";}
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}

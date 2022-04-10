@@ -52,7 +52,7 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ ConditionalNG* getConditionalNG()override;
   /*public*/ LogixNG* getLogixNG() override;
   /*public*/ /*final*/ Base* getRoot()override;
-  /*public*/ bool setParentForAllChildren(QList<QString> errors) override;
+  /*public*/ bool setParentForAllChildren(QList<QString>* errors) override;
   /*public*/ void registerListeners()override;
   /*public*/ void unregisterListeners()override;
   /*public*/ void printTree(
@@ -73,8 +73,8 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
           QString indent,
           QString currentIndent,
           int* lineNumber)override;
-  /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
-  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
+  /*public*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
+  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
 
   QObject* bself() override{return (QObject*)this;}
   QObject* self() override{return (QObject*)this;}

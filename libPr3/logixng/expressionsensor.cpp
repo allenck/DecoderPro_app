@@ -24,11 +24,11 @@
     }
 
     //@Override
-    /*public*/  Base* ExpressionSensor::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException */{
+    /*public*/  Base* ExpressionSensor::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws ParserException */{
         DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
-        QString userName = userNames.value(AbstractNamedBean::getSystemName());
-        if (sysName == "") sysName = manager->getAutoSystemName();
+        QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
+        QString userName = userNames->value(AbstractNamedBean::getSystemName());
+        if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
         ExpressionSensor* copy = new ExpressionSensor(sysName, userName);
         copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
         if (_sensorHandle != nullptr) copy->setSensor(_sensorHandle);
