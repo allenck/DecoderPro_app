@@ -7,6 +7,14 @@
 #include "antecedentxml.h"
 #include "logixng_thread.h"
 #include "truexml.h"
+#include "falsexml.h"
+#include "orxml.h"
+#include "triggeroncexml.h"
+#include "truexml.h"
+#include "expressionlightxml.h"
+#include "expressionsensorxml.h"
+#include "expressionturnoutxml.h"
+#include "holdxml.h"
 
 /**
  * Test DigitalExpressions
@@ -27,43 +35,43 @@
         b = new AntecedentXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b->load(QDomElement(), nullptr);
-        JUnitAppender::assertMessage("Invalid method called");
-#if 0
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
+
         b = new ExpressionLightXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new ExpressionSensorXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new ExpressionTurnoutXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new FalseXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new HoldXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new OrXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
-        b.load((Element) null, (Object) null);
-        JUnitAppender::assertMessage("Invalid method called");
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
 
         b = new TriggerOnceXml();
-        Assert::assertNotNull("exists", b);
-        b.load((Element) null, (Object) null, __FILE__, __LINE__);
-        JUnitAppender::assertMessage("Invalid method called");
-#endif
+        Assert::assertNotNull("exists", b, __FILE__, __LINE__);
+        b->load(QDomElement(), nullptr);
+        JUnitAppender::assertMessage("Invalid method called", __FILE__, __LINE__);
+
         b = new TrueXml();
         Assert::assertNotNull("exists", b, __FILE__, __LINE__);
         b->load(QDomElement(), nullptr);

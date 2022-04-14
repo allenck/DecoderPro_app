@@ -98,18 +98,18 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
  private:
   static Logger* log;
   /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle;
+  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle =nullptr;
   /*private*/ QString _reference = "";
   /*private*/ QString _localVariable = "";
   /*private*/ QString _formula = "";
-  /*private*/ ExpressionNode* _expressionNode;
-  /*private*/ NamedBeanHandle<Memory*>* _otherMemoryHandle;
+  /*private*/ ExpressionNode* _expressionNode = nullptr;
+  /*private*/ NamedBeanHandle<Memory*>* _otherMemoryHandle = nullptr;
   /*private*/ MemoryOperation::TYPE _memoryOperation = MemoryOperation::SetToString;
   /*private*/ QString _otherConstantValue = "";
   /*private*/ QString _otherTableCell = "";
   /*private*/ QString _otherLocalVariable = "";
   /*private*/ QString _otherFormula = "";
-  /*private*/ ExpressionNode* _otherExpressionNode;
+  /*private*/ ExpressionNode* _otherExpressionNode = nullptr;
   /*private*/ bool _listenToMemory = true;
   //    /*private*/ boolean _listenToMemory = false;
   /*private*/ void parseOtherFormula() /*throws ParserException */;

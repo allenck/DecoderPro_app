@@ -5,6 +5,7 @@
 
 class AbstractDigitalActionTestBase : public AbstractBaseTestBase
 {
+  Q_OBJECT
  public:
   explicit AbstractDigitalActionTestBase(QObject *parent = nullptr) : AbstractBaseTestBase(parent) {}
   /*public*/  /*abstract*/virtual NamedBean* createNewBean(QString systemName)=0;

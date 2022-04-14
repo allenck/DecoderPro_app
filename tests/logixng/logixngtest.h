@@ -44,7 +44,8 @@ public:
       : DefaultConditionalNG(sys, user)
     {
         //super(sys, user);
-   listenersAreRegistered = false;
+     setObjectName("MyConditionalNG");
+     listenersAreRegistered = false;
     }
 
     /** {@inheritDoc} */

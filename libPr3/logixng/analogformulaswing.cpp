@@ -33,7 +33,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  bool AnalogFormulaSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+/*public*/  bool AnalogFormulaSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
     if (_formula->text().isEmpty()) return true;
 
     try {
@@ -41,7 +41,7 @@
         RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
         parser->parseExpression(_formula->text());
     } catch (ParserException* ex) {
-        errorMessages.append(tr("Formula is invalid:  \"%1\"").arg(_formula->text()));
+        errorMessages->append(tr("Formula is invalid:  \"%1\"").arg(_formula->text()));
         log->error("Invalid formula '"+_formula->text()+"'. Error: "+ex->getMessage(), ex);
         return false;
     }

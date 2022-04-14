@@ -58,7 +58,7 @@ DigitalFormulaTest::DigitalFormulaTest(QObject *parent) : AbstractDigitalExpress
                 "   ?* E1\n" \
                 "      Always true ::: Use default\n" \
                 "   ?* E2\n" \
-                "      Socket not connected%n");
+                "      Socket not connected\n");
     }
 
     //@Override
@@ -77,7 +77,7 @@ DigitalFormulaTest::DigitalFormulaTest(QObject *parent) : AbstractDigitalExpress
                 "            ! Then\n" \
                 "               Set the atomic boolean to true ::: Use default\n" \
                 "            ! Else\n" \
-                "               Socket not connected%n");
+                "               Socket not connected\n");
     }
 
     //@Override

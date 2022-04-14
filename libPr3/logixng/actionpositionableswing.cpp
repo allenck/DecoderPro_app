@@ -153,7 +153,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool ActionPositionableSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool ActionPositionableSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         // Create a temporary action to test formula
         ActionPositionable* action = new ActionPositionable("IQDA1", nullptr);
 
@@ -162,7 +162,7 @@
                 action->setReference(_positionableReferenceTextField->text());
             }
         } catch (IllegalArgumentException* e) {
-            errorMessages.append(e->getMessage());
+            errorMessages->append(e->getMessage());
             return false;
         }
 
@@ -171,7 +171,7 @@
                 action->setStateReference(_positionableStateReferenceTextField->text());
             }
         } catch (IllegalArgumentException* e) {
-            errorMessages.append(e->getMessage());
+            errorMessages->append(e->getMessage());
             return false;
         }
 
@@ -189,7 +189,7 @@
                 throw new IllegalArgumentException("_tabbedPane has unknown selection");
             }
         } catch (ParserException* e) {
-            errorMessages.append("Cannot parse formula: " + e->getMessage());
+            errorMessages->append("Cannot parse formula: " + e->getMessage());
         }
         return true;
     }

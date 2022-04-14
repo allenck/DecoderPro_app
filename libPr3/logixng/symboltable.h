@@ -76,7 +76,7 @@ class VariableData;
      * @param symbolDefinitions the definitions of the new symbols
      * @throws JmriException if an exception is thrown
      */
-    /*public*/ virtual void createSymbols(/*Collection<? extends VariableData>*/ QSet<VariableData*> symbolDefinitions)
+    /*public*/ virtual void createSymbols(/*Collection<? extends VariableData>*/ QSet<VariableData*>* symbolDefinitions)
             /*throw (JmriException)*/=0;
 
     /**
@@ -90,7 +90,7 @@ class VariableData;
      */
     /*public*/ virtual void createSymbols(
             SymbolTable* symbolTable,
-            /*Collection<? extends VariableData>*/QSet<VariableData*> symbolDefinitions)
+            /*Collection<? extends VariableData>*/QSet<VariableData*>* symbolDefinitions)
             /*throw (JmriException)*/=0;
 
     /**
@@ -98,7 +98,7 @@ class VariableData;
      * @param symbolDefinitions the definitions of the symbols to be removed
      * @throws JmriException if an exception is thrown
      */
-    /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData*> symbolDefinitions)
+    /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData*>* symbolDefinitions)
             /*throw (JmriException)*/=0;
 
     /**

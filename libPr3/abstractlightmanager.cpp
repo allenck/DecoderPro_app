@@ -67,17 +67,23 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Locate a Light by its system name
  */
-/*public*/ NamedBean* AbstractLightManager::getBySystemName(QString name)
+/*public*/ Light* AbstractLightManager::getBySystemName(QString name)
 {
- return /*(Light*)*/(_tsys->value(name));
+ NamedBean* bean = _tsys->value(name);
+ if(!bean)
+  return nullptr;
+ return (Light*)bean->self();
 }
 
 /**
  * Locate a Light by its user name
  */
-/*public*/ NamedBean *AbstractLightManager::getByUserName(QString key) {
-    return /*dynamic_cast<Light*>*/(_tuser->value(key));
-}
+/*public*/ Light *AbstractLightManager::getByUserName(QString name) {
+    //return /*dynamic_cast<Light*>*/(_tuser->value(key));
+ NamedBean* bean = _tsys->value(name);
+ if(!bean)
+  return nullptr;
+ return (Light*)bean->self();}
 
 /**
  * Lookup Light by UserName, then provide by SystemName.
@@ -96,16 +102,16 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  // return existing if there is one
  Light* l = nullptr;
  if (userName != "") {
-     l = (Light*)getByUserName(userName)->self();
+     l = getByUserName(userName);
      if (l != nullptr) {
-         if ((Light*)getBySystemName(systemName)->self() != l) {
+         if (getBySystemName(systemName) != l) {
              log->error(tr("inconsistent user '%1' and system name '%2' results; user name related to %3").arg(
                  userName, systemName, l->getSystemName()));
          }
-         return l;
+         return (Light*)l->self();
      }
  }
- l = (Light*)getBySystemName(systemName)->self();
+ l = getBySystemName(systemName);
  if (l != nullptr) {
      if ((l->getUserName() == "") && (userName != "")) {
          l->setUserName(userName);
@@ -113,7 +119,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
          log->warn(tr("Found light via system name '%1' with non-null user name '%2'").arg(
                  systemName, userName));
      }
-     return l;
+     return (Light*)l->self();
  }
  // doesn't exist, make a new one
  l = createNewLight(systemName, userName);
@@ -127,7 +133,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  // save in the maps
  AbstractManager::Register(qobject_cast<NamedBean*>(l->self()));
  //emit newLightCreated(this, s);
- return l;
+ return (Light*)l->self();
 }
 
 /**

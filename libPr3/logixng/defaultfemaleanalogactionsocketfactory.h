@@ -4,13 +4,14 @@
 #include <QObject>
 #include "femalesocketfactory.h"
 #include "instancemanager.h"
-#include "analogactionmanager.h"
+#include "defaultanalogactionmanager.h"
 #include "defaultfemaleanalogactionsocket.h"
 
 class SocketType;
 class DefaultFemaleAnalogActionSocketFactory : public QObject, public FemaleSocketFactory
 {
   Q_OBJECT
+  Q_INTERFACES(FemaleSocketFactory)
  public:
   /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
       public:
@@ -26,12 +27,12 @@ class DefaultFemaleAnalogActionSocketFactory : public QObject, public FemaleSock
 
       //@Override
       /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager() override{
-          return (BaseManager*)(AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
+          return (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");
       }
 
       //@Override
       /*public*/  FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name)override {
-          return (FemaleSocket*)(new DefaultFemaleAnalogActionSocket(parent, listener, name));
+          return (new DefaultFemaleAnalogActionSocket(parent, listener, name));
       }
       //@Override
       /*public*/  QString toString() {
@@ -39,7 +40,8 @@ class DefaultFemaleAnalogActionSocketFactory : public QObject, public FemaleSock
       }
   };
  public:
-  explicit DefaultFemaleAnalogActionSocketFactory(QObject *parent = nullptr) : QObject(parent) {setObjectName("DefaultFemaleAnalogActionSocketFactory");}
+  explicit DefaultFemaleAnalogActionSocketFactory(QObject *parent = nullptr)
+   : QObject(parent) {setObjectName("DefaultFemaleAnalogActionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType()override;
 
  signals:

@@ -129,6 +129,9 @@
 #include "logixng/actionsensortestaction.h"
 #include "logixng/digitalformulatestaction.h"
 #include "logixng/truetestaction.h"
+#include "logixng/andtestaction.h"
+#include "logixng/actionmemorytestaction.h"
+#include "logixng/storeandloadtestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -313,16 +316,20 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* logixNGTypesMenu = new QMenu("Types");
     logixNGMenu->addMenu(logixNGTypesMenu);
 
+
     logixNGMiscMenu->addAction(new ConditionalNGTestAction(this));
-    logixNGMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
     logixNGMenu->addAction(new LogixNGTestAction(this));
     logixNGMenu->addAction(new DigitalExpressionsTestAction(this));
     logixNGMiscMenu->addAction(new RecursiveDescentParserTestAction(this));
+    logixNGMiscMenu->addAction(new StoreAndLoadTestAction(this));
     logixNGMiscMenu->addAction(new TokenizerTestAction(this));
 
+    logixNGTypesMenu->addAction(new ActionMemoryTestAction(this));
+    logixNGTypesMenu->addAction(new ActionSensorTestAction(this));
     logixNGTypesMenu->addAction(new AnalogActionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new AnalogFormulaTestAction(this));
-    logixNGTypesMenu->addAction(new ActionSensorTestAction(this));
+    logixNGTypesMenu->addAction(new AndTestAction(this));
+    logixNGTypesMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
     logixNGTypesMenu->addAction(new DigitalFormulaTestAction(this));
     logixNGTypesMenu->addAction(new StringFormulaTestAction(this));
     logixNGTypesMenu->addAction(new TableForEachTestAction());

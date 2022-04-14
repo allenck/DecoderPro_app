@@ -17,7 +17,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool DigitalBooleanManySwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool DigitalBooleanManySwing::validate(/*@Nonnull*/ QList<QString>* errorMessages) {
         return true;
     }
 

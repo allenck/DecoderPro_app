@@ -6,7 +6,7 @@
 #include "instancemanager.h"
 #include "runtimeexception.h"
 #include "defaultdigitalactionmanager.h"
-#include "logix.h"
+#include "logix_emulator.h"
 #include "digitalexpressionbean.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "and.h"
@@ -131,7 +131,7 @@
 //        IfThenElse.Type type = triggerOnChange ? IfThenElse.Type.TRIGGER_ACTION : IfThenElse.Type.CONTINOUS_ACTION;
 
 //        IfThenElse ifThen = new IfThenElse(((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager")).getAutoSystemName(), null, type);
-        Logix* logix = new Logix(((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->AbstractManager::getAutoSystemName(), nullptr);
+        Logix_Emulator* logix = new Logix_Emulator(((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->AbstractManager::getAutoSystemName(), nullptr);
 
         logix->setExecuteOnChange(_conditional->getTriggerOnChange());
 

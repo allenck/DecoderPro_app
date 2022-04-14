@@ -34,5 +34,5 @@
 
     //@Test
     /*public*/  void AbstractDigitalActionTestBase::testGetBeanType() {
-        Assert::assertTrue("String matches", "Digital action" ==(((DigitalActionBean*)_base->bself())->getBeanType()), __FILE__, __LINE__);
+        Assert::assertEquals("String matches", "Digital action", (((AbstractBase*)_base->bself())->getBeanType()), __FILE__, __LINE__);
     }

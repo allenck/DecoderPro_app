@@ -3,15 +3,17 @@
 
 #include <QObject>
 #include "femalesocketfactory.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
 #include "defaultfemaledigitalactionsocket.h"
 
 class DefaultFemaleDigitalActionSocketFactory : public QObject, public FemaleSocketFactory
 {
   Q_OBJECT
+  Q_INTERFACES(FemaleSocketFactory)
+ public:
   /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
-
+ public:
       //@Override
       /*public*/  QString getName()override {
           return "DefaultFemaleDigitalActionSocket";
@@ -24,7 +26,7 @@ class DefaultFemaleDigitalActionSocketFactory : public QObject, public FemaleSoc
 
       //@Override
       /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager()override {
-          return (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
+          return (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
       }
 
       //@Override

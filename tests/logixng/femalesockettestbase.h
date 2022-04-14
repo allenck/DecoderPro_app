@@ -299,7 +299,7 @@ private:
         }
 
         //@Override
-        /*public*/  QSet<VariableData*> getLocalVariables()override {
+        /*public*/  QSet<VariableData*>* getLocalVariables()override {
             throw new UnsupportedOperationException("Not supported.");
         }
 

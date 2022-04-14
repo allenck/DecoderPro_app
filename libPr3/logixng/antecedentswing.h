@@ -11,7 +11,7 @@ class AntecedentSwing : public AbstractDigitalExpressionSwing
   Q_INVOKABLE explicit AntecedentSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent){}
   ~AntecedentSwing() {}
   AntecedentSwing(const AntecedentSwing&) : AbstractDigitalExpressionSwing() {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString toString()override;

@@ -36,7 +36,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool AnalogExpressionMemorySwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool AnalogExpressionMemorySwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         return true;
     }
 

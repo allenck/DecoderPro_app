@@ -1,17 +1,17 @@
-#ifndef LOGIX_H
-#define LOGIX_H
+#ifndef LOGIX_EMULATOR_H
+#define LOGIX_EMULATOR_H
 
 #include "abstractdigitalaction.h"
 #include "femalesocketlistener.h"
 
 class FemaleDigitalBooleanActionSocket;
 class FemaleDigitalExpressionSocket;
-class Logix : public AbstractDigitalAction, public FemaleSocketListener
+class Logix_Emulator : public AbstractDigitalAction, public FemaleSocketListener
 {
   Q_OBJECT
   Q_INTERFACES(FemaleSocketListener)
  public:
-  Logix(QString sys, QString user, QObject *parent = nullptr);
+  Logix_Emulator(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/ override;
   /*public*/  Category* getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
@@ -48,4 +48,4 @@ class Logix : public AbstractDigitalAction, public FemaleSocketListener
 
 };
 
-#endif // LOGIX_H
+#endif // LOGIX_EMULATOR_H

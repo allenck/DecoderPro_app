@@ -308,7 +308,7 @@
         }
 
         // Do not include this menu for Module or Table tables
-        if (static_cast<LogixNGTableAction*>(this)) {
+        if (qobject_cast<LogixNGTableAction*>(this)) {
             JMenuItem* r = new JMenuItem(tr("Enable All LogixNGs"),(QObject*)this);  // NOI18N
             connect(r, &JMenuItem::triggered, [=]{
                 enableAll(true);
@@ -321,7 +321,8 @@
             });
             menu->addAction(r);
 
-            menuBar->insertMenu((QAction*)menuBar->children().at(pos+offset), menu/*, pos + offset*/);
+            QObjectList  l =menuBar->children();
+            menuBar->insertMenu((QAction*)menuBar->children().at(pos+offset-1), menu/*, pos + offset*/);
             offset++;
         }
 
@@ -334,7 +335,11 @@
         });
         menu->addAction(item);
 
-        menuBar->insertMenu((QAction*)menuBar->children().at(pos+offset), menu/*, pos + offset*/); // add this menu to the right of the previous
+        QObjectList  l =menuBar->children();
+        if((pos+offset-1)>= l.count())
+         offset--;
+        menuBar->insertMenu((QAction*)menuBar->children().at(pos+offset-1), menu/*, pos + offset*/); // add this menu to the right of the previous
+
     }
 
     /**
@@ -383,7 +388,7 @@
             QString buttonHintKey = getCreateButtonHintKey();
             JPanel* panel5 = makeAddFrame(titleKey, "Add");  // NOI18N
             // Create bean
-            create = new JButton(tr("ButtonCreate"));  // NOI18N
+            create = new JButton(tr("Create"));  // NOI18N
             panel5->layout()->addWidget(create);
             //create.addActionListener(this::createPressed);
             connect(create, &JButton::clicked, [=]{createPressed();});
@@ -651,7 +656,7 @@
             if (!checkLogixNGUserName(uName)) {
                 return;
             }
-            _curNamedBean = createBean(uName);
+            _curNamedBean = (Base*)createBean(uName);
             if (_curNamedBean == nullptr) {
                 log->error(tr("Failure to create bean with System Name: %1").arg("none"));  // NOI18N
                 return;
@@ -683,7 +688,7 @@
                 return;
             }
             // Create the new bean
-            _curNamedBean = createBean(sName, uName);
+            _curNamedBean = (Base*)createBean(sName, uName);
             if (_curNamedBean == nullptr) {
                 // should never get here unless there is an assignment conflict
                 log->error(tr("Failure to create bean with System Name: %1").arg(sName));  // NOI18N
@@ -715,7 +720,7 @@
      * @param sName system name of LogixNG to be edited
      */
     void AbstractLogixNGTableAction::editPressed(QString sName) {
-        _curNamedBean = getManager()->getBySystemName(sName);
+        _curNamedBean = (Base*)getManager()->getBySystemName(sName);
         if (!checkFlags(sName)) {
             return;
         }
@@ -923,7 +928,7 @@
      */
     void AbstractLogixNGTableAction::browserPressed(QString sName) {
         // bean was found, create the window
-        _curNamedBean = getManager()->getBySystemName(sName);
+        _curNamedBean = (Base*)getManager()->getBySystemName(sName);
         getPrintTreeSettings();
         makeBrowserWindow();
     }
@@ -944,7 +949,7 @@
      */
     void AbstractLogixNGTableAction::updateBrowserText() {
         if (_textContent != nullptr) {
-            _textContent->setText(getBeanText(_curNamedBean));
+            _textContent->setText(getBeanText((NamedBean*)_curNamedBean));
         }
     }
 
@@ -968,14 +973,14 @@
         JPanel* topPanel = new JPanel(new FlowLayout());
         QString tStr = tr("LogixNG:") + " " + _curNamedBean->getSystemName() + "    " // NOI18N
                 + _curNamedBean->getUserName() + "    "
-                + (isEnabled(_curNamedBean)
+                + (isEnabled((NamedBean*)_curNamedBean)
                         ? tr("(Enabled)") // NOI18N
                         : tr("(Disabled)"));  // NOI18N
         topPanel->layout()->addWidget(new JLabel(tStr));
         ((QVBoxLayout*)contentPane->layout())->addWidget(topPanel,0, Qt::AlignTop); //BorderLayout.NORTH);
 
         // Build the conditionalNGs listing
-        _textContent = new JTextArea(this->getBeanText(_curNamedBean));
+        _textContent = new JTextArea(this->getBeanText((NamedBean*)_curNamedBean));
         if (browseMonoSpace()) {
             _textContent->setFont(QFont("Monospace",12));//Font.MONOSPACED, Font.PLAIN, 12));
         }
@@ -1050,7 +1055,7 @@
         // Create the file content
         QString tStr = tr("BrowserLogixNG") + " " + _curNamedBean->getSystemName() + "    "  // NOI18N
                 + _curNamedBean->getUserName() + "    "
-                + (isEnabled(_curNamedBean)
+                + (isEnabled((NamedBean*)_curNamedBean)
                         ? tr("BrowserEnabled")    // NOI18N
                         : tr("BrowserDisabled"));  // NOI18N
 //        JTextArea textContent = buildConditionalListing();

@@ -39,11 +39,11 @@ public:
     /**
      * Locate a Light by its system name
      */
-    /*public*/ NamedBean *getBySystemName(QString name)  override;
+    /*public*/ Light *getBySystemName(QString name)  override;
     /**
      * Locate a Light by its user name
      */
-    /*public*/ NamedBean* getByUserName(QString key)  override;
+    /*public*/ Light *getByUserName(QString name)  override;
 
     /**
      * Return an instance with the specified system and user names.

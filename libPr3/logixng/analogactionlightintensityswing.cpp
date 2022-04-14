@@ -87,7 +87,7 @@ between 0.0 and 1.0.                                                \
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool AnalogActionLightIntensitySwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool AnalogActionLightIntensitySwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         // Create a temporary action to test formula
         AnalogActionLightIntensity* action = new AnalogActionLightIntensity("IQAA1", "");
 
@@ -96,7 +96,7 @@ between 0.0 and 1.0.                                                \
                 action->setReference(_lightReferenceTextField->toString());
            }
         } catch (IllegalArgumentException* e) {
-            errorMessages.append(e->getMessage());
+            errorMessages->append(e->getMessage());
             return false;
         }
 
@@ -114,7 +114,7 @@ between 0.0 and 1.0.                                                \
                 throw new IllegalArgumentException("_tabbedPane has unknown selection");
             }
         } catch (ParserException* e) {
-            errorMessages.append("Cannot parse formula: " + e->getMessage());
+            errorMessages->append("Cannot parse formula: " + e->getMessage());
         }
         return true;
     }

@@ -66,7 +66,7 @@
 
 //@Override
 /*public*/  QString AbstractDigitalAction::getBeanType() {
-    return tr("DigitalAction");
+    return tr("Digital action");
 }
 
 //@Override

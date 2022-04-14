@@ -15,7 +15,7 @@ class AbstractMaleSocketSwing : public AbstractSwingConfigurator
   /*public*/  BaseManager/*<? extends NamedBean>*/* getManager()override;
   /*public*/  /*final*/ JPanel* getConfigPanel(/*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/override;
   /*public*/  /*final*/ JPanel* getConfigPanel(/*@Nonnull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/override;
-  /*public*/  /*final*/ bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  /*final*/ bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  /*final*/ void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString getExampleSystemName()override;

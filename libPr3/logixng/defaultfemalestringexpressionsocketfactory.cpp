@@ -9,7 +9,7 @@
 ///*public*/  class DefaultFemaleStringExpressionSocketFactory : public FemaleSocketFactory {
 
     /*private*/ /*static*/ /*final*/ FemaleSocketManager::SocketType* DefaultFemaleStringExpressionSocketFactory::_femaleSocketType =
-      new FemaleSocketManager::SocketType();
+      new DefaultFemaleStringExpressionSocketFactory::SocketType();
 
 
     //@Override

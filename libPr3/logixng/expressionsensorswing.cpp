@@ -134,7 +134,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  bool ExpressionSensorSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+/*public*/  bool ExpressionSensorSwing::validate(/*@Nonnull*/ QList<QString>* errorMessages) {
     // Create a temporary expression to test formula
     ExpressionSensor* expression = new ExpressionSensor("IQDE1", "");
 
@@ -143,7 +143,7 @@
             expression->setReference(_sensorReferenceTextField->text());
         }
     } catch (IllegalArgumentException* e) {
-        errorMessages.append(e->getMessage());
+        errorMessages->append(e->getMessage());
         return false;
     }
 
@@ -152,7 +152,7 @@
             expression->setStateReference(_sensorStateReferenceTextField->text());
         }
     } catch (IllegalArgumentException* e) {
-        errorMessages.append(e->getMessage());
+        errorMessages->append(e->getMessage());
         return false;
     }
 
@@ -170,7 +170,7 @@
             throw new IllegalArgumentException("_tabbedPane has unknown selection");
         }
     } catch (ParserException* e) {
-        errorMessages.append("Cannot parse formula: " + e->getMessage());
+        errorMessages->append("Cannot parse formula: " + e->getMessage());
     }
     return true;
 }

@@ -5,14 +5,14 @@
 #include "digitalio.h"
 
 class LightControl;
-class Light :  /* public AbstractNamedBean,*/ public DigitalIO, public virtual NamedBean
+class Light :   public AbstractNamedBean, public DigitalIO, public virtual NamedBean
 {
-    //Q_OBJECT
+  Q_OBJECT
   Q_INTERFACES(NamedBean DigitalIO)
 public:
-//  explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
-//  Light(QString sysName, QObject* parent=0) : AbstractNamedBean(sysName, parent) {}
-//  Light(QString sysName, QString userName, QObject* parent=0) : AbstractNamedBean(sysName, userName, parent) {}
+  explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
+  Light(QString sysName, QObject* parent=0) : AbstractNamedBean(sysName, parent) {}
+  Light(QString sysName, QString userName, QObject* parent=0) : AbstractNamedBean(sysName, userName, parent) {}
 
 
     /**
@@ -367,5 +367,5 @@ signals:
 public slots:
     
 };
-Q_DECLARE_INTERFACE(Light, "Light")
+//Q_DECLARE_INTERFACE(Light, "Light")
 #endif // LIGHT_H

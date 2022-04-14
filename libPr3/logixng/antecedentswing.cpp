@@ -37,7 +37,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  bool AntecedentSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+/*public*/  bool AntecedentSwing::validate(/*@Nonnull*/ QList<QString>* errorMessages) {
     return true;
 }
 

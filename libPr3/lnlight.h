@@ -43,6 +43,8 @@ public:
     /*public*/ static /*final*/ const  int TRANSITIONING         = 0x010;
 
     //QObject* self() override {return this;}
+  QObject* pself() override{return (QObject*)this;}
+
 signals:
 
 public slots:

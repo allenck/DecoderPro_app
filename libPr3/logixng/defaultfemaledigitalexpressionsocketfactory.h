@@ -4,7 +4,7 @@
 #include "femalesocketfactory.h"
 #include "basemanager.h"
 #include "instancemanager.h"
-#include "digitalexpressionmanager.h"
+#include "defaultdigitalexpressionmanager.h"
 #include "femalesocketmanager.h"
 #include "defaultfemaledigitalexpressionsocket.h"
 
@@ -12,8 +12,9 @@ class DefaultFemaleDigitalExpressionSocketFactory : public QObject, public Femal
 {
     Q_OBJECT
     Q_INTERFACES(FemaleSocketFactory)
+ public:
   /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
-
+   public:
       //@Override
       /*public*/  QString getName() {
           return "DefaultFemaleDigitalExpressionSocket";
@@ -26,7 +27,7 @@ class DefaultFemaleDigitalExpressionSocketFactory : public QObject, public Femal
 
       //@Override
       /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager() {
-          return (DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
+          return (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
       }
 
       //@Override
@@ -40,7 +41,8 @@ class DefaultFemaleDigitalExpressionSocketFactory : public QObject, public Femal
       }
   };
  public:
-  DefaultFemaleDigitalExpressionSocketFactory(QObject* parent = nullptr) : QObject(parent){setObjectName("DefaultFemaleDigitalExpressionSocketFactory");}
+  DefaultFemaleDigitalExpressionSocketFactory(QObject* parent = nullptr)
+   : QObject(parent){setObjectName("DefaultFemaleDigitalExpressionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
 
  private:

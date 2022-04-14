@@ -60,7 +60,7 @@ class SwingConfiguratorInterface
    * @param errorMessages the error messages in case of an error
    * @return true if data in the form is valid, false otherwise
    */
-  /*public*/ virtual bool validate(/*@Nonnull */QList<QString> errorMessages)=0;
+  /*public*/ virtual bool validate(/*@Nonnull */QList<QString>* errorMessages)=0;
 
   /**
    * Get an example of a system name

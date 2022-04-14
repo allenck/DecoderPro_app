@@ -6,6 +6,7 @@
 #include "instancemanager.h"
 #include "importconditional.h"
 #include "defaultconditionalngmanager.h"
+#include "logix.h"
 
 /**
  * Imports Logixs to LogixNG

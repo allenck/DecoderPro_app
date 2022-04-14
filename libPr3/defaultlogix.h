@@ -10,7 +10,8 @@ class LIBPR3SHARED_EXPORT DefaultLogix : public Logix
     Q_OBJECT
 public:
     //explicit DefaultLogix(QObject *parent = 0);
-    /*public*/ DefaultLogix(QString systemName, QString userName = "", QObject *parent = 0);
+    /*public*/ DefaultLogix(QString systemName, QObject *parent = 0);
+    /*public*/ DefaultLogix(QString systemName, QString userName, QObject *parent = 0);
     /*public*/ int getNumConditionals()override;
     /*public*/ void swapConditional(int nextInOrder, int row) override;
     /*public*/ QString getConditionalByNumberOrder(int order)override ;

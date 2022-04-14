@@ -9,6 +9,8 @@
 #include "vptr.h"
 #include "conditionalng.h"
 #include "typeconversionutil.h"
+#include "defaultlogixngmanager.h"
+
 /**
  * This action sets the value of a memory.
  *
@@ -250,10 +252,10 @@
 /*private*/ void ActionMemory::parseOtherFormula() /*throws ParserException */{
     if (_memoryOperation == MemoryOperation::CalculateFormula) {
         QMap<QString, Variable*> variables = QMap<QString, Variable*>();
-/*
-        SymbolTable symbolTable =
-                InstanceManager.getDefault(LogixNG_Manager.class)
-                        .getSymbolTable();
+#if 0
+        SymbolTable* symbolTable = ((DefaultLogixNGManager*)
+                InstanceManager::getDefault("LogixNG_Manager"))
+                        ->getSymbolTable();
 
         if (symbolTable == null && 1==1) return;    // Why does this happens?
 //            if (symbolTable == null && 1==1) return;    // Nothing we can do if we don't have a symbol table
@@ -265,7 +267,7 @@
             variables.put(symbol.getName(),
                     new LocalVariableExpressionVariable(symbol.getName()));
         }
-*/
+#endif
         RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
         _otherExpressionNode = parser->parseExpression(_otherFormula);
     } else {
@@ -479,7 +481,7 @@ void AMRun::run()
 
 //@Override
 /*public*/  QString ActionMemory::getShortDescription(QLocale locale) {
-    return tr(/*locale,*/ "ActionMemory_Short");
+    return tr(/*locale,*/ "Memory");
 }
 
 //@Override

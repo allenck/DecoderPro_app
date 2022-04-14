@@ -14,19 +14,18 @@ class BaseManager;
     public:
     /*public*/ /*interface*/class SocketType {
      public:
-    /*public*/ virtual QString getName() {return "?";}
+    /*public*/ virtual QString getName() {return "";}
 
-        /*public*/ virtual QString getDescr(){return "?";}
+      /*public*/ virtual QString getDescr(){return "";}
 
-    /*public*/ virtual BaseManager/*<? extends MaleSocket>*/* getManager(){return nullptr;}
+      /*public*/ virtual BaseManager/*<? extends MaleSocket>*/* getManager() {return nullptr;}
 
-        /*public*/ virtual FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name){return nullptr;}
-
+      /*public*/ virtual FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name){return nullptr;}
     };
 
-    /*public*/ virtual QMap<QString, SocketType*> getSocketTypes()=0;
+  /*public*/ virtual QMap<QString, SocketType*> getSocketTypes() {return QMap<QString, SocketType*>();}
 
-    /*public*/ virtual SocketType* getSocketTypeByType(QString type)=0;
+    /*public*/ virtual SocketType* getSocketTypeByType(QString type) {return nullptr;}
 
 };
 

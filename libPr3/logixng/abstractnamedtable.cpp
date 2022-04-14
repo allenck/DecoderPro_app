@@ -3,7 +3,7 @@
 #include "defaultnamedtablemanager.h"
 #include "instancemanager.h"
 #include "defaultcsvnamedtable.h"
-
+#include "fileutil.h"
 /**
  * The default implementation of a NamedTable
  *
@@ -97,8 +97,12 @@
         QVector<QVector<QVariant> >csvCellsV =  QVector<QVector<QVariant> >(numRows+1);//QString[numRows+1][];
         for (int rowCount = 0; rowCount < numRows+1; rowCount++) {
             QVector<QString> columns = lines.at(rowCount).split("\t").toVector();
+            QVector<QVariant> columnsV = QVector<QVariant>(columns.size());
+            for(int col = 0; col < columns.size(); col++)
+             columnsV.replace(col, QVariant(columns.at(col)));
             if (numColumns < columns.length()) numColumns = columns.length();
             csvCells[rowCount] = columns;
+            csvCellsV[rowCount] =columnsV;
         }
 
         // Ensure all rows have same number of columns
@@ -144,8 +148,15 @@
             /*@Nonnull*/  QString systemName, /*@CheckForNull*/ QString userName,
             /*@Nonnull*/  QString fileName, bool registerInManager)
             /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException*/ {
-#if 0 // TODO define class "Files"
-        QList<QString> lines = Files::readAllLines(FileUtil::getFile(fileName).toPath(), StandardCharsets.UTF_8);
+#if 01// TODO define class "Files"
+        //QList<QString> lines = Files::readAllLines(FileUtil::getFile(fileName).toPath(), StandardCharsets.UTF_8);
+        QString absPath = FileUtil::getAbsoluteFilename(fileName);
+        QTextStream* stream = FileUtil::findInputStream(absPath);
+        if(!stream)
+         throw  new IOException(tr("error reading %1").arg(fileName));
+        QStringList lines;
+        while(!stream->atEnd())
+         lines.append(stream->readLine());
         return loadFromCSV(systemName, userName, fileName, lines, registerInManager);
 #endif
     }
@@ -155,10 +166,18 @@
             /*@Nonnull*/  QString systemName, /*@CheckForNull*/ QString userName,
             /*@Nonnull*/  File* file, bool registerInManager)
             /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException*/ {
-#if 0 // TODO define class "Files"
+#if 1// TODO define class "Files"
 
-        QList<QString> lines = Files::readAllLines(file.toPath(), StandardCharsets.UTF_8);
-        return loadFromCSV(systemName, userName, file.getPath(), lines, registerInManager);
+        //QList<QString> lines = Files::readAllLines(file.toPath(), StandardCharsets.UTF_8);
+     QFile* f = new QFile(file->getPath());
+     if(!f->open(QIODevice::ReadOnly))
+      throw new IOException();
+     QTextStream stream(f);
+     QStringList lines;
+     while(!stream.atEnd())
+      lines.append(stream.readLine());
+     f->close();
+     return loadFromCSV(systemName, userName, file->getPath(), lines, registerInManager);
 #endif
     }
 

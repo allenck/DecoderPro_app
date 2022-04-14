@@ -204,7 +204,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool TableForEachSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool TableForEachSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         // Create a temporary action to test formula
         TableForEach* action = new TableForEach("IQDA1", "");
 
@@ -235,7 +235,7 @@
                 throw new IllegalArgumentException("_tabbedRowOrColumnPane has unknown selection");
             }
         } catch (ParserException* e) {
-            errorMessages.append("Cannot parse formula: " + e->getMessage());
+            errorMessages->append("Cannot parse formula: " + e->getMessage());
             return false;
         }
         return true;

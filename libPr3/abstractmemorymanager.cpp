@@ -40,11 +40,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     if (m != nullptr) {
         return m;
     }
-    if (sName.startsWith(getSystemNamePrefix())) {
-        return newMemory(sName, nullptr);
-    } else {
-        return newMemory(makeSystemName(sName), nullptr);
-    }
+    return getBySystemName(sName);
 }
 
 /*public*/ Memory* AbstractMemoryManager::getBySystemName(QString name)  {

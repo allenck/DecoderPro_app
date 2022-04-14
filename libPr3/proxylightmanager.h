@@ -27,7 +27,7 @@ public:
   /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throws jmri.JmriException*/ override;
  /*public*/ QString getEntryToolTip()override;
  /*public*/ QString getBeanTypeHandled(bool plural)const override;
- /*public*/ NamedBean* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/override;
+ /*public*/ Light* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }
@@ -40,7 +40,12 @@ public:
 
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
   /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
-  /*public*/ Light* getBySystemName(QString name) override {return (Light*)AbstractProxyManager::getBySystemName(name)->self();}
+  /*public*/ Light* getBySystemName(QString name) override {
+    if(AbstractProxyManager::getBySystemName(name))
+     return (Light*)AbstractProxyManager::getBySystemName(name)->self();
+    else return nullptr;
+  }
+
   /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
   /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 
@@ -51,7 +56,7 @@ private:
  static Logger* log;
 protected:
  /*protected*/ AbstractManager *makeInternalManager() const override;
- /*protected*/ NamedBean* makeBean(AbstractManager* manager, QString systemName, QString userName)override;
+ /*protected*/ Light *makeBean(AbstractManager* manager, QString systemName, QString userName)override;
  friend class AbstractProxyManager;
 };
 

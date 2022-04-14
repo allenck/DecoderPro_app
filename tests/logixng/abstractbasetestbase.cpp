@@ -129,7 +129,7 @@
     //@Test
     /*public*/  void AbstractBaseTestBase::testFemaleSocketSystemName() {
         for (int i=0; i < _base->getChildCount(); i++) {
-            Assert::assertEquals(_base->getSystemName(), _base->getChild(i)->getSystemName(), __FILE__, __LINE__);
+            Assert::assertEquals(((AbstractBase*)_base->bself())->AbstractNamedBean::getSystemName(), _base->getChild(i)->getSystemName(), __FILE__, __LINE__);
         }
     }
 #if 0
@@ -261,7 +261,7 @@
         PrintWriter* printWriter = new PrintWriter(stringWriter);
         int mutableInt=0;
         Base* b = ((AbstractBase*)_base->bself());
-        b->printTree(QLocale("English"), printWriter, TREE_INDENT,&mutableInt);
+        _base->printTree(QLocale("English"), printWriter, TREE_INDENT,&mutableInt);
         Assert::assertEquals("Tree is equal", getExpectedPrintedTreeFromRoot(), stringWriter->toString(), __FILE__, __LINE__);
     }
 

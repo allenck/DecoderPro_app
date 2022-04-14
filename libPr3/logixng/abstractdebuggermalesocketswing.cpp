@@ -79,7 +79,7 @@
 */
     /** {@inheritDoc} */
     //@Override
-    /*public*/  /*final*/ bool AbstractDebuggerMaleSocketSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  /*final*/ bool AbstractDebuggerMaleSocketSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         return true;
     }
 

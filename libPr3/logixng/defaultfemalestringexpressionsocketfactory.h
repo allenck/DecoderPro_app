@@ -4,7 +4,7 @@
 #include <QObject>
 #include "femalesocketfactory.h"
 #include "femalesocketmanager.h"
-#include "stringexpressionmanager.h"
+#include "defaultstringexpressionmanager.h"
 #include "instancemanager.h"
 #include "defaultfemalestringexpressionsocket.h"
 
@@ -13,15 +13,8 @@ class DefaultFemaleStringExpressionSocketFactory : public QObject, public Female
   Q_OBJECT
   Q_INTERFACES(FemaleSocketFactory)
  public:
-  explicit DefaultFemaleStringExpressionSocketFactory(QObject *parent = nullptr) : QObject(parent) {}
-  /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
-
- signals:
-
- private:
-  /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();
-  /*private*/ /*static*/ class SocketType : FemaleSocketManager::SocketType {
-
+  /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
+   public:
       //@Override
       /*public*/  QString getName() {
           return "DefaultFemaleStringExpressionSocket";
@@ -34,7 +27,7 @@ class DefaultFemaleStringExpressionSocketFactory : public QObject, public Female
 
       //@Override
       /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager() {
-          return (StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
+          return (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
       }
 
       //@Override
@@ -47,6 +40,13 @@ class DefaultFemaleStringExpressionSocketFactory : public QObject, public Female
           return getDescr();
       }
   };
+  explicit DefaultFemaleStringExpressionSocketFactory(QObject *parent = nullptr) : QObject(parent) {}
+  /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
+
+ private:
+  /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();
+ public:
+
 };
 
 #endif // DEFAULTFEMALESTRINGEXPRESSIONSOCKETFACTORY_H

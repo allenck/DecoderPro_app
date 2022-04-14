@@ -10,7 +10,8 @@
 
    /*public*/  DefaultFemaleSocketManager::DefaultFemaleSocketManager(QObject* parent) : QObject(parent) {
        foreach (FemaleSocketFactory* actionFactory , /*ServiceLoader.load("FemaleSocketFactory")*/serviceList) {
-           femaleSocketTypes.insert(actionFactory->getFemaleSocketType()->getName(), actionFactory->getFemaleSocketType());
+        QString name =actionFactory->getFemaleSocketType()->getName();
+        femaleSocketTypes.insert(actionFactory->getFemaleSocketType()->getName(), actionFactory->getFemaleSocketType());
        }
    }
 

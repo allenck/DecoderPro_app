@@ -3,23 +3,17 @@
 
 #include <QObject>
 #include "femalesocketfactory.h"
-#include "analogexpressionmanager.h"
+#include "defaultanalogexpressionmanager.h"
 #include "instancemanager.h"
 #include "defaultfemaleanalogexpressionsocket.h"
 
 class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public FemaleSocketFactory
 {
   Q_OBJECT
+  Q_INTERFACES(FemaleSocketFactory)
  public:
-  explicit DefaultFemaleAnalogExpressionSocketFactory(QObject *parent = nullptr)
-   : QObject(parent) {setObjectName("DefaultFemaleAnalogExpressionSocketFactory");}
-
-
- signals:
-
- private:
-  /*private*/ /*static*/ class SocketType : FemaleSocketManager::SocketType {
-
+  /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
+  public:
       //@Override
       /*public*/  QString getName() {
           return "DefaultFemaleAnalogExpressionSocket";
@@ -32,7 +26,7 @@ class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public Female
 
       //@Override
       /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager() {
-          return (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
+          return (DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
       }
 
       //@Override
@@ -45,6 +39,8 @@ class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public Female
           return getDescr();
       }
   };
+  explicit DefaultFemaleAnalogExpressionSocketFactory(QObject *parent = nullptr)
+   : QObject(parent) {setObjectName("DefaultFemaleAnalogExpressionSocketFactory");}
   /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
 
  private:

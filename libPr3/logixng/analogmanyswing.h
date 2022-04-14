@@ -10,7 +10,7 @@ class AnalogManySwing : public AbstractAnalogActionSwing
   Q_INVOKABLE explicit AnalogManySwing(QObject *parent = nullptr) : AbstractAnalogActionSwing(parent){setObjectName("AnalogManySwing");}
   ~AnalogManySwing() {}
   AnalogManySwing(const AnalogManySwing&) : AbstractAnalogActionSwing() {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages) override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages) override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString toString()override;

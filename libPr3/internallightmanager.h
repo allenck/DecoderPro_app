@@ -43,6 +43,8 @@ public:
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, NamedBean* n) override{
         return (new PreferNumericComparator())->compare(suffix1, suffix2);
     }
+ QObject* pself() override{return (QObject*)this;}
+
  protected:
     //@Override
     /*protected*/ void sendIntensity(double /*intensity*/) override{

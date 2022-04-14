@@ -38,6 +38,15 @@
 #include "defaultmalestringactionsocketxml.h"
 #include "defaultmalestringexpressionsocketxml.h"
 #include "stringformulaswing.h"
+#include "andswing.h"
+#include "notswing.h"
+#include "falsexml.h"
+#include "expressionsensorxml.h"
+#include "orxml.h"
+#include "andxml.h"
+#include "logixngmoduletableaction.h"
+#include "logixngtableaction.h"
+#include "logixngtabletableaction.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -53,6 +62,11 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<FunctionManager>("FunctionManager");
    qRegisterMetaType<TableForEachXml>("TableForEachXml");
    qRegisterMetaType<AnalogManyXml>("AnalogManyXml");
+   qRegisterMetaType<OrXml>("OrXml");
+   qRegisterMetaType<AndXml>("AndXml");
+   qRegisterMetaType<LogixNGModuleTableAction>("LogixNGModuleTableAction");
+   qRegisterMetaType<LogixNGTableAction>("LogixNGTableAction");
+   qRegisterMetaType<LogixNGTableTableAction>("LogixNGTableTableAction");
 
    qRegisterMetaType<DefaultMaleAnalogActionSocketXml>("DefaultMaleAnalogActionSocketXml");
    qRegisterMetaType<DefaultMaleAnalogExpressionSocketXml>("DefaultMaleAnalogExpressionSocketXml");
@@ -60,6 +74,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DefaultMaleDigitalExpressionSocketXml>("DefaultMaleDigitalExpressionSocketXml");
    qRegisterMetaType<DefaultMaleStringActionSocketXml>("DefaultMaleStringActionSocketXml");
    qRegisterMetaType<DefaultMaleStringExpressionSocketXml>("DefaultMaleStringExpressionSocketXml");
+   qRegisterMetaType<ExpressionSensorXml>("ExpressionSensorXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -78,10 +93,12 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DigitalBooleanOnChangeSwing>("DigitalBooleanOnChangeSwing");
 
    // AbstractDigitalExpressionSwing
+   qRegisterMetaType<AndSwing>("AndSwing");
    qRegisterMetaType<AntecedentSwing>("AntecedentSwing");
    qRegisterMetaType<DigitalFormulaSwing>("DigitalFormulaSwing");
    qRegisterMetaType<ExpressionSensorSwing>("ExpressionSensorSwing");
    qRegisterMetaType<FalseSwing>("FalseSwing");
+   qRegisterMetaType<NotSwing>("NotSwing");
    qRegisterMetaType<OrSwing>("OrSwing");
    qRegisterMetaType<TrueSwing>("TrueSwing");
 

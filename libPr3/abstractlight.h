@@ -6,10 +6,10 @@
 #include "lightcontrol.h"
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT AbstractLight :  public AbstractNamedBean, public virtual Light
+class LIBPR3SHARED_EXPORT AbstractLight :  /*public AbstractNamedBean,*/ public  Light, public PropertyChangeListener
 {
     Q_OBJECT
-    Q_INTERFACES(Light)
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit AbstractLight(QObject *parent = 0);
     /*public*/ AbstractLight(QString systemName, QString userName, QObject *parent = 0);
@@ -39,6 +39,7 @@ public:
 
    /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
   QObject* self() override {return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
 signals:
     void propertyChange(QString propertyName, int oldState, int newState);

@@ -11,7 +11,7 @@ class DigitalBooleanManySwing : public AbstractBooleanActionSwing
    : AbstractBooleanActionSwing(parent) {setObjectName("DigitalBooleanManySwing");}
   ~DigitalBooleanManySwing() {}
   DigitalBooleanManySwing(const DigitalBooleanManySwing&) : AbstractBooleanActionSwing() {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object) override;
   /*public*/  QString toString()override;

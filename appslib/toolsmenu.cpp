@@ -122,6 +122,13 @@ void ToolsMenu::common()
  tableMenu->addAction(new ListedTableAction(tr("Routes"), "jmri.jmrit.beantable.RouteTableAction",this));
  tableMenu->addAction(new ListedTableAction(tr("LRoutes"), "jmri.jmrit.beantable.LRouteTableAction",this));
  tableMenu->addAction(new ListedTableAction(tr("Logix"), "jmri.jmrit.beantable.LogixTableAction",this));
+#if HAVE_LOGIXNG
+ QMenu* logixNG_Menu = new QMenu(tr("LogixNG"));
+ logixNG_Menu->addAction(new ListedTableAction(tr("LogixNGs"), "jmri.jmrit.beantable.LogixNGTableAction", this));
+ logixNG_Menu->addAction(new ListedTableAction(tr("LogixNG Modules"),"jmri.jmrit.beantable.LogixNGModuleTableAction", this));
+ logixNG_Menu->addAction(new ListedTableAction(tr("LogixNG Tables"), "jmri.jmrit.beantable.LogixNGTableTableAction", this));
+ tableMenu->addMenu(logixNG_Menu);
+#endif
  tableMenu->addAction(new OBlockTableAction(tr("Occupancy Blocks"),this));
  tableMenu->addAction(new ListedTableAction(tr("Blocks"), "jmri.jmrit.beantable.BlockTableAction",this));
  tableMenu->addAction(new ListedTableAction(tr("Sections"), "jmri.jmrit.beantable.SectionTableAction",this));

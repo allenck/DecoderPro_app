@@ -18,6 +18,8 @@ public:
  /*public*/ void message(JMRIClientMessage* m);
  //QObject* self() override {return this;}
 
+ QObject* pself() override{return (QObject*)this;}
+
 private:
  static Logger* log;
  // data members

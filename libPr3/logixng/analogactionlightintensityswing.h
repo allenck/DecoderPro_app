@@ -13,7 +13,7 @@ class AnalogActionLightIntensitySwing : public AbstractAnalogActionSwing
    : AbstractAnalogActionSwing(parent) {setObjectName("AnalogActionLightIntensitySwing");}
   ~AnalogActionLightIntensitySwing() {}
   AnalogActionLightIntensitySwing(const AnalogActionLightIntensitySwing&) : AbstractAnalogActionSwing() {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages) override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages) override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object) override;
   /*public*/  QString toString()override;

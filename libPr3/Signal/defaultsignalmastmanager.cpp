@@ -85,11 +85,19 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getBySystemName(QString key) {
-    return (SignalMast*)_tsys->value(key)->self();
+    //return (SignalMast*)_tsys->value(key)->self();
+ NamedBean* nb = _tsys->value(key);
+ if(nb)
+  return (SignalMast*)nb->self();
+ return nullptr;
 }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) {
-    return (SignalMast*)_tuser->value(key)->self();
+    //return (SignalMast*)_tuser->value(key)->self();
+ NamedBean* nb = _tuser->value(key);
+ if(nb)
+  return (SignalMast*)nb->self();
+ return nullptr;
 }
 //@Override
 //@Nonnull

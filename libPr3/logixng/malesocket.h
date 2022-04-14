@@ -168,7 +168,7 @@ public:
 
   /*public*/ virtual void clearLocalVariables() {}
 
-  /*public*/ virtual QSet<VariableData*> getLocalVariables() {return QSet<VariableData*>();}
+  /*public*/ virtual QSet<VariableData*>* getLocalVariables() =0;//{return QSet<VariableData*>();}
 
     /**
      * Get the error handling type for this socket.

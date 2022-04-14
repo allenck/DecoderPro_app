@@ -15,7 +15,7 @@
 #include "defaultlogixngmanager.h"
 #include "defaultconditionalngscaffold.h"
 #include "defaultconditionalngmanager.h"
-#include "logixng/logix.h"
+#include "logix_emulator.h"
 #include "expressionsensor.h"
 #include "junitappender.h"
 #include "defaultdigitalexpressionmanager.h"
@@ -316,7 +316,7 @@
         conditionalNG->setEnabled(true);
         conditionalNG->setRunDelayed(false);
         logixNG->addConditionalNG(conditionalNG);
-        Logix* action = new Logix("IQDA321", "");
+        Logix_Emulator* action = new Logix_Emulator("IQDA321", "");
         MaleSocket* maleSocket = (MaleSocket*)((DefaultDigitalActionManager*)
                 InstanceManager::getDefault("DigitalActionManager"))->registerAction(action)->self();
         conditionalNG->getChild(0)->_connect(maleSocket);

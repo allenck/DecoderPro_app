@@ -29,13 +29,13 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  bool AnalogExpressionConstantSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+/*public*/  bool AnalogExpressionConstantSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
     if (_constant->text().isEmpty()) return true;
 
     bool ok;
         _constant->text().toDouble(&ok);
     if(!ok) {
-        errorMessages.append(tr("The value \"%1\" is not a number").arg(_constant->text()));
+        errorMessages->append(tr("The value \"%1\" is not a number").arg(_constant->text()));
         return false;
     }
     return true;

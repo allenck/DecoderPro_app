@@ -103,9 +103,18 @@ WarrantManager::WarrantManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ Warrant* WarrantManager::getWarrant(QString name) {
-    Warrant* r = (Warrant*)getByUserName(name)->self();
-    if (r!=NULL) return r;
-    return (Warrant*)getBySystemName(name)->self();
+    //Warrant* r = (Warrant*)getByUserName(name)->self();
+//    if (r!=NULL) return r;
+//    return (Warrant*)getBySystemName(name)->self();
+ Warrant* r = nullptr;
+ NamedBean* nb = nullptr;
+ nb = getByUserName(name);
+ if(nb)
+  return (Warrant*)nb->self();
+ nb = getBySystemName(name);
+ if(nb)
+  return (Warrant*)nb->self();
+ return nullptr;
 }
 
 /*public*/ NamedBean *WarrantManager::getBySystemName(QString name) {

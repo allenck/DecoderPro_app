@@ -128,9 +128,9 @@ class TreeEditor : public TreeViewer
 
  friend class TEClipboardListener;
  friend class PopupMenu;
- friend class DeleteBeanWorker;
+ friend class DeleteBeanWorker2;
  friend class TEPopupMenu;
- friend class DeleteBeanWorker;
+ friend class DeleteBeanWorker2;
 #if 0
  class TEClipboardListener : public ClipboardEventListener
  {
@@ -151,7 +151,7 @@ class TreeEditor : public TreeViewer
 #endif
 };
  // This class is copied from BeanTableDataModel
- /*private*/ class DeleteBeanWorker : public QObject//: public SwingWorker<void, void> {
+ /*private*/ class DeleteBeanWorker2 : public QObject//: public SwingWorker<void, void> {
  {
    Q_OBJECT
      /*private*/ /*final*/ FemaleSocket* _currentFemaleSocket;
@@ -160,7 +160,7 @@ class TreeEditor : public TreeViewer
      TEPopupMenu* treeEditor;
 
   public:
-     /*public*/  DeleteBeanWorker(FemaleSocket* currentFemaleSocket, TreePath* currentPath, TEPopupMenu* treeEditor);
+     /*public*/  DeleteBeanWorker2(FemaleSocket* currentFemaleSocket, TreePath* currentPath, TEPopupMenu* treeEditor);
      /*public*/  int getDisplayDeleteMsg();
      /*public*/  void setDisplayDeleteMsg(int boo);
      /*public*/  void doDelete();
@@ -242,7 +242,7 @@ private:
 
 friend class TreePane;
 friend class TreeEditor;
-friend class DeleteBeanWorker;
+friend class DeleteBeanWorker2;
 };
 
 class TEClipboardListener : public QObject, public /*ClipboardEventListener*/EventListener

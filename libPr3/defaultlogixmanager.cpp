@@ -32,7 +32,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  ((AbstractManager*)InstanceManager::getDefault("ConditionalManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
  ((AbstractManager*) InstanceManager::getDefault("WarrantManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
  ((AbstractManager*)InstanceManager::getDefault("OBlockManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
- ((AbstractManager*)InstanceManager::getDefault("EntryExitPairs"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->VetoableChangeSupport::addVetoableChangeListener(this);
 }
 /**
  * Basic Implementation of a LogixManager.
@@ -69,14 +69,25 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  */
 /*public*/ Logix* DefaultLogixManager::createNewLogix(QString systemName, QString userName) {
     // Check that Logix does not already exist
-    Logix* x;
+    Logix* x = nullptr;
+    NamedBean* nb = nullptr;
     if (userName!= "" ) {
-        x = (Logix*)getByUserName(userName)->self();
-        if (x!=nullptr) return nullptr;
+     nb = getByUserName(userName);
+     if(nb)
+        x = (Logix*)nb->self();
     }
-    x = (Logix*)getBySystemName(systemName)->self();
-    if (x==nullptr) x = (Logix*)getBySystemName(systemName.toUpper())->self();   // for compatibility?
-    if (x!=nullptr) return nullptr;
+    if(!nb)
+    {
+     nb = getBySystemName(systemName);
+     if(nb)
+      x = (Logix*)nb->self();
+    }
+    if (x==nullptr) {
+     nb = getBySystemName(systemName.toUpper());
+     if(nb)
+      x = (Logix*)nb->self();   // for compatibility?
+    }
+    if (x!=nullptr) return x;
     // Logix does not exist, create a new Logix
     x = (Logix*)new DefaultLogix(systemName,userName);
     // save in the maps

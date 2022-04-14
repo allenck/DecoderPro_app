@@ -1138,6 +1138,22 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/actiontimer.cpp \
+    logixng/logix_emulator.cpp \
+    logixng/logixngmoduletableaction.cpp \
+    logixng/moduleeditor.cpp \
+    logixng/moduleeditormalesocket.cpp \
+    logixng/andswing.cpp \
+    logixng/expressionlight.cpp \
+    logixng/expressionlightxml.cpp \
+    logixng/expressionsensorxml.cpp \
+    logixng/expressionturnoutxml.cpp \
+    logixng/falsexml.cpp \
+    logixng/hold.cpp \
+    logixng/holdxml.cpp \
+    logixng/notswing.cpp \
+    logixng/orxml.cpp \
+    logixng/triggeroncexml.cpp \
     logixng/stringformula.cpp \
     logixng/stringformulaswing.cpp \
     logixng/stringformulaxml.cpp \
@@ -1185,7 +1201,6 @@ equals(ENABLE_LOGIXNG, "Y") {
     logixng/protectedtimertask.cpp \
     logixng/triggeronce.cpp \
     logixng/true.cpp \
-    logixng/logix.cpp \
     logixng/expressionsensor.cpp \
     logixng/expressionsensorswing.cpp \
     logixng/and.cpp \
@@ -2524,6 +2539,22 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/logix_emulator.h \
+    logixng/actiontimer.h \
+    logixng/logixngmoduletableaction.h \
+    logixng/moduleeditor.h \
+    logixng/moduleeditormalesocket.h \
+    logixng/andswing.h \
+    logixng/expressionlight.h \
+    logixng/expressionlightxml.h \
+    logixng/expressionsensorxml.h \
+    logixng/expressionturnoutxml.h \
+    logixng/falsexml.h \
+    logixng/hold.h \
+    logixng/holdxml.h \
+    logixng/notswing.h \
+    logixng/orxml.h \
+    logixng/triggeroncexml.h \
     logixng/stringformula.h \
     logixng/stringformulaswing.h \
     logixng/stringformulaxml.h \
@@ -2578,7 +2609,6 @@ HEADERS += \
     logixng/timerunit.h \
     logixng/triggeronce.h \
     logixng/true.h \
-    logixng/logix.h \
     logixng/expressionsensor.h \
     logixng/expressionsensorswing.h \
     logixng/and.h \

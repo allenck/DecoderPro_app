@@ -44,6 +44,7 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
+ powermanagerscaffold.cpp \
         tests.cpp \
         logix/defaultconditionalmanagertest.cpp \
         junitutil.cpp \
@@ -287,6 +288,11 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/actionmemorytest.cpp \
+    logixng/actionmemorytestaction.cpp \
+    logixng/storeandloadtest.cpp \
+    logixng/storeandloadtestaction.cpp \
+    logixng/andtestaction.cpp \
     logixng/expressionlighttest.cpp \
     logixng/expressionlocalvariabletest.cpp \
     logixng/truetest.cpp \
@@ -379,6 +385,7 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
+ powermanagerscaffold.h \
         tests.h \
         tests_global.h \
         junitutil.h \
@@ -623,6 +630,11 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/actionmemorytest.h \
+    logixng/actionmemorytestaction.h \
+    logixng/storeandloadtest.h \
+    logixng/storeandloadtestaction.h \
+    logixng/andtestaction.h \
     logixng/expressionlighttest.h \
     logixng/expressionlocalvariabletest.h \
     logixng/truetest.h \

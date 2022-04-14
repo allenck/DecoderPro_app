@@ -20,7 +20,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
 {
   Q_OBJECT
  public:
-  explicit AbstractLogixNGTableAction(QString s,QObject *parent);
+  explicit AbstractLogixNGTableAction(QString s,QObject *parent=nullptr);
   /*public*/  void setMenuBar(BeanTableFrame* f);
   /*public*/  void setMessagePreferencesDetails()override;
   /*public*/  QString getClassDescription()override;
@@ -43,7 +43,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   JTextField* _addUserName = new JTextField(20);
   JCheckBox* _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));   // NOI18N
   JLabel* _sysNameLabel = new JLabel(tr("LogixNG") + " " + tr("SystemName") + ":");  // NOI18N
-  JLabel* _userNameLabel = new JLabel(tr("BeanNameLogixNG") + " " + tr("ColumnUserName") + ":");   // NOI18N
+  JLabel* _userNameLabel = new JLabel(tr("LogixNG") + " " + tr("ColumnUserName") + ":");   // NOI18N
   QString systemNameAuto = QString("jmri.jmrit.beantable.AbstractLogixNGTableAction") + ".AutoSystemName";       // NOI18N
   JButton* create =nullptr;
 
@@ -93,7 +93,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   /*protected*/ void createModel()override;
   /*protected*/ void setTitle()override;
   /*protected*/ QString helpTarget()override;
-  /*protected*/ NamedBean* _curNamedBean = nullptr;
+  /*protected*/ Base* _curNamedBean = nullptr;
   /*protected*/ /*final*/ Base::PrintTreeSettings* _printTreeSettings = new  Base::PrintTreeSettings();
   /*protected*/ /*abstract*/virtual JPanel* makeAddFrame(QString titleId, QString startMessageId)=0;
   /*protected*/ QString getClassName()override;
@@ -107,6 +107,8 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   friend class LogixNGTableTableAction;
   friend class LogixNGTableAction;
   friend class LNGTE_windowListener;;
+  friend class LogixNGModuleTableAction;
+  friend class LogixNGModuleTableAction_WindowListener;
 };
 
 class LNGBeanTableDataModel : public BeanTableDataModel

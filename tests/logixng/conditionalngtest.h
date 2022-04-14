@@ -8,7 +8,7 @@ class ConditionalNGTest : public QObject
 {
   Q_OBJECT
  public:
-  explicit ConditionalNGTest(QObject *parent = nullptr) : QObject(parent)  {}
+  explicit ConditionalNGTest(QObject *parent = nullptr) : QObject(parent)  {setObjectName("ConditionalNGTest");}
   Q_INVOKABLE /*public*/  void setUp();
   Q_INVOKABLE /*public*/  void tearDown();
   /*public*/  void setupInitialConditionalNGTree(ConditionalNG* conditionalNG);

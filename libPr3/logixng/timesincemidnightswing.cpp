@@ -43,7 +43,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  bool TimeSinceMidnightSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+/*public*/  bool TimeSinceMidnightSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
     return true;
 }
 

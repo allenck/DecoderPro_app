@@ -9,7 +9,7 @@ class OrSwing : public AbstractDigitalExpressionSwing
   explicit OrSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing() {}
   ~OrSwing() {}
   OrSwing(const OrSwing& ) : AbstractDigitalExpressionSwing() {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString toString()override;

@@ -48,15 +48,15 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
   return (Light*) AbstractProxyManager::getNamedBean(name)->self();
 }
 
-/*protected*/ NamedBean* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
+/*protected*/ Light* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
 {
- return  (NamedBean*)((AbstractLightManager*)manager->mself())->newLight(systemName, userName)->self();
+ return  ((AbstractLightManager*)manager->mself())->newLight(systemName, userName);
 }
 
 //@Override
 /** {@inheritDoc} */
-/*public*/ NamedBean* ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
- return (NamedBean*)provideLight(name)->self();
+/*public*/ Light *ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
+ return (Light*)provideLight(name);
 }
 
 /**

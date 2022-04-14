@@ -95,7 +95,8 @@
     QMap<QString, Variable*> variables = QMap<QString, Variable*>();
     RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
     for (int i=0; i < getChildCount(); i++) {
-        Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket*)getChild(i)->bself());
+        FemaleSocket* fs = getChild(i);
+        Variable* v = new GenericExpressionVariable((DefaultFemaleGenericExpressionSocket*)getChild(i)->bself());
         variables.insert(v->getName(), v);
     }
     _expressionNode = parser->parseExpression(formula);

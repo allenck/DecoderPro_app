@@ -6,7 +6,7 @@
 #include "abstractlight.h"
 #include "variablelight.h"
 class PropertyChangeListener;
-class LIBPR3SHARED_EXPORT AbstractVariableLight : public AbstractLight, public VariableLight
+class LIBPR3SHARED_EXPORT AbstractVariableLight : /*public AbstractLight */ public VariableLight
 {
     Q_OBJECT
   //Q_INTERFACES(VariableLight);

@@ -31,7 +31,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool DigitalBooleanOnChangeSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool DigitalBooleanOnChangeSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         return true;
     }
 

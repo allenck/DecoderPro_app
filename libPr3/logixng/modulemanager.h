@@ -36,7 +36,7 @@ class MutableInt;
      * @param socketType the socket type
      * @return a new Module or null if unable to create
      */
-    /*public*/ virtual Module* createModule(QString userName, FemaleSocketManager::SocketType* socketType)
+    /*public*/ virtual /*Module*/NamedBean* createModule(QString userName, FemaleSocketManager::SocketType* socketType)
             /*throw (IllegalArgumentException)*/=0;
 
     /**

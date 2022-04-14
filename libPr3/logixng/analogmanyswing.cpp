@@ -17,7 +17,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool AnalogManySwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool AnalogManySwing::validate(/*@Nonnull*/ QList<QString>* errorMessages) {
         return true;
     }
 

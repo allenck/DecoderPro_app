@@ -8,9 +8,12 @@ class LogixNGTableAction : public AbstractLogixNGTableAction
 {
   Q_OBJECT
  public:
-  explicit /*public*/  LogixNGTableAction(QObject* parent);
-  LogixNGTableAction(QString s, QObject *parent );
-  /*public*/  void deleteBean(NamedBean* logixNG);
+  Q_INVOKABLE explicit /*public*/  LogixNGTableAction(QObject* parent=nullptr);
+  Q_INVOKABLE LogixNGTableAction(QString s, QObject *parent =nullptr);
+  ~LogixNGTableAction() {}
+  LogixNGTableAction(const LogixNGTableAction&) : AbstractLogixNGTableAction(tr("LogixNG Table")) {}
+  /*public*/  void deleteBean(NamedBean* logixNG)override;
+  Q_INVOKABLE /*public*/ QString getClassDescription() override;
 
  private:
   static Logger* log;
@@ -31,6 +34,8 @@ class LogixNGTableAction : public AbstractLogixNGTableAction
 
   friend class LNGTE_windowListener;
 };
+Q_DECLARE_METATYPE(LogixNGTableAction)
+
 class LNGTE_windowListener : public WindowAdapter
 {
  Q_OBJECT

@@ -80,7 +80,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Module* DefaultModuleManager::createModule(QString userName, FemaleSocketManager::SocketType* socketType) /*throws IllegalArgumentException*/ {
+    /*public*/  /*Module*/NamedBean* DefaultModuleManager::createModule(QString userName, FemaleSocketManager::SocketType* socketType) /*throws IllegalArgumentException*/ {
         return createModule(AbstractManager::getAutoSystemName(), userName, socketType);
     }
 
@@ -97,13 +97,19 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  Module* DefaultModuleManager::getByUserName(QString name) {
-        return (Module*)_tuser->value(name)->self();
+//        return (Module*)_tuser->value(name)->self();
+     if(_tsys->value(name))
+      return (Module*)_tuser->value(name)->self();
+     return nullptr;
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  Module* DefaultModuleManager::getBySystemName(QString name) {
-        return (Module*)_tsys->value(name)->self();
+        //return (Module*)_tsys->value(name)->self();
+     if(_tsys->value(name))
+      return (Module*)_tsys->value(name)->self();
+     return nullptr;
     }
 
     /** {@inheritDoc} */

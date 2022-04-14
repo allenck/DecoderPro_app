@@ -14,7 +14,7 @@ class ExpressionSensorSwing : public AbstractDigitalExpressionSwing
    : AbstractDigitalExpressionSwing(parent) {setObjectName("ExpressionSensorSwing");}
   ~ExpressionSensorSwing() {}
   ExpressionSensorSwing(const ExpressionSensorSwing&) :AbstractDigitalExpressionSwing () {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  QString getAutoSystemName()override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;

@@ -22,6 +22,11 @@
 #include <QCheckBox>
 #include "flowlayout.h"
 #include "guilafpreferencesmanager.h"
+#ifdef HAVE_LOGIXNG
+#include "../libPr3/logixng/logixngtableaction.h"
+#include "../libPr3/logixng/logixngmoduletableaction.h"
+#include "../libPr3/logixng/logixngtabletableaction.h"
+#endif
 
 //ListedTableFrame::ListedTableFrame()
 //{
@@ -95,14 +100,21 @@ void ListedTableFrame::common()
     addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
     addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
     addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
+#ifdef HAVE_LOGIXNG
+    addTable("jmri.jmrit.beantable.LogixNGTableAction", tr("LogixNG Table"), true);
+    addTable("jmri.jmrit.beantable.LogixNGModuleTableAction", tr("LogixNGModule Table"), true);
+    addTable("jmri.jmrit.beantable.LogixNGTableTableAction", tr("LogixNGTable Table"), true);
+#endif
     addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
     if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed()) { // select _tabbed in prefs
         addTable("jmri.jmrit.beantable.OBlockTableAction", tr("MenuItemOBlockTable"), false);
     } // requires restart after changing the interface setting (on Display tab)
+    addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
     addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
     addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
     addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
     addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
+//    addTable("jmri.jmrit.beantable.RailComTableAction", Bundle.getMessage("MenuItemRailComTable"), true);
   init = true;
  }
 }
@@ -492,6 +504,8 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
     }
 
      tableAction = (AbstractTableAction*)metaObject->newInstance(Q_ARG(QString, itemText),Q_ARG(QObject*, this));
+     if(! tableAction)
+      throw new InvocationTargetException();
      tableAction->setText(itemText);
 
     //If a panel model is used, it should really add to the bottom box

@@ -35,7 +35,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool IfThenElseSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool IfThenElseSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         return true;
     }
 

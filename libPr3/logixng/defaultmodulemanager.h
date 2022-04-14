@@ -18,7 +18,7 @@ class DefaultModuleManager : public AbstractManager, public ModuleManager
   /*public*/  Module* createModule(QString systemName, QString userName,
           FemaleSocketManager::SocketType* socketType)
           /*throws IllegalArgumentException*/override;
-  /*public*/  Module* createModule(QString userName, FemaleSocketManager::SocketType* socketType)override;
+  /*public*/  NamedBean *createModule(QString userName, FemaleSocketManager::SocketType* socketType)override;
   /*public*/  Module* getModule(QString name) override;
   /*public*/  Module* getByUserName(QString name)override;
   /*public*/  Module* getBySystemName(QString name) override;

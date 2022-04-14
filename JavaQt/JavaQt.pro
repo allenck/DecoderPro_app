@@ -42,6 +42,7 @@ SOURCES += javaqt.cpp \
     csvprinter.cpp \
     exceptioncontext.cpp \
     exceptiondisplayframe.cpp \
+    files.cpp \
     filesystemview.cpp \
     invalidconditionalactionexception.cpp \
     jeditorpane.cpp \
@@ -303,6 +304,7 @@ HEADERS += javaqt.h\
  csvprinter.h \
  exceptioncontext.h \
  exceptiondisplayframe.h \
+ files.h \
  filesystemview.h \
  invalidconditionalactionexception.h \
  invalidconditionalvariableexception.h \

@@ -4,23 +4,16 @@
 #include <QObject>
 #include "femalesocketfactory.h"
 #include "instancemanager.h"
-#include "stringactionmanager.h"
+#include "defaultstringactionmanager.h"
 #include "defaultfemalestringactionsocket.h"
 
 class DefaultFemaleStringActionSocketFactory : public QObject, public FemaleSocketFactory
 {
   Q_OBJECT
+  Q_INTERFACES(FemaleSocketFactory)
  public:
-  explicit DefaultFemaleStringActionSocketFactory(QObject *parent = nullptr)
-   : QObject(parent) {setObjectName("DefaultFemaleStringActionSocketFactory");}
-  /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
-
- signals:
-
- private:
-  /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();
   /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
-
+ public:
       //@Override
       /*public*/  QString getName() {
           return "DefaultFemaleStringActionSocket";
@@ -33,7 +26,7 @@ class DefaultFemaleStringActionSocketFactory : public QObject, public FemaleSock
 
       //@Override
       /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager() {
-          return (StringActionManager*)InstanceManager::getDefault("StringActionManager");
+          return (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
       }
 
       //@Override
@@ -47,6 +40,14 @@ class DefaultFemaleStringActionSocketFactory : public QObject, public FemaleSock
       }
   };
 
-};
 
+explicit DefaultFemaleStringActionSocketFactory(QObject *parent = nullptr)
+   : QObject(parent) {setObjectName("DefaultFemaleStringActionSocketFactory");}
+  /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
+
+ private:
+  /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();
+ public:
+
+};
 #endif // DEFAULTFEMALESTRINGACTIONSOCKETFACTORY_H

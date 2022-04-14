@@ -17,7 +17,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool ForSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool ForSwing::validate(/*@Nonnull*/ QList<QString>* errorMessages) {
         return true;
     }
 

@@ -12,9 +12,11 @@ class LogixNGTableTableAction : public AbstractLogixNGTableAction
 {
   Q_OBJECT
  public:
-  LogixNGTableTableAction(QString s, QObject* parent = nullptr);
-  /*public*/  LogixNGTableTableAction(QObject* parent=nullptr);
-  /*public*/  QString getClassDescription()override;
+  Q_INVOKABLE LogixNGTableTableAction(QString s, QObject* parent = nullptr);
+  Q_INVOKABLE /*public*/  LogixNGTableTableAction(QObject* parent=nullptr);
+  ~LogixNGTableTableAction() {}
+  LogixNGTableTableAction(const LogixNGTableTableAction&) : AbstractLogixNGTableAction(tr("LogixNGTableTable")) {}
+  Q_INVOKABLE/*public*/  QString getClassDescription()override;
 
  private:
   static Logger* log;
@@ -45,5 +47,5 @@ class LogixNGTableTableAction : public AbstractLogixNGTableAction
   /*protected*/ bool hasChildren(NamedBean* table)override;
 
 };
-
+Q_DECLARE_METATYPE(LogixNGTableTableAction)
 #endif // LOGIXNGTABLETABLETABLEACTION_H

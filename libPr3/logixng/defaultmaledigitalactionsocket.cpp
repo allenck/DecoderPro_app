@@ -97,7 +97,8 @@
 
 //@Override
 /*public*/  QString DefaultMaleDigitalActionSocket::describeState(int state) {
-    return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->describeState(state);
+    //return ((DigitalActionBean*)AbstractMaleSocket::getObject()->bself())->describeState(state);
+ return ((AbstractNamedBean*)getObject()->bself())->describeState(state);
 }
 
 //@Override

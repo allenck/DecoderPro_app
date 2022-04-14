@@ -1536,7 +1536,7 @@
             else if(e->getActionCommand() ==  ACTION_COMMAND_REMOVE)
             {
                     if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
-                    DeleteBeanWorker* worker = new DeleteBeanWorker(_currentFemaleSocket, _currentPath, this);
+                    DeleteBeanWorker2* worker = new DeleteBeanWorker2(_currentFemaleSocket, _currentPath, this);
 // TODO                    worker->execute(); see class SwingWorker
             }
             else if(e->getActionCommand() ==  ACTION_COMMAND_CUT)
@@ -1781,22 +1781,22 @@
 //        MaleSocket* _maleSocket;
 //        TreeEditor* treeEditor;
 //      public:
-        /*public*/  DeleteBeanWorker::DeleteBeanWorker(FemaleSocket* currentFemaleSocket, TreePath* currentPath, TEPopupMenu* treeEditor) {
+        /*public*/  DeleteBeanWorker2::DeleteBeanWorker2(FemaleSocket* currentFemaleSocket, TreePath* currentPath, TEPopupMenu* treeEditor) {
             _currentFemaleSocket = currentFemaleSocket;
             _currentPath = currentPath;
             this->treeEditor = treeEditor;
             _maleSocket = _currentFemaleSocket->getConnectedSocket();
         }
 
-        /*public*/  int DeleteBeanWorker::getDisplayDeleteMsg() {
+        /*public*/  int DeleteBeanWorker2::getDisplayDeleteMsg() {
             return ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption("TreeEditor", "deleteInUse");
         }
 
-        /*public*/  void DeleteBeanWorker::setDisplayDeleteMsg(int boo) {
+        /*public*/  void DeleteBeanWorker2::setDisplayDeleteMsg(int boo) {
             ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption("TreeEditor", "deleteInUse", boo);
         }
 
-        /*public*/  void DeleteBeanWorker::doDelete() {
+        /*public*/  void DeleteBeanWorker2::doDelete() {
             try {
                 _currentFemaleSocket->_disconnect();
 
@@ -1811,7 +1811,7 @@
          * {@inheritDoc}
          */
         //@Override
-        /*public*/  void DeleteBeanWorker::doInBackground() {
+        /*public*/  void DeleteBeanWorker2::doInBackground() {
             treeEditor->editor->_treePane->_femaleRootSocket->unregisterListeners();
 
             QString message;// = new StringBuilder();
@@ -1946,7 +1946,7 @@
          * {@inheritDoc} Minimal implementation to catch and log errors
          */
         //@Override
-        /*protected*/ void DeleteBeanWorker::done() {
+        /*protected*/ void DeleteBeanWorker2::done() {
             try {
 // TODO:               get();  // called to get errors (see SwingWorker!)
             }

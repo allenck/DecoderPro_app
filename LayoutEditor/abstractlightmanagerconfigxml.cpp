@@ -68,8 +68,8 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
    // store common parts
    storeCommon(nb, elem);
 
-   if (qobject_cast<VariableLight*>(lgt->self())) {
-       elem.setAttribute("minIntensity",  QString::number(((VariableLight*)lgt->self())->getMinIntensity()));
+   if (qobject_cast<VariableLight*>(lgt)) {
+       elem.setAttribute("minIntensity",  QString::number(((VariableLight*)lgt)->getMinIntensity()));
        elem.setAttribute("maxIntensity", QString::number(((VariableLight*)lgt->self())->getMaxIntensity()));
 
        // write transition attribute

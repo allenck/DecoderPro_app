@@ -3,7 +3,7 @@
 #include "exceptions.h"
 #include "instancemanager.h"
 #include "jmrisimplepropertylistener.h"
-#include "logix.h"
+#include "../libPr3/logix.h"
 #include "conditional.h"
 #include "conditionalvariable.h"
 #include "signalhead.h"
@@ -43,6 +43,23 @@
  */
 ///*public*/ class DefaultLogix extends AbstractNamedBean
 //    implements Logix, java.io.Serializable {
+
+/*public*/ DefaultLogix::DefaultLogix(QString systemName, QObject *parent) :
+    Logix(systemName, "", parent)
+{
+ //super(systemName, userName);
+ log = new Logger("DefaultLogix");
+ _conditionalSystemNames = new QStringList();
+ _listeners = new QList<JmriSimplePropertyListener*>();
+ _conditionalMap = QMap<QString, Conditional*>();
+
+ /**
+  *  Operational instance variables (not saved between runs)
+  */
+ mEnabled = true;
+
+ _isActivated = false;
+}
 
 /*public*/ DefaultLogix::DefaultLogix(QString systemName, QString userName, QObject *parent) :
     Logix(systemName, userName, parent)

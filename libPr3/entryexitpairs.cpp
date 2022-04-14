@@ -125,7 +125,7 @@ return (settingRouteColor == QColor() ? false : true);
 
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
-   qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
+   ((AppsConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
  ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
  //connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 

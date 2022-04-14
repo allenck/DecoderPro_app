@@ -12,6 +12,7 @@
 #include "runtimeexception.h"
 #include "importlogix.h"
 #include "jtitledseparator.h"
+#include "jmriexception.h"
 
 /**
  * Imports Logixs to LogixNG

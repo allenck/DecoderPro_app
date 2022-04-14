@@ -105,12 +105,12 @@
 
     //@Override
     /*protected*/ QString LogixNGTableAction::getAddTitleKey() {
-        return "TitleAddLogixNG";
+        return "Add LogixNG";
     }
 
     //@Override
     /*protected*/ QString LogixNGTableAction::getCreateButtonHintKey() {
-        return "LogixNGCreateButtonHint";
+        return "Press to create a new LogixNG";
     }
 
     /**
@@ -171,7 +171,7 @@
         panel31->setLayout(new FlowLayout());
         JLabel* message1 = new JLabel((startMessageId== "Add")?tr("Please enter system name and user name, then"):tr("Please enter System Name and User Name\n"));  // NOI18N
         panel31->layout()->addWidget(message1);
-        JPanel* panel32 = new JPanel();
+        JPanel* panel32 = new JPanel(new FlowLayout());
         JLabel* message2 = new JLabel((startMessageId== "Add")?tr("click [Create], then add ConditionalNG."):tr("of target LogixNG, then click [Copy]"));
         panel32->layout()->addWidget(message2);
         panel3->layout()->addWidget(panel31);
@@ -211,5 +211,7 @@
     /*protected*/ bool LogixNGTableAction::hasChildren(NamedBean* logixNG) {
         return ((LogixNG*)logixNG->self())->getNumConditionalNGs() > 0;
     }
+
+/*public*/ QString LogixNGTableAction::getClassDescription() {return  "LogixNG";}
 
     /*private*/ /*final*/ /*static*/ Logger* LogixNGTableAction::log = LoggerFactory::getLogger("LogixNGTableAction");

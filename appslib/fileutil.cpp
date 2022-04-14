@@ -486,7 +486,7 @@ FileUtil::FileUtil(QObject *parent) :
     if (file.isValid()) {
 //        try {
 //            return file.openStream();
-     QFile* f = new QFile(file.fileName());
+     QFile* f = new QFile(/*file.fileName()*/path);
      if(f != NULL && f->open(QIODevice::ReadOnly))
      {
       QTextStream* stream = new QTextStream(f);

@@ -33,6 +33,7 @@
 #include "debugprogrammermanager.h"
 #include "blockmanager.h"
 #include "editormanager.h"
+#include "powermanagerscaffold.h"
 
 #ifdef HAVE_LOGIXNG
 #include "logixng_manager.h"
@@ -916,11 +917,11 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     //InstanceManager::store(m, "ProgrammerManager"); // added ACK
 
 }
-#if 0
-/*public*/ static void initDebugPowerManager() {
-    InstanceManager::setDefault(PowerManager.class, new PowerManagerScaffold());
+
+/*public*/ /*static*/ void JUnitUtil::initDebugPowerManager() {
+    InstanceManager::setDefault("PowerManager", new PowerManagerScaffold());
 }
-#endif
+
 /*public*/ /*static*/ void JUnitUtil::initIdTagManager() {
     InstanceManager::reset("IdTagManager");
     InstanceManager::store(new DefaultIdTagManager(InstanceManager::getDefault("InternalSystemConnectionMemo")), "IdTagManager");

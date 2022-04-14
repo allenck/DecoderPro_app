@@ -17,7 +17,7 @@
 
     /*public*/  LocalVariableTableModel::LocalVariableTableModel(MaleSocket* maleSocket, QObject *parent) {
         if (maleSocket != nullptr) {
-            for (VariableData* v : maleSocket->getLocalVariables()) {
+            for (VariableData* v : *maleSocket->getLocalVariables()) {
                 _variables.append(new VariableData(v));
             }
         }

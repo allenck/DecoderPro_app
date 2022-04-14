@@ -1,4 +1,4 @@
-#include "logix.h"
+#include "logix_emulator.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
 #include "defaultdigitalexpressionmanager.h"
@@ -15,7 +15,7 @@
 //        implements FemaleSocketListener {
 
 
-/*public*/  Logix::Logix(QString sys, QString user, QObject* parent) : AbstractDigitalAction(sys, user, parent) {
+/*public*/  Logix_Emulator::Logix_Emulator(QString sys, QString user, QObject* parent) : AbstractDigitalAction(sys, user, parent) {
     //super(sys, user);
      setObjectName("Logix");
     _expressionSocket = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))
@@ -25,25 +25,25 @@
 }
 
 //@Override
-/*public*/  Base* Logix::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
+/*public*/  Base* Logix_Emulator::getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/ {
     DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
     QString sysName = systemNames->value(AbstractNamedBean::getSystemName());
     QString userName = userNames->value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = ((AbstractManager*)manager->mself())->getAutoSystemName();
-    Logix* copy = new Logix(sysName, userName);
+    Logix_Emulator* copy = new Logix_Emulator(sysName, userName);
     copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
     return manager->registerAction(copy)->deepCopyChildren(this, systemNames, userNames);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* Logix::getCategory() {
+/*public*/  Category* Logix_Emulator::getCategory() {
     return Category::OTHER;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::execute() /*throws JmriException*/ {
+/*public*/  void Logix_Emulator::execute() /*throws JmriException*/ {
     bool result = _expressionSocket->evaluate();
     bool hasChangedToTrue = result && !_lastExpressionResult;
     bool hasChangedToFalse = !result && _lastExpressionResult;
@@ -64,7 +64,7 @@
  * @param b if true, execution is only done on change. if false, execution
  *          is always done.
  */
-/*public*/  void Logix::setExecuteOnChange(bool b) {
+/*public*/  void Logix_Emulator::setExecuteOnChange(bool b) {
     _executeOnChange = b;
 }
 
@@ -77,13 +77,13 @@
  *
  * @return true if execution is only done on change, false otherwise
  */
-/*public*/  bool Logix::isExecuteOnChange() {
+/*public*/  bool Logix_Emulator::isExecuteOnChange() {
     return _executeOnChange;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  FemaleSocket* Logix::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
+/*public*/  FemaleSocket* Logix_Emulator::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
     switch (index) {
         case 0:
             return _expressionSocket;
@@ -99,13 +99,13 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  int Logix::getChildCount() {
+/*public*/  int Logix_Emulator::getChildCount() {
     return 2;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::connected(FemaleSocket* socket) {
+/*public*/  void Logix_Emulator::connected(FemaleSocket* socket) {
     if (socket == _expressionSocket) {
         _expressionSocketSystemName = socket->getConnectedSocket()->getSystemName();
     } else if (socket == _actionSocket) {
@@ -117,7 +117,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::disconnected(FemaleSocket* socket) {
+/*public*/  void Logix_Emulator::disconnected(FemaleSocket* socket) {
     if (socket == _expressionSocket) {
         _expressionSocketSystemName = "";
     } else if (socket == _actionSocket) {
@@ -129,45 +129,45 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  QString Logix::getShortDescription(QLocale locale) {
+/*public*/  QString Logix_Emulator::getShortDescription(QLocale locale) {
     return tr(/*locale, */"Logix");
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  QString Logix::getLongDescription(QLocale locale) {
+/*public*/  QString Logix_Emulator::getLongDescription(QLocale locale) {
     return tr(/*locale,*/ "Logix %1 %2").arg(
             _expressionSocket->getName(),
             _actionSocket->getName());
 }
 
-/*public*/  FemaleDigitalExpressionSocket* Logix::getExpressionSocket() {
+/*public*/  FemaleDigitalExpressionSocket* Logix_Emulator::getExpressionSocket() {
     return _expressionSocket;
 }
 
-/*public*/  QString Logix::getExpressionSocketSystemName() {
+/*public*/  QString Logix_Emulator::getExpressionSocketSystemName() {
     return _expressionSocketSystemName;
 }
 
-/*public*/  void Logix::setExpressionSocketSystemName(QString systemName) {
+/*public*/  void Logix_Emulator::setExpressionSocketSystemName(QString systemName) {
     _expressionSocketSystemName = systemName;
 }
 
-/*public*/  FemaleDigitalBooleanActionSocket* Logix::getActionSocket() {
+/*public*/  FemaleDigitalBooleanActionSocket* Logix_Emulator::getActionSocket() {
     return _actionSocket;
 }
 
-/*public*/  QString Logix::getActionSocketSystemName() {
+/*public*/  QString Logix_Emulator::getActionSocketSystemName() {
     return _actionSocketSystemName;
 }
 
-/*public*/  void Logix::setActionSocketSystemName(QString systemName) {
+/*public*/  void Logix_Emulator::setActionSocketSystemName(QString systemName) {
     _actionSocketSystemName = systemName;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::setup() {
+/*public*/  void Logix_Emulator::setup() {
     try {
         if ( !_expressionSocket->isConnected()
                 || _expressionSocket->getConnectedSocket()->getSystemName()
@@ -219,18 +219,18 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::registerListenersForThisClass() {
+/*public*/  void Logix_Emulator::registerListenersForThisClass() {
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::unregisterListenersForThisClass() {
+/*public*/  void Logix_Emulator::unregisterListenersForThisClass() {
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void Logix::disposeMe() {
+/*public*/  void Logix_Emulator::disposeMe() {
 }
 
-/*private*/ /*final*/ /*static*/Logger* Logix::log = LoggerFactory::getLogger("Logix");
+/*private*/ /*final*/ /*static*/Logger* Logix_Emulator::log = LoggerFactory::getLogger("Logix");
 

@@ -25,6 +25,13 @@ CONFIG(debug, debug|release) {
     OBJECTS_DIR = moc_objd
 }
 
+include(../logixng_config.prf)
+equals(ENABLE_LOGIXNG, "Y" ) {
+   message("libPr3: LogixNG enabled")
+} else {
+   message("libPr3: LogixNG disabled")
+}
+
 SOURCES +=  slotmonitor.cpp \
     beanselectcreatepanel.cpp \
     blockcurvaturejcombobox.cpp \
@@ -126,6 +133,13 @@ SOURCES +=  slotmonitor.cpp \
     routeaddframe.cpp \
     routeoutputmodel.cpp \
     routeexporttologix.cpp
+
+equals(ENABLE_LOGIXNG, "Y") {
+ DEFINES += HAVE_LOGIXNG
+ SOURCES += \
+} else {
+DEFINES -= HAVE_LOGIXNG
+}
 
 HEADERS += libtables_global.h \
     blockcurvaturejcombobox.h \
@@ -230,6 +244,11 @@ HEADERS += libtables_global.h \
     routeaddframe.h \
     routeoutputmodel.h \
     routeexporttologix.h
+
+    equals(ENABLE_LOGIXNG, "Y") {
+    HEADERS += \
+    #logixnh headers
+}
 
 unix:!symbian {
     maemo5 {

@@ -52,7 +52,7 @@ class And : public AbstractDigitalExpression, public FemaleSocketListener
   static Logger* log;
   /*private*/ /*final*/ QList<ExpressionEntry*> _expressionEntries = QList<ExpressionEntry*>();
   /*private*/ bool disableCheckForUnconnectedSocket = false;
-  /*private*/ void setExpressionSystemNames(QList<QMap<QString, QString>> systemNames);
+  Q_INVOKABLE/*private*/ void setExpressionSystemNames(QList<QMap<QString, QString>> systemNames);
   /*private*/ void setNumSockets(int num);
   /*private*/ void checkFreeSocket();
   /*private*/ void insertNewSocket(int index);

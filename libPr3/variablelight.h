@@ -61,13 +61,13 @@
  * @author Ken Cameron Copyright (C) 2008
  * @author Bob Jacobsen Copyright (C) 2008
  */
-/*public*/ /*interface*/ class VariableLight : public virtual Light, public AnalogIO
+/*public*/ /*interface*/ class VariableLight : public  AbstractLight, public AnalogIO
 {
-  //Q_OBJECT
-  Q_INTERFACES(Light AnalogIO)
+  Q_OBJECT
+  Q_INTERFACES(/*Light*/ AnalogIO)
  public:
-//  /*public*/ VariableLight(QString systemName, QString userName, QObject *parent = 0) : AbstractLight(systemName, userName, parent){}
-//  /*public*/ VariableLight(QString systemName, QObject *parent = 0) : AbstractLight(systemName, parent) {}
+  /*public*/ VariableLight(QString systemName, QString userName, QObject *parent = 0) : AbstractLight(systemName, userName, parent){}
+  /*public*/ VariableLight(QString systemName, QObject *parent = 0) : AbstractLight(systemName, parent) {}
 
     /** {@inheritDoc} */
 //    @Override

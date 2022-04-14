@@ -31,7 +31,7 @@
         SymbolTable* symbolTable = new DefaultSymbolTable();
         getAllSymbols(object, symbolTable);
 
-//        conditionalNG->getCurrentThread()->runOnLogixNGEventually(new  AbstractAnalogExpressionSwingTA1(object, conditionalNG, symbolTable, log));
+        conditionalNG->getCurrentThread()->runOnLogixNGEventually(new  AbstractAnalogExpressionSwingTA1(object, conditionalNG, symbolTable, log));
     }
 
         void AbstractAnalogExpressionSwingTA1::run()

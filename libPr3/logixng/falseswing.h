@@ -11,7 +11,7 @@ class FalseSwing : public AbstractDigitalActionSwing
   Q_INVOKABLE FalseSwing(QObject* parent= nullptr) : AbstractDigitalActionSwing(parent) {setObjectName("FalseSwing");}
   ~FalseSwing() {}
   FalseSwing(const FalseSwing&) : AbstractDigitalActionSwing(){}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString> *errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString toString()override;

@@ -10,7 +10,7 @@ class AnalogActionMemoryTest : public AbstractAnalogActionTestBase
 {
   Q_OBJECT
  public:
-  explicit AnalogActionMemoryTest(QObject *parent = nullptr) : AbstractAnalogActionTestBase(parent) {}
+  explicit AnalogActionMemoryTest(QObject *parent = nullptr) : AbstractAnalogActionTestBase(parent) {setObjectName("AnalogActionMemoryTest");}
   Q_INVOKABLE /*public*/  void setUp();
   Q_INVOKABLE /*public*/  void tearDown();
   /*public*/  ConditionalNG* getConditionalNG()override;

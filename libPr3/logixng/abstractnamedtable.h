@@ -15,8 +15,7 @@ class AbstractNamedTable : /*public AbstractNamedBean,*/ public NamedTable
     /*@Nonnull*/  QString sys, /*@CheckForNull*/ QString user,
     int numRows, int numColumns, QObject *parent = nullptr);
   /*private*/ int _state = NamedBean::UNKNOWN;
-  /*public*/  AbstractNamedTable(
-          /*@Nonnull*/  QString systemName, /*@CheckForNull*/ QString userName,
+  /*public*/  AbstractNamedTable(/*@Nonnull*/  QString systemName, /*@CheckForNull*/ QString userName,
           /*@Nonnull*/  QVector<QVector<QVariant> > data, QObject *parent = nullptr)
           /*throws BadUserNameException, BadSystemNameException*/;
   /*public*/  AbstractNamedTable(

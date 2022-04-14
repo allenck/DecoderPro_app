@@ -17,7 +17,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  bool TriggerOnceSwing::validate(/*@Nonnull*/ QList<QString> errorMessages) {
+    /*public*/  bool TriggerOnceSwing::validate(/*@Nonnull*/ QList<QString> *errorMessages) {
         return true;
     }
 

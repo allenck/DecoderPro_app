@@ -12,7 +12,7 @@ class ForSwing : public AbstractDigitalActionSwing
    : AbstractDigitalActionSwing(parent) {setObjectName("ForSwing");}
   ~ForSwing() {}
   ForSwing(const ForSwing&) : AbstractDigitalActionSwing() {}
-  /*public*/  bool validate(/*@Nonnull*/ QList<QString> errorMessages)override;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object) override;
   /*public*/  QString toString()override;

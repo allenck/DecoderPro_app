@@ -29,7 +29,7 @@
 #include "dostringaction.h"
 #include "stringexpressionconstant.h"
 #include "stringmany.h"
-#include "logix.h"
+#include "logix_emulator.h"
 #include "digitalbooleanonchange.h"
 #include "lastresultofdigitalexpression.h"
 #include "abstractdebuggermalesocket.h"
@@ -250,7 +250,7 @@
 
         femaleSocket = actionManySocket->getChild(3);
         MaleDigitalActionSocket* logix = (MaleDigitalActionSocket*)digitalActionManager
-                        ->registerAction((MaleDigitalActionSocket*)new Logix(digitalActionManager->getAutoSystemName(), nullptr));
+                        ->registerAction((MaleDigitalActionSocket*)new Logix_Emulator(digitalActionManager->getAutoSystemName(), nullptr));
         femaleSocket->_connect(logix);
 
         femaleSocket = logix->getChild(1);
