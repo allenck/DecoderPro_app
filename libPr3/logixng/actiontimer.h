@@ -93,7 +93,7 @@ class ActionTimer : public AbstractDigitalAction, public FemaleSocketListener
   /*private*/ /*final*/ FemaleDigitalExpressionSocket* _startExpressionSocket;
   /*private*/ /*final*/ FemaleDigitalExpressionSocket* _stopExpressionSocket;
   /*private*/ /*final*/ QList<ActionEntry*> _actionEntries = QList<ActionEntry*>();
-  /*private*/ ProtectedTimerTask* _timerTask;
+  /*private*/ ProtectedTimerTask* _timerTask = nullptr;
   /*private*/ int _currentTimer = -1;
   /*private*/ enum TimerState {
       Off,

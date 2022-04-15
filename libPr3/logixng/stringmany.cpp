@@ -19,7 +19,7 @@
         /*throws BadUserNameException, BadSystemNameException*/ {
     //super(sys, user);
     _actionEntries
-            .append(new ActionEntry(((StringActionManager*)InstanceManager::getDefault("StringActionManager"))
+            .append(new ActionEntry(((DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager"))
                     ->createFemaleSocket(this, this, getNewSocketName())));
 }
 #if 1

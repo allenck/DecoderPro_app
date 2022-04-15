@@ -32,6 +32,8 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
 
+  QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
+
 
  private:
   static Logger* log;

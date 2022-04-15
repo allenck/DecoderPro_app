@@ -1,19 +1,19 @@
-#include "stringformulatestaction.h"
-#include "stringformulatest.h"
+#include "stringmanytestaction.h"
+#include "stringmanytest.h"
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
 #include "junitutil.h"
 
-
-StringFormulaTestAction::StringFormulaTestAction(QObject *parent) : AbstractAction(tr("StringFormula"), parent)
+StringManyTestAction::StringManyTestAction(QObject *parent) : AbstractAction(tr("StringMany"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
+
 }
 
-void StringFormulaTestAction::actionPerformed()
+void StringManyTestAction::actionPerformed()
 {
- StringFormulaTest* test = new StringFormulaTest();
+ StringManyTest* test = new StringManyTest();
  try
  {
   QStringList testList = QStringList()
@@ -46,25 +46,20 @@ void StringFormulaTestAction::actionPerformed()
    << "testDescribeState"
    << "testAddAndRemoveSocket"
 
-  // in AbstractStringExpressionTestBase
+  // in AbstractStringActionTestBase
       << "testBadSystemName"
       << "testGetBeanType"
       << "testState"
-      << "testEnableAndEvaluate"
-      << "testDebugConfig"
 
-  // in StringFormulaTest
+  // in StringManyTest
     << "testCtor"
     << "testCtorAndSetup1"
     << "testCtorAndSetup2"
     << "testCtorAndSetup3"
-    << "testSetChildCount"
-    << "testFormula"
     << "testGetChild"
     << "testCategory"
     << "testConnected_getExpressionSystemName"
     << "testDescription"
-    << "testEvaluateEmptyFormula"
 
        ;
 
@@ -75,4 +70,4 @@ void StringFormulaTestAction::actionPerformed()
   JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
  }
 }
-Logger* StringFormulaTestAction::log = LoggerFactory::getLogger("StringFormulaTestAction");
+Logger* StringManyTestAction::log = LoggerFactory::getLogger("StringManyTestAction");

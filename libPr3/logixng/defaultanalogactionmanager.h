@@ -32,6 +32,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   QObject* pself() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
 
+  QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
  private:
   static Logger* log;
   static /*volatile*/ DefaultAnalogActionManager* _instance;// = null;

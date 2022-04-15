@@ -57,7 +57,13 @@
 #include "printwriter.h"
 #include "system.h"
 #include "actiontimer.h"
-
+#include "doanalogaction.h"
+#include "analogexpressionconstant.h"
+#include "analogactionmemory.h"
+#include "analogexpressionmemory.h"
+#include "analogmany.h"
+#include "analogformula.h"
+#include "timesincemidnight.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -239,7 +245,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         FemaleSocket* femaleRootSocket = conditionalNG->getFemaleSocket();
         MaleDigitalActionSocket* actionManySocket =
                 digitalActionManager->registerAction(new DigitalMany(
-                                        digitalActionManager->getAutoSystemName(), ""));
+                                        ((DefaultDigitalActionManager*)digitalActionManager)->AbstractManager::getAutoSystemName(), ""));
         femaleRootSocket->_connect(actionManySocket);
 
 
@@ -1544,8 +1550,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(callModule);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
-        DoAnalogAction doAnalogAction = new DoAnalogAction(digitalActionManager->getAutoSystemName(), "");
+#endif
+        DoAnalogAction* doAnalogAction = new DoAnalogAction(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(doAnalogAction);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
@@ -1555,7 +1561,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(doAnalogAction);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#endif
+
         DoStringAction* doStringAction = new DoStringAction(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(doStringAction);
         maleSocket->setEnabled(false);
@@ -1775,7 +1781,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(logix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         DigitalBooleanMany* booleanMany =
                 new DigitalBooleanMany(digitalBooleanActionManager->getAutoSystemName(), "");
         maleSocket = digitalBooleanActionManager->registerAction(booleanMany);
@@ -1802,7 +1808,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalBooleanActionManager->registerAction(onChange);
         booleanMany->getChild(2)->_connect(maleSocket);
 
-#if 0
+
         jmri.jmrit.logixng.actions.LogData logData = new jmri.jmrit.logixng.actions.LogData(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(logData);
         maleSocket->setEnabled(false);
@@ -3163,7 +3169,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(true1);
         and.getChild(indexExpr++)->_connect(maleSocket);
 
-
+#endif
 
 
         doAnalogAction = new DoAnalogAction(digitalActionManager->getAutoSystemName(), "");
@@ -3171,12 +3177,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        AnalogExpressionConstant analogExpressionConstant = new AnalogExpressionConstant(analogExpressionManager->getAutoSystemName(), "");
+        AnalogExpressionConstant* analogExpressionConstant = new AnalogExpressionConstant(analogExpressionManager->getAutoSystemName(), "");
         maleSocket = analogExpressionManager->registerExpression(analogExpressionConstant);
         maleSocket->setEnabled(false);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
-        AnalogActionMemory analogActionMemory = new AnalogActionMemory(analogActionManager->getAutoSystemName(), "");
+        AnalogActionMemory* analogActionMemory = new AnalogActionMemory(analogActionManager->getAutoSystemName(), "");
         maleSocket = analogActionManager->registerAction(analogActionMemory);
         maleSocket->setEnabled(false);
         doAnalogAction->getChild(1)->_connect(maleSocket);
@@ -3189,14 +3195,14 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         analogExpressionConstant = new AnalogExpressionConstant(analogExpressionManager->getAutoSystemName(), "");
         analogExpressionConstant->AbstractNamedBean::setComment("A comment");
-        analogExpressionConstant.setValue(12.44);
+        analogExpressionConstant->setValue(12.44);
         maleSocket = analogExpressionManager->registerExpression(analogExpressionConstant);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
         analogActionMemory = new AnalogActionMemory(analogActionManager->getAutoSystemName(), "");
         analogActionMemory->AbstractNamedBean::setComment("A comment");
-        analogActionMemory.setMemory(memory2);
-        analogActionMemory.setValue(10.22);
+        analogActionMemory->setMemory(memory2);
+        analogActionMemory->setValue(10.22);
         maleSocket = analogActionManager->registerAction(analogActionMemory);
         doAnalogAction->getChild(1)->_connect(maleSocket);
 
@@ -3206,12 +3212,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        AnalogExpressionMemory analogExpressionMemory = new AnalogExpressionMemory(analogExpressionManager->getAutoSystemName(), "");
+        AnalogExpressionMemory* analogExpressionMemory = new AnalogExpressionMemory(analogExpressionManager->getAutoSystemName(), "");
         maleSocket = analogExpressionManager->registerExpression(analogExpressionMemory);
         maleSocket->setEnabled(false);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
-        AnalogMany analogMany = new AnalogMany(analogActionManager->getAutoSystemName(), "");
+        AnalogMany* analogMany = new AnalogMany(analogActionManager->getAutoSystemName(), "");
         maleSocket = analogActionManager->registerAction(analogMany);
         maleSocket->setEnabled(false);
         doAnalogAction->getChild(1)->_connect(maleSocket);
@@ -3224,7 +3230,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         analogExpressionMemory = new AnalogExpressionMemory(analogExpressionManager->getAutoSystemName(), "");
         analogExpressionMemory->AbstractNamedBean::setComment("A comment");
-        analogExpressionMemory.setMemory(memory1);
+        analogExpressionMemory->setMemory(memory1);
         maleSocket = analogExpressionManager->registerExpression(analogExpressionMemory);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
@@ -3239,7 +3245,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        AnalogFormula analogFormula = new AnalogFormula(analogExpressionManager->getAutoSystemName(), "");
+        AnalogFormula* analogFormula = new AnalogFormula(analogExpressionManager->getAutoSystemName(), "");
         maleSocket = analogExpressionManager->registerExpression(analogFormula);
         maleSocket->setEnabled(false);
         doAnalogAction->getChild(0)->_connect(maleSocket);
@@ -3252,7 +3258,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         analogFormula = new AnalogFormula(analogExpressionManager->getAutoSystemName(), "");
         analogFormula->AbstractNamedBean::setComment("A comment");
-        analogFormula.setFormula("sin(a)*2 + 14");
+        analogFormula->setFormula("sin(a)*2 + 14");
         maleSocket = analogExpressionManager->registerExpression(analogFormula);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
@@ -3262,10 +3268,10 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        TimeSinceMidnight timeSinceMidnight = new TimeSinceMidnight(analogExpressionManager->getAutoSystemName(), "");
+        TimeSinceMidnight* timeSinceMidnight = new TimeSinceMidnight(analogExpressionManager->getAutoSystemName(), "");
         maleSocket = analogExpressionManager->registerExpression(timeSinceMidnight);
         maleSocket->setEnabled(false);
-        timeSinceMidnight.setType(TimeSinceMidnight.Type.SystemClock);
+        timeSinceMidnight->setType(TimeSinceMidnight::Type::SystemClock);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
 
@@ -3276,11 +3282,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         timeSinceMidnight = new TimeSinceMidnight(analogExpressionManager->getAutoSystemName(), "");
         timeSinceMidnight->AbstractNamedBean::setComment("A comment");
-        timeSinceMidnight.setType(TimeSinceMidnight.Type.FastClock);
+        timeSinceMidnight->setType(TimeSinceMidnight::Type::FastClock);
         maleSocket = analogExpressionManager->registerExpression(timeSinceMidnight);
         doAnalogAction->getChild(0)->_connect(maleSocket);
 
-#endif
+
 
 
         doStringAction = new DoStringAction(digitalActionManager->getAutoSystemName(), "");

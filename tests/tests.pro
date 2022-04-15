@@ -288,6 +288,7 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/stringmanytestaction.cpp \
     logixng/actionmemorytest.cpp \
     logixng/actionmemorytestaction.cpp \
     logixng/storeandloadtest.cpp \
@@ -630,6 +631,7 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/stringmanytestaction.h \
     logixng/actionmemorytest.h \
     logixng/actionmemorytestaction.h \
     logixng/storeandloadtest.h \

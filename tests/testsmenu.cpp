@@ -132,6 +132,8 @@
 #include "logixng/andtestaction.h"
 #include "logixng/actionmemorytestaction.h"
 #include "logixng/storeandloadtestaction.h"
+#include "logixng/stringmanytestaction.h"
+
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -332,6 +334,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGTypesMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
     logixNGTypesMenu->addAction(new DigitalFormulaTestAction(this));
     logixNGTypesMenu->addAction(new StringFormulaTestAction(this));
+    logixNGTypesMenu->addAction(new StringManyTestAction(this));
     logixNGTypesMenu->addAction(new TableForEachTestAction());
     logixNGTypesMenu->addAction(new TrueTestAction(this));
 

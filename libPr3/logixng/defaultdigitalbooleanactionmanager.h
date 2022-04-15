@@ -30,10 +30,12 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
   /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultDigitalBooleanActionManager* _instance;// = nullptr;
-  QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultDigitalBooleanActionManager";}
+  QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultDigitalBooleanActionManager";}
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
+
+  QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
 
  protected:
   /*protected*/ MaleDigitalBooleanActionSocket* castBean(MaleSocket* maleSocket)override;
