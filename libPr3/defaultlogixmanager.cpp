@@ -175,9 +175,14 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns nullptr.
  */
 /*public*/ Logix* DefaultLogixManager::getLogix(QString name) {
-    Logix* x = (Logix*)getByUserName(name)->self();
-    if (x!=nullptr) return x;
-    return (Logix*)getBySystemName(name)->self();
+    NamedBean* nb = getByUserName(name);
+    if(nb)
+     return (DefaultLogix*)nb->self();
+    nb = getBySystemName(name);
+    if(nb)
+     return (DefaultLogix*)nb->self();
+    return nullptr;
+
 }
 
 /*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name)  {

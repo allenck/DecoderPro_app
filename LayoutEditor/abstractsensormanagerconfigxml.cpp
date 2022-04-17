@@ -48,7 +48,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
 
 /*public*/ QDomElement AbstractSensorManagerConfigXML::store(QObject* o, QDomElement sensors) {
  setStoreElementClass(sensors);
- SensorManager* tm = (SensorManager*) o;
+ SensorManager* tm = (AbstractSensorManager*) o;
  if(((AbstractSensorManager*)tm)->getDefaultSensorDebounceGoingActive()>0 || ((AbstractSensorManager*)tm)->getDefaultSensorDebounceGoingInActive()>0)
  {
   QDomElement elem = doc.createElement("globalDebounceTimers");

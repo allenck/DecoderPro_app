@@ -7,7 +7,7 @@
 #include "class.h"
 #include "defaultstringexpressionmanager.h"
 #include "appsconfigurationmanager.h"
-
+#include "abstractstringexpression.h"
 /**
  * Provides the functionality for configuring ExpressionManagers
  *
@@ -30,22 +30,25 @@
 /*public*/  QDomElement DefaultStringExpressionManagerXml::store(QObject* o) {
     QDomElement expressions = doc.createElement("LogixNGStringExpressions");
     setStoreElementClass(expressions);
-    StringExpressionManager* tm = (StringExpressionManager*) o;
+    StringExpressionManager* tm = (DefaultStringExpressionManager*) o;
     if (tm != nullptr) {
-        if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+     QSet<NamedBean*> set;
+        if ((set=tm->getNamedBeanSet()).isEmpty()) return QDomElement();
         for (NamedBean* nb : tm->getNamedBeanSet()) {
-         MaleStringExpressionSocket* expression = (MaleStringExpressionSocket*)nb->self();
-            log->debug("expression system name is " + expression->NamedBean::getSystemName());  // NOI18N
-//                log.error("expression system name is " + expression.getSystemName() + ", " + expression.getLongDescription());  // NOI18N
+            AbstractStringExpression* expression = (AbstractStringExpression*)nb->self();
+            log->debug("expression system name is " + expression->AbstractNamedBean::getSystemName());  // NOI18N
+//               log.error("expression system name is " + expression.getSystemName() + ", " + expression.getLongDescription());  // NOI18N
             try {
                 QList<QDomElement> elements = QList<QDomElement>();
-                // The male socket may be embedded in other male sockets
-                MaleStringExpressionSocket* a = expression;
-                while (!(static_cast<DefaultMaleStringExpressionSocket*>(a))) {
+                // The male socket may be embedded in other male socketsb
+                Base* base = expression->getParent();
+                QObject* o = (QObject*)base;
+                MaleStringExpressionSocket* a = (DefaultMaleStringExpressionSocket*)o;
+                while (!(static_cast<DefaultMaleStringExpressionSocket*>(a->bself()))) {
                     elements.append(storeMaleSocket(a));
-                    a = (MaleStringExpressionSocket*) a->getObject()->bself();
+                    a = (DefaultMaleStringExpressionSocket*) a->getObject()->bself();
                 }
-                QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                QDomElement e = ConfigXmlManager::elementFromObject(((AbstractMaleSocket*)a->bself())->getObject()->bself());
                 if (e != QDomElement()) {
                     for (int i=0; i <  elements.size(); i++)
                     {

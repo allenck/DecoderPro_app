@@ -33,6 +33,7 @@
      // The LogixNGPreferences class may load plugins so we must ensure
         // it's loaded here.
         InstanceManager::getDefault("LogixNGPreferences");
+        registerSelf();
     }
 
     //@Override
@@ -387,9 +388,11 @@ void DLMRunnable::run()
             QString indent,
             /*MutableInt*/int* lineNumber) {
 
+        int mutableInt =0;
+
         for (/*LogixNG* logixNG*/NamedBean* nb : AbstractManager::getNamedBeanSet()) {
-         LogixNG* logixNG = (LogixNG*)nb->self();
-            logixNG->printTree(settings, locale, writer, indent, "", lineNumber);
+         LogixNG* logixNG = (DefaultLogixNG*)nb->self();
+            logixNG->printTree(settings, locale, writer, indent, "", &mutableInt);
             writer->println();
         }
 

@@ -33,7 +33,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
 {
  QDomElement logixs = doc.createElement("logixs");
  setStoreElementClass(logixs);
- LogixManager* tm = (LogixManager*) o;
+ LogixManager* tm = (DefaultLogixManager*) o;
  if (tm!=NULL)
  {
   QStringListIterator iter (tm->getSystemNameList());
@@ -47,7 +47,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
    log->debug("logix system name is "+sname);
-   Logix* x = (Logix*)tm->getBySystemName(sname)->self();
+   Logix* x = (DefaultLogix*)tm->getBySystemName(sname)->self();
    bool enabled = x->getEnabled();
    QDomElement elem = doc.createElement("logix");
    elem.setAttribute("systemName", sname);

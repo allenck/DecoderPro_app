@@ -5,7 +5,7 @@
 #include "loggerfactory.h"
 #include "conditionalng.h"
 #include "defaultlogixngmanager.h"
-#include "logixng_initializationmanager.h"
+#include "defaultlogixnginitializationmanager.h"
 #include "configxmlmanager.h"
 #include "defaultlogixng.h"
 #include "class.h"
@@ -36,7 +36,7 @@
 
         QDomElement logixNGs = doc.createElement("LogixNGs");
         setStoreElementClass(logixNGs);
-        LogixNG_Manager* tm = (LogixNG_Manager*) o;
+        LogixNG_Manager* tm = (DefaultLogixNGManager*) o;
         if (tm != nullptr) {
             for (LogixNG_Thread* thread : LogixNG_Thread::getThreads()) {
                 QDomElement e = doc.createElement("Thread");  // NOI18N
@@ -46,14 +46,14 @@
             }
 
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             LogixNG* logixNG = (LogixNG*)nb->self();
+             LogixNG* logixNG = (DefaultLogixNG*)nb->self();
                 log->debug("logixng system name is " + logixNG->Base::getSystemName());  // NOI18N
                 bool enabled = logixNG->isEnabled();
                 QDomElement elem = doc.createElement("LogixNG");  // NOI18N
                 elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(logixNG->Base::getSystemName())));  // NOI18N
 
                 // store common part
-                storeCommon((NamedBean*)logixNG, elem);
+                storeCommon((NamedBean*)nb, elem);
 
                 QDomElement e = doc.createElement("ConditionalNGs");
                 for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
@@ -68,7 +68,7 @@
             }
 
             QDomElement elemInitializationTable = doc.createElement("InitializationTable");  // NOI18N
-            for (LogixNG* logixNG : ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->getList()) {
+            for (LogixNG* logixNG : ((DefaultLogixNGInitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->getList()) {
                 QDomElement e = doc.createElement("LogixNG");
                 e.appendChild(doc.createTextNode(logixNG->Base::getSystemName()));   // NOI18N
                 elemInitializationTable.appendChild(e);

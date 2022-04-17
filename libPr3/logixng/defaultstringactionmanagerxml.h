@@ -7,7 +7,9 @@ class DefaultStringActionManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  explicit DefaultStringActionManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultStringActionManagerXml(QObject *parent = nullptr);
+  ~DefaultStringActionManagerXml() {}
+  DefaultStringActionManagerXml(const DefaultStringActionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject *o);
   /*public*/  void setStoreElementClass(QDomElement actions);
   /*public*/  bool load(QDomElement sharedAction, QDomElement perNodeAction);
@@ -22,5 +24,5 @@ class DefaultStringActionManagerXml : public AbstractManagerXml
   /*protected*/ void replaceActionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultStringActionManagerXml)
 #endif // DEFAULTSTRINGACTIONMANAGERXML_H

@@ -27,6 +27,7 @@
  : AbstractAnalogAction(sys, user, parent)
         /*throws BadUserNameException, BadSystemNameException*/ {
     //super(sys, user);
+    setObjectName("AnalogMany");
     setActionSystemNames(actionSystemNames);
 }
 

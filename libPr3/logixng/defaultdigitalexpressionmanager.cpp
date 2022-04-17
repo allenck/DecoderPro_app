@@ -25,6 +25,7 @@
 
     /*public*/  DefaultDigitalExpressionManager::DefaultDigitalExpressionManager(QObject *parent) : AbstractBaseManager(parent){
      setObjectName("DefaultDigitalExpressionManager");
+     registerSelf();
         ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (DigitalExpressionFactory expressionFactory : ServiceLoader.load(DigitalExpressionFactory.class)) {

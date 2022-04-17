@@ -64,6 +64,10 @@
 #include "analogmany.h"
 #include "analogformula.h"
 #include "timesincemidnight.h"
+#include "symboltable.h"
+#include "defaultmaleanalogactionsocket.h"
+#include "defaultnamedtablemanager.h"
+#include "abstractnamedtable.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -3383,7 +3387,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
 
         // Check that we have actions/expressions in every managers
-        Assert::assertNotEquals(0, logixNG_Manager->getNamedBeanSet().size(), __FILE__, __LINE__);
+        Assert::assertNotEquals(0, ((DefaultLogixNGManager*)logixNG_Manager)->AbstractManager::getNamedBeanSet().size(), __FILE__, __LINE__);
         Assert::assertNotEquals(0, analogActionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
         Assert::assertNotEquals(0, analogExpressionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
         Assert::assertNotEquals(0, digitalActionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
@@ -3397,12 +3401,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 #if 0 //TODO:
         // Check that we can add variables to all actions/expressions and that
         // the variables are stored in the panel file
-        femaleRootSocket.forEntireTree((Base b) -> {
-            if (b instanceof MaleSocket) {
-                addVariables((MaleSocket) b);
-            }
-        });
-
+//        femaleRootSocket.forEntireTree((Base b) -> {
+//            if (b instanceof MaleSocket) {
+//                addVariables((MaleSocket) b);
+//            }
+//        });
+        femaleRootSocket->forEntireTree(new StoreAndLoadTest_run1(this));
 
         // Check that we can rename the female sockets and that the names
         // are stored in the panel file.
@@ -3499,9 +3503,10 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
                 conditionalNGManager->deleteConditionalNG(aConditionalNG);
             }
 #if 0
-            QSet<MaleAnalogActionSocket> analogActionSet = new java.util.HashSet<>(analogActionManager->getNamedBeanSet());
-            for (MaleAnalogActionSocket aAnalogAction : analogActionSet) {
-                analogActionManager.deleteAnalogAction(aAnalogAction);
+            QSet</*MaleAnalogActionSocket*/NamedBean*> analogActionSet = QSet</*MaleAnalogActionSocket*/NamedBean*>(analogActionManager->getNamedBeanSet());
+            for (NamedBean* nb : analogActionSet) {
+             MaleAnalogActionSocket* aAnalogAction = (DefaultMaleAnalogActionSocket*)nb->self();
+                analogActionManager->deleteAnalogAction(aAnalogAction);
             }
 
             java.util.Set<MaleAnalogExpressionSocket> analogExpressionSet = new java.util.HashSet<>(analogExpressionManager->getNamedBeanSet());
@@ -3538,12 +3543,13 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
             for (Module aModule : moduleSet) {
                 InstanceManager::getDefault(ModuleManager.class).deleteModule(aModule);
             }
-
-            java.util.Set<NamedTable> tableSet = new java.util.HashSet<>(InstanceManager::getDefault(NamedTableManager.class)->getNamedBeanSet());
-            for (NamedTable aTable : tableSet) {
-                InstanceManager::getDefault(NamedTableManager.class).deleteNamedTable(aTable);
-            }
 #endif
+            QSet</*NamedTable*/NamedBean*> tableSet = QSet<NamedBean*>(((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getNamedBeanSet());
+            for (NamedBean* nb : tableSet) {
+             NamedTable* aTable = (AbstractNamedTable*)nb->self();
+                ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->deleteNamedTable(aTable);
+            }
+
             while (! logixNG_InitializationManager->getList().isEmpty()) {
                 logixNG_InitializationManager->_delete(0);
             }
@@ -3627,34 +3633,46 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
 
     /*private*/ void StoreAndLoadTest::addHeader(File* inFile, File* outFile) /*throws FileNotFoundException, IOException */{
-      #if 0
-     try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), StandardCharsets.UTF_8));
-                PrintWriter* writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8)))) {
+      #if 1
+//     try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), StandardCharsets.UTF_8));
+//                PrintWriter* writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8)))) {
+       QFile* f1 = new QFile(inFile->getAbsolutePath());
+       if(!f1->open(QIODevice::ReadOnly))
+        throw new IOException();
+       QTextStream* reader = new QTextStream(f1);
 
-            QString line = reader.readLine();
-            writer.println(line);
+       QFile* f2 = new QFile(outFile->getAbsolutePath());
+       if(!f2->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        throw new IOException();
+       QTextStream* stream = new QTextStream(f2);
+       PrintWriter* writer = new PrintWriter(stream);
 
-            writer.println("<!--");
-            writer.println("*****************************************************************************");
-            writer.println();
-            writer.println("DO NOT EDIT THIS FILE!!!");
-            writer.println();
-            writer.println("This file is created by jmri.jmrit.logixng.configurexml.StoreAndLoadTest");
-            writer.println("and put in the temp/temp folder. LogixNG uses both the standard JMRI load");
-            writer.println("and store test, and a LogixNG specific store and load test.");
-            writer.println();
-            writer.println("After adding new stuff to StoreAndLoadTest, copy the file temp/temp/LogixNG.xml");
-            writer.println("to the folder java/test/jmri/jmrit/logixng/configurexml/load");
-            writer.println();
-            writer.println("******************************************************************************");
-            writer.println("-->");
+            QString line = reader->readLine();
+            writer->println(line);
 
-            while ((line = reader.readLine()) != null) {
-                writer.println(line);
+            writer->println("<!--");
+            writer->println("*****************************************************************************");
+            writer->println();
+            writer->println("DO NOT EDIT THIS FILE!!!");
+            writer->println();
+            writer->println("This file is created by jmri.jmrit.logixng.configurexml.StoreAndLoadTest");
+            writer->println("and put in the temp/temp folder. LogixNG uses both the standard JMRI load");
+            writer->println("and store test, and a LogixNG specific store and load test.");
+            writer->println();
+            writer->println("After adding new stuff to StoreAndLoadTest, copy the file temp/temp/LogixNG.xml");
+            writer->println("to the folder java/test/jmri/jmrit/logixng/configurexml/load");
+            writer->println();
+            writer->println("******************************************************************************");
+            writer->println("-->");
+
+            while ((line = reader->readLine()) != "") {
+                writer->println(line);
             }
+            f2->flush();
+            f2->close();
         }
 #endif
-    }
+
 
 
     //@Before
@@ -3685,9 +3703,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         JUnitUtil::tearDown();
     }
 
-#if 0
 
-    /*private*/ static /*final*/ String[] initValues = new String[]{
+
+    /*private*/ /*static*/ /*final*/ QStringList StoreAndLoadTest::initValues = {
         "",             // None
         "32",           // Integer
         "41.429",       // FloatingNumber
@@ -3699,14 +3717,14 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
     };
 
 
-    /*private*/ void addVariables(MaleSocket maleSocket) {
+    /*private*/ void StoreAndLoadTest::addVariables(MaleSocket* maleSocket) {
         int i = 0;
-        for (InitialValueType type : InitialValueType.values()) {
-            maleSocket->addLocalVariable(String.format("A%d", i+1), type, initValues[i]);
+        for (InitialValueType::TYPES type : InitialValueType::values()) {
+            maleSocket->addLocalVariable(QString("A%d").arg(i+1), type, initValues[i]);
             i++;
         }
     }
-
+#if 0
 
     /*private*/ static /*final*/ PrimitiveIterator.OfInt iterator =
             new Random(215).ints('a', 'z'+10).iterator();

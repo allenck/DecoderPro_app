@@ -201,6 +201,10 @@ class VariableData;
            };
            return map.value(s);
           }
+          /*public*/ static QList<TYPES> values()
+          {
+           return QList<TYPES>{None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
+          }
       };
 
     /**

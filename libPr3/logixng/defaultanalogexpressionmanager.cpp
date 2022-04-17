@@ -31,7 +31,10 @@
 //        implements AnalogExpressionManager, InstanceManagerAutoDefault {
 
 
-    /*public*/  DefaultAnalogExpressionManager::DefaultAnalogExpressionManager(QObject* parent) : AbstractBaseManager(parent) {
+    /*public*/  DefaultAnalogExpressionManager::DefaultAnalogExpressionManager(QObject* parent)
+      : AbstractBaseManager(parent) {
+     setObjectName("DefaultAnalogExpressionManager");
+     registerSelf();
         ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
         QList<AnalogExpressionFactory*> factories = {new AnalogFactory_Expressions()};

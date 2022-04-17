@@ -7,7 +7,7 @@ class DefaultDigitalBooleanActionManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  explicit DefaultDigitalBooleanActionManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultDigitalBooleanActionManagerXml(QObject *parent = nullptr);
   ~DefaultDigitalBooleanActionManagerXml() {}
   DefaultDigitalBooleanActionManagerXml(const DefaultDigitalBooleanActionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;

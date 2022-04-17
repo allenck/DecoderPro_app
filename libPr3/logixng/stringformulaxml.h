@@ -7,7 +7,7 @@ class StringFormulaXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit StringFormulaXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit StringFormulaXml(QObject *parent = nullptr);
   ~StringFormulaXml() {}
   StringFormulaXml(const StringFormulaXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

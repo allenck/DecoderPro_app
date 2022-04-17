@@ -25,10 +25,6 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
   /*public*/  void deleteDigitalBooleanAction(MaleDigitalBooleanActionSocket* x)override;
   static /*public*/  DefaultDigitalBooleanActionManager* instance();
   /*public*/  /*Class<MaleDigitalBooleanActionSocket>*/QString getNamedBeanClass() const override;
- private:
-  static Logger* log;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
-  /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultDigitalBooleanActionManager* _instance;// = nullptr;
   QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultDigitalBooleanActionManager";}
 
@@ -36,6 +32,12 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
   QObject* pself() override {return (QObject*)this;}
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
+  QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+
+ private:
+  static Logger* log;
+  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+  /*private*/ MaleSocket* _lastRegisteredBean;
 
  protected:
   /*protected*/ MaleDigitalBooleanActionSocket* castBean(MaleSocket* maleSocket)override;

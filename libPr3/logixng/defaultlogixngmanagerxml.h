@@ -6,10 +6,12 @@
 
 class DefaultLogixNGManagerXml : public AbstractNamedBeanManagerConfigXML
 {
+  Q_OBJECT
  public:
-  explicit DefaultLogixNGManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultLogixNGManagerXml(QObject *parent = nullptr);
   ~DefaultLogixNGManagerXml() {}
-  DefaultLogixNGManagerXml(const DefaultLogixNGManagerXml&) : AbstractNamedBeanManagerConfigXML() {}  /*public*/ QDomElement store(QObject* o) override;
+  DefaultLogixNGManagerXml(const DefaultLogixNGManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
+  /*public*/ QDomElement store(QObject* o) override;
   /*public*/ void setStoreElementClass(QDomElement logixngs);
   /*public*/ bool load(QDomElement sharedLogixNG, QDomElement perNodeLogixNG)override;
   /*public*/ int loadOrder()const override;

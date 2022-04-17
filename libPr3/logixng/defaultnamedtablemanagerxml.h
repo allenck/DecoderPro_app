@@ -8,7 +8,7 @@ class DefaultNamedTableManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  explicit DefaultNamedTableManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultNamedTableManagerXml(QObject *parent = nullptr);
   ~DefaultNamedTableManagerXml() {}
   DefaultNamedTableManagerXml(const DefaultNamedTableManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;

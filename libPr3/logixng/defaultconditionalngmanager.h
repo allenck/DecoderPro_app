@@ -38,11 +38,12 @@ class DefaultConditionalNGManager : public AbstractManager, public ConditionalNG
   /*public*/  /*Class<ConditionalNG>*/QString getNamedBeanClass() const override;
   /*public*/  void fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException*/;
   /*public*/  /*final*/ void deleteBean(/*@Nonnull*/ /*ConditionalNG**/NamedBean* conditionalNG, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/override;
-
+  QString getClassName() {return "jmri.jmrit.logixng.implementation.DefaultConditionalNGManager";}
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
   QObject* mself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
+  QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
 
 
  private:

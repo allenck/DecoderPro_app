@@ -1138,6 +1138,9 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/stringexpressionconstantxml.cpp \
+    logixng/stringexpressionmemoryxml.cpp \
+    logixng/defaultconditionalngmanagerxml.cpp \
     logixng/actiontimer.cpp \
     logixng/logix_emulator.cpp \
     logixng/logixngmoduletableaction.cpp \
@@ -2539,6 +2542,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/stringexpressionconstantxml.h \
+    logixng/stringexpressionmemoryxml.h \
+    logixng/defaultconditionalngmanagerxml.h \
     logixng/logix_emulator.h \
     logixng/actiontimer.h \
     logixng/logixngmoduletableaction.h \

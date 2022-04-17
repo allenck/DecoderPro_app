@@ -3,11 +3,12 @@
 
 #include "abstractmanagerxml.h"
 #include "threadingutil.h"
+
 class DefaultStringExpressionManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  explicit DefaultStringExpressionManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultStringExpressionManagerXml(QObject *parent = nullptr);
   ~DefaultStringExpressionManagerXml(){}
   DefaultStringExpressionManagerXml(const DefaultStringExpressionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;

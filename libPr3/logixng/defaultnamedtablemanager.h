@@ -11,7 +11,10 @@ class DefaultNamedTableManager : public AbstractManager, public NamedTableManage
   Q_OBJECT
   Q_INTERFACES(NamedTableManager)
  public:
-  explicit DefaultNamedTableManager(QObject *parent = nullptr) : AbstractManager(parent){}
+  explicit DefaultNamedTableManager(QObject *parent = nullptr) : AbstractManager(parent){
+   setObjectName("DefaultNamedTableManager");
+   registerSelf();
+  }
   /*public*/  int getXMLOrder() const override;
   /*public*/  QChar typeLetter()const override;
   /*public*/  NameValidity validSystemNameFormat(QString systemName)override;

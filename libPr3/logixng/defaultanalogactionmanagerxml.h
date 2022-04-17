@@ -9,7 +9,7 @@ class DefaultAnalogActionManagerXml : public AbstractManagerXml
   Q_OBJECT
 
  public:
-  explicit DefaultAnalogActionManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultAnalogActionManagerXml(QObject *parent = nullptr);
   ~DefaultAnalogActionManagerXml() {}
   DefaultAnalogActionManagerXml(const DefaultAnalogActionManagerXml&) : AbstractManagerXml(){}
   /*public*/  QDomElement store(QObject* o)override;

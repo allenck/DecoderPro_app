@@ -56,6 +56,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
   QObject* mself() override {return (QObject*)this;}
+  QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+
   /*public*/ QString getSubSystemNamePrefix() const override {return  AbstractManager::getSystemPrefix()+ typeLetter();}
  private:
   static Logger* log;

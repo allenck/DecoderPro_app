@@ -133,7 +133,7 @@
 #include "logixng/actionmemorytestaction.h"
 #include "logixng/storeandloadtestaction.h"
 #include "logixng/stringmanytestaction.h"
-
+#include "logixng/analogactionmanagertestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -338,13 +338,13 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGTypesMenu->addAction(new TableForEachTestAction());
     logixNGTypesMenu->addAction(new TrueTestAction(this));
 
-    logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
-    logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));
-
+    logixNGManagerMenu->addAction(new AnalogActionManagerTestAction(this));
     logixNGManagerMenu->addAction(new DefaultLogixNGManagerTestAction(this));
     logixNGManagerMenu->addAction(new DigitalActionManagerTestAction(this));
     logixNGManagerMenu->addAction(new DigitalExpressionManagerTestAction(this));
     logixNGManagerMenu->addAction(new DigitalBooleanActionManagerTestAction(this));
+    logixNGManagerMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
+    logixNGManagerMenu->addAction(new LogixNG_ManagerTestAction(this));
 
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleAnalogActionSocketTestAction(this));
     logixNGFemaleSocketMenu->addAction(new DefaultFemaleAnalogExpressionSocketTestAction(this));

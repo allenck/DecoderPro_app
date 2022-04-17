@@ -323,7 +323,7 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
 /*public*/ QStringList DefaultConditionalManager::getSystemNameList() {
  QStringList nameList = QStringList();
 
-    LogixManager* logixManager = (LogixManager*)InstanceManager::getDefault("LogixManager");
+    LogixManager* logixManager = (DefaultLogixManager*)InstanceManager::getDefault("LogixManager");
     for (QString xName : logixManager->getSystemNameList()) {
         Logix* lgx = logixManager->getLogix(xName);
         for (int i = 0; i < lgx->getNumConditionals(); i++) {

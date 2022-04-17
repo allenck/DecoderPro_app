@@ -5,6 +5,8 @@
 #include "runtimeexception.h"
 #include "malestringactionsocket.h"
 #include "defaultmalestringactionsocket.h"
+#include "abstractstringaction.h"
+
 /**
  * Provides the functionality for configuring ActionManagers
  *
@@ -37,12 +39,12 @@
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleStringActionSocket* a = action;
+                    MaleStringActionSocket* a = (DefaultMaleStringActionSocket*)((AbstractStringAction*)action)->getParent()->bself();
                     while (!(static_cast<DefaultMaleStringActionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
-                        a = (MaleStringActionSocket*) a->getObject()->bself();
+                        a = (MaleStringActionSocket*) ((AbstractMaleSocket*)a->bself())->getObject()->bself();
                     }
-                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    QDomElement e = ConfigXmlManager::elementFromObject(((AbstractMaleSocket*)a->bself())->getObject()->bself());
                     if (!e.isNull()) {
                         for (QDomElement ee : elements) e.appendChild(ee);
 //                        e.addContent(storeMaleSocket(a));

@@ -26,6 +26,8 @@
         QDomElement element = doc.createElement("MaleSocket");
 
         Base* m = maleSocket;
+        if(!maleSocket)
+         return QDomElement();
         while (qobject_cast<MaleSocket*>(m->bself())) {
             MaleSocket* ms = (MaleSocket*) m->bself();
 

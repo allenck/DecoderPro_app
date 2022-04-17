@@ -45,13 +45,13 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
 {
  QDomElement turnouts = doc.createElement("turnouts");
  setStoreElementClass(turnouts);
- TurnoutManager* tm = (TurnoutManager*) o;
+ TurnoutManager* tm = (AbstractTurnoutManager*) o;
  if (tm!=nullptr)
  {
   TurnoutOperationManagerXml* tomx = new TurnoutOperationManagerXml();
   QDomElement opElem = tomx->store((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"));
   turnouts.appendChild(opElem);
-  QStringListIterator iter(((TurnoutManager*)tm)->getSystemNameList());
+  QStringListIterator iter(((AbstractTurnoutManager*)tm)->getSystemNameList());
 
   // don't return an element if there are not turnouts to include
   if (!iter.hasNext()) return QDomElement();

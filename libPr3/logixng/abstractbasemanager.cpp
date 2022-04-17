@@ -88,8 +88,8 @@
         // not the male socket that's registered in the manager. To resolve
         // this, we search for the registered bean with the system name and
         // then deregister the bean we have found.
- QString sn = ((AbstractNamedBean*)s->self())->getSystemName();
-        NamedBean*bean = AbstractManager::getBySystemName(((AbstractNamedBean*)s->self())->getSystemName());
+     QString sn = ((AbstractNamedBean*)s->self())->getSystemName();
+        NamedBean*bean = AbstractBaseManager::getBySystemName(((AbstractNamedBean*)s->self())->getSystemName());
         if (bean == nullptr) {
             // This should never happen.
             throw new IllegalArgumentException(((AbstractNamedBean*)s->self())->getSystemName() + " is not registered in manager");

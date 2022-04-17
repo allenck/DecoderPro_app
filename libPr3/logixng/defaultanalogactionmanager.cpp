@@ -26,6 +26,7 @@
    : AbstractBaseManager(parent) {
     setObjectName("DefaultAnalogActionManager");
     ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
+    registerSelf();
 
 //        for (AnalogActionFactory actionFactory : ServiceLoader.load(AnalogActionFactory.class)) {
 //            actionFactory.init();
@@ -136,7 +137,7 @@
 //@Override
 /*public*/  void DefaultAnalogActionManager::deleteAnalogAction(MaleAnalogActionSocket* x) {
     // delete the MaleAnalogActionSocket
-    deregister(x);
+    deregister((AbstractNamedBean*)x->bself());
     x->NamedBean::dispose();
 }
 

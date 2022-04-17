@@ -5,8 +5,9 @@
 
 class AnalogManyXml : public AbstractNamedBeanManagerConfigXML
 {
+  Q_OBJECT
  public:
-  explicit AnalogManyXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit AnalogManyXml(QObject *parent = nullptr);
   ~AnalogManyXml() {}
   AnalogManyXml(const AnalogManyXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

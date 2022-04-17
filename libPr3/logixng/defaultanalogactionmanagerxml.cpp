@@ -1,8 +1,9 @@
 #include "defaultanalogactionmanagerxml.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
-#include "analogactionmanager.h"
+#include "defaultanalogactionmanager.h"
 #include "defaultmaleanalogactionsocket.h"
+#include "abstractanalogaction.h"
 
 /**
  * Provides the functionality for configuring ActionManagers
@@ -26,22 +27,27 @@
     /*public*/  QDomElement DefaultAnalogActionManagerXml::store(QObject* o) {
         QDomElement actions = doc.createElement("LogixNGAnalogActions");
         setStoreElementClass(actions);
-        AnalogActionManager* tm = (AnalogActionManager*) o;
+        AnalogActionManager* tm = (DefaultAnalogActionManager*) o;
         if (tm != nullptr) {
-            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+            QSet<NamedBean*> set;
+            if ((set = tm->getNamedBeanSet()).isEmpty()) return QDomElement();
             for (NamedBean* nb: tm->getNamedBeanSet()) {
-             MaleAnalogActionSocket* action  = (MaleAnalogActionSocket*)nb->self();
-                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
-                try {
+              AbstractAnalogAction* action  = (AbstractAnalogAction*)nb->self();
+              log->debug("action system name is " + nb->getSystemName());  // NOI18N
+              try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleAnalogActionSocket* a = action;
-                    while (!(static_cast<DefaultMaleAnalogActionSocket*>(a))) {
-                        elements.append(storeMaleSocket(a));
-                        a = (MaleAnalogActionSocket*) a->getObject()->bself();
+                    MaleAnalogActionSocket* a = (DefaultMaleAnalogActionSocket*)action->getParent()->bself();
+                              NamedBean* anb = nb;
+                    while (!(qobject_cast<DefaultMaleAnalogActionSocket*>(a->self()))) {
+                     if(qobject_cast<MaleSocket*>(a->self()))
+                        elements.append(storeMaleSocket((MaleSocket*)a->self()));
+                         //a = ((DefaultMaleAnalogActionSocket*)((DefaultMaleAnalogActionSocket*) anb->self())->getObject()->bself());
+                       a = (MaleAnalogActionSocket*) a->getObject()->bself();
+                       anb = (NamedBean*)a->self();
                     }
                     QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
-                    if (e != QDomElement()) {
+                    if (!e.isNull()) {
                         for (QDomElement ee : elements) e.appendChild(ee);
                         actions.appendChild(e);
                     } else {
@@ -63,7 +69,7 @@
      * @param actions The top-level element being created
      */
     /*public*/  void  DefaultAnalogActionManagerXml::setStoreElementClass(QDomElement actions) {
-        actions.setAttribute("class", "jmri.jmrit.loggixng,implementation.configut=rexml.DefaultAnalogActionManagerXml");  // NOI18N
+        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configut=rexml.DefaultAnalogActionManagerXml");  // NOI18N
     }
 
     /**
@@ -123,11 +129,11 @@
                     try {
                         AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket* oldLastItem = ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* oldLastItem = ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getLastRegisteredMaleSocket();
                         o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket* newLastItem = ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* newLastItem = ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getLastRegisteredMaleSocket();
                         if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
                         else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
                     } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {

@@ -1,50 +1,58 @@
 #include "antecedenttest.h"
+#include "logixng_thread.h"
+#include "instancemanager.h"
+#include "junitutil.h"
+#include "assert1.h"
+#include "true.h"
+#include "defaultdigitalexpressionmanager.h"
+#include "antecedent.h"
+#include "defaultlogixngmanager.h"
+#include "defaultconditionalngscaffold.h"
+#include "defaultconditionalngmanager.h"
+#include "ifthenelse.h"
+#include "defaultdigitalactionmanager.h"
+#include "atomicboolean.h"
+#include "actionatomicboolean.h"
 
 AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestBase(parent)
 {
-
+ setObjectName("AntecedentTest");
 }
-#if 0
+
 /**
  * Test Antecedent
  *
  * @author Daniel Bergqvist 2018
  */
-/*public*/  class AntecedentTest extends AbstractDigitalExpressionTestBase implements FemaleSocketListener {
+//*public*/  class AntecedentTest extends AbstractDigitalExpressionTestBase implements FemaleSocketListener {
 
-    private static final boolean EXPECT_SUCCESS = true;
-    private static final boolean EXPECT_FAILURE = false;
-
-    private LogixNG logixNG;
-    private ConditionalNG conditionalNG;
-    private Antecedent expressionAntecedent;
-    private ActionAtomicBoolean actionAtomicBoolean;
-    private AtomicBoolean atomicBoolean;
+    /*private*/ /*static*/ /*final*/ bool AntecedentTest::EXPECT_SUCCESS = true;
+    /*private*/ /*static*/ /*final*/ bool AntecedentTest::EXPECT_FAILURE = false;
 
 
     //@Override
-    /*public*/  ConditionalNG getConditionalNG() {
+    /*public*/  ConditionalNG* AntecedentTest::getConditionalNG() {
         return conditionalNG;
     }
 
     //@Override
-    /*public*/  LogixNG getLogixNG() {
+    /*public*/  LogixNG* AntecedentTest::getLogixNG() {
         return logixNG;
     }
 
-    private static int beanID = 901;
+    /*private*/ /*static*/ int AntecedentTest::beanID = 901;
 
     //@Override
-    /*public*/  MaleSocket getConnectableChild() {
-        DigitalExpressionBean childExpression = new True("IQDE"+Integer.toString(beanID++), null);
-        MaleSocket maleSocketChild =
-                InstanceManager.getDefault(DigitalExpressionManager.class).registerExpression(childExpression);
+    /*public*/  MaleSocket* AntecedentTest::getConnectableChild() {
+        DigitalExpressionBean* childExpression = new True("IQDE"+QString::number(beanID++), "");
+        MaleSocket* maleSocketChild = ((DefaultDigitalExpressionManager*)
+                InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(childExpression);
         return maleSocketChild;
     }
 
     //@Override
-    /*public*/  String getExpectedPrintedTree() {
-        return String.format(
+    /*public*/  QString AntecedentTest::getExpectedPrintedTree() {
+        return QString(
                 "Antecedent: R1 ::: Use default\n" \
                 "   ? E1\n" \
                 "      Always true ::: Use default\n" \
@@ -53,7 +61,7 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
     }
 
     //@Override
-    /*public*/  String getExpectedPrintedTreeFromRoot() {
+    /*public*/  QString AntecedentTest::getExpectedPrintedTreeFromRoot() {
         return QString(
                 "LogixNG: A new logix for test\n" \
                 "   ConditionalNG: A conditionalNG\n" \
@@ -72,50 +80,50 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
     }
 
     //@Override
-    /*public*/  NamedBean* createNewBean(QString systemName) /*throws Exception*/ {
-        Antecedent* a = new Antecedent(systemName, null);
+    /*public*/  NamedBean* AntecedentTest::createNewBean(QString systemName) /*throws Exception*/ {
+        Antecedent* a = new Antecedent(systemName, "");
         a->setAntecedent("R1");
         return a;
     }
 
     //@Override
-    /*public*/  boolean addNewSocket() throws SocketAlreadyConnectedException {
-        int count = _base.getChildCount();
+    /*public*/  bool AntecedentTest::addNewSocket() /*throws SocketAlreadyConnectedException*/ {
+        int count = _base->getChildCount();
         for (int i=0; i < count; i++) {
-            if (!_base.getChild(i).isConnected()) {
-                _base.getChild(i).connect(getConnectableChild());
+            if (!_base->getChild(i)->isConnected()) {
+                _base->getChild(i)->_connect(getConnectableChild());
             }
         }
         return true;
     }
-
-    @Test
+#if 0
+    //@Test
     /*public*/  void testCtor() throws Exception {
         Antecedent expression2;
 
         expression2 = new Antecedent("IQDE321", null);
         expression2.setAntecedent("R1");
-        Assert.assertNotNull("object exists", expression2);
-        Assert.assertNull("Username matches", expression2.getUserName());
-        Assert.assertEquals("String matches", "Antecedent: R1", expression2.getLongDescription());
+        Assert::assertNotNull("object exists", expression2);
+        Assert::assertNull("Username matches", expression2.getUserName());
+        Assert::assertEquals("String matches", "Antecedent: R1", expression2.getLongDescription());
 
         expression2 = new Antecedent("IQDE321", "My expression");
         expression2.setAntecedent("R1");
-        Assert.assertNotNull("object exists", expression2);
-        Assert.assertEquals("Username matches", "My expression", expression2.getUserName());
-        Assert.assertEquals("String matches", "Antecedent: R1", expression2.getLongDescription());
+        Assert::assertNotNull("object exists", expression2);
+        Assert::assertEquals("Username matches", "My expression", expression2.getUserName());
+        Assert::assertEquals("String matches", "Antecedent: R1", expression2.getLongDescription());
 
         expression2 = new Antecedent("IQDE321", null);
         expression2.setAntecedent("R1 and R2");
-        Assert.assertNotNull("object exists", expression2);
-        Assert.assertNull("Username matches", expression2.getUserName());
-        Assert.assertEquals("String matches", "Antecedent: R1 and R2", expression2.getLongDescription());
+        Assert::assertNotNull("object exists", expression2);
+        Assert::assertNull("Username matches", expression2.getUserName());
+        Assert::assertEquals("String matches", "Antecedent: R1 and R2", expression2.getLongDescription());
 
         expression2 = new Antecedent("IQDE321", "My expression");
         expression2.setAntecedent("R1 or R2");
-        Assert.assertNotNull("object exists", expression2);
-        Assert.assertEquals("Username matches", "My expression", expression2.getUserName());
-        Assert.assertEquals("String matches", "Antecedent: R1 or R2", expression2.getLongDescription());
+        Assert::assertNotNull("object exists", expression2);
+        Assert::assertEquals("Username matches", "My expression", expression2.getUserName());
+        Assert::assertEquals("String matches", "Antecedent: R1 or R2", expression2.getLongDescription());
 
         boolean thrown = false;
         try {
@@ -124,7 +132,7 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         } catch (IllegalArgumentException ex) {
             thrown = true;
         }
-        Assert.assertTrue("Expected exception thrown", thrown);
+        Assert::assertTrue("Expected exception thrown", thrown);
 
         thrown = false;
         try {
@@ -133,13 +141,13 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         } catch (IllegalArgumentException ex) {
             thrown = true;
         }
-        Assert.assertTrue("Expected exception thrown", thrown);
+        Assert::assertTrue("Expected exception thrown", thrown);
     }
 
     // Test action when at least one child socket is not connected
-    @Test
+    //@Test
     /*public*/  void testCtorAndSetup1() {
-        DigitalExpressionManager m = InstanceManager.getDefault(DigitalExpressionManager.class);
+        DigitalExpressionManager m = InstanceManager::getDefault(DigitalExpressionManager.class);
 
         List<MaleSocket> maleSockets = new ArrayList<>();
         maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE52", null)));
@@ -157,18 +165,18 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("Yes123", "IQDE3"));
 
         Antecedent expression = new Antecedent("IQDE321", null, actionSystemNames);
-        Assert.assertNotNull("exists", expression);
-        Assert.assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
+        Assert::assertNotNull("exists", expression);
+        Assert::assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
 
         for (int i=0; i < 5; i++) {
             Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert.assertEquals("expression female socket name is "+entry.getKey(),
+            Assert::assertEquals("expression female socket name is "+entry.getKey(),
                     entry.getKey(), expression.getChild(i).getName());
-            Assert.assertEquals("expression female socket is of correct class",
+            Assert::assertEquals("expression female socket is of correct class",
 //                    "jmri.jmrit.logixng.implementation.DefaultFemaleGenericExpressionSocket$DigitalSocket",
                 "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket",
                     expression.getChild(i).getClass().getName());
-            Assert.assertFalse("expression female socket is not connected",
+            Assert::assertFalse("expression female socket is not connected",
                     expression.getChild(i).isConnected());
         }
 
@@ -179,29 +187,29 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
 
         for (int i=0; i < 5; i++) {
             Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert.assertEquals("expression female socket name is "+entry.getKey(),
+            Assert::assertEquals("expression female socket name is "+entry.getKey(),
                     entry.getKey(), expression.getChild(i).getName());
 
             if (maleSockets.get(i) != null) {
-                Assert.assertTrue("expression female socket is connected",
+                Assert::assertTrue("expression female socket is connected",
                         expression.getChild(i).isConnected());
-//                Assert.assertEquals("child is correct bean",
+//                Assert::assertEquals("child is correct bean",
 //                        maleSockets.get(i),
 //                        expression.getChild(i).getConnectedSocket());
             } else {
-                Assert.assertFalse("expression female socket is not connected",
+                Assert::assertFalse("expression female socket is not connected",
                         expression.getChild(i).isConnected());
             }
         }
 
-        Assert.assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
+        Assert::assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
     }
 
     // Test action when at least one child socket is not connected.
     // This should never happen, but test it anyway.
-    @Test
+    //@Test
     /*public*/  void testCtorAndSetup2() {
-        DigitalExpressionManager m = InstanceManager.getDefault(DigitalExpressionManager.class);
+        DigitalExpressionManager m = InstanceManager::getDefault(DigitalExpressionManager.class);
 
         List<MaleSocket> maleSockets = new ArrayList<>();
         maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE52", null)));
@@ -218,18 +226,18 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("Yes123", "IQDE3"));
 
         Antecedent expression = new Antecedent("IQDE321", null, actionSystemNames);
-        Assert.assertNotNull("exists", expression);
-        Assert.assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
+        Assert::assertNotNull("exists", expression);
+        Assert::assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
 
         for (int i=0; i < 5; i++) {
             Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert.assertEquals("expression female socket name is "+entry.getKey(),
+            Assert::assertEquals("expression female socket name is "+entry.getKey(),
                     entry.getKey(), expression.getChild(i).getName());
-            Assert.assertEquals("expression female socket is of correct class",
+            Assert::assertEquals("expression female socket is of correct class",
 //                    "jmri.jmrit.logixng.implementation.DefaultFemaleGenericExpressionSocket$DigitalSocket",
                 "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket",
                     expression.getChild(i).getClass().getName());
-            Assert.assertFalse("expression female socket is not connected",
+            Assert::assertFalse("expression female socket is not connected",
                     expression.getChild(i).isConnected());
         }
 
@@ -238,32 +246,32 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
 
         for (int i=0; i < 5; i++) {
             Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert.assertEquals("expression female socket name is "+entry.getKey(),
+            Assert::assertEquals("expression female socket name is "+entry.getKey(),
                     entry.getKey(), expression.getChild(i).getName());
 
             if (maleSockets.get(i) != null) {
-                Assert.assertTrue("expression female socket is connected",
+                Assert::assertTrue("expression female socket is connected",
                         expression.getChild(i).isConnected());
-//                Assert.assertEquals("child is correct bean",
+//                Assert::assertEquals("child is correct bean",
 //                        maleSockets.get(i),
 //                        expression.getChild(i).getConnectedSocket());
             } else {
-                Assert.assertFalse("expression female socket is not connected",
+                Assert::assertFalse("expression female socket is not connected",
                         expression.getChild(i).isConnected());
             }
         }
 
         // Since all the sockets are connected, a new socket must have been created.
-        Assert.assertEquals("expression has 6 female sockets", 6, expression.getChildCount());
+        Assert::assertEquals("expression has 6 female sockets", 6, expression.getChildCount());
 
         // Try run setup() again. That should not cause any problems.
         expression.setup();
 
-        Assert.assertEquals("expression has 6 female sockets", 6, expression.getChildCount());
+        Assert::assertEquals("expression has 6 female sockets", 6, expression.getChildCount());
     }
 
     // Test calling setActionSystemNames() twice
-    @Test
+    //@Test
     /*public*/  void testCtorAndSetup3() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException {
         List<Map.Entry<String, String>> actionSystemNames = new ArrayList<>();
         actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("XYZ123", "IQDE52"));
@@ -280,15 +288,15 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         } catch (InvocationTargetException e) {
             if (e.getCause() instanceof RuntimeException) {
                 hasThrown = true;
-                Assert.assertEquals("Exception message is correct",
+                Assert::assertEquals("Exception message is correct",
                         "expression system names cannot be set more than once",
                         e.getCause().getMessage());
             }
         }
-        Assert.assertTrue("Exception thrown", hasThrown);
+        Assert::assertTrue("Exception thrown", hasThrown);
     }
 
-    @Test
+    //@Test
     /*public*/  void testSetChildCount() throws SocketAlreadyConnectedException {
         _baseMaleSocket.setEnabled(false);
 
@@ -300,20 +308,20 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         });
 
         a.setChildCount(1);
-        Assert.assertEquals("numChilds are correct", 1, a.getChildCount());
+        Assert::assertEquals("numChilds are correct", 1, a.getChildCount());
 
         // Test increase num children
         ab.set(false);
         a.setChildCount(a.getChildCount()+1);
-        Assert.assertEquals("numChilds are correct", 2, a.getChildCount());
-        Assert.assertTrue("PropertyChangeEvent fired", ab.get());
+        Assert::assertEquals("numChilds are correct", 2, a.getChildCount());
+        Assert::assertTrue("PropertyChangeEvent fired", ab.get());
 
         // Test decrease num children
         ab.set(false);
-        Assert.assertTrue("We have least two children", a.getChildCount() > 1);
+        Assert::assertTrue("We have least two children", a.getChildCount() > 1);
         a.setChildCount(1);
-        Assert.assertEquals("numChilds are correct", 1, a.getChildCount());
-        Assert.assertTrue("PropertyChangeEvent fired", ab.get());
+        Assert::assertEquals("numChilds are correct", 1, a.getChildCount());
+        Assert::assertTrue("PropertyChangeEvent fired", ab.get());
 
         // Test decrease num children when all children are connected
         ab.set(false);
@@ -323,21 +331,21 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         a.getChild(1).connect(getConnectableChild());
         a.getChild(2).disconnect();
         a.getChild(2).connect(getConnectableChild());
-        Assert.assertEquals("numChilds are correct", 4, a.getChildCount());
+        Assert::assertEquals("numChilds are correct", 4, a.getChildCount());
         a.setChildCount(2);
-        Assert.assertEquals("numChilds are correct", 2, a.getChildCount());
-        Assert.assertTrue("PropertyChangeEvent fired", ab.get());
+        Assert::assertEquals("numChilds are correct", 2, a.getChildCount());
+        Assert::assertTrue("PropertyChangeEvent fired", ab.get());
     }
 
-    @Test
+    //@Test
     /*public*/  void testGetChild() throws Exception {
         Antecedent expression2 = new Antecedent("IQDE321", null);
         expression2.setAntecedent("R1");
 
         for (int i=0; i < 3; i++) {
-            Assert.assertTrue("getChildCount() returns "+i, i+1 == expression2.getChildCount());
+            Assert::assertTrue("getChildCount() returns "+i, i+1 == expression2.getChildCount());
 
-            Assert.assertNotNull("getChild(0) returns a non null value",
+            Assert::assertNotNull("getChild(0) returns a non null value",
                     expression2.getChild(0));
 
             assertIndexOutOfBoundsException(expression2::getChild, i+1, i+1);
@@ -345,59 +353,59 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
             // Connect a new child expression
             True expr = new True("IQDE"+i, null);
             MaleSocket maleSocket =
-                    InstanceManager.getDefault(DigitalExpressionManager.class).registerExpression(expr);
+                    InstanceManager::getDefault(DigitalExpressionManager.class).registerExpression(expr);
             expression2.getChild(i).connect(maleSocket);
         }
     }
 
-    @Test
+    //@Test
     /*public*/  void testCategory() {
-        Assert.assertTrue("Category matches", Category.COMMON == _base.getCategory());
+        Assert::assertTrue("Category matches", Category.COMMON == _base.getCategory());
     }
 
     // Test the methods connected(FemaleSocket) and getExpressionSystemName(int)
-    @Test
+    //@Test
     /*public*/  void testConnected_getExpressionSystemName() throws SocketAlreadyConnectedException {
         Antecedent expression = new Antecedent("IQDE121", null);
 
         ExpressionMemory stringExpressionMemory = new ExpressionMemory("IQDE122", null);
         MaleSocket maleSAMSocket =
-                InstanceManager.getDefault(DigitalExpressionManager.class).registerExpression(stringExpressionMemory);
+                InstanceManager::getDefault(DigitalExpressionManager.class).registerExpression(stringExpressionMemory);
 
-        Assert.assertEquals("Num children is correct", 1, expression.getChildCount());
+        Assert::assertEquals("Num children is correct", 1, expression.getChildCount());
 
         // Test connect and disconnect
         expression.getChild(0).connect(maleSAMSocket);
-        Assert.assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert.assertEquals("getExpressionSystemName(0) is correct", "IQDE122", expression.getExpressionSystemName(0));
-        Assert.assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
+        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
+        Assert::assertEquals("getExpressionSystemName(0) is correct", "IQDE122", expression.getExpressionSystemName(0));
+        Assert::assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
         expression.getChild(0).disconnect();
-        Assert.assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert.assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert.assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
+        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
+        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
+        Assert::assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
 
         expression.getChild(1).connect(maleSAMSocket);
-        Assert.assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert.assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert.assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression.getExpressionSystemName(1));
+        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
+        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
+        Assert::assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression.getExpressionSystemName(1));
         expression.getChild(0).disconnect();    // Test removing child with the wrong index.
-        Assert.assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert.assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert.assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression.getExpressionSystemName(1));
+        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
+        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
+        Assert::assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression.getExpressionSystemName(1));
         expression.getChild(1).disconnect();
-        Assert.assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert.assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert.assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
+        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
+        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
+        Assert::assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
     }
 
-    @Test
+    //@Test
     /*public*/  void testDescription() {
         Antecedent e1 = new Antecedent("IQDE321", null);
-        Assert.assertEquals("strings matches", "Antecedent", e1.getShortDescription());
-        Assert.assertEquals("strings matches", "Antecedent: empty", e1.getLongDescription());
+        Assert::assertEquals("strings matches", "Antecedent", e1.getShortDescription());
+        Assert::assertEquals("strings matches", "Antecedent: empty", e1.getLongDescription());
     }
 
-    private void testValidate(boolean expectedResult, String antecedent, List<DigitalExpressionBean> conditionalVariablesList) throws Exception {
+    /*private*/ void testValidate(boolean expectedResult, String antecedent, List<DigitalExpressionBean> conditionalVariablesList) throws Exception {
         Antecedent ix1 = new Antecedent("IQDE321", "IXIC 1");
         ix1.setAntecedent("R1");
 
@@ -406,22 +414,22 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         for (DigitalExpressionBean expressionAntecedent : conditionalVariablesList) {
             String socketName = "E"+Integer.toString(count++);
             FemaleDigitalExpressionSocket socket =
-                    InstanceManager.getDefault(DigitalExpressionManager.class)
+                    InstanceManager::getDefault(DigitalExpressionManager.class)
                             .createFemaleSocket(conditionalNG, this, socketName);
             socket.connect((MaleSocket) expressionAntecedent);
             expressionEntryList.add(new ExpressionEntry(socket, socketName));
         }
 
         if (expectedResult) {
-            Assert.assertTrue("validateAntecedent() returns null for '"+antecedent+"'",
+            Assert::assertTrue("validateAntecedent() returns null for '"+antecedent+"'",
                     ix1.validateAntecedent(antecedent, expressionEntryList) == null);
         } else {
-            Assert.assertTrue("validateAntecedent() returns error message for '"+antecedent+"'",
+            Assert::assertTrue("validateAntecedent() returns error message for '"+antecedent+"'",
                     ix1.validateAntecedent(antecedent, expressionEntryList) != null);
         }
     }
 
-    private void testCalculate(int expectedResult, String antecedent,
+    /*private*/ void testCalculate(int expectedResult, String antecedent,
             List<DigitalExpressionBean> conditionalVariablesList, String errorMessage)
             throws Exception {
 
@@ -441,14 +449,14 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
 
         switch (expectedResult) {
             case Antecedent.FALSE:
-                Assert.assertFalse("validateAntecedent() returns FALSE for '"+antecedent+"'",
+                Assert::assertFalse("validateAntecedent() returns FALSE for '"+antecedent+"'",
                         ix1.evaluate());
                 break;
 
             case Antecedent.TRUE:
 //                System.err.format("antecedent: %s%n", antecedent);
 //                System.err.format("variable: %b%n", conditionalVariablesList.get(0).evaluate(isCompleted));
-                Assert.assertTrue("validateAntecedent() returns TRUE for '"+antecedent+"'",
+                Assert::assertTrue("validateAntecedent() returns TRUE for '"+antecedent+"'",
                         ix1.evaluate());
                 break;
 
@@ -461,16 +469,16 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         }
     }
 
-    @Test
+    //@Test
     /*public*/  void testValidate() throws Exception {
         DigitalExpressionBean[] conditionalVariables_Empty = { };
         List<DigitalExpressionBean> conditionalVariablesList_Empty = Arrays.asList(conditionalVariables_Empty);
 
         DigitalExpressionBean trueExpression =
-                InstanceManager.getDefault(
+                InstanceManager::getDefault(
                         DigitalExpressionManager.class).registerExpression(
-                                new True(InstanceManager.getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
-//        DigitalExpressionBean falseExpression = InstanceManager.getDefault(DigitalExpressionManager.class).registerExpression(new False(conditionalNG));
+                                new True(InstanceManager::getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
+//        DigitalExpressionBean falseExpression = InstanceManager::getDefault(DigitalExpressionManager.class).registerExpression(new False(conditionalNG));
 
         DigitalExpressionBean[] conditionalVariables_True
                 = { trueExpression };
@@ -518,20 +526,20 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         testValidate(EXPECT_FAILURE, "R1 or R3 and R2 or", conditionalVariablesList_TrueTrueTrue);
     }
 
-    @Test
+    //@Test
     @SuppressWarnings("unused") // test building in progress
     /*public*/  void testCalculate() throws Exception {
         DigitalExpressionBean[] conditionalVariables_Empty = { };
         List<DigitalExpressionBean> conditionalVariablesList_Empty = Arrays.asList(conditionalVariables_Empty);
 
         DigitalExpressionBean trueExpression =
-                InstanceManager.getDefault(
+                InstanceManager::getDefault(
                         DigitalExpressionManager.class).registerExpression(
-                                new True(InstanceManager.getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
+                                new True(InstanceManager::getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
         DigitalExpressionBean falseExpression =
-                InstanceManager.getDefault(
+                InstanceManager::getDefault(
                         DigitalExpressionManager.class).registerExpression(
-                                new False(InstanceManager.getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
+                                new False(InstanceManager::getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
 
         DigitalExpressionBean[] conditionalVariables_True
                 = { trueExpression };
@@ -642,69 +650,69 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         testCalculate(Antecedent.TRUE, "(R1 and (R3) and R2)", conditionalVariablesList_TrueTrueTrue, "");
         testCalculate(Antecedent.FALSE, "(R1 and (R3) and not R2)", conditionalVariablesList_TrueTrueTrue, "");
     }
-
+#endif
 
     // The minimal setup for log4J
-    @Before
-    /*public*/  void setUp() throws Exception {
-        JUnitUtil.setUp();
-        JUnitUtil.resetInstanceManager();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initConfigureManager();
-        JUnitUtil.initInternalSensorManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initLogixNGManager();
+    //@Before
+    /*public*/  void AntecedentTest::setUp() /*throws Exception*/ {
+        JUnitUtil::setUp();
+        JUnitUtil::resetInstanceManager();
+        JUnitUtil::resetProfileManager();
+        JUnitUtil::initConfigureManager();
+        JUnitUtil::initInternalSensorManager();
+        JUnitUtil::initInternalTurnoutManager();
+        JUnitUtil::initLogixNGManager();
 
-        _category = Category.COMMON;
+        _category = Category::COMMON;
         _isExternal = false;
 
-        logixNG = InstanceManager.getDefault(LogixNG_Manager.class).createLogixNG("A new logix for test");  // NOI18N
+        logixNG = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N
         conditionalNG = new DefaultConditionalNGScaffold("IQC1", "A conditionalNG");  // NOI18N;
-        InstanceManager.getDefault(ConditionalNG_Manager.class).register(conditionalNG);
-        conditionalNG.setRunDelayed(false);
-        conditionalNG.setEnabled(true);
-        logixNG.addConditionalNG(conditionalNG);
-        IfThenElse ifThenElse = new IfThenElse("IQDA321", null);
-        MaleSocket maleSocket =
-                InstanceManager.getDefault(DigitalActionManager.class).registerAction(ifThenElse);
-        conditionalNG.getChild(0).connect(maleSocket);
+        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((AbstractNamedBean*)conditionalNG->self());
+        conditionalNG->setRunDelayed(false);
+        conditionalNG->setEnabled(true);
+        logixNG->addConditionalNG((DefaultConditionalNG*)conditionalNG);
+        IfThenElse* ifThenElse = new IfThenElse("IQDA321", "");
+        MaleSocket* maleSocket = ((DefaultDigitalActionManager*)
+                InstanceManager::getDefault("DigitalActionManager"))->registerAction(ifThenElse);
+        conditionalNG->getChild(0)->_connect(maleSocket);
 
-        expressionAntecedent = new Antecedent("IQDE321", null);
-        expressionAntecedent.setAntecedent("R1");
-        MaleSocket maleSocket2 =
-                InstanceManager.getDefault(DigitalExpressionManager.class).registerExpression(expressionAntecedent);
-        ifThenElse.getChild(0).connect(maleSocket2);
+        expressionAntecedent = new Antecedent("IQDE321", "");
+        expressionAntecedent->setAntecedent("R1");
+        MaleSocket* maleSocket2 = ((DefaultDigitalExpressionManager*)
+                InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(expressionAntecedent);
+        ifThenElse->getChild(0)->_connect(maleSocket2);
 
-        DigitalExpressionBean childExpression = new True("IQDE322", null);
-        MaleSocket maleSocketChild =
-                InstanceManager.getDefault(DigitalExpressionManager.class).registerExpression(childExpression);
-        maleSocket2.getChild(0).connect(maleSocketChild);
+        DigitalExpressionBean* childExpression = new True("IQDE322", "");
+        MaleSocket* maleSocketChild = ((DefaultDigitalExpressionManager*)
+                InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(childExpression);
+        maleSocket2->getChild(0)->_connect(maleSocketChild);
 
         _base = expressionAntecedent;
         _baseMaleSocket = maleSocket2;
 
         atomicBoolean = new AtomicBoolean(false);
         actionAtomicBoolean = new ActionAtomicBoolean(atomicBoolean, true);
-        MaleSocket socketAtomicBoolean = InstanceManager.getDefault(DigitalActionManager.class).registerAction(actionAtomicBoolean);
-        ifThenElse.getChild(1).connect(socketAtomicBoolean);
+        MaleSocket* socketAtomicBoolean = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->registerAction(actionAtomicBoolean);
+        ifThenElse->getChild(1)->_connect(socketAtomicBoolean);
 
-        if (! logixNG.setParentForAllChildren(new ArrayList<>())) throw new RuntimeException();
-        logixNG.setEnabled(true);
+        if (! logixNG->setParentForAllChildren(new QStringList())) throw new RuntimeException();
+        logixNG->setEnabled(true);
     }
 
-    @After
-    /*public*/  void tearDown() {
-        jmri.jmrit.logixng.util.LogixNG_Thread.stopAllLogixNGThreads();
-        JUnitUtil.tearDown();
+    //@After
+    /*public*/  void AntecedentTest::tearDown() {
+        LogixNG_Thread::stopAllLogixNGThreads();
+        JUnitUtil::tearDown();
     }
 
     //@Override
-    /*public*/  void connected(FemaleSocket socket) {
+    /*public*/  void AntecedentTest::connected(FemaleSocket* socket) {
         // Do nothing
     }
 
     //@Override
-    /*public*/  void disconnected(FemaleSocket socket) {
+    /*public*/  void AntecedentTest::disconnected(FemaleSocket* socket) {
         // Do nothing
     }
-   #endif
+

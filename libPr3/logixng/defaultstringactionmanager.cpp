@@ -22,7 +22,10 @@
 
 
     /*public*/  DefaultStringActionManager::DefaultStringActionManager(QObject* parent): AbstractBaseManager(parent) {
-        ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
+     setObjectName("DefaultStringActionManager");
+     registerSelf();
+     ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
+
 
 //        for (StringActionFactory actionFactory : ServiceLoader.load(StringActionFactory.class)) {
 //            actionFactory.init();

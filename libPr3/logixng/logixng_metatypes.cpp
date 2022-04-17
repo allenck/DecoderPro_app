@@ -47,6 +47,12 @@
 #include "logixngmoduletableaction.h"
 #include "logixngtableaction.h"
 #include "logixngtabletableaction.h"
+#include "defaultconditionalngmanagerxml.h"
+#include "analogactionmemoryxml.h"
+#include "defaultstringactionmanagerxml.h"
+#include "stringexpressionconstantxml.h"
+#include "stringexpressionmemoryxml.h"
+#include "stringformulaxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -67,7 +73,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<LogixNGModuleTableAction>("LogixNGModuleTableAction");
    qRegisterMetaType<LogixNGTableAction>("LogixNGTableAction");
    qRegisterMetaType<LogixNGTableTableAction>("LogixNGTableTableAction");
-
+   qRegisterMetaType<DefaultConditionalNGManagerXml>("DefaultConditionalNGManagerXml");
+   qRegisterMetaType<AnalogActionMemoryXml>("AnalogActionMemoryXml");
    qRegisterMetaType<DefaultMaleAnalogActionSocketXml>("DefaultMaleAnalogActionSocketXml");
    qRegisterMetaType<DefaultMaleAnalogExpressionSocketXml>("DefaultMaleAnalogExpressionSocketXml");
    qRegisterMetaType<DefaultMaleDigitalBooleanActionSocketXml>("DefaultMaleDigitalBooleanActionSocketXml");
@@ -75,6 +82,10 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DefaultMaleStringActionSocketXml>("DefaultMaleStringActionSocketXml");
    qRegisterMetaType<DefaultMaleStringExpressionSocketXml>("DefaultMaleStringExpressionSocketXml");
    qRegisterMetaType<ExpressionSensorXml>("ExpressionSensorXml");
+   qRegisterMetaType<DefaultStringActionManagerXml>("DefaultStringActionManagerXml");
+   qRegisterMetaType<StringExpressionConstantXml>("StringExpressionConstantXml");
+   qRegisterMetaType<StringExpressionMemoryXml>("StringExpressionMemoryXml");
+   qRegisterMetaType<StringFormulaXml>("StringFormulaXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -111,6 +122,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
+
+
 
    LogixNG_Metatypes::ng_done = true;
 }

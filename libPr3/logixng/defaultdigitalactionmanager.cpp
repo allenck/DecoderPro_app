@@ -23,6 +23,7 @@
 
 /*public*/  DefaultDigitalActionManager::DefaultDigitalActionManager(QObject *parent) : AbstractBaseManager(parent){
   setObjectName("DefaultDigitalActionManager");
+  registerSelf();
     ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (DigitalActionFactory* actionFactory : ServiceLoader.load(DigitalActionFactory.class)) {

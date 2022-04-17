@@ -20,6 +20,8 @@
 
 
     /*public*/  DefaultStringExpressionManager::DefaultStringExpressionManager(QObject* parent) {
+        setObjectName("DefaultStringExpressionManager");
+        registerSelf();
         ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (StringExpressionFactory expressionFactory : ServiceLoader.load(StringExpressionFactory.class)) {

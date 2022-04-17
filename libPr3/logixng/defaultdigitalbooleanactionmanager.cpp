@@ -25,6 +25,9 @@
     /*public*/  DefaultDigitalBooleanActionManager::DefaultDigitalBooleanActionManager(QObject *parent)
      : AbstractBaseManager(parent)
     {
+     setObjectName("DefaultDigitalBooleanActionManager");
+     registerSelf();
+
         ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
 //        for (DigitalBooleanActionFactory actionFactory : ServiceLoader.load(DigitalBooleanActionFactory.class)) {
