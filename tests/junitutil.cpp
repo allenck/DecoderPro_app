@@ -24,7 +24,7 @@
 #include <QApplication>
 #include "internalsensormanager.h"
 #include "joptionpane.h"
-#include "jmriconfigurationmanager.h"
+#include "appsconfigurationmanager.h"
 #include "defaultlogixmanager.h"
 #include "defaultconditionalmanager.h"
 #include "debugthrottlemanager.h"
@@ -728,7 +728,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 #ifdef HAVE_LOGIXNG
     LogixNG_Manager* m1 = new DefaultLogixNGManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->mself(), Manager::LOGIXNGS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->mself(), Manager::LOGIXNGS);
     }
     InstanceManager::setDefault("LogixNG_Manager", m1->mself());
 #if 0

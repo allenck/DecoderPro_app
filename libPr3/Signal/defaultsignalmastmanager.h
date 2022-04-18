@@ -50,7 +50,9 @@ public slots:
 private:
     QList<SignalMastRepeater*>* repeaterList;// = new QList<SignalMastRepeater*>();
     /*private*/ QString parenQuote(QString in);
-    Logger* log;
+    static Logger* log;
+    /*final*/ void addListeners();
+
     friend class SwingPropertyChangeSupport;
 };
 Q_DECLARE_METATYPE(DefaultSignalMastManager)

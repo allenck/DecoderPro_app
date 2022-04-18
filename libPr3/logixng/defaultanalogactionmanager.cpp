@@ -137,7 +137,7 @@
 //@Override
 /*public*/  void DefaultAnalogActionManager::deleteAnalogAction(MaleAnalogActionSocket* x) {
     // delete the MaleAnalogActionSocket
-    deregister((AbstractNamedBean*)x->bself());
+    AbstractBaseManager::deregister(x);
     x->NamedBean::dispose();
 }
 

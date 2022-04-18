@@ -76,7 +76,7 @@
  * @param expressions The top-level element being created
  */
 /*public*/  void DefaultStringExpressionManagerXml::setStoreElementClass(QDomElement expressions) {
-    expressions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultStringExpressionManagerXml");  // NOI18N
+    expressions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultStringExpressionManagerXml");  // NOI18N
 }
 
 /**
@@ -136,11 +136,11 @@
                 try {
                     AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                    MaleSocket* oldLastItem = ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getLastRegisteredMaleSocket();
+                    MaleSocket* oldLastItem = ((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getLastRegisteredMaleSocket();
                     o->load(expressionList.at(i).toElement(), QDomElement());
 
                     // Load male socket data if a new bean has been registered
-                    MaleSocket* newLastItem = ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getLastRegisteredMaleSocket();
+                    MaleSocket* newLastItem = ((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getLastRegisteredMaleSocket();
                     if (newLastItem != oldLastItem) loadMaleSocket(expressionList.at(i).toElement(), newLastItem);
                     else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
                 } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {
@@ -165,9 +165,9 @@
     }
     // if old manager exists, remove it from configuration process
     if (InstanceManager::getNullableDefault("StringExpressionManager") != nullptr) {
-        ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+        ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
         if (cmOD != nullptr) {
-            cmOD->deregister(InstanceManager::getDefault("StringExpressionManager"));
+            cmOD->deregister((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"));
         }
 
     }

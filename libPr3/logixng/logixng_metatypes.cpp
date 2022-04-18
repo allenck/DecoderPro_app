@@ -53,6 +53,7 @@
 #include "stringexpressionconstantxml.h"
 #include "stringexpressionmemoryxml.h"
 #include "stringformulaxml.h"
+#include "expressionlightxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -86,6 +87,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<StringExpressionConstantXml>("StringExpressionConstantXml");
    qRegisterMetaType<StringExpressionMemoryXml>("StringExpressionMemoryXml");
    qRegisterMetaType<StringFormulaXml>("StringFormulaXml");
+   qRegisterMetaType<ExpressionLightXml>("ExpressionLightXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");

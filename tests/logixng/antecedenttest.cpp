@@ -11,8 +11,11 @@
 #include "defaultconditionalngmanager.h"
 #include "ifthenelse.h"
 #include "defaultdigitalactionmanager.h"
-#include "atomicboolean.h"
 #include "actionatomicboolean.h"
+#include "junitappender.h"
+#include "expressionmemory.h"
+#include "false.h"
+
 
 AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestBase(parent)
 {
@@ -57,7 +60,7 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
                 "   ? E1\n" \
                 "      Always true ::: Use default\n" \
                 "   ? E2\n" \
-                "      Socket not connected%n");
+                "      Socket not connected\n");
     }
 
     //@Override
@@ -76,7 +79,7 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
                 "            ! Then\n" \
                 "               Set the atomic boolean to true ::: Use default\n" \
                 "            ! Else\n" \
-                "               Socket not connected%n");
+                "               Socket not connected\n");
     }
 
     //@Override
@@ -96,399 +99,424 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
         }
         return true;
     }
-#if 0
+#if 1
     //@Test
-    /*public*/  void testCtor() throws Exception {
-        Antecedent expression2;
+    /*public*/  void AntecedentTest::testCtor() /*throws Exception*/ {
+        Antecedent* expression2;
 
-        expression2 = new Antecedent("IQDE321", null);
-        expression2.setAntecedent("R1");
-        Assert::assertNotNull("object exists", expression2);
-        Assert::assertNull("Username matches", expression2.getUserName());
-        Assert::assertEquals("String matches", "Antecedent: R1", expression2.getLongDescription());
-
-        expression2 = new Antecedent("IQDE321", "My expression");
-        expression2.setAntecedent("R1");
-        Assert::assertNotNull("object exists", expression2);
-        Assert::assertEquals("Username matches", "My expression", expression2.getUserName());
-        Assert::assertEquals("String matches", "Antecedent: R1", expression2.getLongDescription());
-
-        expression2 = new Antecedent("IQDE321", null);
-        expression2.setAntecedent("R1 and R2");
-        Assert::assertNotNull("object exists", expression2);
-        Assert::assertNull("Username matches", expression2.getUserName());
-        Assert::assertEquals("String matches", "Antecedent: R1 and R2", expression2.getLongDescription());
+        expression2 = new Antecedent("IQDE321", "");
+        expression2->setAntecedent("R1");
+        Assert::assertNotNull("object exists", expression2, __FILE__, __LINE__);
+        Assert::assertNull("Username matches", expression2->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
+        Assert::assertEquals("String matches", "Antecedent: R1", expression2->getLongDescription(QLocale()), __FILE__, __LINE__);
 
         expression2 = new Antecedent("IQDE321", "My expression");
-        expression2.setAntecedent("R1 or R2");
-        Assert::assertNotNull("object exists", expression2);
-        Assert::assertEquals("Username matches", "My expression", expression2.getUserName());
-        Assert::assertEquals("String matches", "Antecedent: R1 or R2", expression2.getLongDescription());
+        expression2->setAntecedent("R1");
+        Assert::assertNotNull("object exists", expression2, __FILE__, __LINE__);
+        Assert::assertEquals("Username matches", "My expression", expression2->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
+        Assert::assertEquals("String matches", "Antecedent: R1", expression2->getLongDescription(QLocale()), __FILE__, __LINE__);
 
-        boolean thrown = false;
+        expression2 = new Antecedent("IQDE321", "");
+        expression2->setAntecedent("R1 and R2");
+        Assert::assertNotNull("object exists", expression2, __FILE__, __LINE__);
+        Assert::assertNull("Username matches", expression2->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
+        Assert::assertEquals("String matches", "Antecedent: R1 and R2", expression2->getLongDescription(QLocale()), __FILE__, __LINE__);
+
+        expression2 = new Antecedent("IQDE321", "My expression");
+        expression2->setAntecedent("R1 or R2");
+        Assert::assertNotNull("object exists", expression2, __FILE__, __LINE__);
+        Assert::assertEquals("Username matches", "My expression", expression2->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
+        Assert::assertEquals("String matches", "Antecedent: R1 or R2", expression2->getLongDescription(QLocale()), __FILE__, __LINE__);
+
+        bool thrown = false;
         try {
             // Illegal system name
-            new Antecedent("IQE55:12:XY11", null);
-        } catch (IllegalArgumentException ex) {
+            new Antecedent("IQE55:12:XY11", "");
+        } catch (IllegalArgumentException* ex) {
             thrown = true;
         }
-        Assert::assertTrue("Expected exception thrown", thrown);
+        Assert::assertTrue("Expected exception thrown", thrown, __FILE__, __LINE__);
 
         thrown = false;
         try {
             // Illegal system name
             new Antecedent("IQE55:12:XY11", "A name");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             thrown = true;
         }
-        Assert::assertTrue("Expected exception thrown", thrown);
+        Assert::assertTrue("Expected exception thrown", thrown, __FILE__, __LINE__);
     }
 
     // Test action when at least one child socket is not connected
     //@Test
-    /*public*/  void testCtorAndSetup1() {
-        DigitalExpressionManager m = InstanceManager::getDefault(DigitalExpressionManager.class);
+    /*public*/  void AntecedentTest::testCtorAndSetup1() {
+        DigitalExpressionManager* m = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
 
-        List<MaleSocket> maleSockets = new ArrayList<>();
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE52", null)));
-        maleSockets.add(null);  // This is null by purpose
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE554", null)));
-        maleSockets.add(null);  // This is null by purpose
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE3", null)));
+        QList<MaleSocket*> maleSockets = QList<MaleSocket*>();
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE52", "")));
+        maleSockets.append(nullptr);  // This is null by purpose
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE554", "")));
+        maleSockets.append(nullptr);  // This is null by purpose
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE3", "")));
 
-        List<Map.Entry<String, String>> actionSystemNames = new ArrayList<>();
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("XYZ123", "IQDE52"));
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("ZH12", null));   // This is null by purpose
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("Hello", "IQDE554"));
+        QList<QMap<QString, QString>> actionSystemNames = QList<QMap<QString, QString>>();
+        actionSystemNames.append(QMap<QString, QString> {{"XYZ123", "IQDE52"}});
+        actionSystemNames.append(QMap<QString, QString> {{"ZH12", ""}});   // This is null by purpose
+        actionSystemNames.append(QMap<QString, QString> {{"Hello", "IQDE554"}});
         // IQDE61232 doesn't exist by purpose
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("SomethingElse", "IQDE61232"));
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("Yes123", "IQDE3"));
+        actionSystemNames.append(QMap<QString, QString> {{"SomethingElse", "IQDE61232"}});
+        actionSystemNames.append(QMap<QString, QString> {{"Yes123", "IQDE3"}});
 
-        Antecedent expression = new Antecedent("IQDE321", null, actionSystemNames);
-        Assert::assertNotNull("exists", expression);
-        Assert::assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
+        Antecedent* expression = new Antecedent("IQDE321", "", actionSystemNames);
+        Assert::assertNotNull("exists", expression, __FILE__, __LINE__);
+        Assert::assertEquals("expression has 5 female sockets", 5, expression->getChildCount(), __FILE__, __LINE__);
 
         for (int i=0; i < 5; i++) {
-            Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert::assertEquals("expression female socket name is "+entry.getKey(),
-                    entry.getKey(), expression.getChild(i).getName());
+            QMap<QString,QString> map = actionSystemNames.at(i);
+            QMapIterator<QString,QString> entry(map);
+            while(entry.hasNext())
+            {
+             entry.next();
+
+            Assert::assertEquals("expression female socket name is "+entry.key(),
+                    entry.key(), expression->getChild(i)->getName(), __FILE__, __LINE__);
             Assert::assertEquals("expression female socket is of correct class",
 //                    "jmri.jmrit.logixng.implementation.DefaultFemaleGenericExpressionSocket$DigitalSocket",
                 "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket",
-                    expression.getChild(i).getClass().getName());
+                    expression->getChild(i)->getClassName(), __FILE__, __LINE__);
             Assert::assertFalse("expression female socket is not connected",
-                    expression.getChild(i).isConnected());
-        }
+                    expression->getChild(i)->isConnected(), __FILE__, __LINE__);
 
-        // Setup action. This connects the child actions to this action
-        expression.setup();
-
-        jmri.util.JUnitAppender.assertMessage("cannot load digital expression IQDE61232");
-
-        for (int i=0; i < 5; i++) {
-            Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert::assertEquals("expression female socket name is "+entry.getKey(),
-                    entry.getKey(), expression.getChild(i).getName());
-
-            if (maleSockets.get(i) != null) {
-                Assert::assertTrue("expression female socket is connected",
-                        expression.getChild(i).isConnected());
-//                Assert::assertEquals("child is correct bean",
-//                        maleSockets.get(i),
-//                        expression.getChild(i).getConnectedSocket());
-            } else {
-                Assert::assertFalse("expression female socket is not connected",
-                        expression.getChild(i).isConnected());
             }
         }
 
-        Assert::assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
+        // Setup action. This connects the child actions to this action
+        expression->setup();
+
+        JUnitAppender::assertMessage("cannot load digital expression IQDE61232", __FILE__, __LINE__);
+
+        for (int i=0; i < 5; i++) {
+         QMap<QString,QString> map = actionSystemNames.at(i);
+         QMapIterator<QString,QString> entry(map);
+         while(entry.hasNext())
+         {
+          entry.next();
+
+            Assert::assertEquals("expression female socket name is "+entry.key(),
+                    entry.key(), expression->getChild(i)->getName(), __FILE__, __LINE__);
+
+            if (maleSockets.at(i) != nullptr) {
+                Assert::assertTrue("expression female socket is connected",
+                        expression->getChild(i)->isConnected(), __FILE__, __LINE__);
+//                Assert::assertEquals("child is correct bean",
+//                        maleSockets.get(i),
+//                        expression->getChild(i).getConnectedSocket(), __FILE__, __LINE__);
+            } else {
+                Assert::assertFalse("expression female socket is not connected",
+                        expression->getChild(i)->isConnected(), __FILE__, __LINE__);
+            }
+        }
+      }
+      Assert::assertEquals("expression has 5 female sockets", 5, expression->getChildCount(), __FILE__, __LINE__);
     }
 
     // Test action when at least one child socket is not connected.
     // This should never happen, but test it anyway.
     //@Test
-    /*public*/  void testCtorAndSetup2() {
-        DigitalExpressionManager m = InstanceManager::getDefault(DigitalExpressionManager.class);
+    /*public*/  void AntecedentTest::testCtorAndSetup2() {
+        DigitalExpressionManager* m = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
 
-        List<MaleSocket> maleSockets = new ArrayList<>();
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE52", null)));
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE99", null)));
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE554", null)));
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE61232", null)));
-        maleSockets.add(m.registerExpression(new ExpressionMemory("IQDE3", null)));
+        QList<MaleSocket*> maleSockets = QList<MaleSocket*>();
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE52", "")));
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE99", "")));
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE554", "")));
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE61232", "")));
+        maleSockets.append(m->registerExpression(new ExpressionMemory("IQDE3", "")));
 
-        List<Map.Entry<String, String>> actionSystemNames = new ArrayList<>();
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("XYZ123", "IQDE52"));
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("ZH12", "IQDE99"));
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("Hello", "IQDE554"));
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("SomethingElse", "IQDE61232"));
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("Yes123", "IQDE3"));
+        QList<QMap<QString, QString>> actionSystemNames = QList<QMap<QString, QString>>();
+        actionSystemNames.append(QMap<QString, QString> {{"XYZ123", "IQDE52"}});
+        actionSystemNames.append(QMap<QString, QString> {{"ZH12", "IQDE99"}});
+        actionSystemNames.append(QMap<QString, QString> {{"Hello", "IQDE554"}});
+        actionSystemNames.append(QMap<QString, QString> {{"SomethingElse", "IQDE61232"}});
+        actionSystemNames.append(QMap<QString, QString> {{"Yes123", "IQDE3"}});
 
-        Antecedent expression = new Antecedent("IQDE321", null, actionSystemNames);
-        Assert::assertNotNull("exists", expression);
-        Assert::assertEquals("expression has 5 female sockets", 5, expression.getChildCount());
+        Antecedent* expression = new Antecedent("IQDE321", "", actionSystemNames);
+        Assert::assertNotNull("exists", expression, __FILE__, __LINE__);
+        Assert::assertEquals("expression has 5 female sockets", 5, expression->getChildCount(), __FILE__, __LINE__);
 
         for (int i=0; i < 5; i++) {
-            Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert::assertEquals("expression female socket name is "+entry.getKey(),
-                    entry.getKey(), expression.getChild(i).getName());
+         QMap<QString,QString> map = actionSystemNames.at(i);
+         QMapIterator<QString,QString> entry(map);
+         while(entry.hasNext())
+         {
+          entry.next();
+            Assert::assertEquals("expression female socket name is "+entry.key(),
+                    entry.key(), expression->getChild(i)->getName(), __FILE__, __LINE__);
             Assert::assertEquals("expression female socket is of correct class",
 //                    "jmri.jmrit.logixng.implementation.DefaultFemaleGenericExpressionSocket$DigitalSocket",
                 "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket",
-                    expression.getChild(i).getClass().getName());
+                    expression->getChild(i)->getClassName(), __FILE__, __LINE__);
             Assert::assertFalse("expression female socket is not connected",
-                    expression.getChild(i).isConnected());
+                    expression->getChild(i)->isConnected(), __FILE__, __LINE__);
+          }
         }
 
         // Setup action. This connects the child actions to this action
-        expression.setup();
+        expression->setup();
 
         for (int i=0; i < 5; i++) {
-            Map.Entry<String,String> entry = actionSystemNames.get(i);
-            Assert::assertEquals("expression female socket name is "+entry.getKey(),
-                    entry.getKey(), expression.getChild(i).getName());
+         QMap<QString,QString> map = actionSystemNames.at(i);
+         QMapIterator<QString,QString> entry(map);
+         while(entry.hasNext())
+         {
+          entry.next();
+            Assert::assertEquals("expression female socket name is "+entry.key(),
+                    entry.key(), expression->getChild(i)->getName(), __FILE__, __LINE__);
 
-            if (maleSockets.get(i) != null) {
+            if (maleSockets.at(i) != nullptr) {
                 Assert::assertTrue("expression female socket is connected",
-                        expression.getChild(i).isConnected());
+                        expression->getChild(i)->isConnected(), __FILE__, __LINE__);
 //                Assert::assertEquals("child is correct bean",
 //                        maleSockets.get(i),
-//                        expression.getChild(i).getConnectedSocket());
+//                        expression->getChild(i).getConnectedSocket(), __FILE__, __LINE__);
             } else {
                 Assert::assertFalse("expression female socket is not connected",
-                        expression.getChild(i).isConnected());
+                        expression->getChild(i)->isConnected(), __FILE__, __LINE__);
             }
+         }
         }
 
         // Since all the sockets are connected, a new socket must have been created.
-        Assert::assertEquals("expression has 6 female sockets", 6, expression.getChildCount());
+        Assert::assertEquals("expression has 6 female sockets", 6, expression->getChildCount(), __FILE__, __LINE__);
 
         // Try run setup() again. That should not cause any problems.
-        expression.setup();
+        expression->setup();
 
-        Assert::assertEquals("expression has 6 female sockets", 6, expression.getChildCount());
+        Assert::assertEquals("expression has 6 female sockets", 6, expression->getChildCount(), __FILE__, __LINE__);
     }
 
     // Test calling setActionSystemNames() twice
     //@Test
-    /*public*/  void testCtorAndSetup3() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException {
-        List<Map.Entry<String, String>> actionSystemNames = new ArrayList<>();
-        actionSystemNames.add(new java.util.HashMap.SimpleEntry<>("XYZ123", "IQDE52"));
+    /*public*/  void AntecedentTest::testCtorAndSetup3() /*throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException */{
+        QList<QMap<QString, QString>> actionSystemNames = QList<QMap<QString, QString>>();
+        actionSystemNames.append(QMap<QString, QString> {{"XYZ123", "IQDE52"}});
 
-        Antecedent expression = new Antecedent("IQDE321", null, actionSystemNames);
-
-        java.lang.reflect.Method method =
-                expression.getClass().getDeclaredMethod("setExpressionSystemNames", new Class<?>[]{List.class});
+        Antecedent* expression = new Antecedent("IQDE321", "", actionSystemNames);
+#if 0
+        Method method =
+                expression->getClass().getDeclaredMethod("setExpressionSystemNames", new Class<?>[]{List.class});
         method.setAccessible(true);
 
-        boolean hasThrown = false;
+        bool hasThrown = false;
         try {
             method.invoke(expression, new Object[]{null});
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException) {
+        } catch (InvocationTargetException* e) {
+            if (e->getCause() instanceof RuntimeException) {
                 hasThrown = true;
                 Assert::assertEquals("Exception message is correct",
                         "expression system names cannot be set more than once",
-                        e.getCause().getMessage());
+                        e.getCause().getMessage(), __FILE__, __LINE__);
             }
         }
-        Assert::assertTrue("Exception thrown", hasThrown);
+        Assert::assertTrue("Exception thrown", hasThrown, __FILE__, __LINE__);
+#endif
     }
 
     //@Test
-    /*public*/  void testSetChildCount() throws SocketAlreadyConnectedException {
-        _baseMaleSocket.setEnabled(false);
+    /*public*/  void AntecedentTest::testSetChildCount() /*throws SocketAlreadyConnectedException*/ {
+//        _baseMaleSocket.setEnabled(false);
 
-        Antecedent a = (Antecedent)_base;
-        AtomicBoolean ab = new AtomicBoolean(false);
+        Antecedent* a = (Antecedent*)_base->bself();
+        AtomicBoolean* ab = new AtomicBoolean(false);
 
-        _base.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-            ab.set(true);
-        });
+//        _base->addPropertyChangeListener((PropertyChangeEvent evt) -> {
+//            ab.set(true);
+//        });
+        _base->PropertyChangeProvider::addPropertyChangeListener(new AntecedentTest_PropertyChangeListener(ab));
 
-        a.setChildCount(1);
-        Assert::assertEquals("numChilds are correct", 1, a.getChildCount());
+        a->setChildCount(1);
+        Assert::assertEquals("numChilds are correct", 1, a->getChildCount(), __FILE__, __LINE__);
 
         // Test increase num children
-        ab.set(false);
-        a.setChildCount(a.getChildCount()+1);
-        Assert::assertEquals("numChilds are correct", 2, a.getChildCount());
-        Assert::assertTrue("PropertyChangeEvent fired", ab.get());
+        ab->set(false);
+        a->setChildCount(a->getChildCount()+1);
+        Assert::assertEquals("numChilds are correct", 2, a->getChildCount(), __FILE__, __LINE__);
+        Assert::assertTrue("PropertyChangeEvent fired", ab->get(), __FILE__, __LINE__);
 
         // Test decrease num children
-        ab.set(false);
-        Assert::assertTrue("We have least two children", a.getChildCount() > 1);
-        a.setChildCount(1);
-        Assert::assertEquals("numChilds are correct", 1, a.getChildCount());
-        Assert::assertTrue("PropertyChangeEvent fired", ab.get());
+        ab->set(false);
+        Assert::assertTrue("We have least two children", a->getChildCount() > 1, __FILE__, __LINE__);
+        a->setChildCount(1);
+        Assert::assertEquals("numChilds are correct", 1, a->getChildCount(), __FILE__, __LINE__);
+        Assert::assertTrue("PropertyChangeEvent fired", ab->get(), __FILE__, __LINE__);
 
         // Test decrease num children when all children are connected
-        ab.set(false);
-        a.getChild(0).disconnect();
-        a.getChild(0).connect(getConnectableChild());
-        a.getChild(1).disconnect();
-        a.getChild(1).connect(getConnectableChild());
-        a.getChild(2).disconnect();
-        a.getChild(2).connect(getConnectableChild());
-        Assert::assertEquals("numChilds are correct", 4, a.getChildCount());
-        a.setChildCount(2);
-        Assert::assertEquals("numChilds are correct", 2, a.getChildCount());
-        Assert::assertTrue("PropertyChangeEvent fired", ab.get());
+        ab->set(false);
+        a->getChild(0)->_disconnect();
+        a->getChild(0)->_connect(getConnectableChild());
+        a->getChild(1)->_disconnect();
+        a->getChild(1)->_connect(getConnectableChild());
+        a->getChild(2)->_disconnect();
+        a->getChild(2)->_connect(getConnectableChild());
+        Assert::assertEquals("numChilds are correct", 4, a->getChildCount(), __FILE__, __LINE__);
+        a->setChildCount(2);
+        Assert::assertEquals("numChilds are correct", 2, a->getChildCount(), __FILE__, __LINE__);
+        Assert::assertTrue("PropertyChangeEvent fired", ab->get(), __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/  void testGetChild() throws Exception {
-        Antecedent expression2 = new Antecedent("IQDE321", null);
-        expression2.setAntecedent("R1");
+    /*public*/  void AntecedentTest::testGetChild() /*throws Exception*/ {
+        Antecedent* expression2 = new Antecedent("IQDE321", "");
+        expression2->setAntecedent("R1");
 
         for (int i=0; i < 3; i++) {
-            Assert::assertTrue("getChildCount() returns "+i, i+1 == expression2.getChildCount());
+            Assert::assertTrue("getChildCount() returns "+QString::number(i), i+1 == expression2->getChildCount(), __FILE__, __LINE__);
 
             Assert::assertNotNull("getChild(0) returns a non null value",
-                    expression2.getChild(0));
-
+                    (QObject*)expression2->getChild(0), __FILE__, __LINE__);
+#if 0
             assertIndexOutOfBoundsException(expression2::getChild, i+1, i+1);
+#endif
 
             // Connect a new child expression
-            True expr = new True("IQDE"+i, null);
-            MaleSocket maleSocket =
-                    InstanceManager::getDefault(DigitalExpressionManager.class).registerExpression(expr);
-            expression2.getChild(i).connect(maleSocket);
+            True* expr = new True("IQDE"+QString::number(i), "");
+            MaleSocket* maleSocket = ((DefaultDigitalExpressionManager*)
+                    InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(expr);
+            expression2->getChild(i)->_connect(maleSocket);
         }
     }
 
     //@Test
-    /*public*/  void testCategory() {
-        Assert::assertTrue("Category matches", Category.COMMON == _base.getCategory());
+    /*public*/  void AntecedentTest::testCategory() {
+        Assert::assertTrue("Category matches", Category::COMMON == _base->getCategory(), __FILE__, __LINE__);
     }
 
     // Test the methods connected(FemaleSocket) and getExpressionSystemName(int)
     //@Test
-    /*public*/  void testConnected_getExpressionSystemName() throws SocketAlreadyConnectedException {
-        Antecedent expression = new Antecedent("IQDE121", null);
+    /*public*/  void AntecedentTest::testConnected_getExpressionSystemName() /*throws SocketAlreadyConnectedException */{
+        Antecedent* expression = new Antecedent("IQDE121", "");
 
-        ExpressionMemory stringExpressionMemory = new ExpressionMemory("IQDE122", null);
-        MaleSocket maleSAMSocket =
-                InstanceManager::getDefault(DigitalExpressionManager.class).registerExpression(stringExpressionMemory);
+        ExpressionMemory* stringExpressionMemory = new ExpressionMemory("IQDE122", "");
+        MaleSocket* maleSAMSocket =((DefaultDigitalExpressionManager*)
+                                    InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(stringExpressionMemory);
 
-        Assert::assertEquals("Num children is correct", 1, expression.getChildCount());
+        Assert::assertEquals("Num children is correct", 1, expression->getChildCount(), __FILE__, __LINE__);
 
         // Test connect and disconnect
-        expression.getChild(0).connect(maleSAMSocket);
-        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert::assertEquals("getExpressionSystemName(0) is correct", "IQDE122", expression.getExpressionSystemName(0));
-        Assert::assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
-        expression.getChild(0).disconnect();
-        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert::assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
+        expression->getChild(0)->_connect(maleSAMSocket);
+        Assert::assertEquals("Num children is correct", 2, expression->getChildCount(), __FILE__, __LINE__);
+        Assert::assertEquals("getExpressionSystemName(0) is correct", "IQDE122", expression->getExpressionSystemName(0), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(1) is null", expression->getExpressionSystemName(1), __FILE__, __LINE__);
+        expression->getChild(0)->_disconnect();
+        Assert::assertEquals("Num children is correct", 2, expression->getChildCount(), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(0) is null", expression->getExpressionSystemName(0), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(1) is null", expression->getExpressionSystemName(1), __FILE__, __LINE__);
 
-        expression.getChild(1).connect(maleSAMSocket);
-        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert::assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression.getExpressionSystemName(1));
-        expression.getChild(0).disconnect();    // Test removing child with the wrong index.
-        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert::assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression.getExpressionSystemName(1));
-        expression.getChild(1).disconnect();
-        Assert::assertEquals("Num children is correct", 2, expression.getChildCount());
-        Assert::assertNull("getExpressionSystemName(0) is null", expression.getExpressionSystemName(0));
-        Assert::assertNull("getExpressionSystemName(1) is null", expression.getExpressionSystemName(1));
+        expression->getChild(1)->_connect(maleSAMSocket);
+        Assert::assertEquals("Num children is correct", 2, expression->getChildCount(), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(0) is null", expression->getExpressionSystemName(0), __FILE__, __LINE__);
+        Assert::assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression->getExpressionSystemName(1), __FILE__, __LINE__);
+        expression->getChild(0)->_disconnect();    // Test removing child with the wrong index.
+        Assert::assertEquals("Num children is correct", 2, expression->getChildCount(), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(0) is null", expression->getExpressionSystemName(0), __FILE__, __LINE__);
+        Assert::assertEquals("getExpressionSystemName(1) is correct", "IQDE122", expression->getExpressionSystemName(1), __FILE__, __LINE__);
+        expression->getChild(1)->_disconnect();
+        Assert::assertEquals("Num children is correct", 2, expression->getChildCount(), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(0) is null", expression->getExpressionSystemName(0), __FILE__, __LINE__);
+        Assert::assertNull("getExpressionSystemName(1) is null", expression->getExpressionSystemName(1), __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/  void testDescription() {
-        Antecedent e1 = new Antecedent("IQDE321", null);
-        Assert::assertEquals("strings matches", "Antecedent", e1.getShortDescription());
-        Assert::assertEquals("strings matches", "Antecedent: empty", e1.getLongDescription());
+    /*public*/  void AntecedentTest::testDescription() {
+        Antecedent* e1 = new Antecedent("IQDE321", "");
+        Assert::assertEquals("strings matches", "Antecedent", e1->getShortDescription(QLocale()), __FILE__, __LINE__);
+        Assert::assertEquals("strings matches", "Antecedent: empty", e1->getLongDescription(QLocale()), __FILE__, __LINE__);
     }
 
-    /*private*/ void testValidate(boolean expectedResult, String antecedent, List<DigitalExpressionBean> conditionalVariablesList) throws Exception {
-        Antecedent ix1 = new Antecedent("IQDE321", "IXIC 1");
-        ix1.setAntecedent("R1");
+    /*private*/ void AntecedentTest::testValidate(bool expectedResult, QString antecedent, QList<DigitalExpressionBean*> conditionalVariablesList) /*throws Exception */{
+        Antecedent* ix1 = new Antecedent("IQDE321", "IXIC 1");
+        ix1->setAntecedent("R1");
 
         int count = 0;
-        List<ExpressionEntry> expressionEntryList = new ArrayList<>();
-        for (DigitalExpressionBean expressionAntecedent : conditionalVariablesList) {
-            String socketName = "E"+Integer.toString(count++);
-            FemaleDigitalExpressionSocket socket =
-                    InstanceManager::getDefault(DigitalExpressionManager.class)
-                            .createFemaleSocket(conditionalNG, this, socketName);
-            socket.connect((MaleSocket) expressionAntecedent);
-            expressionEntryList.add(new ExpressionEntry(socket, socketName));
+        QList<Antecedent::ExpressionEntry*> expressionEntryList =QList<Antecedent::ExpressionEntry*>();
+        for (DigitalExpressionBean* expressionAntecedent : conditionalVariablesList) {
+            QString socketName = "E"+QString::number(count++);
+            FemaleDigitalExpressionSocket* socket = ((DefaultDigitalExpressionManager*)
+                    InstanceManager::getDefault("DigitalExpressionManager"))
+                            ->createFemaleSocket(conditionalNG, this, socketName);
+            socket->_connect((MaleSocket*) expressionAntecedent);
+            expressionEntryList.append(new Antecedent::ExpressionEntry(socket, socketName));
         }
 
         if (expectedResult) {
             Assert::assertTrue("validateAntecedent() returns null for '"+antecedent+"'",
-                    ix1.validateAntecedent(antecedent, expressionEntryList) == null);
+                    ix1->validateAntecedent(antecedent, expressionEntryList) == nullptr, __FILE__, __LINE__);
         } else {
             Assert::assertTrue("validateAntecedent() returns error message for '"+antecedent+"'",
-                    ix1.validateAntecedent(antecedent, expressionEntryList) != null);
+                    ix1->validateAntecedent(antecedent, expressionEntryList) != nullptr, __FILE__, __LINE__);
         }
     }
 
-    /*private*/ void testCalculate(int expectedResult, String antecedent,
-            List<DigitalExpressionBean> conditionalVariablesList, String errorMessage)
-            throws Exception {
+    /*private*/ void AntecedentTest::testCalculate(int expectedResult, QString antecedent,
+            QList<DigitalExpressionBean*> conditionalVariablesList, QString errorMessage)
+            /*throws Exception*/ {
 
-        Antecedent ix1 = new Antecedent("IQDE321", "IXIC 1");
-        ix1.setParent(conditionalNG);
-        ix1.setAntecedent(antecedent);
+        Antecedent* ix1 = new Antecedent("IQDE321", "IXIC 1");
+        ix1->setParent(conditionalNG);
+        ix1->setAntecedent(antecedent);
 
 //        for (int i=0; i < ix1.getChildCount(); i++) {
-//            ix1.getChild(i).disconnect();
+//            ix1.getChild(i)->_disconnect();
 //        }
 
-        ix1.setChildCount(conditionalVariablesList.size());
+        ix1->setChildCount(conditionalVariablesList.size());
 
         for (int i=0; i < conditionalVariablesList.size(); i++) {
-            ix1.getChild(i).connect((MaleSocket)conditionalVariablesList.get(i));
+            ix1->getChild(i)->_connect((MaleSocket*)conditionalVariablesList.at(i));
         }
 
         switch (expectedResult) {
-            case Antecedent.FALSE:
+            case Antecedent::FALSE:
                 Assert::assertFalse("validateAntecedent() returns FALSE for '"+antecedent+"'",
-                        ix1.evaluate());
+                        ix1->evaluate(), __FILE__, __LINE__);
                 break;
 
-            case Antecedent.TRUE:
+            case Antecedent::TRUE:
 //                System.err.format("antecedent: %s%n", antecedent);
 //                System.err.format("variable: %b%n", conditionalVariablesList.get(0).evaluate(isCompleted));
                 Assert::assertTrue("validateAntecedent() returns TRUE for '"+antecedent+"'",
-                        ix1.evaluate());
+                        ix1->evaluate(), __FILE__, __LINE__);
                 break;
 
             default:
-                throw new RuntimeException(String.format("Unknown expected result: %d", expectedResult));
+                throw new RuntimeException(QString("Unknown expected result: %1").arg(expectedResult));
         }
 
         if (! errorMessage.isEmpty()) {
-            jmri.util.JUnitAppender.assertErrorMessageStartsWith(errorMessage);
+            JUnitAppender::assertErrorMessageStartsWith(errorMessage, __FILE__, __LINE__);
         }
     }
 
     //@Test
-    /*public*/  void testValidate() throws Exception {
-        DigitalExpressionBean[] conditionalVariables_Empty = { };
-        List<DigitalExpressionBean> conditionalVariablesList_Empty = Arrays.asList(conditionalVariables_Empty);
+    /*public*/  void AntecedentTest::testValidate() /*throws Exception*/ {
+        QList<DigitalExpressionBean*> conditionalVariables_Empty = { };
+        QList<DigitalExpressionBean*> conditionalVariablesList_Empty = QList<DigitalExpressionBean*>(conditionalVariables_Empty);
 
-        DigitalExpressionBean trueExpression =
+        DigitalExpressionBean* trueExpression = ((DefaultDigitalExpressionManager*)
                 InstanceManager::getDefault(
-                        DigitalExpressionManager.class).registerExpression(
-                                new True(InstanceManager::getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
+                        "DigitalExpressionManager"))->registerExpression(
+                                new True(((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getAutoSystemName(), ""));
 //        DigitalExpressionBean falseExpression = InstanceManager::getDefault(DigitalExpressionManager.class).registerExpression(new False(conditionalNG));
 
-        DigitalExpressionBean[] conditionalVariables_True
+        QList<DigitalExpressionBean*> conditionalVariables_True
                 = { trueExpression };
-        List<DigitalExpressionBean> conditionalVariablesList_True = Arrays.asList(conditionalVariables_True);
+        QList<DigitalExpressionBean*> conditionalVariablesList_True = QList<DigitalExpressionBean*>(conditionalVariables_True);
 
-        DigitalExpressionBean[] conditionalVariables_TrueTrueTrue
+        QList<DigitalExpressionBean*> conditionalVariables_TrueTrueTrue
                 = { trueExpression
                         , trueExpression
                         , trueExpression };
-        List<DigitalExpressionBean> conditionalVariablesList_TrueTrueTrue = Arrays.asList(conditionalVariables_TrueTrueTrue);
+        QList<DigitalExpressionBean*> conditionalVariablesList_TrueTrueTrue = QList<DigitalExpressionBean*>(conditionalVariables_TrueTrueTrue);
 
         // Test empty antecedent string
         testValidate(EXPECT_FAILURE, "", conditionalVariablesList_Empty);
@@ -527,36 +555,36 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
     }
 
     //@Test
-    @SuppressWarnings("unused") // test building in progress
-    /*public*/  void testCalculate() throws Exception {
-        DigitalExpressionBean[] conditionalVariables_Empty = { };
-        List<DigitalExpressionBean> conditionalVariablesList_Empty = Arrays.asList(conditionalVariables_Empty);
+    //@SuppressWarnings("unused") // test building in progress
+    /*public*/  void AntecedentTest::testCalculate() /*throws Exception*/ {
+        QList<DigitalExpressionBean*> conditionalVariables_Empty = { };
+        QList<DigitalExpressionBean*> conditionalVariablesList_Empty = QList<DigitalExpressionBean*>(conditionalVariables_Empty);
 
-        DigitalExpressionBean trueExpression =
+        DigitalExpressionBean* trueExpression = ((DefaultDigitalExpressionManager*)
                 InstanceManager::getDefault(
-                        DigitalExpressionManager.class).registerExpression(
-                                new True(InstanceManager::getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
-        DigitalExpressionBean falseExpression =
+                        "DigitalExpressionManager"))->registerExpression(
+                                new True(((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getAutoSystemName(), ""));
+        DigitalExpressionBean* falseExpression = ((DefaultDigitalExpressionManager*)
                 InstanceManager::getDefault(
-                        DigitalExpressionManager.class).registerExpression(
-                                new False(InstanceManager::getDefault(DigitalExpressionManager.class).getAutoSystemName(), null));
+                        "DigitalExpressionManager"))->registerExpression(
+                                new False(((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getAutoSystemName(), ""));
 
-        DigitalExpressionBean[] conditionalVariables_True
+        QList<DigitalExpressionBean*> conditionalVariables_True
                 = { trueExpression };
-        List<DigitalExpressionBean> conditionalVariablesList_True = Arrays.asList(conditionalVariables_True);
+        QList<DigitalExpressionBean*> conditionalVariablesList_True = QList<DigitalExpressionBean*>(conditionalVariables_True);
 
-        DigitalExpressionBean[] conditionalVariables_False
+        QList<DigitalExpressionBean*> conditionalVariables_False
                 = { falseExpression };
-        List<DigitalExpressionBean> conditionalVariablesList_False = Arrays.asList(conditionalVariables_False);
+        QList<DigitalExpressionBean*> conditionalVariablesList_False = QList<DigitalExpressionBean*>(conditionalVariables_False);
 
-        DigitalExpressionBean[] conditionalVariables_TrueTrueTrue
+        QList<DigitalExpressionBean*> conditionalVariables_TrueTrueTrue
                 = { trueExpression
                         , trueExpression
                         , trueExpression };
-        List<DigitalExpressionBean> conditionalVariablesList_TrueTrueTrue = Arrays.asList(conditionalVariables_TrueTrueTrue);
+        QList<DigitalExpressionBean*> conditionalVariablesList_TrueTrueTrue = QList<DigitalExpressionBean*>(conditionalVariables_TrueTrueTrue);
 
         // Test with two digit variable numbers
-        DigitalExpressionBean[] conditionalVariables_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse
+        QList<DigitalExpressionBean*> conditionalVariables_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse
                 = {trueExpression
                         , trueExpression
                         , falseExpression
@@ -569,86 +597,86 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
                         , trueExpression
                         , trueExpression
                         , falseExpression };
-        List<DigitalExpressionBean> conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse =
-                Arrays.asList(conditionalVariables_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse);
+        QList<DigitalExpressionBean*> conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse =
+                QList<DigitalExpressionBean*>(conditionalVariables_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse);
 
 
         // Test empty antecedent string
-        testCalculate(Antecedent.FALSE, "", conditionalVariablesList_Empty, "");
-//        testCalculate(Antecedent.FALSE, "", conditionalVariablesList_True,
+        testCalculate(Antecedent::FALSE, "", conditionalVariablesList_Empty, "");
+//        testCalculate(Antecedent::FALSE, "", conditionalVariablesList_True,
 //                "IXIC 1 parseCalculation error antecedent= , ex= java.lang.StringIndexOutOfBoundsException");
-        testCalculate(Antecedent.FALSE, "", conditionalVariablesList_True, "");
+        testCalculate(Antecedent::FALSE, "", conditionalVariablesList_True, "");
 
         // Test illegal number
-        testCalculate(Antecedent.FALSE, "R#", conditionalVariablesList_True,
+        testCalculate(Antecedent::FALSE, "R#", conditionalVariablesList_True,
                 "IXIC 1 parseCalculation error antecedent= R#, ex= java.lang.NumberFormatException");
-        testCalculate(Antecedent.FALSE, "R-", conditionalVariablesList_True,
+        testCalculate(Antecedent::FALSE, "R-", conditionalVariablesList_True,
                 "IXIC 1 parseCalculation error antecedent= R-, ex= java.lang.NumberFormatException");
-        testCalculate(Antecedent.FALSE, "Ra", conditionalVariablesList_True,
+        testCalculate(Antecedent::FALSE, "Ra", conditionalVariablesList_True,
                 "IXIC 1 parseCalculation error antecedent= Ra, ex= java.lang.NumberFormatException");
 
         // Test single condition
-        testCalculate(Antecedent.TRUE, "R1", conditionalVariablesList_True, "");
-        testCalculate(Antecedent.FALSE, "R1", conditionalVariablesList_False, "");
-        testCalculate(Antecedent.FALSE, "not R1", conditionalVariablesList_True, "");
-        testCalculate(Antecedent.TRUE, "not R1", conditionalVariablesList_False, "");
+        testCalculate(Antecedent::TRUE, "R1", conditionalVariablesList_True, "");
+        testCalculate(Antecedent::FALSE, "R1", conditionalVariablesList_False, "");
+        testCalculate(Antecedent::FALSE, "not R1", conditionalVariablesList_True, "");
+        testCalculate(Antecedent::TRUE, "not R1", conditionalVariablesList_False, "");
 
         // Test single item but wrong item (R2 instead of R1)
-//        testCalculate(Antecedent.FALSE, "R2)", conditionalVariablesList_True,
+//        testCalculate(Antecedent::FALSE, "R2)", conditionalVariablesList_True,
 //                "IXIC 1 parseCalculation error antecedent= R2), ex= java.lang.ArrayIndexOutOfBoundsException");
 
         // Test two digit variable numbers
-        testCalculate(Antecedent.TRUE, "R3 and R12 or R5 and R10",
+        testCalculate(Antecedent::TRUE, "R3 and R12 or R5 and R10",
                 conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse, "");
-        testCalculate(Antecedent.FALSE, "R3 and (R12 or R5) and R10",
+        testCalculate(Antecedent::FALSE, "R3 and (R12 or R5) and R10",
                 conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse, "");
-        testCalculate(Antecedent.FALSE, "R12 and R10",
+        testCalculate(Antecedent::FALSE, "R12 and R10",
                 conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse, "");
-        testCalculate(Antecedent.TRUE, "R12 or R10",
+        testCalculate(Antecedent::TRUE, "R12 or R10",
                 conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse, "");
-        testCalculate(Antecedent.FALSE, "not (R12 or R10)",
+        testCalculate(Antecedent::FALSE, "not (R12 or R10)",
                 conditionalVariablesList_TrueTrueFalseTrueTrueFalseTrueTrueFalseTrueTrueFalse, "");
 
         // Test parentheses
-        testCalculate(Antecedent.TRUE, "([{R1)}]", conditionalVariablesList_True, "");
-//        testCalculate(Antecedent.FALSE, "(R2", conditionalVariablesList_True,
+        testCalculate(Antecedent::TRUE, "([{R1)}]", conditionalVariablesList_True, "");
+//        testCalculate(Antecedent::FALSE, "(R2", conditionalVariablesList_True,
 //                "IXIC 1 parseCalculation error antecedent= (R2, ex= java.lang.ArrayIndexOutOfBoundsException");
 
         // Test several items
-        testCalculate(Antecedent.FALSE, "R1 and R2 and R3", conditionalVariablesList_True,
+        testCalculate(Antecedent::FALSE, "R1 and R2 and R3", conditionalVariablesList_True,
                 "IXIC 1 parseCalculation error antecedent= R1 and R2 and R3, ex= java.lang.IndexOutOfBoundsException");
-        testCalculate(Antecedent.TRUE, "R1", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.TRUE, "R2", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.TRUE, "R3", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.TRUE, "R1 and R2 and R3", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.TRUE, "R2 AND R1 or R3", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::TRUE, "R1", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::TRUE, "R2", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::TRUE, "R3", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::TRUE, "R1 and R2 and R3", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::TRUE, "R2 AND R1 or R3", conditionalVariablesList_TrueTrueTrue, "");
 
         // Test invalid combinations of and, or, not
-        testCalculate(Antecedent.FALSE, "R1 and or R3 and R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1 and or R3 and R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1 and or R3 and R2, ex= jmri.JmriException: Unexpected operator or characters < ORR3ANDR2 >");
-        testCalculate(Antecedent.FALSE, "R1 or or R3 and R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1 or or R3 and R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1 or or R3 and R2, ex= jmri.JmriException: Unexpected operator or characters < ORR3ANDR2 >");
-        testCalculate(Antecedent.FALSE, "R1 or and R3 and R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1 or and R3 and R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1 or and R3 and R2, ex= jmri.JmriException: Unexpected operator or characters < ANDR3ANDR2 >");
-        testCalculate(Antecedent.FALSE, "R1 not R3 and R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1 not R3 and R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1 not R3 and R2, ex= jmri.JmriException: Could not find expected operator < NOTR3ANDR2 >");
-        testCalculate(Antecedent.FALSE, "and R1 not R3 and R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "and R1 not R3 and R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= and R1 not R3 and R2, ex= jmri.JmriException: Unexpected operator or characters < ANDR1NOTR3ANDR2 >");
-        testCalculate(Antecedent.FALSE, "R1 or R3 and R2 or", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1 or R3 and R2 or", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1 or R3 and R2 or, ex= java.lang.StringIndexOutOfBoundsException");
 
         // Test several items and parenthese
-        testCalculate(Antecedent.TRUE, "(R1 and R3) and R2", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.FALSE, "(R1 and R3) and not R2", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.FALSE, "(R1 and) R3 and not R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::TRUE, "(R1 and R3) and R2", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::FALSE, "(R1 and R3) and not R2", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::FALSE, "(R1 and) R3 and not R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= (R1 and) R3 and not R2, ex= jmri.JmriException: Unexpected operator or characters < )R3ANDNOTR2 >");
-        testCalculate(Antecedent.FALSE, "R1( and R3) and not R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1( and R3) and not R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1( and R3) and not R2, ex= jmri.JmriException: Could not find expected operator < (ANDR3)ANDNOTR2 >");
-        testCalculate(Antecedent.FALSE, "R1 (and R3 and) not R2", conditionalVariablesList_TrueTrueTrue,
+        testCalculate(Antecedent::FALSE, "R1 (and R3 and) not R2", conditionalVariablesList_TrueTrueTrue,
                 "IXIC 1 parseCalculation error antecedent= R1 (and R3 and) not R2, ex= jmri.JmriException: Could not find expected operator < (ANDR3AND)NOTR2 >");
-        testCalculate(Antecedent.FALSE, "(R1 and R3) and not R2)", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.TRUE, "(R1 and (R3) and R2)", conditionalVariablesList_TrueTrueTrue, "");
-        testCalculate(Antecedent.FALSE, "(R1 and (R3) and not R2)", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::FALSE, "(R1 and R3) and not R2)", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::TRUE, "(R1 and (R3) and R2)", conditionalVariablesList_TrueTrueTrue, "");
+        testCalculate(Antecedent::FALSE, "(R1 and (R3) and not R2)", conditionalVariablesList_TrueTrueTrue, "");
     }
 #endif
 

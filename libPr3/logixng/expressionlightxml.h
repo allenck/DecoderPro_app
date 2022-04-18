@@ -5,11 +5,14 @@
 
 class ExpressionLightXml : public AbstractNamedBeanManagerConfigXML
 {
+  Q_OBJECT
  public:
-  explicit ExpressionLightXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionLightXml(QObject *parent = nullptr);
+  ~ExpressionLightXml() {}
+  ExpressionLightXml(const ExpressionLightXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  bool load(QDomElement shared, QDomElement perNode) /*throws JmriConfigureXmlException*/override;
 
 };
-
+Q_DECLARE_METATYPE(ExpressionLightXml)
 #endif // EXPRESSIONLIGHTXML_H

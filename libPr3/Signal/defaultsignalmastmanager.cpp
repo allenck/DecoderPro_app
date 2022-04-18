@@ -7,18 +7,7 @@
 #include "vetoablechangesupport.h"
 #include "abstractsignalheadmanager.h"
 #include "jmriexception.h"
-
-DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
-    SignalMastManager(parent)
-{
- setObjectName("DefaultSignalMastManager");
- setProperty("JavaClassName", "jmri.managers.DefaultSignalMastManager");
-
- log = new Logger("DefaultSignalMastManager");
- repeaterList = new QList<SignalMastRepeater*>();
- registerSelf();
- ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
-}
+#include "loggerfactory.h"
 /**
  * Default implementation of a SignalMastManager.
  * <P>
@@ -31,9 +20,22 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 ///*public*/ class DefaultSignalMastManager extends AbstractManager
 //    implements SignalMastManager, java.beans.PropertyChangeListener {
 
-///*public*/ DefaultSignalMastManager() {
-//    super();
-//}
+DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
+    SignalMastManager(parent)
+{
+ setObjectName("DefaultSignalMastManager");
+ setProperty("JavaClassName", "jmri.managers.DefaultSignalMastManager");
+
+ repeaterList = new QList<SignalMastRepeater*>();
+ registerSelf();
+ //((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ addListeners();
+}
+
+/*final*/ void DefaultSignalMastManager::addListeners(){
+    ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+    ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+}
 
 /*public*/ int DefaultSignalMastManager::getXMLOrder() const
 {
@@ -172,7 +174,7 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 /*public*/ SignalMast* DefaultSignalMastManager::provide(QString name) throw (IllegalArgumentException) {
     return provideSignalMast(name);
 }
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultSignalMastManager.class.getName());
+/*static*/ Logger* DefaultSignalMastManager::log = LoggerFactory::getLogger("DefaultSignalMastManager");
 //}
 
 /* @(#)DefaultSignalMastManager.java */

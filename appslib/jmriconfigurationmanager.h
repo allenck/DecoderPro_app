@@ -19,7 +19,7 @@ class JmriConfigurationManager : public QObject, public ConfigureManager
  Q_OBJECT
  Q_INTERFACES(ConfigureManager)
 public:
- QT_DEPRECATED JmriConfigurationManager(QObject* parent = 0);
+ JmriConfigurationManager(QObject* parent = 0);
  ~JmriConfigurationManager() {}
  JmriConfigurationManager(const JmriConfigurationManager&) : QObject(){}
  /*public*/ void registerPref(QObject* o) override;

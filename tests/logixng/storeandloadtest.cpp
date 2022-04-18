@@ -68,6 +68,14 @@
 #include "defaultmaleanalogactionsocket.h"
 #include "defaultnamedtablemanager.h"
 #include "abstractnamedtable.h"
+#include "defaultlogixng.h"
+#include "defaultmaleanalogexpressionsocket.h"
+#include "defaultmaledigitalbooleanactionsocket.h"
+#include "defaultmaledigitalexpressionsocket.h"
+#include "defaultmalestringactionsocket.h"
+#include "defaultmalestringexpressionsocket.h"
+#include "defaultmodule.h"
+#include "defaultmaledigitalactionsocket.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -87,6 +95,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/  void StoreAndLoadTest::testLogixNGs() /*throws PropertyVetoException, Exception*/ {
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+    ConfigureManager* cm1 = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
 /*
         audioManager = new jmri.jmrit.audio.DefaultAudioManager(
                 InstanceManager::getDefault(jmri.jmrix.internal.InternalSystemConnectionMemo.class));
@@ -3459,7 +3468,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
 
         // Store panels
-        ConfigureManager* cm = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+        ConfigureManager* cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
         if (cm == nullptr) {
             log->error("Unable to get default configure manager");
         } else {
@@ -3493,57 +3502,78 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
             QSet</*LogixNG*/NamedBean*> logixNG_Set = QSet</*LogixNG*/NamedBean*>(logixNG_Manager->getNamedBeanSet());
             for (NamedBean* nb : logixNG_Set) {
-             LogixNG* aLogixNG = (LogixNG*)nb->self();
+             LogixNG* aLogixNG = (DefaultLogixNG*)nb->self();
                 logixNG_Manager->deleteLogixNG(aLogixNG);
             }
 
             QSet</*ConditionalNG*/NamedBean*> conditionalNGSet = QSet</*ConditionalNG*/NamedBean*> (conditionalNGManager->getNamedBeanSet());
             for (NamedBean* nb  : conditionalNGSet) {
-             ConditionalNG* aConditionalNG = (ConditionalNG*)nb->self();
+             ConditionalNG* aConditionalNG = (DefaultConditionalNG*)nb->self();
                 conditionalNGManager->deleteConditionalNG(aConditionalNG);
             }
-#if 0
+
             QSet</*MaleAnalogActionSocket*/NamedBean*> analogActionSet = QSet</*MaleAnalogActionSocket*/NamedBean*>(analogActionManager->getNamedBeanSet());
             for (NamedBean* nb : analogActionSet) {
-             MaleAnalogActionSocket* aAnalogAction = (DefaultMaleAnalogActionSocket*)nb->self();
-                analogActionManager->deleteAnalogAction(aAnalogAction);
+            AbstractAnalogAction*  aaa = (AbstractAnalogAction*)nb->self();
+            DefaultMaleAnalogActionSocket* dmas = (DefaultMaleAnalogActionSocket*)aaa->getParent()->bself();
+             //MaleAnalogActionSocket* aAnalogAction = (DefaultMaleAnalogActionSocket*)nb->self();
+                analogActionManager->deleteAnalogAction(/*aAnalogAction*/dmas);
             }
-
-            java.util.Set<MaleAnalogExpressionSocket> analogExpressionSet = new java.util.HashSet<>(analogExpressionManager->getNamedBeanSet());
-            for (MaleAnalogExpressionSocket aAnalogExpression : analogExpressionSet) {
-                analogExpressionManager.deleteAnalogExpression(aAnalogExpression);
-            }
-
-            java.util.Set<MaleDigitalActionSocket> digitalActionSet = new java.util.HashSet<>(digitalActionManager->getNamedBeanSet());
-            for (MaleDigitalActionSocket aDigitalActionSocket : digitalActionSet) {
-                digitalActionManager.deleteDigitalAction(aDigitalActionSocket);
-            }
-
-            java.util.Set<MaleDigitalBooleanActionSocket> digitalBooleanActionSet = new java.util.HashSet<>(digitalBooleanActionManager->getNamedBeanSet());
-            for (MaleDigitalBooleanActionSocket aDigitalBooleanAction : digitalBooleanActionSet) {
-                digitalBooleanActionManager.deleteDigitalBooleanAction(aDigitalBooleanAction);
-            }
-
-            java.util.Set<MaleDigitalExpressionSocket> digitalExpressionSet = new java.util.HashSet<>(digitalExpressionManager->getNamedBeanSet());
-            for (MaleDigitalExpressionSocket aDigitalExpression : digitalExpressionSet) {
-                digitalExpressionManager.deleteDigitalExpression(aDigitalExpression);
-            }
-
-            java.util.Set<MaleStringActionSocket> stringActionSet = new java.util.HashSet<>(stringActionManager->getNamedBeanSet());
-            for (MaleStringActionSocket aStringAction : stringActionSet) {
-                stringActionManager.deleteStringAction(aStringAction);
-            }
-
-            java.util.Set<MaleStringExpressionSocket> stringExpressionSet = new java.util.HashSet<>(stringExpressionManager->getNamedBeanSet());
-            for (MaleStringExpressionSocket aStringExpression : stringExpressionSet) {
-                stringExpressionManager.deleteStringExpression(aStringExpression);
-            }
-
-            java.util.Set<Module> moduleSet = new java.util.HashSet<>(InstanceManager::getDefault(ModuleManager.class)->getNamedBeanSet());
-            for (Module aModule : moduleSet) {
-                InstanceManager::getDefault(ModuleManager.class).deleteModule(aModule);
+#if 0
+            QSet</*MaleAnalogExpressionSocket*/NamedBean*> analogExpressionSet = QSet</*MaleAnalogExpressionSocket*/NamedBean*>(analogExpressionManager->getNamedBeanSet());
+            for (NamedBean* nb : analogExpressionSet) {
+             //MaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)nb->self();
+             AbstractAnalogExpression* aae= (AbstractAnalogExpression*)nb->self();
+             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)aae->getParent()->bself();
+             analogExpressionManager->deleteAnalogExpression(aAnalogExpression);
             }
 #endif
+            QSet</*MaleDigitalActionSocket*/NamedBean*> digitalActionSet = QSet</*MaleDigitalActionSocket*/NamedBean*>(digitalActionManager->getNamedBeanSet());
+            for (NamedBean* nb: digitalActionSet) {
+             //MaleDigitalActionSocket* aDigitalActionSocket = (DefaultMaleDigitalActionSocket*)nb->self();
+             AbstractDigitalAction* ada = (AbstractDigitalAction*)nb->self();
+             DefaultMaleDigitalActionSocket* aDigitalActionSocket = (DefaultMaleDigitalActionSocket*)ada->getParent()->bself();
+             digitalActionManager->deleteDigitalAction(aDigitalActionSocket);
+            }
+
+            QSet</*MaleDigitalBooleanActionSocket*/NamedBean*> digitalBooleanActionSet =QSet</*MaleDigitalBooleanActionSocket*/NamedBean*>(digitalBooleanActionManager->getNamedBeanSet());
+            for (NamedBean* nb : digitalBooleanActionSet) {
+              //MaleDigitalBooleanActionSocket* aDigitalBooleanAction =   (DefaultMaleDigitalBooleanActionSocket*)nb->self();
+             AbstractDigitalBooleanAction* adba = (AbstractDigitalBooleanAction*)nb->self();
+             DefaultMaleDigitalBooleanActionSocket* aDigitalBooleanAction = (DefaultMaleDigitalBooleanActionSocket*)adba->getParent()->bself();
+             digitalBooleanActionManager->deleteDigitalBooleanAction(aDigitalBooleanAction);
+            }
+
+            QSet</*MaleDigitalExpressionSocket*/NamedBean*> digitalExpressionSet = QSet</*MaleDigitalExpressionSocket*/NamedBean*>(digitalExpressionManager->getNamedBeanSet());
+            for (NamedBean* nb : digitalExpressionSet) {
+             //MaleDigitalExpressionSocket* aDigitalExpression = (DefaultMaleDigitalExpressionSocket*)nb->self();
+             AbstractDigitalExpression* ade = (AbstractDigitalExpression*)nb->self();
+             MaleDigitalExpressionSocket* aDigitalExpression = (DefaultMaleDigitalExpressionSocket*)ade->getParent()->bself();
+             digitalExpressionManager->deleteDigitalExpression(aDigitalExpression);
+            }
+
+            QSet</*MaleStringActionSocket*/NamedBean*> stringActionSet = QSet</*MaleStringActionSocket*/NamedBean*>(stringActionManager->getNamedBeanSet());
+            for (NamedBean* nb : stringActionSet) {
+             //MaleStringActionSocket* aStringAction = (DefaultMaleStringActionSocket*)nb->self();
+             AbstractStringAction* asa = (AbstractStringAction*)nb->self();
+             MaleStringActionSocket* aStringAction = (DefaultMaleStringActionSocket*)asa->getParent()->bself();
+             stringActionManager->deleteStringAction(aStringAction);
+            }
+#if 0
+            QSet</*MaleStringExpressionSocket*/NamedBean*> stringExpressionSet = QSet</*MaleStringExpressionSocket*/NamedBean*> (stringExpressionManager->getNamedBeanSet());
+            for (NamedBean* nb : stringExpressionSet) {
+             //MaleStringExpressionSocket* aStringExpression = (DefaultMaleStringExpressionSocket*)nb->self();
+             AbstractStringExpression* ase = (AbstractStringExpression*)nb->self();
+             DefaultMaleStringExpressionSocket* aStringExpression = (DefaultMaleStringExpressionSocket*)ase->getParent()->bself();
+             stringExpressionManager->deleteStringExpression(aStringExpression);
+            }
+#endif
+            QSet</*Module*/NamedBean*> moduleSet = QSet</*Module*/NamedBean*>(((DefaultModuleManager*)InstanceManager::getDefault("ModuleManager"))->getNamedBeanSet());
+            for (NamedBean* nb : moduleSet) {
+             Module* aModule = (DefaultModule*)nb->self();
+                ((DefaultModuleManager*)InstanceManager::getDefault("ModuleManager"))->deleteModule(aModule);
+            }
+
             QSet</*NamedTable*/NamedBean*> tableSet = QSet<NamedBean*>(((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getNamedBeanSet());
             for (NamedBean* nb : tableSet) {
              NamedTable* aTable = (AbstractNamedTable*)nb->self();
@@ -3582,7 +3612,13 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
             // Try to load file
             //**********************************
 
-            results = cm->load(secondFile);
+            JUnitUtil::initConfigureManager();
+            cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cm == nullptr) {
+                log->error("Unable to get default configure manager");
+            } else {
+             results = cm->load(secondFile);
+            }
             log->debug(results ? "load was successful" : "store failed");
             if (results) {
                 logixNG_Manager->setupAllLogixNGs();

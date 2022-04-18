@@ -7,7 +7,7 @@ class FalseXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit FalseXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit FalseXml(QObject *parent = nullptr);
  ~FalseXml() {}
   FalseXml(const FalseXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

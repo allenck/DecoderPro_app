@@ -261,7 +261,7 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
 
      // load lightcontrol children, if any
      QDomNodeList lightControlList = el.elementsByTagName("lightcontrol");
-     for (i=0; i < lightControlList.count(); i++) {
+     for (int i=0; i < lightControlList.count(); i++) {
       QDomElement elem = lightControlList.at(i).toElement();
          bool noErrors = true;
          LightControl* lc = new DefaultLightControl(lgt);
@@ -337,7 +337,7 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
 }
 
 /*public*/ int AbstractLightManagerConfigXML::loadOrder() const{
-    return ((InternalLightManager*)InstanceManager::lightManagerInstance())->getXMLOrder();
+    return /*((InternalLightManager*)*/InstanceManager::lightManagerInstance()->getXMLOrder();
 }
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractLightManagerConfigXML.class.getName());

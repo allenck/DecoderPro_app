@@ -134,6 +134,7 @@
 #include "logixng/storeandloadtestaction.h"
 #include "logixng/stringmanytestaction.h"
 #include "logixng/analogactionmanagertestaction.h"
+#include "logixng/antecedenttestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -315,7 +316,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMenu->addMenu(logixNGManagerMenu);
     QMenu* logixNGMiscMenu = new QMenu("Misc");
     logixNGMenu->addMenu(logixNGMiscMenu);
-    QMenu* logixNGTypesMenu = new QMenu("Types");
+    QMenu* logixNGTypesMenu = new QMenu("Actions/Expressions");
     logixNGMenu->addMenu(logixNGTypesMenu);
 
 
@@ -330,6 +331,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGTypesMenu->addAction(new ActionSensorTestAction(this));
     logixNGTypesMenu->addAction(new AnalogActionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new AnalogFormulaTestAction(this));
+    logixNGTypesMenu->addAction(new AntecedentTestAction(this));
     logixNGTypesMenu->addAction(new AndTestAction(this));
     logixNGTypesMenu->addAction(new DigitalBooleanOnChangeTestAction(this));
     logixNGTypesMenu->addAction(new DigitalFormulaTestAction(this));

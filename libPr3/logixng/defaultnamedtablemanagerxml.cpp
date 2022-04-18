@@ -57,7 +57,7 @@
  * @param expressions The top-level element being created
  */
 /*public*/  void DefaultNamedTableManagerXml::setStoreElementClass(QDomElement expressions) {
-    expressions.setAttribute("class", "jmri.jmrit.logixng.implementation.congigurexml.DefaultNamedTableManager");  // NOI18N
+    expressions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultNamedTableManagerXml");  // NOI18N
 }
 
 /**

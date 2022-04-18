@@ -28,7 +28,7 @@
         ExpressionTurnout* p = (ExpressionTurnout*) o;
 
         QDomElement element = doc.createElement("ExpressionTurnout");
-        element.setAttribute("class", "jmri.jmrit.logixng.expressions.congigurexml.ExpressionTurnoutXml");
+        element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.ExpressionTurnoutXml");
         element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
 
         storeCommon(p, element);

@@ -153,7 +153,7 @@
 //@Override
 /*public*/  void DefaultDigitalActionManager::deleteDigitalAction(MaleDigitalActionSocket* x) {
     // delete the MaleDigitalActionSocket
-    deregister(x);
+    deregister((AbstractNamedBean*)x->bself());
     x->Base::dispose();
 }
 

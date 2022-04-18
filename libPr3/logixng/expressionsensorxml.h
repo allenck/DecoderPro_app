@@ -7,7 +7,7 @@ class ExpressionSensorXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit ExpressionSensorXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionSensorXml(QObject *parent = nullptr);
   ~ExpressionSensorXml() {}
   ExpressionSensorXml(const ExpressionSensorXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

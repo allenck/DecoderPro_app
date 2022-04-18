@@ -267,7 +267,7 @@ bool Apps::configDeferredLoadOK = false;
  // Constructing the AppsConfigurationManager also loads various configuration services
  JmriConfigurationManager* cm = nullptr;
  if((cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager")) == nullptr)
-   cm = (JmriConfigurationManager*)InstanceManager::setDefault("ConfigureManager", new AppsConfigurationManager());
+   cm = (JmriConfigurationManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
 
   //ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);
@@ -618,7 +618,7 @@ void Apps::initGui() // must be called after Constructor is complete!
  log->debug("start deferred load from config file " + file->getPath());
  try
  {
-  AppsConfigurationManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  JmriConfigurationManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
   if (cmOD != NULL) {
       result = cmOD->loadDeferred(file);
   } else {

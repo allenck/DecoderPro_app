@@ -411,12 +411,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  return cm;
 // }
 
- if(type == "ConfigureManager")
- {
-  AppsConfigurationManager* cm = new AppsConfigurationManager();
-  //InstanceManager::store(cm,type);
-  return cm;
- }
+// if(type == "ConfigureManager")
+// {
+//  //AppsConfigurationManager* cm = new AppsConfigurationManager();
+//  JmriConfigurationManager* cm = new JmriConfigurationManager();
+//  //InstanceManager::store(cm,type);
+//  return cm;
+// }
 
  if(type == "ShutDownManager")
   return new DefaultShutDownManager();

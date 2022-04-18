@@ -7,7 +7,7 @@ class ExpressionTurnoutXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit ExpressionTurnoutXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionTurnoutXml(QObject *parent = nullptr);
   ~ExpressionTurnoutXml() {}
   ExpressionTurnoutXml(const ExpressionTurnoutXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

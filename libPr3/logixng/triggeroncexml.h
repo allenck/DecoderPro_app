@@ -7,7 +7,7 @@ class TriggerOnceXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit TriggerOnceXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit TriggerOnceXml(QObject *parent = nullptr);
   ~TriggerOnceXml() {}
   TriggerOnceXml(const TriggerOnceXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

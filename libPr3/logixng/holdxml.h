@@ -7,7 +7,7 @@ class HoldXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit HoldXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit HoldXml(QObject *parent = nullptr);
   ~HoldXml() {}
   HoldXml(const HoldXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o) override;

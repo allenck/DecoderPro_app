@@ -288,6 +288,7 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/antecedenttestaction.cpp \
     logixng/analogactionmanagertest.cpp \
     logixng/analogactionmanagertestaction.cpp \
     logixng/stringmanytestaction.cpp \
@@ -633,6 +634,7 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/antecedenttestaction.h \
     logixng/analogactionmanagertest.h \
     logixng/analogactionmanagertestaction.h \
     logixng/stringmanytestaction.h \

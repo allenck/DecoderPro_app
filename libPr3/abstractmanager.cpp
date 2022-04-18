@@ -434,8 +434,8 @@ QStringList AbstractManager::getSystemNameArray()
 
 QStringList AbstractManager::getSystemNameList()
 {
-    QStringList arr; // =  QList<QString>();
-    QStringList out;// = new QStringList();
+    QStringList arr =  QList<QString>();
+    QStringList out =  QStringList();
 //    Enumeration<String> en = _tsys.keys();
     QMapIterator<QString, NamedBean*> en(*_tsys);
     int i=0;

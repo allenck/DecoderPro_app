@@ -7,7 +7,7 @@ class OrXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit OrXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit OrXml(QObject *parent = nullptr);
   ~OrXml() {}
   OrXml(const OrXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

@@ -5,8 +5,9 @@
 
 class AndXml : public AbstractNamedBeanManagerConfigXML
 {
+  Q_OBJECT
  public:
-  explicit AndXml(QObject *parent = nullptr);
+ Q_INVOKABLE  explicit AndXml(QObject *parent = nullptr);
   ~AndXml() {}
   AndXml(const AndXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

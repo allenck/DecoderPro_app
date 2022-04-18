@@ -82,13 +82,14 @@
     //@Override
     //@OverridingMethodsMustInvokeSuper
     /*public*/  void AbstractBaseManager::deregister(/*@Nonnull*/ NamedBean* s) {
+     if(!s) throw new NullPointerException("required NamedBean is NULL!");
         // A LogixNG action or expression is contained in one or more male
         // sockets. A male socket might be contained in another male socket.
         // In some cases, it seems that the male socket used in this call is
         // not the male socket that's registered in the manager. To resolve
         // this, we search for the registered bean with the system name and
         // then deregister the bean we have found.
-     QString sn = ((AbstractNamedBean*)s->self())->getSystemName();
+     QString sn = s->getSystemName();
         NamedBean*bean = AbstractBaseManager::getBySystemName(((AbstractNamedBean*)s->self())->getSystemName());
         if (bean == nullptr) {
             // This should never happen.
