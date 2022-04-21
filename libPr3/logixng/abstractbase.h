@@ -40,8 +40,8 @@ class AbstractBase : public AbstractNamedBean, public virtual Base
           QString indent,
           QString currentIndent,
           /*MutableInt*/int* lineNumber)override;
-  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
+  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
   /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n)override;
   /*public*/ /*final*/ void dispose()override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;

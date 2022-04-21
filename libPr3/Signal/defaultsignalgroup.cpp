@@ -751,24 +751,24 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> DefaultSignalGroup::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *DefaultSignalGroup::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getSignalMast())) {
-            report.append(new NamedBeanUsageReport("SignalGroupMast"));  // NOI18N
+            report->append(new NamedBeanUsageReport("SignalGroupMast"));  // NOI18N
         }
         for (int i = 0; i < getNumHeadItems(); i++) {
             if (bean->equals(getHeadItemBeanByIndex(i))) {
-                report.append(new NamedBeanUsageReport("SignalGroupHead"));  // NOI18N
+                report->append(new NamedBeanUsageReport("SignalGroupHead"));  // NOI18N
             }
             for (int j = 0; j < getNumHeadSensorsByIndex(i); j++) {
                 if (bean->equals(getSensorByIndex(i, j))) {
-                    report.append(new NamedBeanUsageReport("SignalGroupHeadSensor"));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SignalGroupHeadSensor"));  // NOI18N
                 }
             }
             for (int k = 0; k < getNumHeadTurnoutsByIndex(i); k++) {
                 if (bean->equals(getTurnoutByIndex(i, k))) {
-                    report.append(new NamedBeanUsageReport("SignalGroupHeadTurnout"));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SignalGroupHeadTurnout"));  // NOI18N
                 }
             }
         }

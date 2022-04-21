@@ -405,7 +405,7 @@ public:
          * @param bean The bean to be checked.
          * @return a list of NamedBeanUsageReports or an empty ArrayList.
          */
-        /*default*/ virtual QList<NamedBeanUsageReport*> getUsageReport(/*@CheckForNull*/ NamedBean* /*bean*/) { return (QList<NamedBeanUsageReport*>()); }
+        /*default*/ virtual QList<NamedBeanUsageReport*>* getUsageReport(/*@CheckForNull*/ NamedBean* /*bean*/) { return new QList<NamedBeanUsageReport*>(); }
 
         /**
          * Attach a key/value pair to the

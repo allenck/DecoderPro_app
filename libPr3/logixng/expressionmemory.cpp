@@ -525,13 +525,13 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void ExpressionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-    log->debug(tr("getUsageReport :: ExpressionMemory: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
+/*public*/  void ExpressionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl) {
+    log->debug(tr("getUsageReport :: ExpressionMemory: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report->size()));
     if (getMemory() != nullptr && bean->equals(getMemory()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
     }
     if (getOtherMemory() != nullptr && bean->equals(getOtherMemory()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
     }
 }
 

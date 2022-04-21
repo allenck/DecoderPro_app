@@ -81,8 +81,8 @@
 }
 
 //@Override
-/*public*/  FemaleSocket* Or::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
-    return _expressionEntries.at(index)->_socket;
+/*public*/  AbstractFemaleSocket* Or::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
+    return (AbstractFemaleSocket*)_expressionEntries.at(index)->_socket;
 }
 
 //@Override

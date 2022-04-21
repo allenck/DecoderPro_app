@@ -553,8 +553,8 @@
     // we ignore the property setConfigureManager
 }
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> Transit::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *Transit::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     SensorManager* sm = (SensorManager*)InstanceManager::getDefault("SensorManager");
     SignalHeadManager* head = (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager");
     SignalMastManager* mast = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
@@ -563,10 +563,10 @@
           for(TransitSection* transitSection : getTransitSectionList())
         {
             if (bean->equals(transitSection->getSection())) {
-                report.append(new NamedBeanUsageReport("TransitSection"));
+                report->append(new NamedBeanUsageReport("TransitSection"));
             }
             if (bean->equals(sm->getSensor(transitSection->getStopAllocatingSensor()))) {
-                report.append(new NamedBeanUsageReport("TransitSensorStopAllocation"));
+                report->append(new NamedBeanUsageReport("TransitSensorStopAllocation"));
             }
             // Process actions
             //transitSection->getTransitSectionActionList().forEach((action) ->
@@ -576,21 +576,21 @@
                 int whatCode = action->getWhatCode();
                 if (whenCode == TransitSectionAction::SENSORACTIVE || whenCode == TransitSectionAction::SENSORINACTIVE) {
                     if (bean->equals(sm->getSensor(action->getStringWhen()))) {
-                        report.append(new NamedBeanUsageReport("TransitActionSensorWhen", transitSection->getSection()));
+                        report->append(new NamedBeanUsageReport("TransitActionSensorWhen", transitSection->getSection()));
                     }
                 }
                 if (whatCode == TransitSectionAction::SETSENSORACTIVE || whatCode == TransitSectionAction::SETSENSORINACTIVE) {
                     if (bean->equals(sm->getSensor(action->getStringWhat()))) {
-                        report.append(new NamedBeanUsageReport("TransitActionSensorWhat", transitSection->getSection()));
+                        report->append(new NamedBeanUsageReport("TransitActionSensorWhat", transitSection->getSection()));
                     }
                 }
                 if (whatCode == TransitSectionAction::HOLDSIGNAL || whatCode == TransitSectionAction::RELEASESIGNAL) {
                     // Could be a signal head or a signal mast.
                     if (bean->equals(head->getSignalHead(action->getStringWhat()))) {
-                        report.append(new NamedBeanUsageReport("TransitActionSignalHeadWhat", transitSection->getSection()));
+                        report->append(new NamedBeanUsageReport("TransitActionSignalHeadWhat", transitSection->getSection()));
                     }
                     if (bean->equals(mast->getSignalMast(action->getStringWhat()))) {
-                        report.append(new NamedBeanUsageReport("TransitActionSignalMastWhat", transitSection->getSection()));
+                        report->append(new NamedBeanUsageReport("TransitActionSignalMastWhat", transitSection->getSection()));
                     }
                 }
             }//);

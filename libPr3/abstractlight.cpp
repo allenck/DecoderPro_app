@@ -412,8 +412,8 @@
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> AbstractLight::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *AbstractLight::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     SensorManager* sm = (SensorManager*)InstanceManager::getDefault("SensorManager");
     TurnoutManager* tm = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
     if (bean != nullptr) {
@@ -422,16 +422,16 @@
         {
             QString descText = control->getDescriptionText("");
             if (bean->equals(sm->getSensor(control->getControlSensorName()))) {
-                report.append(new NamedBeanUsageReport("LightControlSensor1", descText));  // NOI18N
+                report->append(new NamedBeanUsageReport("LightControlSensor1", descText));  // NOI18N
             }
             if (bean->equals(sm->getSensor(control->getControlSensor2Name()))) {
-                report.append(new NamedBeanUsageReport("LightControlSensor2", descText));  // NOI18N
+                report->append(new NamedBeanUsageReport("LightControlSensor2", descText));  // NOI18N
             }
             if (bean->equals(sm->getSensor(control->getControlTimedOnSensorName()))) {
-                report.append(new NamedBeanUsageReport("LightControlSensorTimed", descText));  // NOI18N
+                report->append(new NamedBeanUsageReport("LightControlSensorTimed", descText));  // NOI18N
             }
             if (bean->equals(tm->getTurnout(control->getControlTurnoutName()))) {
-                report.append(new NamedBeanUsageReport("LightControlTurnout", descText));  // NOI18N
+                report->append(new NamedBeanUsageReport("LightControlTurnout", descText));  // NOI18N
             }
         }//);
     }

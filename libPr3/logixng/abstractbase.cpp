@@ -5,6 +5,8 @@
 #include "conditionalng.h"
 #include "logixng.h"
 #include "abstractmalesocket.h"
+#include "abstractfemalesocket.h"
+
 /**
  * The abstract class that is the base class for all LogixNG classes that
  * implements the Base interface.
@@ -132,7 +134,8 @@
     /*public*/ /*final*/ void AbstractBase::unregisterListeners() {
         unregisterListenersForThisClass();
         for (int i=0; i < getChildCount(); i++) {
-            getChild(i)->unregisterListeners();
+         FemaleSocket* child = getChild(i);
+         ((AbstractFemaleSocket*)getChild(i)->bself())->unregisterListeners();
         }
     }
 
@@ -199,7 +202,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractBase::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+    /*public*/ void AbstractBase::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
         log->debug(tr("## %1 :: %2").arg(level).arg(this->getLongDescription()));
         level++;
         for (int i=0; i < getChildCount(); i++) {
@@ -209,7 +212,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractBase::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+    /*public*/ void AbstractBase::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
     }
 
     /**

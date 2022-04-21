@@ -365,7 +365,7 @@ public:
     /*public*/ int getNeighbourDirection(int i);
     /*public*/ int getNeighbourMetric(int i);
     SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean) override;
     /*public*/ QString getBeanType() override;
 
     QObject* pself() override{return (QObject*)this;}

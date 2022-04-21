@@ -7,6 +7,7 @@
  */
 /*public*/ /*interface*/ class FemaleDigitalExpressionSocket : public virtual FemaleSocket, public DigitalExpression {
  Q_INTERFACES(FemaleSocket DigitalExpression)
+ public:
 };
 Q_DECLARE_INTERFACE(FemaleDigitalExpressionSocket, "FemaleDigitalExpressionSocket")
 #endif // FEMALEDIGITALEXPRESSIONSOCKET_H

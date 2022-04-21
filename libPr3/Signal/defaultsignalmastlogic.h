@@ -111,7 +111,7 @@ public:
     /*public*/ /*synchronized*/ int getNumPropertyChangeListeners() override;
     /*public*/ void dispose() override;
     /*public*/ QString getBeanType() override;
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean) override;
 
     /*public*/ Section* getAssociatedSection(SignalMast* destination) override;
     /*public*/ void setAssociatedSection(Section* sec, SignalMast* destination) override;

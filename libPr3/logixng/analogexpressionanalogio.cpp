@@ -174,10 +174,10 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void AnalogExpressionAnalogIO::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-        log->debug(tr("getUsageReport :: AnalogExpressionAnalogIO: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
+    /*public*/  void AnalogExpressionAnalogIO::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+        log->debug(tr("getUsageReport :: AnalogExpressionAnalogIO: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report->size()));
         if (getAnalogIO() != nullptr && bean->equals(getAnalogIO()->getBean()->self())) {
-            report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+            report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
         }
     }
 

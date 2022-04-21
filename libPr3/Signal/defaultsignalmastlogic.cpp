@@ -2960,58 +2960,58 @@ protected PropertyChangeListener propertySignalMastLogicManagerListener = new Pr
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> DefaultSignalMastLogic::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *DefaultSignalMastLogic::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getSourceMast())) {
-            report.append(new NamedBeanUsageReport("SMLSourceMast"));  // NOI18N
+            report->append(new NamedBeanUsageReport("SMLSourceMast"));  // NOI18N
         }
         //getDestinationList().forEach((dest) ->
         foreach(SignalMast* dest, getDestinationList())
         {
             if (bean->equals(dest)) {
-                report.append(new NamedBeanUsageReport("SMLDestinationMast"));  // NOI18N
+                report->append(new NamedBeanUsageReport("SMLDestinationMast"));  // NOI18N
             }
             //getAutoBlocks(dest).forEach((block) -> {
             foreach(Block* block, getAutoBlocks(dest))
             {
                 if (bean->equals(block)) {
-                    report.append(new NamedBeanUsageReport("SMLBlockAuto", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLBlockAuto", dest));  // NOI18N
                 }
             }//);
             //getBlocks(dest).forEach((block) -> {
             foreach(Block* block, getBlocks(dest))
             {
                 if (bean->equals(block)) {
-                    report.append(new NamedBeanUsageReport("SMLBlockUser", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLBlockUser", dest));  // NOI18N
                 }
             }//);
             //getAutoTurnouts(dest).forEach((turnout) -> {
             foreach(Turnout* turnout, getAutoTurnouts(dest)   )
             {
                 if (bean->equals(turnout)) {
-                    report.append(new NamedBeanUsageReport("SMLTurnoutAuto", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLTurnoutAuto", dest));  // NOI18N
                 }
             }//);
             //getTurnouts(dest).forEach((turnout) -> {
             foreach(Turnout* turnout, getTurnouts(dest)   )
             {
                 if (bean->equals(turnout)) {
-                    report.append(new NamedBeanUsageReport("SMLTurnoutUser", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLTurnoutUser", dest));  // NOI18N
                 }
             }//);
             //getSensors(dest).forEach((sensor) -> {
             foreach(Sensor* sensor, getSensors(dest)   )
             {
                 if (bean->equals(sensor)) {
-                    report.append(new NamedBeanUsageReport("SMLSensor", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLSensor", dest));  // NOI18N
                 }
             }//);
             //getAutoMasts(dest).forEach((mast) -> {
             foreach(SignalMast* mast, getAutoMasts(dest)   )
             {
                 if (bean->equals(mast)) {
-                    report.append(new NamedBeanUsageReport("SMLMastAuto", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLMastAuto", dest));  // NOI18N
                 }
             }//);
             //getSignalMasts(dest).forEach((mast) -> {
@@ -3019,7 +3019,7 @@ protected PropertyChangeListener propertySignalMastLogicManagerListener = new Pr
             {
 
                 if (bean->equals(mast)) {
-                    report.append(new NamedBeanUsageReport("SMLMastUser", dest));  // NOI18N
+                    report->append(new NamedBeanUsageReport("SMLMastUser", dest));  // NOI18N
                 }
             }//);
         }//);

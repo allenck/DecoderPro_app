@@ -336,8 +336,8 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  QList<NamedBeanUsageReport*> DefaultModule::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/  QList<NamedBeanUsageReport*>* DefaultModule::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         getUsageTree(0, bean, report, nullptr);
     }
@@ -346,7 +346,7 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void DefaultModule::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+/*public*/  void DefaultModule::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
     log->debug(tr("** %1 :: %2").arg(level).arg(this->metaObject()->className()));
     level++;
     _femaleRootSocket->getUsageTree(level, bean, report, cdl);

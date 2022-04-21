@@ -22,7 +22,7 @@ class DefaultFemaleAnySocket : public AbstractFemaleSocket, public FemaleAnySock
   QObject* bself() override {return (QObject*)this;}
   /*public*/ QString getSystemName() const override {return AbstractFemaleSocket::getSystemName();}
   /*public*/ QString getUserName() const override {return AbstractFemaleSocket::getUserName();}
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)  override
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)  override
    {return AbstractFemaleSocket::getUsageDetail(level,bean, report, cdl );}
 
 };

@@ -77,7 +77,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
         int feedback = turnout->getFeedbackMode();
         if (feedback == Turnout::ONESENSOR || feedback == Turnout::TWOSENSOR) {
             //turnout.getUsageReport(bean).forEach((report) ->
-         foreach(NamedBeanUsageReport* report, turnout->getUsageReport(bean))
+         foreach(NamedBeanUsageReport* report, *turnout->getUsageReport(bean))
          {
              if (report->usageKey.startsWith("TurnoutFeedback")) {  // NOI18N
                  QString name = turnout->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -108,7 +108,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Light* light = (Light*)nb->self();
      //light.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, ((AbstractNamedBean*)light->self())->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *((AbstractNamedBean*)light->self())->getUsageReport(bean))
      {
           if (report->usageKey.startsWith("LightControl")) {  // NOI18N
                 QString name = ((AbstractNamedBean*)light->self())->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -140,7 +140,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Route* route = (Route*)nb->self();
         //route.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, ((DefaultRoute*)route)->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *((DefaultRoute*)route)->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("Route")) {  // NOI18N
                 QString name = ((DefaultRoute*)route)->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -170,7 +170,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Block* block = (Block*)nb->self();
         //block.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, block->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *block->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("Block")) {  // NOI18N
                 QString name = block->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -200,7 +200,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      LayoutBlock* layoutBlock = (LayoutBlock*)nb->self();
         //layoutBlock.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, layoutBlock->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *layoutBlock->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("LayoutBlock")) {  // NOI18N
                 QString name = layoutBlock->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -272,7 +272,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)nb->self();
      //sml.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, sml->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *sml->getUsageReport(bean))
      {
             QString name = bean->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
             if (report->usageKey.startsWith("SMLSource")) {  // NOI18N
@@ -310,7 +310,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      SignalGroup* group = (SignalGroup*)nb->self();
         //group.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, group->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *group->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("SignalGroup")) {  // NOI18N
                 QString name = group->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -342,7 +342,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
  {
   OBlock* oblock = (OBlock*)nb->self();
      //oblock.getUsageReport(bean).forEach((report) -> {
-  foreach(NamedBeanUsageReport* report, oblock->getUsageReport(bean))
+  foreach(NamedBeanUsageReport* report, *oblock->getUsageReport(bean))
   {
    if (report->usageKey.startsWith("OBlock")) {  // NOI18N
        QString name = oblock->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -371,7 +371,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Warrant* warrant = (Warrant*)nb->self();
         //warrant.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, warrant->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *warrant->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("Warrant")) {  // NOI18N
                 QString name = warrant->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -401,7 +401,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      DestinationPoints* destPoint = (DestinationPoints*)nb->self();
         //destPoint.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, destPoint->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *destPoint->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("EntryExit")) {  // NOI18N
                 QString name = destPoint->getDisplayName();
@@ -430,7 +430,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Logix* logix = (Logix*)nb->self();
         //logix.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, logix->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *logix->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("ConditionalVariable") || report->usageKey.startsWith("ConditionalAction")) {  // NOI18N
                 QString name = logix->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -462,7 +462,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Section* section = (Section*)nb->self();
      //section.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, section->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *section->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("SectionSensor")) {  // NOI18N
                 QString name = section->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
@@ -494,7 +494,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Transit* transit = (Transit*)nb->self();
         //transit.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, transit->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, *transit->getUsageReport(bean))
      {
             QString name = transit->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
             if (report->usageKey.startsWith("TransitSensor") || report->usageKey.startsWith("TransitSection")) {  // NOI18N

@@ -183,7 +183,7 @@
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::registerListenersForThisClass() {
 //        ((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
-      ((AbstractBase*)getObject()->bself())->registerListeners();
+      ((AbstractMaleSocket*)getObject()->bself())->registerListeners();
     }
 
     /**
@@ -192,6 +192,7 @@
     //@Override
     /*public*/  void DefaultMaleDigitalExpressionSocket::unregisterListenersForThisClass() {
         //((DigitalExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+     Base* base = getObject();
      ((AbstractBase*)getObject()->bself())->unregisterListeners();
     }
 

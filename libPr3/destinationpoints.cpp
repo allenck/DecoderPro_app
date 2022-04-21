@@ -1202,20 +1202,20 @@ void DestinationPoints::setActiveEntryExit(bool boo){
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> DestinationPoints::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *DestinationPoints::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getSource()->getPoint()->getSensor())) {
-            report.append(new NamedBeanUsageReport("EntryExitSourceSensor"));  // NOI18N
+            report->append(new NamedBeanUsageReport("EntryExitSourceSensor"));  // NOI18N
         }
         if (bean->equals(getSource()->getPoint()->getSignal()->self())) {
-            report.append(new NamedBeanUsageReport("EntryExitSourceSignal"));  // NOI18N
+            report->append(new NamedBeanUsageReport("EntryExitSourceSignal"));  // NOI18N
         }
         if (bean->equals(getDestPoint()->getSensor())) {
-            report.append(new NamedBeanUsageReport("EntryExitDestinationSensor"));  // NOI18N
+            report->append(new NamedBeanUsageReport("EntryExitDestinationSensor"));  // NOI18N
         }
         if (bean->equals(getDestPoint()->getSignal()->self())) {
-            report.append(new NamedBeanUsageReport("EntryExitDesinationSignal"));  // NOI18N
+            report->append(new NamedBeanUsageReport("EntryExitDesinationSignal"));  // NOI18N
         }
     }
     return report;

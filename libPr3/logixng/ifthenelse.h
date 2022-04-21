@@ -56,16 +56,23 @@ class IfThenElse : public AbstractDigitalAction, public FemaleSocketListener
           case ExecuteOnChange:
           return tr("Execute on change");
           case AlwaysExecute:
-           return "Always execute";
+           return tr("Always execute");
           default:
            break;
           }
           return "?";
       }
-    /*public*/ static QList<ETYPE> values()
+     static QList<ETYPE> values()
     {
      return QList<ETYPE> {ExecuteOnChange, AlwaysExecute};
     }
+    /*public*/ static ETYPE valueOf(QString s)
+     {
+      if(s== tr("Execute on change"))return ExecuteOnChange;
+      if(s==tr("Always execute")) return AlwaysExecute;
+      throw new IllegalArgumentException();
+     }
+
     friend class IfThenElse;
   };
   explicit IfThenElse(QString sys, QString user, QObject *parent = nullptr);

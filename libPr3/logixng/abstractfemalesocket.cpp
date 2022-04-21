@@ -374,7 +374,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractFemaleSocket::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+/*public*/ void AbstractFemaleSocket::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
     log->debug(tr("** %1 :: %2").arg(level).arg(this->getLongDescription()));
     level++;
 
@@ -385,7 +385,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractFemaleSocket::getUsageDetail(int /*level*/, NamedBean* /*bean*/, QList<NamedBeanUsageReport*> /*report*/, NamedBean* /*cdl*/) {
+/*public*/ void AbstractFemaleSocket::getUsageDetail(int /*level*/, NamedBean* /*bean*/, QList<NamedBeanUsageReport *> * /*report*/, NamedBean* /*cdl*/) {
 }
 
 //@Override

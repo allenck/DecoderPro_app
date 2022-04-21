@@ -1011,8 +1011,8 @@ return _statusNameMap.value(str);
 
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> OBlock::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *OBlock::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     QList<NamedBean*> duplicateCheck = QList<NamedBean*>();
     if (bean != nullptr) {
         if (log->isDebugEnabled()) {
@@ -1020,13 +1020,13 @@ return _statusNameMap.value(str);
             log->debug(tr("oblock: %1, sensor = %2").arg(getDisplayName(), (s==nullptr?"Dark OBlock":s->getDisplayName())));  // NOI18N
         }
         if (bean->equals(getSensor())) {
-            report.append(new NamedBeanUsageReport("OBlockSensor"));  // NOI18N
+            report->append(new NamedBeanUsageReport("OBlockSensor"));  // NOI18N
         }
         if (bean->equals(getErrorSensor())) {
-            report.append(new NamedBeanUsageReport("OBlockSensorError"));  // NOI18N
+            report->append(new NamedBeanUsageReport("OBlockSensorError"));  // NOI18N
         }
         if (bean->equals(getWarrant())) {
-            report.append(new NamedBeanUsageReport("OBlockWarant"));  // NOI18N
+            report->append(new NamedBeanUsageReport("OBlockWarant"));  // NOI18N
         }
 
         //getPortals().forEach((portal) ->
@@ -1036,10 +1036,10 @@ return _statusNameMap.value(str);
                     portal->getName(), portal->getFromBlockName(), portal->getToBlockName(),
                     portal->getFromSignalName(), portal->getToSignalName()));
             if (bean->equals(portal->getFromBlock()) || bean->equals(portal->getToBlock())) {
-                report.append(new NamedBeanUsageReport("OBlockPortalNeighborOBlock", portal->getName()));  // NOI18N
+                report->append(new NamedBeanUsageReport("OBlockPortalNeighborOBlock", portal->getName()));  // NOI18N
             }
             if (bean->equals(portal->getFromSignal()->self()) || bean->equals(portal->getToSignal()->self())) {
-                report.append(new NamedBeanUsageReport("OBlockPortalSignal", portal->getName()));  // NOI18N
+                report->append(new NamedBeanUsageReport("OBlockPortalSignal", portal->getName()));  // NOI18N
             }
 
             //portal->getFromPaths().forEach((path) ->
@@ -1052,7 +1052,7 @@ return _statusNameMap.value(str);
                     log->debug(tr("            turnout = %1").arg(setting->getBean()->getDisplayName()));  // NOI18N
                     if (bean->equals(setting->getBean()->self())) {
                         if (!duplicateCheck.contains(bean)) {
-                            report.append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
+                            report->append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
                             duplicateCheck.append(bean);
                         }
                     }
@@ -1067,7 +1067,7 @@ return _statusNameMap.value(str);
                     log->debug(tr("            turnout = %1").arg(setting->getBean()->getDisplayName()));  // NOI18N
                     if (bean->equals(setting->getBean()->self())) {
                         if (!duplicateCheck.contains(bean)) {
-                            report.append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
+                            report->append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
                             duplicateCheck.append(bean);
                         }
                     }

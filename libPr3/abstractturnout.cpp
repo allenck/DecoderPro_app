@@ -1086,17 +1086,17 @@ if(!bok)
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> AbstractTurnout::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *AbstractTurnout::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getFirstSensor())) {
-            report.append(new NamedBeanUsageReport("TurnoutFeedback1"));  // NOI18N
+            report->append(new NamedBeanUsageReport("TurnoutFeedback1"));  // NOI18N
         }
         if (bean->equals(getSecondSensor())) {
-            report.append(new NamedBeanUsageReport("TurnoutFeedback2"));  // NOI18N
+            report->append(new NamedBeanUsageReport("TurnoutFeedback2"));  // NOI18N
         }
         if (bean->equals(getLeadingTurnout())) {
-            report.append(new NamedBeanUsageReport("LeadingTurnout")); // NOI18N
+            report->append(new NamedBeanUsageReport("LeadingTurnout")); // NOI18N
         }
     }
     return report;

@@ -4,7 +4,7 @@
 #include "abstractbasemanager.h"
 #include "instancemanagerautodefault.h"
 #include "Analogexpressionbean.h"
-#include "maleanalogexpressionsocket.h"
+#include "defaultmaleanalogexpressionsocket.h"
 #include "analogexpressionmanager.h"
 
 class MaleAnalogExpressionSocketFactory;
@@ -26,7 +26,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
   /*public*/  MaleAnalogExpressionSocket* registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression)override;
   /*public*/  int getXMLOrder() const override;
   /*public*/  QString getBeanTypeHandled() const override;
-  /*public*/  void deleteAnalogExpression(MaleAnalogExpressionSocket* x)override;
+  /*public*/  void deleteAnalogExpression(MaleAnalogExpressionSocket *x)override;
   /*public*/  QChar typeLetter() const override;
   /*public*/  NameValidity validSystemNameFormat(QString systemName) override;
   /*public*/  FemaleAnalogExpressionSocket* createFemaleSocket(

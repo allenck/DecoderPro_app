@@ -418,10 +418,10 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void ExpressionTurnout::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-    log->debug(tr("getUsageReport :: ExpressionTurnout: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
+/*public*/  void ExpressionTurnout::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+    log->debug(tr("getUsageReport :: ExpressionTurnout: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report->size()));
     if (getTurnout() != nullptr && bean->equals(getTurnout()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
     }
 }
 

@@ -27,7 +27,7 @@ public:
     /*public*/ void setState(int state)override;
     /*public*/ Conditional* getConditional(QString systemName)override ;
     /*public*/ void setGuiNames()override;
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean)override;
 
     QObject* self() override{return (QObject*)this;}
 

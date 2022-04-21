@@ -2427,27 +2427,27 @@ void Section::propertyChange(PropertyChangeEvent* e)
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> Section::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport*>* Section::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         //getBlockList().forEach((block) ->
         for(Block* block : *getBlockList())
         {
             if (bean->equals(block)) {
-                report.append(new NamedBeanUsageReport("SectionBlock"));
+                report->append(new NamedBeanUsageReport("SectionBlock"));
             }
         }//);
         if (bean->equals(getForwardBlockingSensor())) {
-            report.append(new NamedBeanUsageReport("SectionSensorForwardBlocking"));
+            report->append(new NamedBeanUsageReport("SectionSensorForwardBlocking"));
         }
         if (bean->equals(getForwardStoppingSensor())) {
-            report.append(new NamedBeanUsageReport("SectionSensorForwardStopping"));
+            report->append(new NamedBeanUsageReport("SectionSensorForwardStopping"));
         }
         if (bean->equals(getReverseBlockingSensor())) {
-            report.append(new NamedBeanUsageReport("SectionSensorReverseBlocking"));
+            report->append(new NamedBeanUsageReport("SectionSensorReverseBlocking"));
         }
         if (bean->equals(getReverseStoppingSensor())) {
-            report.append(new NamedBeanUsageReport("SectionSensorReverseStopping"));
+            report->append(new NamedBeanUsageReport("SectionSensorReverseStopping"));
         }
     }
     return report;

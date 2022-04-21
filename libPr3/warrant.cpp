@@ -3127,20 +3127,20 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> Warrant::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *Warrant::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getBlockingWarrant())) {
-            report.append(new NamedBeanUsageReport("WarrantBlocking"));
+            report->append(new NamedBeanUsageReport("WarrantBlocking"));
         }
         //getBlockOrders().forEach((blockOrder) ->
         for(BlockOrder* blockOrder : *getBlockOrders())
         {
             if (bean->equals(blockOrder->getBlock())) {
-                report.append(new NamedBeanUsageReport("WarrantBlock"));
+                report->append(new NamedBeanUsageReport("WarrantBlock"));
             }
             if (bean->equals(blockOrder->getSignal()->self())) {
-                report.append(new NamedBeanUsageReport("WarrantSignal"));
+                report->append(new NamedBeanUsageReport("WarrantSignal"));
             }
         }//);
     }

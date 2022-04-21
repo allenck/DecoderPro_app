@@ -19,6 +19,10 @@ class AbstractAnalogExpression : public AbstractBase, public AnalogExpressionBea
   /*public*/  bool getTriggerOnChange()override;
   /*public*/  QString getNewSocketName();
 
+  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
+
+
  private:
   static Logger* log;
   /*private*/ Base* _parent = nullptr;

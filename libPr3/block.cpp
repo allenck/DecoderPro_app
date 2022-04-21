@@ -352,7 +352,7 @@ QString Block::getStateString()
 }
 
 /**
- * Provide a general method for updating the report.
+ * Provide a general method for updating the report->
  */
 /*public*/ void Block::setState(int v)
 {
@@ -914,7 +914,7 @@ return(next);
  }
  else
  {
-  // Assume a LocoNet-style report.  This is (nascent) support for handling of Faller cars
+  // Assume a LocoNet-style report->  This is (nascent) support for handling of Faller cars
   // for Dave Merrill's project.
   log->debug("report string: " + rep);
   // NOTE: This pattern is based on the one defined in jmri.jmrix.loconet.LnReporter
@@ -1020,26 +1020,26 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> Block::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport*>* Block::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getSensor())) {
-            report.append(new NamedBeanUsageReport("BlockSensor"));  // NOI18N
+            report->append(new NamedBeanUsageReport("BlockSensor"));  // NOI18N
         }
         if (bean->equals(getReporter()->self())) {
-            report.append(new NamedBeanUsageReport("BlockReporter"));  // NOI18N
+            report->append(new NamedBeanUsageReport("BlockReporter"));  // NOI18N
         }
         // Block paths
 //        getPaths().forEach((path) ->
         for(Path* path : *getPaths())
         {
             if (bean->equals(path->getBlock())) {
-                report.append(new NamedBeanUsageReport("BlockPathNeighbor"));  // NOI18N
+                report->append(new NamedBeanUsageReport("BlockPathNeighbor"));  // NOI18N
             }
             //path.getSettings().forEach((setting) ->
              for(BeanSetting* setting : path->getSettings())                          {
                 if (bean->equals(setting->getBean()->self())) {
-                    report.append(new NamedBeanUsageReport("BlockPathTurnout"));  // NOI18N
+                    report->append(new NamedBeanUsageReport("BlockPathTurnout"));  // NOI18N
                 }
             }//);
         }//);

@@ -170,10 +170,10 @@ void AAMRun::run()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void AnalogActionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-//    log->debug(tr("getUsageReport :: AnalogActionMemory: bean = %1, report = %2").arg(cdl, report.));
+/*public*/  void AnalogActionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+//    log->debug(tr("getUsageReport :: AnalogActionMemory: bean = %1, report = %2").arg(cdl).arg(report.size));
     if (getMemory() != nullptr && bean == (getMemory()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
     }
 }
 

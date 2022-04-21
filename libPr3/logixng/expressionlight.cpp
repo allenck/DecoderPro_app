@@ -418,10 +418,10 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void ExpressionLight::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-        log->debug(tr("getUsageReport :: ExpressionLight: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
+    /*public*/  void ExpressionLight::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+        log->debug(tr("getUsageReport :: ExpressionLight: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report->size()));
         if (getLight() != nullptr && bean->equals(getLight()->getBean()->self())) {
-            report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+            report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
         }
     }
     /*private*/ /*final*/ /*static*/ Logger* ExpressionLight::log = LoggerFactory::getLogger("ExpressionLight");

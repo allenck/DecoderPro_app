@@ -561,13 +561,13 @@ void AMRun::run()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void ActionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-    log->debug(tr("getUsageReport :: ActionMemory: bean = %1, report = %2").arg(cdl->getDisplayName().arg(report.size())));
+/*public*/  void ActionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+    log->debug(tr("getUsageReport :: ActionMemory: bean = %1, report = %2").arg(cdl->getDisplayName().arg(report->size())));
     if (getMemory() != nullptr && bean->equals(getMemory()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
     }
     if (getOtherMemory() != nullptr && bean->equals(getOtherMemory()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
     }
 }
 

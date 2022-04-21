@@ -31,9 +31,9 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ void setEnabled(bool enable) override;
   /*public*/ bool isEnabled()override;
 
-  /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
-  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl);
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl);
+  /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean) override;
+  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl);
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl);
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
   /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
   /*public*/ QString getUserName() const override {return AbstractNamedBean::getUserName();}

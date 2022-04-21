@@ -194,7 +194,7 @@ public:
     /*public*/ void setBlockSpeedName(QString s);
     virtual /*public*/ void goingUnknown();
     virtual /*public*/ void goingInconsistent();
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean)override;
     /*public*/ QString getBeanType()override;
 
 signals:

@@ -71,6 +71,10 @@ class ActionSensor : public AbstractDigitalAction, public VetoableChangeListener
           }
           throw new IllegalArgumentException();
       }
+      /*public*/ static QList<STATE> values()
+      {
+       return QList<STATE>{Inactive, Active, Toggle};
+      }
   };
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException */override;
   /*public*/  void setSensor(/*@Nonnull*/ QString sensorName);
@@ -106,7 +110,7 @@ class ActionSensor : public AbstractDigitalAction, public VetoableChangeListener
   /*public*/  void registerListenersForThisClass() override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
-  /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
+  /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}

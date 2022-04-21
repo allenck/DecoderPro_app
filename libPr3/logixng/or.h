@@ -3,9 +3,12 @@
 #include "femalesocketlistener.h"
 #include "abstractdigitalexpression.h"
 #include "femaledigitalexpressionsocket.h"
+#include "abstractfemalesocket.h"
 
 class Or : public AbstractDigitalExpression, public FemaleSocketListener
 {
+  Q_OBJECT
+  Q_INTERFACES(FemaleSocketListener)
  public:
   Or(QString sys, QString user, QObject* parent= nullptr);
   /*public*/  Or(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
@@ -29,10 +32,10 @@ class Or : public AbstractDigitalExpression, public FemaleSocketListener
   /*public*/  QString getExpressionSystemName(int index);
   /*public*/  Category* getCategory() override;
   /*public*/  bool evaluate() /*throws JmriException*/override;
-  /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
+  /*public*/  AbstractFemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;
   /*public*/  QString getShortDescription(QLocale locale)override;
-  /*public*/  QString getLongDescription(QLocale locale);
+  /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper)override;
   /*public*/  void doSocketOperation(int index, FemaleSocketOperation::TYPES oper)override;
   /*public*/  void connected(FemaleSocket* socket) override;

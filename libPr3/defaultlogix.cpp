@@ -1342,8 +1342,8 @@ ArrayList <String[]> loopGremlins = NULL;
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> DefaultLogix::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *DefaultLogix::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         for (int i = 0; i < getNumConditionals(); i++) {
             DefaultConditional* cdl = (DefaultConditional*) getConditional(getConditionalByNumberOrder(i));
@@ -1351,10 +1351,10 @@ ArrayList <String[]> loopGremlins = NULL;
             for(ConditionalVariable* variable :  *cdl->getStateVariableList())
             {
                 if (bean->equals(variable->getBean()->self())) {
-                    report.append(new NamedBeanUsageReport("ConditionalVariable", cdl, variable->toString()));
+                    report->append(new NamedBeanUsageReport("ConditionalVariable", cdl, variable->toString()));
                 }
                 if (bean->equals(variable->getNamedBeanData()->self())) {
-                    report.append(new NamedBeanUsageReport("ConditionalVariableData", cdl, variable->toString()));
+                    report->append(new NamedBeanUsageReport("ConditionalVariableData", cdl, variable->toString()));
                 }
             }//);
             //cdl.getActionList().forEach((action) ->
@@ -1362,7 +1362,7 @@ ArrayList <String[]> loopGremlins = NULL;
             {
                 if (bean->equals(action->getBean()->self())) {
                     bool triggerType = cdl->getTriggerOnChange();
-                    report.append(new NamedBeanUsageReport("ConditionalAction", cdl, action->description(triggerType)));
+                    report->append(new NamedBeanUsageReport("ConditionalAction", cdl, action->description(triggerType)));
                 }
             }//);
         }

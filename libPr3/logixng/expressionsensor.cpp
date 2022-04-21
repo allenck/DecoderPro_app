@@ -416,10 +416,10 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void ExpressionSensor::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-        log->debug(tr("getUsageReport :: ExpressionBlock: bean = %1, report = %2").arg(cdl->getSystemName()).arg(report.size()));
+    /*public*/  void ExpressionSensor::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+        log->debug(tr("getUsageReport :: ExpressionBlock: bean = %1, report = %2").arg(cdl->getSystemName()).arg(report->size()));
         if (getSensor() != nullptr && bean->equals(getSensor()->getBean())) {
-            report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+            report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
         }
     }
 

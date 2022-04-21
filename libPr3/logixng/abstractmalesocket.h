@@ -82,8 +82,8 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
           QString indent,
           QString currentIndent,
           /*MutableInt*/int *lineNumber)override;
-  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
+  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl)override;
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
   /*public*/ BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager()override;
   /*public*/ /*final*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)
           /*throw (JmriException)*/override;

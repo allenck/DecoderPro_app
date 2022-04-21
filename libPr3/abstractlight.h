@@ -35,7 +35,7 @@ public:
     /*public*/ void clearLightControls()override;
     /*public*/ void addLightControl(LightControl* c)override;
     /*public*/ QList<LightControl*> getLightControlList()override;
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean)override;
 
    /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
   QObject* self() override {return (QObject*)this;}

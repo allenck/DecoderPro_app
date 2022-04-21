@@ -420,10 +420,10 @@ void ASRun::run()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void ActionSensor::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-    log->debug(tr("getUsageReport :: ActionSensor: bean = %1, cdl = %2, report = %3").arg(bean->getDisplayName(), cdl->getDisplayName()).arg(report.size()));
+/*public*/  void ActionSensor::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+    log->debug(tr("getUsageReport :: ActionSensor: bean = %1, cdl = %2, report = %3").arg(bean->getDisplayName(), cdl->getDisplayName()).arg(report->size()));
     if (getSensor() != nullptr && bean->equals(getSensor()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
     }
 }
 

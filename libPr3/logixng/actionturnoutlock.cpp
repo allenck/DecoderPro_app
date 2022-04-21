@@ -407,10 +407,10 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void ActionTurnoutLock::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-    log->debug(tr("getUsageReport :: ActionTurnoutLock: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
+/*public*/  void ActionTurnoutLock::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+    log->debug(tr("getUsageReport :: ActionTurnoutLock: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report->size()));
     if (getTurnout() != nullptr && bean->equals(getTurnout()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGAction", cdl, getLongDescription(QLocale())));
     }
 }
 

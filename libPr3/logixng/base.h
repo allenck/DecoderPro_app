@@ -456,7 +456,7 @@ class Base;
      * @param report A list of NamedBeanUsageReport usage reports.
      * @param cdl    The current ConditionalNG bean.  Null for Module searches since there is no conditional
      */
-  /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl){}
+  /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl){}
 
     /**
      * Add a new NamedBeanUsageReport to the report list if there are any matches in this action or expresssion.
@@ -472,7 +472,7 @@ class Base;
      * @param report A list of NamedBeanUsageReport usage reports.
      * @param cdl    The current ConditionalNG bean.  Null for Module searches since there is no conditional
      */
-  /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl){}
+  /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl){}
 
     /**
      * Request a call-back when a bound property changes. Bound properties are

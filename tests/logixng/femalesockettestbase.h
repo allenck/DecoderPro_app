@@ -334,12 +334,12 @@ private:
         }
 
         //@Override
-        /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override {
+        /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override {
             throw new UnsupportedOperationException("Not supported");
         }
 
         //@Override
-        /*public*/  void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) override{
+        /*public*/  void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl) override{
             throw new UnsupportedOperationException("Not supported");
         }
 

@@ -53,7 +53,7 @@ public:
     /*public*/ void removeTemporarySections();
     /*public*/ bool removeLastTemporarySection(Section* s);
     /*public*/ QString getBeanType() override;
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean) override;
     /*public*/ void vetoableChange(PropertyChangeEvent* evt)  throw (PropertyVetoException) override;
 
 signals:

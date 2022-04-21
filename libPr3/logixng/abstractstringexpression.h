@@ -19,6 +19,8 @@ class AbstractStringExpression : public AbstractBase, public StringExpressionBea
   /*public*/  bool getTriggerOnChange()override;
   /*public*/  QString getNewSocketName();
 
+  QObject* bself() override {return (QObject*)this;}
+
  private:
   static Logger* log;
   /*private*/ Base* _parent = nullptr;

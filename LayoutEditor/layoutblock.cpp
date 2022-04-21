@@ -4562,21 +4562,21 @@ void RoutingSetSaveItemListener::actionPerformed(JActionEvent *)
 }
 
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> LayoutBlock::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *LayoutBlock::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         if (bean->equals(getBlock())) {
-            report.append(new NamedBeanUsageReport("LayoutBlockBlock"));  // NOI18N
+            report->append(new NamedBeanUsageReport("LayoutBlockBlock"));  // NOI18N
         }
         if (bean->equals(getMemory())) {
-            report.append(new NamedBeanUsageReport("LayoutBlockMemory"));  // NOI18N
+            report->append(new NamedBeanUsageReport("LayoutBlockMemory"));  // NOI18N
         }
         if (bean->equals(getOccupancySensor())) {
-            report.append(new NamedBeanUsageReport("LayoutBlockSensor"));  // NOI18N
+            report->append(new NamedBeanUsageReport("LayoutBlockSensor"));  // NOI18N
         }
         for (int i = 0; i < getNumberOfNeighbours(); i++) {
             if (bean->equals(getNeighbourAtIndex(i))) {
-                report.append(new NamedBeanUsageReport("LayoutBlockNeighbor", "Neighbor"));  // NOI18N
+                report->append(new NamedBeanUsageReport("LayoutBlockNeighbor", "Neighbor"));  // NOI18N
             }
         }
     }

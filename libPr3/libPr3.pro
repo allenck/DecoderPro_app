@@ -168,6 +168,25 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+ logixng/actionblock.cpp \
+ logixng/actionblockswing.cpp \
+ logixng/actionblockxml.cpp \
+ logixng/actionclock.cpp \
+ logixng/actionclockswing.cpp \
+ logixng/actionclockxml.cpp \
+ logixng/actionlistenonbeans.cpp \
+ logixng/actionlistenonbeansswing.cpp \
+ logixng/actionlistenonbeansxml.cpp \
+ logixng/actionlocalvariable.cpp \
+ logixng/actionlocalvariableswing.cpp \
+ logixng/actionlocalvariablexml.cpp \
+ logixng/actionsensorswing.cpp \
+ logixng/actionsensorxml.cpp \
+ logixng/digitalformulaxml.cpp \
+ logixng/holdswing.cpp \
+ logixng/ifthenelsexml.cpp \
+ logixng/listenonbeanstablemodel.cpp \
+ logixng/notxml.cpp \
  logixng/stringexpressionconstantswing.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1460,6 +1479,26 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+ logixng/actionblock.h \
+ logixng/actionblockswing.h \
+ logixng/actionblockxml.h \
+ logixng/actionclock.h \
+ logixng/actionclockswing.h \
+ logixng/actionclockxml.h \
+ logixng/actionlistenonbeans.h \
+ logixng/actionlistenonbeansswing.h \
+ logixng/actionlistenonbeansxml.h \
+ logixng/actionlocalvariable.h \
+ logixng/actionlocalvariableswing.h \
+ logixng/actionlocalvariablexml.h \
+ logixng/actionsensorswing.h \
+ logixng/actionsensorxml.h \
+ logixng/digitalformulaxml.h \
+ logixng/holdswing.h \
+ logixng/ifthenelsexml.h \
+ logixng/listenonbeanstablemodel.h \
+ logixng/namedbeantype.h \
+ logixng/notxml.h \
  logixng/stringexpressionconstantswing.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \

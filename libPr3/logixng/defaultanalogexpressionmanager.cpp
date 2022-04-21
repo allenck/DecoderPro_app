@@ -99,7 +99,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  MaleSocket *DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/MaleSocket* maleSocket) {
-        MaleAnalogExpressionSocket* bean = (MaleAnalogExpressionSocket*)(maleSocket->bself());
+        MaleAnalogExpressionSocket* bean = (DefaultMaleAnalogExpressionSocket*)(maleSocket->bself());
         MaleSocket* ms =  AbstractBaseManager::registerBean(/*maleSocket*/bean);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
         return /*bean*/maleSocket;
@@ -148,7 +148,7 @@
     //@Override
     /*public*/  void DefaultAnalogExpressionManager::deleteAnalogExpression(MaleAnalogExpressionSocket* x) {
         // delete the MaleAnalogExpressionSocket
-        AbstractBaseManager::deregister(x);
+        AbstractBaseManager::deregister((AbstractNamedBean*)x);
         x->NamedBean::dispose();
     }
 

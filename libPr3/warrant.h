@@ -133,7 +133,7 @@ public:
     /*public*/ uint hashCode()override;
     /*public*/QObject* self() override {return (QObject*)this;}
     QObject* pself() override{return (QObject*)this;}
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean) override;
 
 
 signals:

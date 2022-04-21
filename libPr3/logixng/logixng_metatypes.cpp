@@ -54,6 +54,19 @@
 #include "stringexpressionmemoryxml.h"
 #include "stringformulaxml.h"
 #include "expressionlightxml.h"
+#include "actionsensorxml.h"
+#include "actionsensorswing.h"
+#include "ifthenelsexml.h"
+#include "digitalformulaxml.h"
+#include "holdswing.h"
+#include "actionblockswing.h"
+#include "actionblockxml.h"
+#include "actionclockswing.h"
+#include "actionclockxml.h"
+#include "actionlistenonbeansswing.h"
+#include "actionlistenonbeansxml.h"
+#include "actionlocalvariablexml.h"
+#include "actionlocalvariableswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -88,6 +101,13 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<StringExpressionMemoryXml>("StringExpressionMemoryXml");
    qRegisterMetaType<StringFormulaXml>("StringFormulaXml");
    qRegisterMetaType<ExpressionLightXml>("ExpressionLightXml");
+   qRegisterMetaType<ActionSensorXml>("ActionSensorXml");
+   qRegisterMetaType<IfThenElseXml>("IfThenElseXml");
+   qRegisterMetaType<DigitalFormulaXml>("DigitalFormulaXml");
+   qRegisterMetaType<ActionBlockXml>("ActionBlockXml");
+   qRegisterMetaType<ActionClockXml>("qRegisterMetaType<Action");
+   qRegisterMetaType<ActionListenOnBeansXml>("ActionListenOnBeansXml");
+   qRegisterMetaType<ActionLocalVariableXml>("ActionLocalVariableXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -114,6 +134,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<NotSwing>("NotSwing");
    qRegisterMetaType<OrSwing>("OrSwing");
    qRegisterMetaType<TrueSwing>("TrueSwing");
+   qRegisterMetaType<HoldSwing>("HoldSwing");
 
    // AbstractDigitalActionSwing
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
@@ -121,6 +142,11 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<IfThenElseSwing>("IfThenElseSwing");
    qRegisterMetaType<ActionPositionableSwing>("ActionPositionableSwing");
    qRegisterMetaType<DigitalManySwing>("DigitalManySwing");
+   qRegisterMetaType<ActionSensorSwing>("ActionSensorSwing");
+   qRegisterMetaType<ActionBlockSwing>("ActionBlockSwing");
+   qRegisterMetaType<ActionClockSwing>("ActionClockSwing");
+   qRegisterMetaType<ActionListenOnBeansSwing>("ActionListenOnBeansSwing");
+   qRegisterMetaType<ActionLocalVariableSwing>("ActionLocalVariableSwing");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

@@ -405,8 +405,8 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ QList<NamedBeanUsageReport*> DefaultLogixNG::getUsageReport(NamedBean* bean) {
-    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+/*public*/ QList<NamedBeanUsageReport *> *DefaultLogixNG::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*>* report = new QList<NamedBeanUsageReport*>();
     if (bean != nullptr) {
         getUsageTree(0, bean, report, nullptr);
     }
@@ -415,7 +415,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void DefaultLogixNG::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport *> report, NamedBean* cdl) {
+/*public*/ void DefaultLogixNG::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl) {
     log->debug(tr("** %1 :: %2").arg(level).arg(/*this.getClass().getName()*/ metaObject()->className()));
 
     level++;
@@ -426,7 +426,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void DefaultLogixNG::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+/*public*/ void DefaultLogixNG::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl) {
 }
 
 /** {@inheritDoc} */

@@ -531,7 +531,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractMaleSocket::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+/*public*/ void AbstractMaleSocket::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl) {
     if (!(qobject_cast<AbstractMaleSocket*>(getObject()->bself()))) {
         log->debug(tr("*@ %1 :: %2").arg(level).arg(this->getLongDescription(QLocale())));
         _object->getUsageDetail(level, bean, report, cdl);
@@ -549,7 +549,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractMaleSocket::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+/*public*/ void AbstractMaleSocket::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
 }
 
 //@Override

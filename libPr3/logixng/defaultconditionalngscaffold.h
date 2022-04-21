@@ -13,7 +13,7 @@ class DefaultConditionalNGScaffold : public DefaultConditionalNG
   QObject* bself() override {return (QObject*)this;}
 
   QString getUserName() const override {return AbstractNamedBean::getUserName();}
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) override
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl) override
   {
    AbstractBase::getUsageDetail(level, bean, report, cdl);
   }

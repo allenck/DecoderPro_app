@@ -160,7 +160,7 @@ public:
     /*public*/ void setStraightSpeed(QString s)const  /*throw(JmriException)*/ override;
     QObject* self() override{return (QObject*)this;}
     QObject* pself() override{return (QObject*)this;}
-    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean)override;
     /*public*/ bool isCanFollow()override;
     /*public*/ Turnout* getLeadingTurnout()override;
     /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout)override;

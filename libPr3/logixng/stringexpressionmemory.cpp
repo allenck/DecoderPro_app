@@ -172,10 +172,10 @@
 }
 /** {@inheritDoc} */
 //@Override
-/*public*/   void StringExpressionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-    log->debug(tr("getUsageReport :: StringExpressionMemory: bean = %1, report = %2").arg(cdl->getDisplayName(), report.at(0)->usageBean->getDisplayName()));
+/*public*/   void StringExpressionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport *> *report, NamedBean* cdl) {
+    log->debug(tr("getUsageReport :: StringExpressionMemory: bean = %1, report = %2").arg(cdl->getDisplayName(), report->at(0)->usageBean->getDisplayName()));
     if (getMemory() != nullptr && bean->equals(getMemory()->getBean())) {
-        report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
+        report->append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
     }
 }
 
