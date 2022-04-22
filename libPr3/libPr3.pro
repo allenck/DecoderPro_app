@@ -1138,6 +1138,21 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/stringactionmemoryswing.cpp \
+    logixng/stringactionmemoryxml.cpp \
+    logixng/stringmanyswing.cpp \
+    logixng/stringmanyxml.cpp \
+    logixng/actionpositionablexml.cpp \
+    logixng/actionsignalhead.cpp \
+    logixng/actionsignalheadxml.cpp \
+    logixng/analogactionlightintensityxml.cpp \
+    logixng/analogexpressionanalogioxml.cpp \
+    logixng/analogexpressionconstantxml.cpp \
+    logixng/analogexpressionmemoryxml.cpp \
+    logixng/analogformulaxml.cpp \
+    logixng/defaultcsvnamedtablexml.cpp \
+    logixng/digitalbooleanmanyxml.cpp \
+    logixng/timesincemidnightxml.cpp \
     logixng/actionblock.cpp \
     logixng/actionblockswing.cpp \
     logixng/actionblockxml.cpp \
@@ -2562,6 +2577,21 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/stringactionmemoryswing.h \
+    logixng/stringactionmemoryxml.h \
+    logixng/stringmanyswing.h \
+    logixng/stringmanyxml.h \
+    logixng/actionpositionablexml.h \
+    logixng/actionsignalhead.h \
+    logixng/actionsignalheadxml.h \
+    logixng/analogactionlightintensityxml.h \
+    logixng/analogexpressionanalogioxml.h \
+    logixng/analogexpressionconstantxml.h \
+    logixng/analogexpressionmemoryxml.h \
+    logixng/analogformulaxml.h \
+    logixng/defaultcsvnamedtablexml.h \
+    logixng/digitalbooleanmanyxml.h \
+    logixng/timesincemidnightxml.h \
     logixng/actionblock.h \
     logixng/actionblockswing.h \
     logixng/actionblockxml.h \

@@ -7,7 +7,7 @@
 class DefaultDigitalActionManagerXml : public AbstractManagerXml
 {
  public:
-  explicit DefaultDigitalActionManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultDigitalActionManagerXml(QObject *parent = nullptr);
   ~DefaultDigitalActionManagerXml() {}
   DefaultDigitalActionManagerXml(const DefaultDigitalActionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;

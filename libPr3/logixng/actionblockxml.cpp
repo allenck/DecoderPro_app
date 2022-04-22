@@ -35,32 +35,33 @@
 
         QDomElement element = doc.createElement("ActionBlock");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.configurexml.ActionBlockXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1 = doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         NamedBeanHandle<Block*>* block = p->getBlock();
         if (block != nullptr) {
-            element.appendChild(doc.createElement("block").appendChild(doc.createTextNode(block->getName())));
+            element.appendChild(e1 = doc.createElement("block")); e1.appendChild(doc.createTextNode(block->getName()));
         }
 
-        element.appendChild(doc.createElement("addressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getAddressing()))));
-        element.appendChild(doc.createElement("reference").appendChild(doc.createTextNode(p->getReference())));
-        element.appendChild(doc.createElement("localVariable").appendChild(doc.createTextNode(p->getLocalVariable())));
-        element.appendChild(doc.createElement("formula").appendChild(doc.createTextNode(p->getFormula())));
+        element.appendChild(e1 = doc.createElement("addressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getAddressing())));
+        element.appendChild(e1 = doc.createElement("reference")); e1.appendChild(doc.createTextNode(p->getReference()));
+        element.appendChild(e1 = doc.createElement("localVariable")); e1.appendChild(doc.createTextNode(p->getLocalVariable()));
+        element.appendChild(e1 = doc.createElement("formula")); e1.appendChild(doc.createTextNode(p->getFormula()));
 
-        element.appendChild(doc.createElement("operationAddressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getOperationAddressing()))));
-        element.appendChild(doc.createElement("operationDirect").appendChild(doc.createTextNode(ActionBlock::DirectOperation::toString(p->getOperationDirect()))));
-        element.appendChild(doc.createElement("operationReference").appendChild(doc.createTextNode(p->getOperationReference())));
-        element.appendChild(doc.createElement("operationLocalVariable").appendChild(doc.createTextNode(p->getOperationLocalVariable())));
-        element.appendChild(doc.createElement("operationFormula").appendChild(doc.createTextNode(p->getOperationFormula())));
+        element.appendChild(e1 = doc.createElement("operationAddressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getOperationAddressing())));
+        element.appendChild(e1 = doc.createElement("operationDirect")); e1.appendChild(doc.createTextNode(ActionBlock::DirectOperation::toString(p->getOperationDirect())));
+        element.appendChild(e1 = doc.createElement("operationReference")); e1.appendChild(doc.createTextNode(p->getOperationReference()));
+        element.appendChild(e1 = doc.createElement("operationLocalVariable")); e1.appendChild(doc.createTextNode(p->getOperationLocalVariable()));
+        element.appendChild(e1 = doc.createElement("operationFormula")); e1.appendChild(doc.createTextNode(p->getOperationFormula()));
 
-        element.appendChild(doc.createElement("dataAddressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getDataAddressing()))));
-        element.appendChild(doc.createElement("dataReference").appendChild(doc.createTextNode(p->getDataReference())));
-        element.appendChild(doc.createElement("dataLocalVariable").appendChild(doc.createTextNode(p->getDataLocalVariable())));
-        element.appendChild(doc.createElement("dataFormula").appendChild(doc.createTextNode(p->getDataFormula())));
+        element.appendChild(e1 = doc.createElement("dataAddressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getDataAddressing())));
+        element.appendChild(e1 = doc.createElement("dataReference")); e1.appendChild(doc.createTextNode(p->getDataReference()));
+        element.appendChild(e1 = doc.createElement("dataLocalVariable")); e1.appendChild(doc.createTextNode(p->getDataLocalVariable()));
+        element.appendChild(e1 = doc.createElement("dataFormula")); e1.appendChild(doc.createTextNode(p->getDataFormula()));
 
-        element.appendChild(doc.createElement("blockValue").appendChild(doc.createTextNode(p->getBlockValue())));
+        element.appendChild(e1 = doc.createElement("blockValue")); e1.appendChild(doc.createTextNode(p->getBlockValue()));
 
         return element;
     }

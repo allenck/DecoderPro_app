@@ -28,14 +28,15 @@ IfThenElseXml::IfThenElseXml(QObject *parent) : AbstractNamedBeanManagerConfigXM
 
         QDomElement element = doc.createElement("IfThenElse");
         element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.IfThenElseXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         element.setAttribute("type", IfThenElse::Type::toString(p->getType()));
 
         QDomElement e2 = doc.createElement("IfSocket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(0)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(0)->getName()));
         MaleSocket* socket = p->getIfExpressionSocket()->getConnectedSocket();
         QString socketSystemName;
         if (socket != nullptr) {
@@ -44,12 +45,12 @@ IfThenElseXml::IfThenElseXml(QObject *parent) : AbstractNamedBeanManagerConfigXM
             socketSystemName = p->getIfExpressionSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 
         e2 = doc.createElement("ThenSocket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(1)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(1)->getName()));
         socket = p->getThenActionSocket()->getConnectedSocket();
         if (socket != nullptr) {
             socketSystemName = socket->getSystemName();
@@ -57,12 +58,12 @@ IfThenElseXml::IfThenElseXml(QObject *parent) : AbstractNamedBeanManagerConfigXM
             socketSystemName = p->getThenActionSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 
         e2 = doc.createElement("ElseSocket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(2)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(2)->getName()));
         socket = p->getElseActionSocket()->getConnectedSocket();
         if (socket != nullptr) {
             socketSystemName = socket->getSystemName();
@@ -70,7 +71,7 @@ IfThenElseXml::IfThenElseXml(QObject *parent) : AbstractNamedBeanManagerConfigXM
             socketSystemName = p->getElseActionSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 

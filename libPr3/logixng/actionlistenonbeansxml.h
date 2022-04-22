@@ -7,7 +7,7 @@ class ActionListenOnBeansXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit ActionListenOnBeansXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionListenOnBeansXml(QObject *parent = nullptr);
   ~ActionListenOnBeansXml() {}
   ActionListenOnBeansXml(const ActionListenOnBeansXml&) : AbstractNamedBeanManagerConfigXML() {}
    /*public*/  QDomElement store(QObject* o)override;

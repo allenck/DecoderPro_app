@@ -4,9 +4,10 @@
 #include "runtimeexception.h"
 #include "class.h"
 #include "defaultnamedtablemanager.h"
-#include "defaultnamedtablemanager.h"
 #include "instancemanager.h"
 #include "appsconfigurationmanager.h"
+#include "abstractnamedtable.h"
+
 
 /**
  * Provides the functionality for configuring DefaultNamedTableManager
@@ -34,7 +35,7 @@
     if (tm != nullptr) {
         if (tm->AbstractManager::getNamedBeanSet().isEmpty()) return QDomElement();
         for (NamedBean* nb: tm->AbstractManager::getNamedBeanSet()) {
-         NamedTable* table = (NamedTable*)nb->self();
+         NamedTable* table = (AbstractNamedTable*)nb->self();
             log->debug("table system name is " + table->getSystemName());  // NOI18N
             try {
                 QDomElement e = ConfigXmlManager::elementFromObject(table);

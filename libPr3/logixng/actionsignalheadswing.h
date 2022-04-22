@@ -7,13 +7,25 @@
 #include "beanselectpanel.h"
 #include "jcombobox.h"
 #include "abstractdigitalactionswing.h"
+#include "threadingutil.h"
 
+class ActionSignalHead;
 class ActionSignalHeadSwing : public AbstractDigitalActionSwing
 {
   Q_OBJECT
  public:
-  ActionSignalHeadSwing(QObject* parent = nullptr) : AbstractDigitalActionSwing(){}
+  Q_INVOKABLE ActionSignalHeadSwing(QObject* parent = nullptr) : AbstractDigitalActionSwing(){ setObjectName("ActionSignalHeadSwing");}
+  ~ActionSignalHeadSwing() {}
+  ActionSignalHeadSwing(const ActionSignalHeadSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  static /*final*/ int NUM_COLUMNS_TEXT_FIELDS;// = 20;
+  /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages);
+  /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*CheckForNull*/ QString userName)override;
+  /*public*/  void updateObject(/*@Nonnull*/ Base* object);
+  /*public*/  QString toString()override;
+  /*public*/  void dispose();
+
+  QObject* sself() override{return (QObject*)this;
+                           }
  private:
   /*private*/ JTabbedPane* _tabbedPaneSignalHead;
   /*private*/ BeanSelectPanel/*<SignalHead>*/* _signalHeadBeanPanel;
@@ -48,7 +60,36 @@ class ActionSignalHeadSwing : public AbstractDigitalActionSwing
   /*private*/ JTextField* _signalHeadAppearanceFormulaTextField;
 
   /*private*/ BeanSelectPanel/*<SignalHead>*/* _exampleSignalHeadBeanPanel;
+  /*private*/ void setGuiEnabledStates();
+  /*private*/ void setAppearanceComboBox(ActionSignalHead* action);
+  /*private*/ /*static*/ class SignalHeadAppearance {
 
+      /*private*/ int _state;
+      /*private*/ QString _name;
+ public:
+      //@Override
+      /*public*/  QString toString() {
+          return _name;
+      }
+   friend class ActionSignalHeadSwing;
+  };
+ protected:
+  /*protected*/ void createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) override;
+ friend class ActionSignalHeadSwing_run;
+};
+Q_DECLARE_METATYPE(ActionSignalHeadSwing)
+
+class ActionSignalHeadSwing_run : public ThreadAction
+{
+  Q_OBJECT
+  ActionSignalHeadSwing* act;
+  ActionSignalHead* action;
+ public:
+  ActionSignalHeadSwing_run(ActionSignalHead* action, ActionSignalHeadSwing* act ) {this->action =action, this->act = act;}
+  void run()
+  {
+   act->setAppearanceComboBox(action);
+  }
 };
 
 #endif // ACTIONSIGNALHEADSWING_H

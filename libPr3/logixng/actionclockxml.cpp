@@ -29,14 +29,15 @@
 
         QDomElement element = doc.createElement("ActionClock");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.configurexml.ActionClockXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1 =doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
-        element.appendChild(doc.createElement("clockState").appendChild(doc.createTextNode(ActionClock::ClockState::toString(p->getBeanState()))));
+        element.appendChild(e1 = doc.createElement("clockState")); e1.appendChild(doc.createTextNode(ActionClock::ClockState::toString(p->getBeanState())));
 
         if (p->getBeanState() == ActionClock::ClockState::SetClock) {
-            element.appendChild(doc.createElement("setTime").appendChild(doc.createTextNode(QString::number(p->getClockTime()))));
+            element.appendChild(e1 =doc.createElement("setTime")); e1.appendChild(doc.createTextNode(QString::number(p->getClockTime())));
         }
 
         return element;

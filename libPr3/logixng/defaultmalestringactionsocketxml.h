@@ -7,7 +7,7 @@ class DefaultMaleStringActionSocketXml : public AbstractMaleSocketXml
 {
   Q_OBJECT
  public:
-  explicit DefaultMaleStringActionSocketXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultMaleStringActionSocketXml(QObject *parent = nullptr);
   ~DefaultMaleStringActionSocketXml() {}
   DefaultMaleStringActionSocketXml(const DefaultMaleStringActionSocketXml&) : AbstractMaleSocketXml() {}
   /*public*/ QString getClassName() override;

@@ -29,24 +29,25 @@
 
         QDomElement element = doc.createElement("Module");
         element.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultModuleXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon((NamedBean*)p->AbstractBase::self(), element);
 
-        element.appendChild(doc.createElement("rootSocketType").appendChild(doc.createTextNode(p->getRootSocketType()->getName())));
+        element.appendChild(e1=doc.createElement("rootSocketType")); e1.appendChild(doc.createTextNode(p->getRootSocketType()->getName()));
 
         QDomElement elementParameters = doc.createElement("Parameters");
         for (Module::Parameter* data : p->getParameters()) {
             QDomElement elementParameter = doc.createElement("Parameter");
-            elementParameter.appendChild(doc.createElement("name").appendChild(doc.createTextNode(data->getName())));
-            elementParameter.appendChild(doc.createElement("isInput").appendChild(doc.createTextNode(data->isInput() ? "yes" : "no")));
-            elementParameter.appendChild(doc.createElement("isOutput").appendChild(doc.createTextNode(data->isOutput() ? "yes" : "no")));
+            elementParameter.appendChild(e1=doc.createElement("name")); e1.appendChild(doc.createTextNode(data->getName()));
+            elementParameter.appendChild(e1=doc.createElement("isInput")); e1.appendChild(doc.createTextNode(data->isInput() ? "yes" : "no"));
+            elementParameter.appendChild(e1=doc.createElement("isOutput")); e1.appendChild(doc.createTextNode(data->isOutput() ? "yes" : "no"));
             elementParameters.appendChild(elementParameter);
         }
         element.appendChild(elementParameters);
 
         QDomElement e2 = doc.createElement("RootSocket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->AbstractBase::getChild(0)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->AbstractBase::getChild(0)->getName()));
         MaleSocket* socket = p->getRootSocket()->getConnectedSocket();
         QString socketSystemName;
         if (socket != nullptr) {
@@ -55,7 +56,7 @@
             socketSystemName = p->getSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 

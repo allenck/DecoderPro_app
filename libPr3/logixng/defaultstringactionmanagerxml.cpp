@@ -33,13 +33,16 @@
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleStringActionSocket* action = (MaleStringActionSocket*)nb->self();
+             //MaleStringActionSocket* action = (DefaultMaleStringActionSocket*)nb->self();
+             AbstractStringAction* action = (AbstractStringAction*)nb->self();
                 log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
 //                log.error("action system name is " + action.getSystemName() + ", " + action.getLongDescription());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleStringActionSocket* a = (DefaultMaleStringActionSocket*)((AbstractStringAction*)action)->getParent()->bself();
+                    Base* p = action->getParent();
+                    //MaleStringActionSocket* a = (DefaultMaleStringActionSocket*)((AbstractStringAction*)action)->getParent()->bself();
+                   MaleStringActionSocket* a = (DefaultMaleStringActionSocket*)p->bself();
                     while (!(static_cast<DefaultMaleStringActionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
                         a = (MaleStringActionSocket*) ((AbstractMaleSocket*)a->bself())->getObject()->bself();

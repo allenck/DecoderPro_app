@@ -7,7 +7,7 @@ class ActionClockXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit ActionClockXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionClockXml(QObject *parent = nullptr);
   ~ActionClockXml() {}
   ActionClockXml(const ActionClockXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o);

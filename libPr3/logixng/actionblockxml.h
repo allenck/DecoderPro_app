@@ -7,7 +7,7 @@ class ActionBlockXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit ActionBlockXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionBlockXml(QObject *parent = nullptr);
  ~ActionBlockXml() {}
   ActionBlockXml(const ActionBlockXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

@@ -7,7 +7,7 @@ class DefaultDigitalExpressionManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  explicit DefaultDigitalExpressionManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultDigitalExpressionManagerXml(QObject *parent = nullptr);
   ~DefaultDigitalExpressionManagerXml() {}
   DefaultDigitalExpressionManagerXml(const DefaultDigitalExpressionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;

@@ -7,10 +7,12 @@ class NotXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit NotXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit NotXml(QObject *parent = nullptr);
+  ~NotXml() {}
+  NotXml(const NotXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  bool load(QDomElement shared, QDomElement perNode)override;
 
 };
-
+Q_DECLARE_METATYPE(NotXml)
 #endif // NOTXML_H

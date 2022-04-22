@@ -7,7 +7,9 @@ class DefaultModuleManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  explicit DefaultModuleManagerXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultModuleManagerXml(QObject *parent = nullptr);
+  ~DefaultModuleManagerXml() {}
+  DefaultModuleManagerXml(const DefaultModuleManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement expressions);
   /*public*/  bool load(QDomElement sharedExpression, QDomElement perNodeExpression)override;
@@ -22,5 +24,5 @@ class DefaultModuleManagerXml : public AbstractManagerXml
   /*protected*/ void replaceExpressionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultModuleManagerXml)
 #endif // DEFAULTMODULEMANAGERXML_H

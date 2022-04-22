@@ -36,14 +36,15 @@
 
         QDomElement element = doc.createElement("AnalogMany");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.configurexml.AnalogManyXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         QDomElement e = doc.createElement("Actions");
         for (int i=0; i < p->getChildCount(); i++) {
             QDomElement e2 = doc.createElement("Socket");
-            e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(i)->getName())));
+            e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(i)->getName()));
             MaleSocket* socket = p->getChild(i)->getConnectedSocket();
             QString socketSystemName;
             if (socket != nullptr) {
@@ -52,7 +53,7 @@
                 socketSystemName = p->getActionSystemName(i);
             }
             if (socketSystemName != "") {
-                e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+                e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
             }
             e.appendChild(e2);
         }

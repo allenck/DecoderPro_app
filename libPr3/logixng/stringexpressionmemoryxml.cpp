@@ -29,13 +29,14 @@
 
         QDomElement element = doc.createElement("StringExpressionMemory");
         element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.StringExpressionMemoryXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         NamedBeanHandle<Memory*>* memory = p->getMemory();
         if (memory != nullptr) {
-            element.appendChild(doc.createElement("memory").appendChild(doc.createTextNode(memory->getName())));
+            element.appendChild(e1=doc.createElement("memory")); e1.appendChild(doc.createTextNode(memory->getName()));
         }
 
         return element;

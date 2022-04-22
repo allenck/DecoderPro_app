@@ -27,11 +27,12 @@
 
         QDomElement element = doc.createElement("StringExpressionConstant");
         element.setAttribute("class", "jmri.jmrit.logixng.espressions.configurexml.StringExpressionConstantXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
-        element.appendChild(doc.createElement("value").appendChild(doc.createTextNode(p->getValue())));
+        element.appendChild(e1=doc.createElement("value")); e1.appendChild(doc.createTextNode(p->getValue()));
 
         return element;
     }

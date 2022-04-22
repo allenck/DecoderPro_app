@@ -29,31 +29,32 @@
 
         QDomElement element = doc.createElement("TableForEach");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.configurexml.TableForEachXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->getSystemName()));
 
         storeCommon(p, element);
 
-        element.appendChild(doc.createElement("localVariable").appendChild(doc.createTextNode(p->getLocalVariableName())));
+        element.appendChild(e1=doc.createElement("localVariable")); e1.appendChild(doc.createTextNode(p->getLocalVariableName()));
 
         if (p->getTable() != nullptr) {
-            element.appendChild(doc.createElement("table").appendChild(doc.createTextNode(p->getTable()->getName())));
+            element.appendChild(doc.createElement("table")); e1.appendChild(doc.createTextNode(p->getTable()->getName()));
         }
 
-        element.appendChild(doc.createElement("tableAddressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getAddressing()))));
-        element.appendChild(doc.createElement("tableReference").appendChild(doc.createTextNode(p->getTableReference())));
-        element.appendChild(doc.createElement("tableLocalVariable").appendChild(doc.createTextNode(p->getTableLocalVariable())));
-        element.appendChild(doc.createElement("tableFormula").appendChild(doc.createTextNode(p->getTableFormula())));
+        element.appendChild(e1=doc.createElement("tableAddressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getAddressing())));
+        element.appendChild(e1=doc.createElement("tableReference")); e1.appendChild(doc.createTextNode(p->getTableReference()));
+        element.appendChild(e1=doc.createElement("tableLocalVariable")); e1.appendChild(doc.createTextNode(p->getTableLocalVariable()));
+        element.appendChild(e1=doc.createElement("tableFormula")); e1.appendChild(doc.createTextNode(p->getTableFormula()));
 
-        element.appendChild(doc.createElement("rowOrColumnAddressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString( p->getRowOrColumnAddressing()))));
-        element.appendChild(doc.createElement("rowOrColumnName").appendChild(doc.createTextNode(p->getRowOrColumnName())));
-        element.appendChild(doc.createElement("rowOrColumnReference").appendChild(doc.createTextNode(p->getRowOrColumnReference())));
-        element.appendChild(doc.createElement("rowOrColumnLocalVariable").appendChild(doc.createTextNode(p->getRowOrColumnLocalVariable())));
-        element.appendChild(doc.createElement("rowOrColumnFormula").appendChild(doc.createTextNode(p->getRowOrColumnFormula())));
+        element.appendChild(e1=doc.createElement("rowOrColumnAddressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString( p->getRowOrColumnAddressing())));
+        element.appendChild(e1=doc.createElement("rowOrColumnName")); e1.appendChild(doc.createTextNode(p->getRowOrColumnName()));
+        element.appendChild(e1=doc.createElement("rowOrColumnReference")); e1.appendChild(doc.createTextNode(p->getRowOrColumnReference()));
+        element.appendChild(e1=doc.createElement("rowOrColumnLocalVariable")); e1.appendChild(doc.createTextNode(p->getRowOrColumnLocalVariable()));
+        element.appendChild(e1=doc.createElement("rowOrColumnFormula")); e1.appendChild(doc.createTextNode(p->getRowOrColumnFormula()));
 
-        element.appendChild(doc.createElement("tableRowOrColumn").appendChild(doc.createTextNode(TableRowOrColumn::toString(p->getRowOrColumn()))));
+        element.appendChild(e1=doc.createElement("tableRowOrColumn")); e1.appendChild(doc.createTextNode(TableRowOrColumn::toString(p->getRowOrColumn())));
 
         QDomElement e2 = doc.createElement("Socket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(0)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(0)->getName()));
         MaleSocket* socket = p->getSocket()->getConnectedSocket();
         QString socketSystemName;
         if (socket != nullptr) {
@@ -62,7 +63,7 @@
             socketSystemName = p->getSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 

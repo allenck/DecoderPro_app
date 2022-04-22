@@ -31,14 +31,15 @@
 
         QDomElement element = doc.createElement("DigitalFormula");
         element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.DigitalFormulaXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createElement(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createElement(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         QDomElement e = doc.createElement("Expressions");
         for (int i=0; i < p->getChildCount(); i++) {
             QDomElement e2 = doc.createElement("Socket");
-            e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(i)->getName())));
+            e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(i)->getName()));
             MaleSocket* socket = p->getChild(i)->getConnectedSocket();
 
             QString socketSystemName;
@@ -51,17 +52,17 @@
                 socketManager = p->getExpressionManager(i);
             }
             if (socketSystemName != "") {
-                e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+                e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
             }
             if (socketManager != "") {
-                e2.appendChild(doc.createElement("manager").appendChild(doc.createTextNode(socketManager)));
+                e2.appendChild(e1=doc.createElement("manager")); e1.appendChild(doc.createTextNode(socketManager));
             }
             e.appendChild(e2);
         }
 
         element.appendChild(e);
 
-        element.appendChild(doc.createElement("formula").appendChild(doc.createTextNode(p->getFormula())));
+        element.appendChild(e1=doc.createElement("formula")); e1.appendChild(doc.createTextNode(p->getFormula()));
 
         return element;
     }

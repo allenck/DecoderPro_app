@@ -32,15 +32,16 @@
 
         QDomElement element = doc.createElement("ActionListenOnBeans");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.ActionListenOnBeansXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         QDomElement parameters = doc.createElement("References");
         for (ActionListenOnBeans::NamedBeanReference* ref : p->getReferences()) {
             QDomElement elementParameter = doc.createElement("Reference");
-            elementParameter.appendChild(doc.createElement("name").appendChild(doc.createTextNode(ref->getName())));
-            elementParameter.appendChild(doc.createElement("type").appendChild(doc.createTextNode(NamedBeanType::toString(ref->getType()))));
+            elementParameter.appendChild(e1=doc.createElement("name")); e1.appendChild(doc.createTextNode(ref->getName()));
+            elementParameter.appendChild(e1=doc.createElement("type")); e1.appendChild(doc.createTextNode(NamedBeanType::toString(ref->getType())));
             parameters.appendChild(elementParameter);
         }
         element.appendChild(parameters);

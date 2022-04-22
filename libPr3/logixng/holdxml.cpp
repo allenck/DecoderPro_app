@@ -27,12 +27,13 @@
 
         QDomElement element = doc.createElement("Hold");
         element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.HoldXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         QDomElement e2 = doc.createElement("TriggerSocket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(0)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(0)->getName()));
         MaleSocket* socket = p->getChild(0)->getConnectedSocket();
         QString socketSystemName;
         if (socket != nullptr) {
@@ -41,12 +42,12 @@
             socketSystemName = p->getTriggerExpressionSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 
         e2 = doc.createElement("HoldSocket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(1)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(1)->getName()));
         socket = p->getChild(1)->getConnectedSocket();
         if (socket != nullptr) {
             socketSystemName = socket->getSystemName();
@@ -54,7 +55,7 @@
             socketSystemName = p->getHoldActionSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createElement(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createElement(socketSystemName));
         }
         element.appendChild(e2);
 

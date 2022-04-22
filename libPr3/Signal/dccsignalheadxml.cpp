@@ -39,15 +39,15 @@
 
     QDomElement element = doc.createElement("signalhead");
     element.setAttribute("class", "jmri.implementation.configurexml.DccSignalHeadXml");
-
-    element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+    QDomElement e1;
+    element.appendChild(e1 = doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->getSystemName()));
 
     storeCommon(p, element);
 
     if (p->useAddressOffSet()) {
-        element.appendChild(doc.createElement("useAddressOffSet").appendChild(doc.createTextNode("yes")));
+        element.appendChild(e1 = doc.createElement("useAddressOffSet")); e1.appendChild(doc.createTextNode("yes"));
     } else {
-        element.appendChild(doc.createElement("useAddressOffSet").appendChild(doc.createTextNode("no")));
+        element.appendChild(e1 =doc.createElement("useAddressOffSet")); e1.appendChild(doc.createTextNode("no"));
     }
 
     for (int i = 0; i < p->getValidStates().length(); i++) {
@@ -55,7 +55,8 @@
         //String address = p.getOutputForAppearance(i);
         QDomElement el = doc.createElement("aspect");
         el.setAttribute("defines", aspect);
-        el.appendChild(doc.createElement("number").appendChild(doc.createTextNode(QString::number(p->getOutputForAppearance(p->getValidStates()[i])))));
+        QDomElement e1;
+        el.appendChild(e1 = doc.createElement("number")); e1.appendChild(doc.createTextNode(QString::number(p->getOutputForAppearance(p->getValidStates()[i]))));
         element.appendChild(el);
     }
 

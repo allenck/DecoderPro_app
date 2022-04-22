@@ -7,7 +7,7 @@ class DefaultAnalogExpressionManagerXml : public AbstractManagerXml
 {
   Q_OBJECT
  public:
-  DefaultAnalogExpressionManagerXml(QObject* parent = nullptr);
+  Q_INVOKABLE DefaultAnalogExpressionManagerXml(QObject* parent = nullptr);
   ~DefaultAnalogExpressionManagerXml() {}
   DefaultAnalogExpressionManagerXml(const DefaultAnalogExpressionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;

@@ -26,16 +26,17 @@
 
     QDomElement element = doc.createElement("Antecedent");
     element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.AntecedentXml");
-    element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+    QDomElement e1;
+    element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
     storeCommon((NamedBean*)p->bself(), element);
 
-    element.appendChild(doc.createElement("antecedent").appendChild(doc.createTextNode(p->getAntecedent())));
+    element.appendChild(e1=doc.createElement("antecedent")); e1.appendChild(doc.createTextNode(p->getAntecedent()));
 
     QDomElement e = doc.createElement("Expressions");
     for (int i=0; i < p->getChildCount(); i++) {
         QDomElement e2 = doc.createElement("Socket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(i)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(i)->getName()));
         MaleSocket* socket = p->getChild(i)->getConnectedSocket();
         QString socketSystemName;
         if (socket != nullptr) {
@@ -44,7 +45,7 @@
             socketSystemName = p->getExpressionSystemName(i);
         }
         if (socketSystemName != nullptr) {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         e.appendChild(e2);
     }

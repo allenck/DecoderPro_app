@@ -31,26 +31,33 @@ ActionLocalVariableXml::ActionLocalVariableXml(QObject *parent) : AbstractNamedB
 
         QDomElement element = doc.createElement("ActionLocalVariable");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.configurexml.ActionLocalVariableXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1 = doc.createElement("systemName"));
+        e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         QString variableName = p->getLocalVariable();
         if (variableName != "") {
-            element.appendChild(doc.createElement("variable").appendChild(doc.createTextNode(variableName)));
+            element.appendChild(e1 = doc.createElement("variable"));
+            e1.appendChild(doc.createTextNode(variableName));
         }
 
         NamedBeanHandle<Memory*>* memoryName = p->getMemory();
         if (memoryName != nullptr) {
-            element.appendChild(doc.createElement("memory").appendChild(doc.createTextNode(memoryName->getName())));
+            element.appendChild(e1= doc.createElement("memory"));
+            e1.appendChild(doc.createTextNode(memoryName->getName()));
         }
 
-        element.appendChild(doc.createElement("variableOperation").appendChild(doc.createTextNode(ActionLocalVariable::VariableOperation::toString(p->getVariableOperation()))));
+        element.appendChild(e1=doc.createElement("variableOperation"));
+          e1.appendChild(doc.createTextNode(ActionLocalVariable::VariableOperation::toString(p->getVariableOperation())));
 
-        element.appendChild(doc.createElement("constant").appendChild(doc.createTextNode(p->getConstantValue())));
-        element.appendChild(doc.createElement("otherTableCell").appendChild(doc.createTextNode(p->getOtherTableCell())));
-        element.appendChild(doc.createElement("otherVariable").appendChild(doc.createTextNode(p->getOtherLocalVariable())));
-        element.appendChild(doc.createElement("formula").appendChild(doc.createTextNode(p->getFormula())));
+        element.appendChild(e1=doc.createElement("constant"));
+        e1.appendChild(doc.createTextNode(p->getConstantValue()));
+        element.appendChild(e1=doc.createElement("otherTableCell"));
+        e1.appendChild(doc.createTextNode(p->getOtherTableCell()));
+        element.appendChild(e1=doc.createElement("otherVariable")); e1.appendChild(doc.createTextNode(p->getOtherLocalVariable()));
+        element.appendChild(e1=doc.createElement("formula")); e1.appendChild(doc.createTextNode(p->getFormula()));
 
         return element;
     }

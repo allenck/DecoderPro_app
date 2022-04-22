@@ -40,7 +40,8 @@
     QDomElement element = doc.createElement("signalhead");
     element.setAttribute("class", "jmri.implementation.configurexml.MergSD2SignalHeadml");
 
-    element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+    QDomElement e1;
+    element.appendChild(e1=doc.createElement("systemName"));e1.appendChild(doc.createTextNode(p->getSystemName()));
 
     element.setAttribute("aspects", p->getAspects());
     if (p->getFeather()) {

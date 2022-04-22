@@ -5,6 +5,7 @@
 #include "threadingutil.h"
 #include "base.h"
 #include "malesocket.h"
+#include "femalesocket.h"
 
 class File;
 class Logger;
@@ -43,5 +44,19 @@ class StoreAndLoadTest_run1 : public RunnableWithBase
    }
   }
 };
-
+#if 0
+class StoreAndLoadTest_run2 : public RunnableWithBase
+{
+  Q_OBJECT
+  StoreAndLoadTest* t;
+ public:
+  StoreAndLoadTest_run2(StoreAndLoadTest* t) {this->t = t;}
+  void run(Base* b)
+  {
+   if (qobject_cast<FemaleSocket*>(b->bself())) {
+       ((FemaleSocket*)b->bself())->setName(t->getRandomString(10));
+   }
+  }
+};
+#endif
 #endif // STOREANDLOADTEST_H

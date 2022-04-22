@@ -185,7 +185,9 @@
  */
 //@Override
 /*public*/  NamedTable* DefaultNamedTableManager::getByUserName(QString name) {
+ if(_tuser->value(name))
     return (NamedTable*)_tuser->value(name)->self();
+ return nullptr;
 }
 
 /**
@@ -193,7 +195,9 @@
  */
 //@Override
 /*public*/  NamedTable* DefaultNamedTableManager::getBySystemName(QString name) {
+ if(_tsys->value(name))
     return (NamedTable*)_tsys->value(name)->self();
+ return nullptr;
 }
 
 /**

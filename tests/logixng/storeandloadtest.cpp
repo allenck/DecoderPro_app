@@ -91,6 +91,10 @@
 #include "actionclock.h"
 #include "actionlistenonbeans.h"
 #include "actionlocalvariable.h"
+#include "actionsignalhead.h"
+#include "actionpositionable.h"
+#include "expressionsensor.h"
+#include "expressionlight.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -1084,91 +1088,91 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionSensor->setStateReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionSensor);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-#if 0
 
-        ActionSignalHead actionSignalHead = new ActionSignalHead(digitalActionManager->getAutoSystemName(), "");
+
+        ActionSignalHead* actionSignalHead = new ActionSignalHead(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionSignalHead);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalHead = new ActionSignalHead(digitalActionManager->getAutoSystemName(), "");
         actionSignalHead->AbstractNamedBean::setComment("A comment");
-        actionSignalHead.setSignalHead("IH1");
-        actionSignalHead.setAddressing(NamedBeanAddressing::Direct);
-        actionSignalHead.setFormula("\"IT\"+index");
-        actionSignalHead.setLocalVariable("index");
-        actionSignalHead.setReference("{IM1}");
-        actionSignalHead.setOperationAddressing(NamedBeanAddressing::LocalVariable);
-        actionSignalHead.setOperationFormula("\"IT\"+index2");
-        actionSignalHead.setOperationLocalVariable("index2");
-        actionSignalHead.setOperationReference("{IM2}");
-        actionSignalHead.setAppearanceAddressing(NamedBeanAddressing::Formula);
-        actionSignalHead.setAppearance(SignalHead.FLASHGREEN);
-        actionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        actionSignalHead.setAppearanceLocalVariable("index3");
-        actionSignalHead.setAppearanceReference("{IM3}");
-        actionSignalHead.setExampleSignalHead("IH2");
+        actionSignalHead->setSignalHead("IH1");
+        actionSignalHead->setAddressing(NamedBeanAddressing::Direct);
+        actionSignalHead->setFormula("\"IT\"+index");
+        actionSignalHead->setLocalVariable("index");
+        actionSignalHead->setReference("{IM1}");
+        actionSignalHead->setOperationAddressing(NamedBeanAddressing::LocalVariable);
+        actionSignalHead->setOperationFormula("\"IT\"+index2");
+        actionSignalHead->setOperationLocalVariable("index2");
+        actionSignalHead->setOperationReference("{IM2}");
+        actionSignalHead->setAppearanceAddressing(NamedBeanAddressing::Formula);
+        actionSignalHead->setAppearance(SignalHead::FLASHGREEN);
+        actionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        actionSignalHead->setAppearanceLocalVariable("index3");
+        actionSignalHead->setAppearanceReference("{IM3}");
+        actionSignalHead->setExampleSignalHead("IH2");
         maleSocket = digitalActionManager->registerAction(actionSignalHead);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalHead = new ActionSignalHead(digitalActionManager->getAutoSystemName(), "");
         actionSignalHead->AbstractNamedBean::setComment("A comment");
-        actionSignalHead.setSignalHead("IH1");
-        actionSignalHead.setAddressing(NamedBeanAddressing::LocalVariable);
-        actionSignalHead.setFormula("\"IT\"+index");
-        actionSignalHead.setLocalVariable("index");
-        actionSignalHead.setReference("{IM1}");
-        actionSignalHead.setOperationAddressing(NamedBeanAddressing::Formula);
-        actionSignalHead.setOperationFormula("\"IT\"+index2");
-        actionSignalHead.setOperationLocalVariable("index2");
-        actionSignalHead.setOperationReference("{IM2}");
-        actionSignalHead.setAppearanceAddressing(NamedBeanAddressing::Reference);
-        actionSignalHead.setAppearance(SignalHead.FLASHLUNAR);
-        actionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        actionSignalHead.setAppearanceLocalVariable("index3");
-        actionSignalHead.setAppearanceReference("{IM3}");
+        actionSignalHead->setSignalHead("IH1");
+        actionSignalHead->setAddressing(NamedBeanAddressing::LocalVariable);
+        actionSignalHead->setFormula("\"IT\"+index");
+        actionSignalHead->setLocalVariable("index");
+        actionSignalHead->setReference("{IM1}");
+        actionSignalHead->setOperationAddressing(NamedBeanAddressing::Formula);
+        actionSignalHead->setOperationFormula("\"IT\"+index2");
+        actionSignalHead->setOperationLocalVariable("index2");
+        actionSignalHead->setOperationReference("{IM2}");
+        actionSignalHead->setAppearanceAddressing(NamedBeanAddressing::Reference);
+        actionSignalHead->setAppearance(SignalHead::FLASHLUNAR);
+        actionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        actionSignalHead->setAppearanceLocalVariable("index3");
+        actionSignalHead->setAppearanceReference("{IM3}");
         maleSocket = digitalActionManager->registerAction(actionSignalHead);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalHead = new ActionSignalHead(digitalActionManager->getAutoSystemName(), "");
         actionSignalHead->AbstractNamedBean::setComment("A comment");
-        actionSignalHead.setSignalHead("IH1");
-        actionSignalHead.setAddressing(NamedBeanAddressing::Formula);
-        actionSignalHead.setFormula("\"IT\"+index");
-        actionSignalHead.setLocalVariable("index");
-        actionSignalHead.setReference("{IM1}");
-        actionSignalHead.setOperationAddressing(NamedBeanAddressing::Reference);
-        actionSignalHead.setOperationFormula("\"IT\"+index2");
-        actionSignalHead.setOperationLocalVariable("index2");
-        actionSignalHead.setOperationReference("{IM2}");
-        actionSignalHead.setAppearanceAddressing(NamedBeanAddressing::Direct);
-        actionSignalHead.setAppearance(SignalHead.FLASHRED);
-        actionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        actionSignalHead.setAppearanceLocalVariable("index3");
-        actionSignalHead.setAppearanceReference("{IM3}");
+        actionSignalHead->setSignalHead("IH1");
+        actionSignalHead->setAddressing(NamedBeanAddressing::Formula);
+        actionSignalHead->setFormula("\"IT\"+index");
+        actionSignalHead->setLocalVariable("index");
+        actionSignalHead->setReference("{IM1}");
+        actionSignalHead->setOperationAddressing(NamedBeanAddressing::Reference);
+        actionSignalHead->setOperationFormula("\"IT\"+index2");
+        actionSignalHead->setOperationLocalVariable("index2");
+        actionSignalHead->setOperationReference("{IM2}");
+        actionSignalHead->setAppearanceAddressing(NamedBeanAddressing::Direct);
+        actionSignalHead->setAppearance(SignalHead::FLASHRED);
+        actionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        actionSignalHead->setAppearanceLocalVariable("index3");
+        actionSignalHead->setAppearanceReference("{IM3}");
         maleSocket = digitalActionManager->registerAction(actionSignalHead);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalHead = new ActionSignalHead(digitalActionManager->getAutoSystemName(), "");
         actionSignalHead->AbstractNamedBean::setComment("A comment");
-        actionSignalHead.setSignalHead("IH1");
-        actionSignalHead.setAddressing(NamedBeanAddressing::Reference);
-        actionSignalHead.setFormula("\"IT\"+index");
-        actionSignalHead.setLocalVariable("index");
-        actionSignalHead.setReference("{IM1}");
-        actionSignalHead.setOperationAddressing(NamedBeanAddressing::Direct);
-        actionSignalHead.setOperationFormula("\"IT\"+index2");
-        actionSignalHead.setOperationLocalVariable("index2");
-        actionSignalHead.setOperationReference("{IM2}");
-        actionSignalHead.setAppearanceAddressing(NamedBeanAddressing::LocalVariable);
-        actionSignalHead.setAppearance(SignalHead.FLASHYELLOW);
-        actionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        actionSignalHead.setAppearanceLocalVariable("index3");
-        actionSignalHead.setAppearanceReference("{IM3}");
+        actionSignalHead->setSignalHead("IH1");
+        actionSignalHead->setAddressing(NamedBeanAddressing::Reference);
+        actionSignalHead->setFormula("\"IT\"+index");
+        actionSignalHead->setLocalVariable("index");
+        actionSignalHead->setReference("{IM1}");
+        actionSignalHead->setOperationAddressing(NamedBeanAddressing::Direct);
+        actionSignalHead->setOperationFormula("\"IT\"+index2");
+        actionSignalHead->setOperationLocalVariable("index2");
+        actionSignalHead->setOperationReference("{IM2}");
+        actionSignalHead->setAppearanceAddressing(NamedBeanAddressing::LocalVariable);
+        actionSignalHead->setAppearance(SignalHead::FLASHYELLOW);
+        actionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        actionSignalHead->setAppearanceLocalVariable("index3");
+        actionSignalHead->setAppearanceReference("{IM3}");
         maleSocket = digitalActionManager->registerAction(actionSignalHead);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         ActionSignalMast actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionSignalMast);
         maleSocket->setEnabled(false);
@@ -2389,78 +2393,78 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         expressionEntryExit.setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionEntryExit);
         _and->getChild(indexExpr++)->_connect(maleSocket);
+#endif
 
-
-        ExpressionLight expressionLight = new ExpressionLight(digitalExpressionManager->getAutoSystemName(), "");
+        ExpressionLight* expressionLight = new ExpressionLight(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionLight);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionLight = new ExpressionLight(digitalExpressionManager->getAutoSystemName(), "");
         expressionLight->AbstractNamedBean::setComment("A comment");
-        expressionLight.setLight(light1);
-        expressionLight.setBeanState(ExpressionLight.LightState.Off);
-        expressionLight.setAddressing(NamedBeanAddressing::Direct);
-        expressionLight.setFormula("\"IT\"+index");
-        expressionLight.setLocalVariable("index");
-        expressionLight.setReference("{IM1}");
-        expressionLight.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionLight.setStateAddressing(NamedBeanAddressing::LocalVariable);
-        expressionLight.setStateFormula("\"IT\"+index2");
-        expressionLight.setStateLocalVariable("index2");
-        expressionLight.setStateReference("{IM2}");
+        expressionLight->setLight(light1);
+        expressionLight->setBeanState(ExpressionLight::LightState::Off);
+        expressionLight->setAddressing(NamedBeanAddressing::Direct);
+        expressionLight->setFormula("\"IT\"+index");
+        expressionLight->setLocalVariable("index");
+        expressionLight->setReference("{IM1}");
+        expressionLight->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionLight->setStateAddressing(NamedBeanAddressing::LocalVariable);
+        expressionLight->setStateFormula("\"IT\"+index2");
+        expressionLight->setStateLocalVariable("index2");
+        expressionLight->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionLight);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionLight = new ExpressionLight(digitalExpressionManager->getAutoSystemName(), "");
         expressionLight->AbstractNamedBean::setComment("A comment");
-        expressionLight.setLight(light1);
-        expressionLight.setBeanState(ExpressionLight.LightState.On);
-        expressionLight.setAddressing(NamedBeanAddressing::LocalVariable);
-        expressionLight.setFormula("\"IT\"+index");
-        expressionLight.setLocalVariable("index");
-        expressionLight.setReference("{IM1}");
-        expressionLight.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionLight.setStateAddressing(NamedBeanAddressing::Formula);
-        expressionLight.setStateFormula("\"IT\"+index2");
-        expressionLight.setStateLocalVariable("index2");
-        expressionLight.setStateReference("{IM2}");
+        expressionLight->setLight(light1);
+        expressionLight->setBeanState(ExpressionLight::LightState::On);
+        expressionLight->setAddressing(NamedBeanAddressing::LocalVariable);
+        expressionLight->setFormula("\"IT\"+index");
+        expressionLight->setLocalVariable("index");
+        expressionLight->setReference("{IM1}");
+        expressionLight->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionLight->setStateAddressing(NamedBeanAddressing::Formula);
+        expressionLight->setStateFormula("\"IT\"+index2");
+        expressionLight->setStateLocalVariable("index2");
+        expressionLight->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionLight);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionLight = new ExpressionLight(digitalExpressionManager->getAutoSystemName(), "");
         expressionLight->AbstractNamedBean::setComment("A comment");
-        expressionLight.setLight(light1);
-        expressionLight.setBeanState(ExpressionLight.LightState.Other);
-        expressionLight.setAddressing(NamedBeanAddressing::Formula);
-        expressionLight.setFormula("\"IT\"+index");
-        expressionLight.setLocalVariable("index");
-        expressionLight.setReference("{IM1}");
-        expressionLight.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionLight.setStateAddressing(NamedBeanAddressing::Reference);
-        expressionLight.setStateFormula("\"IT\"+index2");
-        expressionLight.setStateLocalVariable("index2");
-        expressionLight.setStateReference("{IM2}");
+        expressionLight->setLight(light1);
+        expressionLight->setBeanState(ExpressionLight::LightState::Other);
+        expressionLight->setAddressing(NamedBeanAddressing::Formula);
+        expressionLight->setFormula("\"IT\"+index");
+        expressionLight->setLocalVariable("index");
+        expressionLight->setReference("{IM1}");
+        expressionLight->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionLight->setStateAddressing(NamedBeanAddressing::Reference);
+        expressionLight->setStateFormula("\"IT\"+index2");
+        expressionLight->setStateLocalVariable("index2");
+        expressionLight->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionLight);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionLight = new ExpressionLight(digitalExpressionManager->getAutoSystemName(), "");
         expressionLight->AbstractNamedBean::setComment("A comment");
-        expressionLight.setLight(light1);
-        expressionLight.setBeanState(ExpressionLight.LightState.Off);
-        expressionLight.setAddressing(NamedBeanAddressing::Reference);
-        expressionLight.setFormula("\"IT\"+index");
-        expressionLight.setLocalVariable("index");
-        expressionLight.setReference("{IM1}");
-        expressionLight.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionLight.setStateAddressing(NamedBeanAddressing::Direct);
-        expressionLight.setStateFormula("\"IT\"+index2");
-        expressionLight.setStateLocalVariable("index2");
-        expressionLight.setStateReference("{IM2}");
+        expressionLight->setLight(light1);
+        expressionLight->setBeanState(ExpressionLight::LightState::Off);
+        expressionLight->setAddressing(NamedBeanAddressing::Reference);
+        expressionLight->setFormula("\"IT\"+index");
+        expressionLight->setLocalVariable("index");
+        expressionLight->setReference("{IM1}");
+        expressionLight->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionLight->setStateAddressing(NamedBeanAddressing::Direct);
+        expressionLight->setStateFormula("\"IT\"+index2");
+        expressionLight->setStateLocalVariable("index2");
+        expressionLight->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionLight);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-
+#if 0
         ExpressionLocalVariable expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
         maleSocket->setEnabled(false);
@@ -2679,78 +2683,78 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         expressionScript.setUnregisterListenerScript("sensors.provideSensor(\"IS1\").removePropertyChangeListener(self)");
         maleSocket = digitalExpressionManager->registerExpression(expressionScript);
         _and->getChild(indexExpr++)->_connect(maleSocket);
+#endif
 
-
-        ExpressionSensor expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
+        ExpressionSensor* expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionSensor);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
         expressionSensor->AbstractNamedBean::setComment("A comment");
-        expressionSensor.setSensor(sensor1);
-        expressionSensor.setBeanState(ExpressionSensor.SensorState.Inactive);
-        expressionSensor.setAddressing(NamedBeanAddressing::Direct);
-        expressionSensor.setFormula("\"IT\"+index");
-        expressionSensor.setLocalVariable("index");
-        expressionSensor.setReference("{IM1}");
-        expressionSensor.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionSensor.setStateAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSensor.setStateFormula("\"IT\"+index2");
-        expressionSensor.setStateLocalVariable("index2");
-        expressionSensor.setStateReference("{IM2}");
+        expressionSensor->setSensor(sensor1);
+        expressionSensor->setBeanState(ExpressionSensor::SensorState::Inactive);
+        expressionSensor->setAddressing(NamedBeanAddressing::Direct);
+        expressionSensor->setFormula("\"IT\"+index");
+        expressionSensor->setLocalVariable("index");
+        expressionSensor->setReference("{IM1}");
+        expressionSensor->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionSensor->setStateAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSensor->setStateFormula("\"IT\"+index2");
+        expressionSensor->setStateLocalVariable("index2");
+        expressionSensor->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSensor);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
         expressionSensor->AbstractNamedBean::setComment("A comment");
-        expressionSensor.setSensor(sensor1);
-        expressionSensor.setBeanState(ExpressionSensor.SensorState.Inactive);
-        expressionSensor.setAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSensor.setFormula("\"IT\"+index");
-        expressionSensor.setLocalVariable("index");
-        expressionSensor.setReference("{IM1}");
-        expressionSensor.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionSensor.setStateAddressing(NamedBeanAddressing::Formula);
-        expressionSensor.setStateFormula("\"IT\"+index2");
-        expressionSensor.setStateLocalVariable("index2");
-        expressionSensor.setStateReference("{IM2}");
+        expressionSensor->setSensor(sensor1);
+        expressionSensor->setBeanState(ExpressionSensor::SensorState::Inactive);
+        expressionSensor->setAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSensor->setFormula("\"IT\"+index");
+        expressionSensor->setLocalVariable("index");
+        expressionSensor->setReference("{IM1}");
+        expressionSensor->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionSensor->setStateAddressing(NamedBeanAddressing::Formula);
+        expressionSensor->setStateFormula("\"IT\"+index2");
+        expressionSensor->setStateLocalVariable("index2");
+        expressionSensor->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSensor);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
         expressionSensor->AbstractNamedBean::setComment("A comment");
-        expressionSensor.setSensor(sensor1);
-        expressionSensor.setBeanState(ExpressionSensor.SensorState.Inactive);
-        expressionSensor.setAddressing(NamedBeanAddressing::Formula);
-        expressionSensor.setFormula("\"IT\"+index");
-        expressionSensor.setLocalVariable("index");
-        expressionSensor.setReference("{IM1}");
-        expressionSensor.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionSensor.setStateAddressing(NamedBeanAddressing::Reference);
-        expressionSensor.setStateFormula("\"IT\"+index2");
-        expressionSensor.setStateLocalVariable("index2");
-        expressionSensor.setStateReference("{IM2}");
+        expressionSensor->setSensor(sensor1);
+        expressionSensor->setBeanState(ExpressionSensor::SensorState::Inactive);
+        expressionSensor->setAddressing(NamedBeanAddressing::Formula);
+        expressionSensor->setFormula("\"IT\"+index");
+        expressionSensor->setLocalVariable("index");
+        expressionSensor->setReference("{IM1}");
+        expressionSensor->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionSensor->setStateAddressing(NamedBeanAddressing::Reference);
+        expressionSensor->setStateFormula("\"IT\"+index2");
+        expressionSensor->setStateLocalVariable("index2");
+        expressionSensor->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSensor);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
         expressionSensor->AbstractNamedBean::setComment("A comment");
-        expressionSensor.setSensor(sensor1);
-        expressionSensor.setBeanState(ExpressionSensor.SensorState.Inactive);
-        expressionSensor.setAddressing(NamedBeanAddressing::Reference);
-        expressionSensor.setFormula("\"IT\"+index");
-        expressionSensor.setLocalVariable("index");
-        expressionSensor.setReference("{IM1}");
-        expressionSensor.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionSensor.setStateAddressing(NamedBeanAddressing::Direct);
-        expressionSensor.setStateFormula("\"IT\"+index2");
-        expressionSensor.setStateLocalVariable("index2");
-        expressionSensor.setStateReference("{IM2}");
+        expressionSensor->setSensor(sensor1);
+        expressionSensor->setBeanState(ExpressionSensor::SensorState::Inactive);
+        expressionSensor->setAddressing(NamedBeanAddressing::Reference);
+        expressionSensor->setFormula("\"IT\"+index");
+        expressionSensor->setLocalVariable("index");
+        expressionSensor->setReference("{IM1}");
+        expressionSensor->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionSensor->setStateAddressing(NamedBeanAddressing::Direct);
+        expressionSensor->setStateFormula("\"IT\"+index2");
+        expressionSensor->setStateLocalVariable("index2");
+        expressionSensor->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSensor);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-
+#if 0
         ExpressionSignalHead expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         maleSocket->setEnabled(false);
@@ -3433,11 +3437,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         // Check that we can rename the female sockets and that the names
         // are stored in the panel file.
-        femaleRootSocket.forEntireTree((Base b) -> {
-            if (b instanceof FemaleSocket) {
-                ((FemaleSocket)b).setName(getRandomString(10));
-            }
-        });
+//        femaleRootSocket.forEntireTree((Base b) -> {
+//            if (b instanceof FemaleSocket) {
+//                ((FemaleSocket)b).setName(getRandomString(10));
+//            }
+//        });
 #endif
 
 /*

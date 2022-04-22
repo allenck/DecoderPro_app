@@ -29,27 +29,28 @@
 
         QDomElement element = doc.createElement("ExpressionTurnout");
         element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.ExpressionTurnoutXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         NamedBeanHandle<Turnout*>* turnout = p->getTurnout();
         if (turnout != nullptr) {
-            element.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(turnout->getName())));
+            element.appendChild(e1=doc.createElement("turnout")); e1.appendChild(doc.createTextNode(turnout->getName()));
         }
 
-        element.appendChild(doc.createElement("addressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getAddressing()))));
-        element.appendChild(doc.createElement("reference").appendChild(doc.createTextNode(p->getReference())));
-        element.appendChild(doc.createElement("localVariable").appendChild(doc.createTextNode(p->getLocalVariable())));
-        element.appendChild(doc.createElement("formula").appendChild(doc.createTextNode(p->getFormula())));
+        element.appendChild(e1=doc.createElement("addressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getAddressing())));
+        element.appendChild(e1=doc.createElement("reference")); e1.appendChild(doc.createTextNode(p->getReference()));
+        element.appendChild(e1=doc.createElement("localVariable")); e1.appendChild(doc.createTextNode(p->getLocalVariable()));
+        element.appendChild(e1=doc.createElement("formula")); e1.appendChild(doc.createTextNode(p->getFormula()));
 
-        element.appendChild(doc.createElement("is_isNot").appendChild(doc.createTextNode(Is_IsNot_Enum::toString(p->get_Is_IsNot()))));
+        element.appendChild(e1=doc.createElement("is_isNot")); e1.appendChild(doc.createTextNode(Is_IsNot_Enum::toString(p->get_Is_IsNot())));
 
-        element.appendChild(doc.createElement("stateAddressing").appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getStateAddressing()))));
-        element.appendChild(doc.createElement("turnoutState").appendChild(doc.createTextNode(ExpressionTurnout::TurnoutState::toString(p->getBeanState()))));
-        element.appendChild(doc.createElement("stateReference").appendChild(doc.createTextNode(p->getStateReference())));
-        element.appendChild(doc.createElement("stateLocalVariable").appendChild(doc.createTextNode(p->getStateLocalVariable())));
-        element.appendChild(doc.createElement("stateFormula").appendChild(doc.createTextNode(p->getStateFormula())));
+        element.appendChild(e1=doc.createElement("stateAddressing")); e1.appendChild(doc.createTextNode(NamedBeanAddressing::toString(p->getStateAddressing())));
+        element.appendChild(e1=doc.createElement("turnoutState")); e1.appendChild(doc.createTextNode(ExpressionTurnout::TurnoutState::toString(p->getBeanState())));
+        element.appendChild(e1=doc.createElement("stateReference")); e1.appendChild(doc.createTextNode(p->getStateReference()));
+        element.appendChild(e1=doc.createElement("stateLocalVariable")); e1.appendChild(doc.createTextNode(p->getStateLocalVariable()));
+        element.appendChild(e1=doc.createElement("stateFormula")); e1.appendChild(doc.createTextNode(p->getStateFormula()));
 
         return element;
     }

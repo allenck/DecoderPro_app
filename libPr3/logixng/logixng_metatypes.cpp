@@ -67,6 +67,23 @@
 #include "actionlistenonbeansxml.h"
 #include "actionlocalvariablexml.h"
 #include "actionlocalvariableswing.h"
+#include "defaultcsvnamedtablexml.h"
+#include "antecedentxml.h"
+#include "defaultmodulemanagerxml.h"
+#include "notxml.h"
+#include "actionsignalheadswing.h"
+#include "analogexpressionconstantxml.h"
+#include "analogexpressionanalogioxml.h"
+#include "analogformulaxml.h"
+#include "analogexpressionmemoryxml.h"
+#include "actionsignalheadxml.h"
+#include "analogactionlightintensityxml.h"
+#include "digitalbooleanmanyxml.h"
+#include "actionpositionablexml.h"
+#include "stringactionmemoryxml.h"
+#include "stringactionmemoryswing.h"
+#include "stringmanyxml.h"
+#include "stringmanyswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -108,6 +125,21 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionClockXml>("qRegisterMetaType<Action");
    qRegisterMetaType<ActionListenOnBeansXml>("ActionListenOnBeansXml");
    qRegisterMetaType<ActionLocalVariableXml>("ActionLocalVariableXml");
+   qRegisterMetaType<DefaultCsvNamedTableXml>("DefaultCsvNamedTableXml");
+   qRegisterMetaType<AntecedentXml>("AntecedentXml");
+   qRegisterMetaType<DefaultModuleManagerXml>("DefaultModuleManagerXml");
+   qRegisterMetaType<NotXml>("NotXml");
+   qRegisterMetaType<AnalogExpressionConstantXml*>("AnalogExpressionConstantXml");
+   qRegisterMetaType<AnalogExpressionAnalogIOXml>("AnalogExpressionAnalogIOXml");
+   qRegisterMetaType<AnalogFormulaXml>("AnalogFormulaXml");
+   qRegisterMetaType<AnalogExpressionMemoryXml>("AnalogExpressionMemoryXml");
+   qRegisterMetaType<ActionSignalHeadXml>("ActionSignalHeadXml");
+   qRegisterMetaType<AnalogActionLightIntensityXml>("AnalogActionLightIntensityXml");
+   qRegisterMetaType<DigitalBooleanManyXml>("DigitalBooleanManyXml");
+   qRegisterMetaType<ActionPositionableXml>("ActionPositionableXml");
+   qRegisterMetaType<StringActionMemoryXml>("StringActionMemoryXml");
+   qRegisterMetaType<StringManyXml>("StringManyXml");
+
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -120,6 +152,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<AnalogManySwing>("AnalogManySwing");
    qRegisterMetaType<AnalogActionMemorySwing>("AnalogActionMemorySwing");
    qRegisterMetaType<AnalogActionLightIntensitySwing>("AnalogActionLightIntensitySwing");
+   qRegisterMetaType<StringActionMemorySwing>("StringActionMemorySwing");
+   qRegisterMetaType<StringManySwing>("StringManySwing");
 
    // AbstractBooleanActionSwing classes
    qRegisterMetaType<DigitalBooleanManySwing>("DigitalBooleanManySwing");
@@ -147,6 +181,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionClockSwing>("ActionClockSwing");
    qRegisterMetaType<ActionListenOnBeansSwing>("ActionListenOnBeansSwing");
    qRegisterMetaType<ActionLocalVariableSwing>("ActionLocalVariableSwing");
+   qRegisterMetaType<ActionSignalHeadSwing>("ActionSignalHeadSwing");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

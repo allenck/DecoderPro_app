@@ -28,12 +28,13 @@ NotXml::NotXml(QObject *parent) : AbstractNamedBeanManagerConfigXML(parent)
 
         QDomElement element = doc.createElement("Not");
         element.setAttribute("class", "jmri.jmrit.logixng.expressions.configurexml.NotXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+        QDomElement e1;
+        element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);
 
         QDomElement e2 = doc.createElement("Socket");
-        e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(p->getChild(0)->getName())));
+        e2.appendChild(e1=doc.createElement("socketName")); e1.appendChild(doc.createTextNode(p->getChild(0)->getName()));
         MaleSocket* socket = p->getChild(0)->getConnectedSocket();
         QString socketSystemName;
         if (socket != nullptr) {
@@ -42,7 +43,7 @@ NotXml::NotXml(QObject *parent) : AbstractNamedBeanManagerConfigXML(parent)
             socketSystemName = p->getSocketSystemName();
         }
         if (socketSystemName != "") {
-            e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+            e2.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(socketSystemName));
         }
         element.appendChild(e2);
 

@@ -26,7 +26,8 @@
 
     QDomElement element = doc.createElement("True");
     element.setAttribute("class", ".jmri.jmrit.logixng.expressions.configurexml.TrueXml");
-    element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
+    QDomElement e1;
+    element.appendChild(e1 = doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
     storeCommon((NamedBean*)p->bself(), element);
 
