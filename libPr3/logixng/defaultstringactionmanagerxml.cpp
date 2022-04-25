@@ -1,7 +1,7 @@
 #include "defaultstringactionmanagerxml.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
-#include "stringactionmanager.h"
+#include "defaultstringactionmanager.h"
 #include "runtimeexception.h"
 #include "malestringactionsocket.h"
 #include "defaultmalestringactionsocket.h"
@@ -16,7 +16,9 @@
 ///*public*/  class DefaultStringActionManagerXml extends AbstractManagerXml {
 
 
-    /*public*/  DefaultStringActionManagerXml::DefaultStringActionManagerXml(QObject *parent) : AbstractManagerXml(parent) {
+    /*public*/  DefaultStringActionManagerXml::DefaultStringActionManagerXml(QObject *parent)
+     : AbstractManagerXml(parent) {
+     setObjectName("DefaultStringActionManagerXml");
     }
 
     /**
@@ -131,11 +133,11 @@
                     try {
                         AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket* oldLastItem = ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* oldLastItem = ((DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager"))->getLastRegisteredMaleSocket();
                         o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket* newLastItem = ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* newLastItem = ((DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager"))->getLastRegisteredMaleSocket();
                         if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
                         else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
                     } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {

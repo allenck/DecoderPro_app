@@ -35,10 +35,17 @@
 
     /*public*/  void LastResultOfDigitalExpression::setDigitalExpression(/*@Nonnull*/ QString digitalExpressionName) {
         assertListenersAreNotRegistered(log, "setDigitalExpression");
-        DigitalExpressionBean* digitalExpression = (DigitalExpressionBean*)((DefaultDigitalExpressionManager*)
-                InstanceManager::getDefault("DigitalExpressionManager"))
-                        ->getNamedBean(digitalExpressionName)->self();
+//        DigitalExpressionBean* digitalExpression = (DigitalExpressionBean*)((DefaultDigitalExpressionManager*)
+//                InstanceManager::getDefault("DigitalExpressionManager"))
+//                        ->getNamedBean(digitalExpressionName)->self();
+        DigitalExpressionBean* digitalExpression = nullptr;
+        NamedBean* nb = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))
+          ->getNamedBean(digitalExpressionName);
+        if(nb)
+          digitalExpression = (DigitalExpressionBean*)nb->self();
+
         if (digitalExpression != nullptr) {
+     //        DigitalExpressionBean* digitalExpression = (DigitalExpressionBean*)
             // We need the male socket, not the expression itself
             if (!(qobject_cast<MaleSocket*>(digitalExpression->self()))) {
                 digitalExpression = (DigitalExpressionBean*)digitalExpression->getParent()->bself();

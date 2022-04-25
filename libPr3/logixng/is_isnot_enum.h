@@ -28,7 +28,7 @@
         return tr("IsNot");
     }
 
-    static VAL get(QString s)
+    static VAL valueOf(QString s)
     {
      if(s==tr("Is")) return Is;
      if(s== tr("IsNot")) return IsNot;

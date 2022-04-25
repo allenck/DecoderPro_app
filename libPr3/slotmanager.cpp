@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "timerutil.h"
 #include "loconetexception.h"
+#include "abstractpowermanager.h"
 
 /*final static protected*/ int SlotManager::NUM_SLOTS = 128;
 /*static*/ /*public*/ int SlotManager::postProgDelay = 100; // this is public to allow changes via script
@@ -1241,7 +1242,7 @@ void SlotManager::doEndOfProgramming()
   if (log->isDebugEnabled()) log->debug("timeout: turn power on");
   try
   {
-   static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->setPower(PowerManager::ON);
+   ((AbstractPowerManager*)InstanceManager::getDefault("PowerManager"))->setPower(PowerManager::ON);
   }
   catch (std::exception& e)
   {

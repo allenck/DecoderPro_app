@@ -13,9 +13,10 @@
  */
 // /*public*/ class DefaultPowerManager implements PowerManager {
 
-/*public*/ DefaultPowerManager::DefaultPowerManager(InternalSystemConnectionMemo *memo) : AbstractPowerManager(memo)
+/*public*/ DefaultPowerManager::DefaultPowerManager(InternalSystemConnectionMemo *memo, QObject* parent)
+ : AbstractPowerManager(memo, parent)
 {
-
+ setObjectName("DefaultPowerManager");
 }
 
 // to free resources when no longer used

@@ -119,6 +119,13 @@ void JPanel::paintEvent(QPaintEvent * evt)
   _layout = nullptr;
  }
 }
+
+/*public*/ QWidget* JPanel::getComponent(int index)
+{
+ QList<QWidget*> children = findChildren<QWidget*>();
+ return children.at(index);
+}
+
 /*public*/ QColor JPanel::getForeground()
 {
  return palette().color(QWidget::foregroundRole());

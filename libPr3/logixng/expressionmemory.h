@@ -24,37 +24,55 @@ class ExpressionMemory : public AbstractDigitalExpression, public PropertyChange
    public:
  enum TYPE {LessThan, LessThanOrEqual, Equal, GreaterThanOrEqual, GreaterThan, NotEqual, IsNull, IsNotNull, MatchRegex, NotMatchRegex};
 
-   /*private*/ /*final*/ QString _text;
-   /*private*/ /*final*/ bool _extraValue;
+//   /*private*/ /*final*/ QString _text;
+//   /*private*/ /*final*/ bool _extraValue;
 
-   /*private*/ MemoryOperation(QString text, bool extraValue) {
-       this->_text = text;
-       this->_extraValue = extraValue;
+//   /*private*/ MemoryOperation(QString text, bool extraValue) {
+//       this->_text = text;
+//       this->_extraValue = extraValue;
+//   }
+   /*public*/ static QList<TYPE> values()
+   {
+    return QList<TYPE>{LessThan, LessThanOrEqual, Equal, GreaterThanOrEqual, GreaterThan, NotEqual, IsNull, IsNotNull, MatchRegex, NotMatchRegex};
    }
 
    //@Override
    /*public*/ static QString toString(TYPE t) {
-  switch (t)
-  {
-   case LessThan: return tr("is less than");
-  case LessThanOrEqual: return tr("is less than or equal");
-  case Equal: return tr("is equal");
-  case GreaterThanOrEqual: return tr("is greater than or equal");
-  case GreaterThan: return tr("is greater than");
-  case NotEqual: return tr("is not equal");
-  case IsNull: return tr("is null");
-  case IsNotNull:return tr("is not null");
-  case MatchRegex: return tr("does match regular expression");
-  case NotMatchRegex:return tr("does not match regular expression");
-  default:
-   throw new IllegalArgumentException("Invalid type");
-  }
- }
-
-   /*public*/  bool hasExtraValue() {
-       return _extraValue;
+    switch (t)
+    {
+     case LessThan: return tr("is less than");
+     case LessThanOrEqual: return tr("is less than or equal");
+     case Equal: return tr("is equal");
+     case GreaterThanOrEqual: return tr("is greater than or equal");
+     case GreaterThan: return tr("is greater than");
+     case NotEqual: return tr("is not equal");
+     case IsNull: return tr("is null");
+     case IsNotNull:return tr("is not null");
+     case MatchRegex: return tr("does match regular expression");
+     case NotMatchRegex:return tr("does not match regular expression");
+    default:
+     throw new IllegalArgumentException("Invalid type");
+    }
    }
 
+   /*public*/  bool static hasExtraValue(TYPE t) {
+       if(t == IsNull || t == IsNotNull) return false;
+       return true;
+   }
+   /*public*/ static TYPE valueOf(QString s)
+   {
+    if(s== tr("is less than")) return LessThan;
+    if(s== tr("is less than or equal")) return LessThanOrEqual;
+    if(s== tr("is equal")) return Equal;
+    if(s== tr("is greater than or equal")) return GreaterThanOrEqual;
+    if(s== tr("is greater than")) return GreaterThan;
+    if(s== tr("is not equal")) return NotEqual;
+    if(s== tr("is null")) return IsNull;
+    if(s== tr("is not null")) return IsNotNull;
+    if(s== tr("does match regular expression")) return MatchRegex;
+    if(s== tr("does not match regular expression")) return MatchRegex;
+    throw new IllegalArgumentException();
+   }
 };
 
 
@@ -83,6 +101,14 @@ class ExpressionMemory : public AbstractDigitalExpression, public PropertyChange
       }
        throw new IllegalArgumentException("invalid compare type");
    }
+    /*public*/ static TYPE valueOf(QString s)
+    {
+     if(s == tr("Value")) return Value;
+     if(s == tr("Memory")) return Memory;
+     if(s == tr("Local variable")) return LocalVariable;
+     if(s == tr("Regular expression")) return RegEx;
+     throw new IllegalArgumentException();
+    }
 
 };
 

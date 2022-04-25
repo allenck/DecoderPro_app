@@ -13,6 +13,8 @@ public:
  /*public*/ void parseStatus(QString statusString) /*throw (JmriException)*/;
  /*public*/ void sendStatus(QString status) /*throw (IOException)*/;
 
+ QObject* pself() override {return (QObject*)this;}
+
 private:
  QTcpSocket* clientSocket;
  QDataStream* output = nullptr;

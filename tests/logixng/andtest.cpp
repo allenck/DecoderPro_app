@@ -194,7 +194,7 @@ AndTest::AndTest(QObject *parent) : AbstractDigitalExpressionTestBase(parent)
     // Test action when at least one child socket is not connected.
     // This should never happen, but test it anyway.
     //@Test
-    /*public*/  void testCtorAndSetup2() {
+    /*public*/  void AndTest::testCtorAndSetup2() {
      DigitalExpressionManager* m = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
 
         QList<MaleSocket*> maleSockets = QList<MaleSocket*> ();

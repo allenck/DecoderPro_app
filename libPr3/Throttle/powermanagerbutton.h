@@ -3,6 +3,7 @@
 
 #include <QToolButton>
 #include "loggerfactory.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class NamedIcon;
@@ -25,6 +26,7 @@ public slots:
     void init();
 private:
     void common(bool fullText);
+    /*private*/ /*final*/ PropertyChangeListener* listener;
     /*private*/ PowerPane* powerControl;// = new PowerPane();
     /*private*/ PowerManager* powerMgr;// = NULL;
     /*private*/ bool fullText;// = false;
@@ -37,6 +39,23 @@ protected:
  /*protected*/ void setPowerIcons();
 friend class SmallPowerManagerButton;
 friend class LargePowerManagerButton;
+friend class PowerManagerButton_PropertyChangeListener;
+};
+class PowerManagerButton_PropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  PowerManagerButton* pwmb;
+ public:
+  PowerManagerButton_PropertyChangeListener(PowerManagerButton* pwmb) {this->pwmb = pwmb;}
+
+  QObject* pself() override {return (QObject*)this;}
+
+ public slots:
+  void propertyChange(PropertyChangeEvent* evt)
+  {
+   pwmb->setPowerIcons();
+  }
+
 };
 
 #endif // POWERMANAGERBUTTON_H

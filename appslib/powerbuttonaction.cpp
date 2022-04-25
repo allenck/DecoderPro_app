@@ -39,7 +39,8 @@ void PowerButtonAction::checkManager()
  {
         //((PowerManager*)InstanceManager::getDefault("PowerManager").addPropertyChangeListener(this);
    AbstractPowerManager* mgr = (AbstractPowerManager*)InstanceManager::getDefault("PowerManager");
-   connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   //connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   mgr->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 }
 

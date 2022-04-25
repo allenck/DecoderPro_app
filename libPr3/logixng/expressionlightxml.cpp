@@ -88,7 +88,7 @@
 
             QDomElement is_IsNot = shared.firstChildElement("is_isNot");
             if (!is_IsNot.isNull()) {
-                h->set_Is_IsNot(Is_IsNot_Enum::get(is_IsNot.text().trimmed()));
+                h->set_Is_IsNot(Is_IsNot_Enum::valueOf(is_IsNot.text().trimmed()));
             }
 
 

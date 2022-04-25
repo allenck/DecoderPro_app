@@ -3,6 +3,7 @@
 #include "abstractmanager.h"
 #include "memorymanager.h"
 #include "exceptions.h"
+#include "vetoablechangesupport.h"
 
 class LIBPR3SHARED_EXPORT AbstractMemoryManager : public AbstractManager, public MemoryManager
 {

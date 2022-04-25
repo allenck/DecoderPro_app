@@ -6,9 +6,10 @@
 class SwingPropertyChangeSupport;
 class DefaultPowerManager : public AbstractPowerManager
 {
+  Q_OBJECT
 public:
- DefaultPowerManager(InternalSystemConnectionMemo* memo);
- /*public*/ void dispose();
+ DefaultPowerManager(InternalSystemConnectionMemo* memo, QObject* parent=nullptr);
+ /*public*/ void dispose()override;
 
 };
 

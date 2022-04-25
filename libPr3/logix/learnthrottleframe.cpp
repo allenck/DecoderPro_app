@@ -3,7 +3,7 @@
 #include "loconetthrottle.h"
 #include "../LayoutEditor/warrantframe.h"
 #include "instancemanager.h"
-#include "powermanager.h"
+#include "abstractpowermanager.h"
 #include "rosterentry.h"
 #include "powerpane.h"
 #include "logix/learncontrolpanel.h"
@@ -48,13 +48,13 @@
         //super(false, false);
         _warrantFrame = warrantFrame;
 
-        powerMgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
+        powerMgr = (AbstractPowerManager*)InstanceManager::getDefault("PowerManager");
         if (powerMgr == NULL) {
             log->info("No power manager instance found, panel not active");
         }
         else
-            //powerMgr.addPropertyChangeListener(this);
-            connect(powerMgr, SIGNAL(), this, SLOT());
+            powerMgr->addPropertyChangeListener(this);
+            //connect(powerMgr, SIGNAL(), this, SLOT());
 //        initGUI();
         setVisible(true);
     }

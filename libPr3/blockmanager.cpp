@@ -2,7 +2,7 @@
 #include "instancemanager.h"
 #include "sensormanager.h"
 #include "reportermanager.h"
-#include "powermanager.h"
+#include "abstractpowermanager.h"
 #include "vptr.h"
 #include "nosuchmethoderror.h"
 #include "rosterentry.h"
@@ -309,7 +309,7 @@ QCompleter* BlockManager::getCompleter(QString text)
     AbstractManager::propertyChange(e);
     if (PowerManager::POWER == (e->getPropertyName())) {
         try {
-            PowerManager* pm = (PowerManager*) e->getSource();
+            PowerManager* pm = (AbstractPowerManager*) e->getSource();
             if (pm->getPower() == PowerManager::ON) {
                 lastTimeLayoutPowerOn = /*Instant::now()*/ QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
             }
@@ -324,12 +324,12 @@ QCompleter* BlockManager::getCompleter(QString text)
     if (powerManagerChangeName == (e->getPropertyName())) {
         if (e->getNewValue() == QVariant()) {
             // powermanager has been removed
-            PowerManager* pm = VPtr<PowerManager>::asPtr( e->getOldValue());
+            PowerManager* pm = VPtr<AbstractPowerManager>::asPtr( e->getOldValue());
             pm->removePropertyChangeListener((PropertyChangeListener*)this);
             //disconnect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         } else {
             // a powermanager has been added
-         PowerManager* pm = VPtr<PowerManager>::asPtr( e->getOldValue());
+         PowerManager* pm = VPtr<AbstractPowerManager>::asPtr( e->getOldValue());
          if(pm)
             pm->addPropertyChangeListener((PropertyChangeListener*)this);
          //connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

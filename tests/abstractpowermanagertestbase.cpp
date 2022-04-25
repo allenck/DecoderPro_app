@@ -29,7 +29,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     // test creation - real work is in the setup() routine
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testCreate() {
-       Assert::assertNotNull("Power Manager Created",p, __FILE__, __LINE__);
+       Assert::assertNotNull("Power Manager Created",(QObject*)p, __FILE__, __LINE__);
     }
 
     // test setting power on, off, then getting reply from system

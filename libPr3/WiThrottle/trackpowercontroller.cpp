@@ -96,14 +96,14 @@
 
 //@Override
 /*public*/ void TrackPowerController::_register() {
-    //pwrMgr.addPropertyChangeListener(this);
- connect(pwrMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    pwrMgr->addPropertyChangeListener(this);
+ //connect(pwrMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //@Override
 /*public*/ void TrackPowerController::deregister() {
-    //pwrMgr.removePropertyChangeListener(this);
- disconnect(pwrMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+    pwrMgr->removePropertyChangeListener(this);
+ //disconnect(pwrMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
 }
 
 /*private*/ /*final*/ /*static*/ Logger* TrackPowerController::log = LoggerFactory::getLogger("TrackPowerController");

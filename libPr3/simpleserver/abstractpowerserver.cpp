@@ -1,6 +1,6 @@
 #include "abstractpowerserver.h"
 #include "loggerfactory.h"
-#include "powermanager.h"
+#include "abstractpowermanager.h"
 #include "instancemanager.h"
 #include "propertychangeevent.h"
 #include "jmriexception.h"
@@ -34,7 +34,7 @@
 {
  if (p == nullptr)
  {
-  p = static_cast<PowerManager*>(InstanceManager::getNullableDefault("PowerManager"));
+  p = qobject_cast<AbstractPowerManager*>(InstanceManager::getNullableDefault("PowerManager"));
   if (p == nullptr)
   {
       log->error("No power manager instance found");
@@ -46,8 +46,8 @@
       return false;
   }
   else {
-      //p.addPropertyChangeListener(this);
-   connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   p->addPropertyChangeListener(this);
+   //connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
  return true;
@@ -105,8 +105,8 @@
 
 /*public*/ void AbstractPowerServer::dispose() {
     if (p != nullptr) {
-//        p.removePropertyChangeListener(this);
-     connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    p->removePropertyChangeListener(this);
+//     connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 }
 

@@ -194,7 +194,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
  {
      log->debug("Create DefaultPowerManager by request");
      PowerManager* powerManager = new DefaultPowerManager(this);
-     InstanceManager::store(powerManager, "PowerManager");
+     InstanceManager::store((QObject*)powerManager, "PowerManager");
      return (DefaultPowerManager*)powerManager;
  }
  return (DefaultPowerManager*)pm;

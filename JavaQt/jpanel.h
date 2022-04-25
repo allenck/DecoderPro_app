@@ -33,6 +33,7 @@ public:
  /*public*/ void setEnabled(bool b ) override {QWidget::setEnabled(b);}
 
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* pl);
+ /*public*/ QWidget* getComponent(int index);
 
 private:
  Border* border = nullptr;

@@ -92,7 +92,7 @@ void PowerPane::setStatus()
    else if (listening->getPower()==PowerManager::UNKNOWN) onOffStatus->setText(tr("Unknown"));
    else {
      onOffStatus->setText(tr("Unknown"));
-     log->error("Unexpected state value: +"+selectMenu->getManager()->getPower());
+     log->error("Unexpected state value: +"+QString::number(selectMenu->getManager()->getPower()));
  }
         } catch (JmriException* ex) {
                 onOffStatus->setText(tr("Unknown"));
@@ -101,7 +101,7 @@ void PowerPane::setStatus()
 }
 
 void PowerPane::managerChanged() {
-    if (listening!=NULL) listening->removePropertyChangeListener((PropertyChangeListener*)this);
+    if (listening!=NULL) listening->removePropertyChangeListener(this);
 //    if(listening) disconnect(listening, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     listening = NULL;
@@ -120,7 +120,7 @@ void PowerPane::managerChanged() {
   }
   else
   {
-   listening->addPropertyChangeListener((PropertyChangeListener*)this);
+   listening->addPropertyChangeListener(this);
 //   AbstractPowerManager* mgr = (AbstractPowerManager*)listening;
 //   connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }

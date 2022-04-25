@@ -13,6 +13,7 @@
 #include "simpleserver/simplesignalheadserver.h"
 #include "simpleserver/simplereporterserver.h"
 #include "jmriexception.h"
+#include "abstractpowermanager.h"
 
 /**
  * This is an implementation of a simple server for JMRI. There is currently no
@@ -313,7 +314,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
         if (cmd.startsWith("POWER")) {
             try {
                 powerServer->parseStatus(cmd);
-                powerServer->sendStatus(static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->getPower());
+                powerServer->sendStatus(qobject_cast<AbstractPowerManager*>(InstanceManager::getDefault("PowerManager"))->getPower());
             } catch (JmriException* je) {
                 //outStream.writeBytes("not supported\n");
           powerServer->sendStatus("not supported");

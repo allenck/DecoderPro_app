@@ -15,6 +15,18 @@ class ClipboardMany : public AbstractBase, public FemaleSocketListener
 public:
   QObject* bself() override {return (QObject*)this;}
   QObject* self() override {return (QObject*)this;}
+  /*public*/ /*static*/ class ItemData {
+   public:
+      /*public*/ /*final*/ QString _systemName;
+      /*public*/ /*final*/ QString _className;
+      /*public*/ /*final*/ QString _socketName;
+
+      /*public*/ ItemData(QString socketName, QString systemName, QString className) {
+          _systemName = systemName;
+          _className = className;
+          _socketName = socketName;
+      }
+  };
 
  private:
   /*private*/ /*static*/ class ItemEntry {
@@ -34,18 +46,6 @@ public:
    friend class ClipboardMany;
   };
 
-  /*public*/ /*static*/ class ItemData {
-   public:
-      /*public*/ /*final*/ QString _systemName;
-      /*public*/ /*final*/ QString _className;
-      /*public*/ /*final*/ QString _socketName;
-
-      /*public*/ ItemData(QString socketName, QString systemName, QString className) {
-          _systemName = systemName;
-          _className = className;
-          _socketName = socketName;
-      }
-  };
 
  public:
   /*public*/ ClipboardMany(QString sys, QString user, QObject *parent = nullptr)

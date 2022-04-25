@@ -17,7 +17,7 @@
 /*public*/ JMRIClientPowerManager::JMRIClientPowerManager(JMRIClientSystemConnectionMemo* memo, QObject* parent) {
     // connect to the TrafficManager
  // to hear of changes
- pcs = new SwingPropertyChangeSupport(this, nullptr);
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
 
     this->memo = memo;
     tc = this->memo->getJMRIClientTrafficController();

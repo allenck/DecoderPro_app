@@ -200,7 +200,8 @@ void RosterFrame::common()
  if(pmgr != NULL)
  {
   AbstractPowerManager* apm = (AbstractPowerManager*)pmgr;
-  connect(apm->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(apm->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  apm->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
   if(pmgr->getPower()== PowerManager::ON)
   {

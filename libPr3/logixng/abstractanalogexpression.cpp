@@ -3,6 +3,7 @@
 #include "instancemanager.h"
 #include "analogexpressionmanager.h"
 #include "runtimeexception.h"
+#include "defaultanalogexpressionmanager.h"
 
 /**
  *
@@ -17,7 +18,7 @@
         //super(sys, user);
 
         // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->validSystemNameFormat(mSystemName);
+        Manager::NameValidity isNameValid = ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->validSystemNameFormat(mSystemName);
         if (isNameValid != Manager::NameValidity::VALID) {
             throw new IllegalArgumentException("system name is not valid");
         }

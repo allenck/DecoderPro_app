@@ -1,7 +1,7 @@
 #include "powermanagermenu.h"
 #include <QButtonGroup>
 #include "instancemanager.h"
-
+#include "abstractpowermanager.h"
 //PowerManagerMenu::PowerManagerMenu(QWidget *parent) :
 //    QMenu(parent)
 //{
@@ -43,7 +43,7 @@
  {
   foreach (QObject* obj, *managers)
   {
-   PowerManager* mgr = (PowerManager*) obj;
+   PowerManager* mgr = (AbstractPowerManager*) obj;
    if (mgr != NULL)
    {
     QAction* item = new QAction(mgr->getUserName(),this);
@@ -66,7 +66,7 @@
 void PowerManagerMenu::setDefault()
 {
  // name of default
- PowerManager* manager = (PowerManager*)InstanceManager::getNullableDefault("PowerManager");
+ PowerManager* manager = (AbstractPowerManager*)InstanceManager::getNullableDefault("PowerManager");
  if (manager == NULL) return;
  QString defaultMgr = manager->getUserName();
  if (defaultMgr == NULL) return;
@@ -83,7 +83,7 @@ void PowerManagerMenu::setDefault()
 /*public*/ PowerManager* PowerManagerMenu::getManager()
 {
  // start with default
- PowerManager* manager = (PowerManager*)InstanceManager::getNullableDefault("PowerManager");
+ PowerManager* manager = (AbstractPowerManager*)InstanceManager::getNullableDefault("PowerManager");
  if (manager == NULL) return NULL;
  QString name = manager->getUserName();
 
@@ -100,7 +100,7 @@ void PowerManagerMenu::setDefault()
  QObjectList* managers = InstanceManager::getList("PowerManager");
  foreach (QObject* obj, *managers)
  {
-  PowerManager* mgr = (PowerManager*) obj;
+  PowerManager* mgr = (AbstractPowerManager*) obj;
   if (name==(mgr->getUserName())) return mgr;
  }
  // should not happen

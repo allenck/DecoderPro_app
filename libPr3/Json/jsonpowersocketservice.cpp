@@ -23,9 +23,9 @@
 {
  if (!this->listening)
  {
-//        ((PowerManager*)InstanceManager::getDefault("PowerManager"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
-  AbstractPowerManager* pm = (AbstractPowerManager*)InstanceManager::getOptionalDefault("PowerManager");
-  connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  ((AbstractPowerManager*)InstanceManager::getDefault("PowerManager"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+//  AbstractPowerManager* pm = (AbstractPowerManager*)InstanceManager::getOptionalDefault("PowerManager");
+//  connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   this->listening = true;
  }
@@ -58,6 +58,7 @@
  {
        //pm.removePropertyChangeListener(JsonPowerSocketService.this);
   PowerManager* pm = (PowerManager*)InstanceManager::getOptionalDefault("PowerManager");
-  disconnect(pm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(pm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  pm->removePropertyChangeListener(this);
     }//);
 }

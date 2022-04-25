@@ -2,7 +2,7 @@
 #include "ui_specialport.h"
 #include "lnconstants.h"
 #include "instancemanager.h"
-#include "powermanager.h"
+#include "abstractpowermanager.h"
 
 SpecialPort::SpecialPort(LocoIOData* data, int port, LnTrafficController* tc, QWidget *parent) :
     QWidget(parent),
@@ -62,7 +62,7 @@ SpecialPort::SpecialPort(LocoIOData* data, int port, LnTrafficController* tc, QW
   break;
  case 4:
   ui->lblOutput->setText("S\nT\nA\nT\nU\nS\n");
-  switch( static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->getPower())
+  switch( ((AbstractPowerManager*)InstanceManager::getDefault("PowerManager"))->getPower())
   {
   case PowerManager::ON:
    ui->lblOutput->setStyleSheet("QLabel { background-color : green; color : black; }");

@@ -168,6 +168,23 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+ logixng/actionpower.cpp \
+ logixng/actionpowerswing.cpp \
+ logixng/actionpowerxml.cpp \
+ logixng/clipboardmanyxml.cpp \
+ logixng/expressionlocalvariable.cpp \
+ logixng/expressionlocalvariableswing.cpp \
+ logixng/expressionlocalvariablexml.cpp \
+ logixng/expressionmemoryswing.cpp \
+ logixng/expressionmemoryxml.cpp \
+ logixng/expressionpower.cpp \
+ logixng/expressionpowerswing.cpp \
+ logixng/expressionpowerxml.cpp \
+ logixng/expressionsignalhead.cpp \
+ logixng/expressionsignalheadswing.cpp \
+ logixng/expressionsignalheadxml.cpp \
+ logixng/lastresultofdigitalexpressionswing.cpp \
+ logixng/lastresultofdigitalexpressionxml.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1494,6 +1511,23 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+ logixng/actionpower.h \
+ logixng/actionpowerswing.h \
+ logixng/actionpowerxml.h \
+ logixng/clipboardmanyxml.h \
+ logixng/expressionlocalvariable.h \
+ logixng/expressionlocalvariableswing.h \
+ logixng/expressionlocalvariablexml.h \
+ logixng/expressionmemoryswing.h \
+ logixng/expressionmemoryxml.h \
+ logixng/expressionpower.h \
+ logixng/expressionpowerswing.h \
+ logixng/expressionpowerxml.h \
+ logixng/expressionsignalhead.h \
+ logixng/expressionsignalheadswing.h \
+ logixng/expressionsignalheadxml.h \
+ logixng/lastresultofdigitalexpressionswing.h \
+ logixng/lastresultofdigitalexpressionxml.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \

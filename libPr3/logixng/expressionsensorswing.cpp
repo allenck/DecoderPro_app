@@ -225,7 +225,7 @@
             throw new IllegalArgumentException("_tabbedPaneSensor has unknown selection");
         }
 
-        expression->set_Is_IsNot(Is_IsNot_Enum::get(_is_IsNot_ComboBox->getSelectedItem()));
+        expression->set_Is_IsNot(Is_IsNot_Enum::valueOf(_is_IsNot_ComboBox->getSelectedItem()));
 
         if (_tabbedPaneSensorState->getSelectedComponent() == _panelSensorStateDirect) {
             expression->setStateAddressing(NamedBeanAddressing::Direct);

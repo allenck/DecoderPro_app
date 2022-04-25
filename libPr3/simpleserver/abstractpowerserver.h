@@ -3,13 +3,15 @@
 
 #include <QObject>
 #include "exceptions.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class PowerManager;
 class Logger;
-class AbstractPowerServer : public QObject
+class AbstractPowerServer : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit AbstractPowerServer(QObject *parent = nullptr);
  /*public*/ void setOnStatus();

@@ -84,6 +84,20 @@
 #include "stringactionmemoryswing.h"
 #include "stringmanyxml.h"
 #include "stringmanyswing.h"
+#include "clipboardmanyxml.h"
+#include "lastresultofdigitalexpressionswing.h"
+#include "lastresultofdigitalexpressionxml.h"
+#include "expressionsignalheadxml.h"
+#include "expressionsignalheadswing.h"
+#include "expressionlocalvariablexml.h"
+#include "expressionlocalvariableswing.h"
+#include "expressionmemoryxml.h"
+#include "expressionmemoryswing.h"
+#include "actionpowerswing.h"
+#include "actionpowerxml.h"
+#include "expressionpowerswing.h"
+#include "expressionpowerxml.h"
+
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -139,6 +153,13 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionPositionableXml>("ActionPositionableXml");
    qRegisterMetaType<StringActionMemoryXml>("StringActionMemoryXml");
    qRegisterMetaType<StringManyXml>("StringManyXml");
+   qRegisterMetaType<ClipboardManyXml>("ClipboardManyXml");
+   qRegisterMetaType<LastResultOfDigitalExpressionXml>("LastResultOfDigitalExpressionXml");
+   qRegisterMetaType<ExpressionSignalHeadXml>("ExpressionSignalHeadXml");
+   qRegisterMetaType<ExpressionLocalVariableXml>("ExpressionLocalVariableXml");
+   qRegisterMetaType<ExpressionMemoryXml>("ExpressionMemoryXml");
+   qRegisterMetaType<ActionPowerXml>("ActionPowerXml");
+   qRegisterMetaType<ExpressionPowerXml>("ExpressionPowerXml");
 
 
    // AbstractAnalogExpressionSwing
@@ -169,6 +190,11 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<OrSwing>("OrSwing");
    qRegisterMetaType<TrueSwing>("TrueSwing");
    qRegisterMetaType<HoldSwing>("HoldSwing");
+   qRegisterMetaType<LastResultOfDigitalExpressionSwing>("LastResultOfDigitalExpressionSwing");
+   qRegisterMetaType<ExpressionSignalHeadSwing>("ExpressionSignalHeadSwing");
+   qRegisterMetaType<ExpressionMemorySwing>("ExpressionMemorySwing");
+   qRegisterMetaType<ExpressionLocalVariableSwing>("ExpressionLocalVariableSwing");
+   qRegisterMetaType<ExpressionPowerSwing>("ExpressionPowerSwing");
 
    // AbstractDigitalActionSwing
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
@@ -182,6 +208,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionListenOnBeansSwing>("ActionListenOnBeansSwing");
    qRegisterMetaType<ActionLocalVariableSwing>("ActionLocalVariableSwing");
    qRegisterMetaType<ActionSignalHeadSwing>("ActionSignalHeadSwing");
+   qRegisterMetaType<ActionPowerSwing>("ActionPowerSwing");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

@@ -10,6 +10,7 @@
 #include "box.h"
 #include "windowlistener.h"
 #include "warrantframe.h"
+#include "propertychangelistener.h"
 
 class LearnSpeedPanel;
 class PowerPane;
@@ -19,9 +20,10 @@ class ButtonFrame;
 class PowerManager;
 class WarrantFrame;
 class DccThrottle;
-class LearnThrottleFrame : public JmriJFrame
+class LearnThrottleFrame : public JmriJFrame, PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LearnThrottleFrame(QWidget *parent = 0);
     static int STRUT_SIZE;// = 10;
@@ -41,7 +43,9 @@ public:
    #endif
     /*public*/ void notifyThrottleFound(DccThrottle* t);
     /*public*/ void dispose() override;
-    /*pulic*/ QString getClassName() {return "LearnThrottleFrame";}
+    /*public*/ QString getClassName() {return "LearnThrottleFrame";}
+
+    QObject* pself() override {return (QObject*)this;}
 
  public slots:
 

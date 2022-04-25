@@ -27,7 +27,8 @@ void PowerManagerButton::common(bool fullText)
  powerControl = new PowerPane();
  powerMgr = NULL;
  this->fullText = fullText;
- powerMgr = (PowerManager*)InstanceManager::getNullableDefault("PowerManager");
+ this->listener = new PowerManagerButton_PropertyChangeListener(this);
+ powerMgr = (AbstractPowerManager*)InstanceManager::getNullableDefault("PowerManager");
  if (powerMgr == NULL)
  {
   log->info("No power manager instance found, panel not active");
@@ -35,9 +36,9 @@ void PowerManagerButton::common(bool fullText)
  }
  else
  {
-   //powerMgr.addPropertyChangeListener(this);
-  AbstractPowerManager* apm = (AbstractPowerManager*)powerMgr;
-   connect(apm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   powerMgr->addPropertyChangeListener(this->listener);
+//  AbstractPowerManager* apm = (AbstractPowerManager*)powerMgr;
+//   connect(apm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  //loadIcons(); // can't do this here
  QTimer::singleShot(10,this, SLOT(init()));
@@ -90,8 +91,8 @@ void PowerManagerButton::OnClicked()
 {
  if (powerMgr != NULL)
  {
-  //powerMgr.removePropertyChangeListener(this);
-  disconnect(powerMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  powerMgr->removePropertyChangeListener(this->listener);
+  //disconnect(powerMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 

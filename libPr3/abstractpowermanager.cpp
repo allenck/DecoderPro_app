@@ -3,27 +3,50 @@
 #include <QString>
 #include <QStringList>
 AbstractPowerManager::AbstractPowerManager(SystemConnectionMemo * memo, QObject *parent) :
-    PowerManager(parent)
+    SwingPropertyChangeSupport(this, parent)
 {
- pcs = new SwingPropertyChangeSupport(this, nullptr);
- this->userName = memo->getUserName();
+// pcs = new SwingPropertyChangeSupport(this, nullptr);
+ //this->userName = memo->getUserName();
+ this->memo = memo;
+ TimeKeeper* tk = new TimeKeeper(this);
+ this->SwingPropertyChangeSupport::addPropertyChangeListener(tk);
 }
 //public AbstractPowerManager(jmri.jmrix.SystemConnectionMemo memo) {
 //		this.userName = memo.getUserName();
 //	}
-QString AbstractPowerManager::getUserName() { return userName; }
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ int AbstractPowerManager::getPower() {
+        return power;
+    }
 
-// to hear of changes
-/*public synchronized*/
-void AbstractPowerManager::addPropertyChangeListener(PropertyChangeListener* l)
-{
- QMutexLocker locker(&mutex);
- pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
-}
-void AbstractPowerManager::firePropertyChange(QString p, QVariant old, QVariant n)
-{  pcs->firePropertyChange(p,old,n);}
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ void AbstractPowerManager::setPower(int state)  {
+        int old = power;
+        power = state;
+        firePowerPropertyChange(old, power);
+    }
 
-void AbstractPowerManager::removePropertyChangeListener(PropertyChangeListener* l)
-{
- pcs->removePropertyChangeListener(l);
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ /*final*/ QString AbstractPowerManager::getUserName() {
+        return memo->getUserName();
+    }
+
+/**
+ * Fires a {@link java.beans.PropertyChangeEvent} for the power state using
+ * both property names "power" and "Power".
+ *
+ * @param old the old power state
+ * @param current the new power state
+ */
+//@SuppressWarnings("deprecation")
+/*protected*/ /*final*/ void AbstractPowerManager::firePowerPropertyChange(int old, int current) {
+    SwingPropertyChangeSupport::firePropertyChange(POWER, old, current);
+    SwingPropertyChangeSupport::firePropertyChange(POWER_OPN, old, current);
 }

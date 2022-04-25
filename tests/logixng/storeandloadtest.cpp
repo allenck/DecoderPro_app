@@ -95,6 +95,12 @@
 #include "actionpositionable.h"
 #include "expressionsensor.h"
 #include "expressionlight.h"
+#include "lastresultofdigitalexpression.h"
+#include "expressionsignalhead.h"
+#include "expressionmemory.h"
+#include "expressionlocalvariable.h"
+#include "actionpower.h"
+#include "expressionpower.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -943,25 +949,25 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ShowDialogBox);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
-        ActionPower actionPower = new ActionPower(digitalActionManager->getAutoSystemName(), "");
+#endif
+        ActionPower* actionPower = new ActionPower(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionPower);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionPower = new ActionPower(digitalActionManager->getAutoSystemName(), "");
         actionPower->AbstractNamedBean::setComment("A comment");
-        actionPower.setBeanState(ActionPower.PowerState.Off);
+        actionPower->setBeanState(ActionPower::PowerState::Off);
         maleSocket = digitalActionManager->registerAction(actionPower);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionPower = new ActionPower(digitalActionManager->getAutoSystemName(), "");
         actionPower->AbstractNamedBean::setComment("A comment");
-        actionPower.setBeanState(ActionPower.PowerState.On);
+        actionPower->setBeanState(ActionPower::PowerState::On);
         maleSocket = digitalActionManager->registerAction(actionPower);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         ActionScript simpleScript = new ActionScript(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(simpleScript);
         maleSocket->setEnabled(false);
@@ -2464,99 +2470,99 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionLight);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
+#if 1
+        ExpressionLocalVariable* expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
+        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
+        maleSocket->setEnabled(false);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
+        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
+        expressionLocalVariable->setConstantValue("10");
+        expressionLocalVariable->setCaseInsensitive(true);
+        expressionLocalVariable->setCompareTo(ExpressionLocalVariable::CompareTo::Value);
+        expressionLocalVariable->setVariableOperation(ExpressionLocalVariable::VariableOperation::GreaterThan);
+        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
+        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
+        expressionLocalVariable->setLocalVariable("MyVar");
+        expressionLocalVariable->setMemory(memory2);
+        expressionLocalVariable->setCaseInsensitive(false);
+        expressionLocalVariable->setCompareTo(ExpressionLocalVariable::CompareTo::Memory);
+        expressionLocalVariable->setVariableOperation(ExpressionLocalVariable::VariableOperation::LessThan);
+        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
+        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
+        expressionLocalVariable->setLocalVariable("MyVar");
+        expressionLocalVariable->setMemory(memory2);
+        expressionLocalVariable->setOtherLocalVariable("MyOtherVar");
+        expressionLocalVariable->setCaseInsensitive(false);
+        expressionLocalVariable->setCompareTo(ExpressionLocalVariable::CompareTo::LocalVariable);
+        expressionLocalVariable->setVariableOperation(ExpressionLocalVariable::VariableOperation::LessThan);
+        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
+        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
+        expressionLocalVariable->setLocalVariable("MyVar");
+        expressionLocalVariable->setRegEx("/^Test$/");
+        expressionLocalVariable->setMemory(memory2);
+        expressionLocalVariable->setCaseInsensitive(false);
+        expressionLocalVariable->setCompareTo(ExpressionLocalVariable::CompareTo::RegEx);
+        expressionLocalVariable->setVariableOperation(ExpressionLocalVariable::VariableOperation::LessThan);
+        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+#endif
+
+        ExpressionMemory* expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
+        expressionMemory->setMemoryOperation(ExpressionMemory::MemoryOperation::GreaterThan);
+        expressionMemory->setCompareTo(ExpressionMemory::CompareTo::Memory);
+        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
+        maleSocket->setEnabled(false);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
+        expressionMemory->AbstractNamedBean::setComment("A comment");
+        expressionMemory->setMemory(memory1);
+        expressionMemory->setConstantValue("10");
+        expressionMemory->setMemoryOperation(ExpressionMemory::MemoryOperation::LessThan);
+        expressionMemory->setCompareTo(ExpressionMemory::CompareTo::Value);
+        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
+        expressionMemory->AbstractNamedBean::setComment("A comment");
+        expressionMemory->setMemory(memory2);
+        expressionMemory->setOtherMemory(memory3);
+        expressionMemory->setMemoryOperation(ExpressionMemory::MemoryOperation::GreaterThan);
+        expressionMemory->setCompareTo(ExpressionMemory::CompareTo::Memory);
+        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
+        expressionMemory->AbstractNamedBean::setComment("A comment");
+        expressionMemory->setMemory(memory2);
+        expressionMemory->setOtherMemory(memory3);
+        expressionMemory->setLocalVariable("MyVar");
+        expressionMemory->setMemoryOperation(ExpressionMemory::MemoryOperation::GreaterThan);
+        expressionMemory->setCompareTo(ExpressionMemory::CompareTo::LocalVariable);
+        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
+
+        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
+        expressionMemory->AbstractNamedBean::setComment("A comment");
+        expressionMemory->setMemory(memory2);
+        expressionMemory->setOtherMemory(memory3);
+        expressionMemory->setRegEx("/^Hello$/");
+        expressionMemory->setMemoryOperation(ExpressionMemory::MemoryOperation::GreaterThan);
+        expressionMemory->setCompareTo(ExpressionMemory::CompareTo::RegEx);
+        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
+        _and->getChild(indexExpr++)->_connect(maleSocket);
 #if 0
-        ExpressionLocalVariable expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
-        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
-        maleSocket->setEnabled(false);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
-        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
-        expressionLocalVariable.setConstantValue("10");
-        expressionLocalVariable.setCaseInsensitive(true);
-        expressionLocalVariable.setCompareTo(ExpressionLocalVariable.CompareTo.Value);
-        expressionLocalVariable.setVariableOperation(ExpressionLocalVariable.VariableOperation.GreaterThan);
-        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
-        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
-        expressionLocalVariable.setLocalVariable("MyVar");
-        expressionLocalVariable.setMemory(memory2);
-        expressionLocalVariable.setCaseInsensitive(false);
-        expressionLocalVariable.setCompareTo(ExpressionLocalVariable.CompareTo.Memory);
-        expressionLocalVariable.setVariableOperation(ExpressionLocalVariable.VariableOperation.LessThan);
-        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
-        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
-        expressionLocalVariable.setLocalVariable("MyVar");
-        expressionLocalVariable.setMemory(memory2);
-        expressionLocalVariable.setOtherLocalVariable("MyOtherVar");
-        expressionLocalVariable.setCaseInsensitive(false);
-        expressionLocalVariable.setCompareTo(ExpressionLocalVariable.CompareTo.LocalVariable);
-        expressionLocalVariable.setVariableOperation(ExpressionLocalVariable.VariableOperation.LessThan);
-        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionLocalVariable = new ExpressionLocalVariable(digitalExpressionManager->getAutoSystemName(), "");
-        expressionLocalVariable->AbstractNamedBean::setComment("A comment");
-        expressionLocalVariable.setLocalVariable("MyVar");
-        expressionLocalVariable.setRegEx("/^Test$/");
-        expressionLocalVariable.setMemory(memory2);
-        expressionLocalVariable.setCaseInsensitive(false);
-        expressionLocalVariable.setCompareTo(ExpressionLocalVariable.CompareTo.RegEx);
-        expressionLocalVariable.setVariableOperation(ExpressionLocalVariable.VariableOperation.LessThan);
-        maleSocket = digitalExpressionManager->registerExpression(expressionLocalVariable);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-
-        ExpressionMemory expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
-        expressionMemory.setMemoryOperation(ExpressionMemory.MemoryOperation.GreaterThan);
-        expressionMemory.setCompareTo(ExpressionMemory.CompareTo.Memory);
-        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
-        maleSocket->setEnabled(false);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
-        expressionMemory->AbstractNamedBean::setComment("A comment");
-        expressionMemory.setMemory(memory1);
-        expressionMemory.setConstantValue("10");
-        expressionMemory.setMemoryOperation(ExpressionMemory.MemoryOperation.LessThan);
-        expressionMemory.setCompareTo(ExpressionMemory.CompareTo.Value);
-        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
-        expressionMemory->AbstractNamedBean::setComment("A comment");
-        expressionMemory.setMemory(memory2);
-        expressionMemory.setOtherMemory(memory3);
-        expressionMemory.setMemoryOperation(ExpressionMemory.MemoryOperation.GreaterThan);
-        expressionMemory.setCompareTo(ExpressionMemory.CompareTo.Memory);
-        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
-        expressionMemory->AbstractNamedBean::setComment("A comment");
-        expressionMemory.setMemory(memory2);
-        expressionMemory.setOtherMemory(memory3);
-        expressionMemory.setLocalVariable("MyVar");
-        expressionMemory.setMemoryOperation(ExpressionMemory.MemoryOperation.GreaterThan);
-        expressionMemory.setCompareTo(ExpressionMemory.CompareTo.LocalVariable);
-        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
-        expressionMemory = new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "");
-        expressionMemory->AbstractNamedBean::setComment("A comment");
-        expressionMemory.setMemory(memory2);
-        expressionMemory.setOtherMemory(memory3);
-        expressionMemory.setRegEx("/^Hello$/");
-        expressionMemory.setMemoryOperation(ExpressionMemory.MemoryOperation.GreaterThan);
-        expressionMemory.setCompareTo(ExpressionMemory.CompareTo.RegEx);
-        maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
-        _and->getChild(indexExpr++)->_connect(maleSocket);
-
 
         ExpressionOBlock expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
@@ -2626,37 +2632,37 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         expressionOBlock.setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
+#endif
 
-
-        ExpressionPower expressionPower = new ExpressionPower(digitalExpressionManager->getAutoSystemName(), "");
+        ExpressionPower* expressionPower = new ExpressionPower(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionPower);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionPower = new ExpressionPower(digitalExpressionManager->getAutoSystemName(), "");
         expressionPower->AbstractNamedBean::setComment("A comment");
-        expressionPower.setBeanState(ExpressionPower.PowerState.Off);
-        expressionPower.set_Is_IsNot(Is_IsNot_Enum.IsNot);
+        expressionPower->setBeanState(ExpressionPower::PowerState::Off);
+        expressionPower->set_Is_IsNot(Is_IsNot_Enum::IsNot);
         maleSocket = digitalExpressionManager->registerExpression(expressionPower);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionPower = new ExpressionPower(digitalExpressionManager->getAutoSystemName(), "");
         expressionPower->AbstractNamedBean::setComment("A comment");
-        expressionPower.setBeanState(ExpressionPower.PowerState.On);
-        expressionPower.set_Is_IsNot(Is_IsNot_Enum.IsNot);
+        expressionPower->setBeanState(ExpressionPower::PowerState::On);
+        expressionPower->set_Is_IsNot(Is_IsNot_Enum::IsNot);
         maleSocket = digitalExpressionManager->registerExpression(expressionPower);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionPower = new ExpressionPower(digitalExpressionManager->getAutoSystemName(), "");
         expressionPower->AbstractNamedBean::setComment("A comment");
-        expressionPower.setBeanState(ExpressionPower.PowerState.Other);
-        expressionPower.set_Is_IsNot(Is_IsNot_Enum.IsNot);
+        expressionPower->setBeanState(ExpressionPower::PowerState::Other);
+        expressionPower->set_Is_IsNot(Is_IsNot_Enum::IsNot);
         maleSocket = digitalExpressionManager->registerExpression(expressionPower);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-
+#if 0
         ExpressionReference expressionReference = new ExpressionReference(digitalExpressionManager->getAutoSystemName(), "");
-        expressionReference.setPointsTo(ExpressionReference.PointsTo.LogixNGTable);
+        expressionReference->setPointsTo(ExpressionReference::PointsTo::LogixNGTable);
         expressionReference.set_Is_IsNot(Is_IsNot_Enum.Is);
         maleSocket = digitalExpressionManager->registerExpression(expressionReference);
         maleSocket->setEnabled(false);
@@ -2754,90 +2760,89 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionSensor);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0
-        ExpressionSignalHead expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
+        ExpressionSignalHead* expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalHead->AbstractNamedBean::setComment("A comment");
-        expressionSignalHead.setSignalHead("IH1");
-        expressionSignalHead.setAddressing(NamedBeanAddressing::Direct);
-        expressionSignalHead.setFormula("\"IT\"+index");
-        expressionSignalHead.setLocalVariable("index");
-        expressionSignalHead.setReference("{IM1}");
-        expressionSignalHead.setQueryAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSignalHead.setQueryFormula("\"IT\"+index2");
-        expressionSignalHead.setQueryLocalVariable("index2");
-        expressionSignalHead.setQueryReference("{IM2}");
-        expressionSignalHead.setAppearanceAddressing(NamedBeanAddressing::Formula);
-        expressionSignalHead.setAppearance(SignalHead.FLASHGREEN);
-        expressionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        expressionSignalHead.setAppearanceLocalVariable("index3");
-        expressionSignalHead.setAppearanceReference("{IM3}");
-        expressionSignalHead.setExampleSignalHead("IH2");
+        expressionSignalHead->setSignalHead("IH1");
+        expressionSignalHead->setAddressing(NamedBeanAddressing::Direct);
+        expressionSignalHead->setFormula("\"IT\"+index");
+        expressionSignalHead->setLocalVariable("index");
+        expressionSignalHead->setReference("{IM1}");
+        expressionSignalHead->setQueryAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSignalHead->setQueryFormula("\"IT\"+index2");
+        expressionSignalHead->setQueryLocalVariable("index2");
+        expressionSignalHead->setQueryReference("{IM2}");
+        expressionSignalHead->setAppearanceAddressing(NamedBeanAddressing::Formula);
+        expressionSignalHead->setAppearance(SignalHead::FLASHGREEN);
+        expressionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        expressionSignalHead->setAppearanceLocalVariable("index3");
+        expressionSignalHead->setAppearanceReference("{IM3}");
+        expressionSignalHead->setExampleSignalHead("IH2");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalHead->AbstractNamedBean::setComment("A comment");
-        expressionSignalHead.setSignalHead("IH1");
-        expressionSignalHead.setAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSignalHead.setFormula("\"IT\"+index");
-        expressionSignalHead.setLocalVariable("index");
-        expressionSignalHead.setReference("{IM1}");
-        expressionSignalHead.setQueryAddressing(NamedBeanAddressing::Formula);
-        expressionSignalHead.setQueryFormula("\"IT\"+index2");
-        expressionSignalHead.setQueryLocalVariable("index2");
-        expressionSignalHead.setQueryReference("{IM2}");
-        expressionSignalHead.setAppearanceAddressing(NamedBeanAddressing::Reference);
-        expressionSignalHead.setAppearance(SignalHead.FLASHLUNAR);
-        expressionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        expressionSignalHead.setAppearanceLocalVariable("index3");
-        expressionSignalHead.setAppearanceReference("{IM3}");
+        expressionSignalHead->setSignalHead("IH1");
+        expressionSignalHead->setAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSignalHead->setFormula("\"IT\"+index");
+        expressionSignalHead->setLocalVariable("index");
+        expressionSignalHead->setReference("{IM1}");
+        expressionSignalHead->setQueryAddressing(NamedBeanAddressing::Formula);
+        expressionSignalHead->setQueryFormula("\"IT\"+index2");
+        expressionSignalHead->setQueryLocalVariable("index2");
+        expressionSignalHead->setQueryReference("{IM2}");
+        expressionSignalHead->setAppearanceAddressing(NamedBeanAddressing::Reference);
+        expressionSignalHead->setAppearance(SignalHead::FLASHLUNAR);
+        expressionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        expressionSignalHead->setAppearanceLocalVariable("index3");
+        expressionSignalHead->setAppearanceReference("{IM3}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalHead->AbstractNamedBean::setComment("A comment");
-        expressionSignalHead.setSignalHead("IH1");
-        expressionSignalHead.setAddressing(NamedBeanAddressing::Formula);
-        expressionSignalHead.setFormula("\"IT\"+index");
-        expressionSignalHead.setLocalVariable("index");
-        expressionSignalHead.setReference("{IM1}");
-        expressionSignalHead.setQueryAddressing(NamedBeanAddressing::Reference);
-        expressionSignalHead.setQueryFormula("\"IT\"+index2");
-        expressionSignalHead.setQueryLocalVariable("index2");
-        expressionSignalHead.setQueryReference("{IM2}");
-        expressionSignalHead.setAppearanceAddressing(NamedBeanAddressing::Direct);
-        expressionSignalHead.setAppearance(SignalHead.FLASHRED);
-        expressionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        expressionSignalHead.setAppearanceLocalVariable("index3");
-        expressionSignalHead.setAppearanceReference("{IM3}");
+        expressionSignalHead->setSignalHead("IH1");
+        expressionSignalHead->setAddressing(NamedBeanAddressing::Formula);
+        expressionSignalHead->setFormula("\"IT\"+index");
+        expressionSignalHead->setLocalVariable("index");
+        expressionSignalHead->setReference("{IM1}");
+        expressionSignalHead->setQueryAddressing(NamedBeanAddressing::Reference);
+        expressionSignalHead->setQueryFormula("\"IT\"+index2");
+        expressionSignalHead->setQueryLocalVariable("index2");
+        expressionSignalHead->setQueryReference("{IM2}");
+        expressionSignalHead->setAppearanceAddressing(NamedBeanAddressing::Direct);
+        expressionSignalHead->setAppearance(SignalHead::FLASHRED);
+        expressionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        expressionSignalHead->setAppearanceLocalVariable("index3");
+        expressionSignalHead->setAppearanceReference("{IM3}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalHead = new ExpressionSignalHead(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalHead->AbstractNamedBean::setComment("A comment");
-        expressionSignalHead.setSignalHead("IH1");
-        expressionSignalHead.setAddressing(NamedBeanAddressing::Reference);
-        expressionSignalHead.setFormula("\"IT\"+index");
-        expressionSignalHead.setLocalVariable("index");
-        expressionSignalHead.setReference("{IM1}");
-        expressionSignalHead.setQueryAddressing(NamedBeanAddressing::Direct);
-        expressionSignalHead.setQueryFormula("\"IT\"+index2");
-        expressionSignalHead.setQueryLocalVariable("index2");
-        expressionSignalHead.setQueryReference("{IM2}");
-        expressionSignalHead.setAppearanceAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSignalHead.setAppearance(SignalHead.FLASHYELLOW);
-        expressionSignalHead.setAppearanceFormula("\"IT\"+index3");
-        expressionSignalHead.setAppearanceLocalVariable("index3");
-        expressionSignalHead.setAppearanceReference("{IM3}");
+        expressionSignalHead->setSignalHead("IH1");
+        expressionSignalHead->setAddressing(NamedBeanAddressing::Reference);
+        expressionSignalHead->setFormula("\"IT\"+index");
+        expressionSignalHead->setLocalVariable("index");
+        expressionSignalHead->setReference("{IM1}");
+        expressionSignalHead->setQueryAddressing(NamedBeanAddressing::Direct);
+        expressionSignalHead->setQueryFormula("\"IT\"+index2");
+        expressionSignalHead->setQueryLocalVariable("index2");
+        expressionSignalHead->setQueryReference("{IM2}");
+        expressionSignalHead->setAppearanceAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSignalHead->setAppearance(SignalHead::FLASHYELLOW);
+        expressionSignalHead->setAppearanceFormula("\"IT\"+index3");
+        expressionSignalHead->setAppearanceLocalVariable("index3");
+        expressionSignalHead->setAppearanceReference("{IM3}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-
+#if 0
         ExpressionSignalMast expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalMast);
         maleSocket->setEnabled(false);
@@ -3096,8 +3101,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(hold);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0
-        LastResultOfDigitalExpression lastResultOfDigitalExpression =
+
+        LastResultOfDigitalExpression* lastResultOfDigitalExpression =
                 new LastResultOfDigitalExpression(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(lastResultOfDigitalExpression);
         maleSocket->setEnabled(false);
@@ -3105,11 +3110,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         lastResultOfDigitalExpression = new LastResultOfDigitalExpression(digitalExpressionManager->getAutoSystemName(), "");
         lastResultOfDigitalExpression->AbstractNamedBean::setComment("A comment");
-        lastResultOfDigitalExpression.setDigitalExpression("A hold expression");
+        lastResultOfDigitalExpression->setDigitalExpression("A hold expression");
         maleSocket = digitalExpressionManager->registerExpression(lastResultOfDigitalExpression);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-
+#if 0
         jmri.jmrit.logixng.expressions.LogData logDataExpr = new jmri.jmrit.logixng.expressions.LogData(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         maleSocket->setEnabled(false);
@@ -3316,7 +3321,6 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         timeSinceMidnight->setType(TimeSinceMidnight::Type::FastClock);
         maleSocket = analogExpressionManager->registerExpression(timeSinceMidnight);
         doAnalogAction->getChild(0)->_connect(maleSocket);
-
 
 
 
@@ -3537,15 +3541,16 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
              //MaleAnalogActionSocket* aAnalogAction = (DefaultMaleAnalogActionSocket*)nb->self();
                 analogActionManager->deleteAnalogAction(/*aAnalogAction*/dmas);
             }
-#if 0
+#if 1
             QSet</*MaleAnalogExpressionSocket*/NamedBean*> analogExpressionSet = QSet</*MaleAnalogExpressionSocket*/NamedBean*>(analogExpressionManager->getNamedBeanSet());
             for (NamedBean* nb : analogExpressionSet) {
+             QString sn = nb->getSystemName();
              //MaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)nb->self();
              AbstractAnalogExpression* aae= (AbstractAnalogExpression*)nb->self();
              Base* b = aae->getParent();
              QObject* bo = (QObject*)aae->getParent();
              //DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)aae->getParent()->bself();
-             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)bo;
+             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)aae->bself();
              analogExpressionManager->deleteAnalogExpression(aAnalogExpression);
             }
 #endif
@@ -3769,7 +3774,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         "32",           // Integer
         "41.429",       // FloatingNumber
         "My string",    // String
-        "index",        // LocalVariable
+        "index",        //
         "IM2",          // Memory
         "{IM3}",        // Reference
         "index * 2",    // Formula
