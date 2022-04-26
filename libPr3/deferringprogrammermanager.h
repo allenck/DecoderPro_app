@@ -3,6 +3,8 @@
 
 #include "defaultprogrammermanager.h"
 #include "addressedprogrammermanager.h"
+#include "abstractinstanceinitializer.h"
+
 class Logger;
 class ProgrammingMode;
 class LocoAddress;
@@ -25,10 +27,33 @@ public:
  /*public*/ bool isGlobalProgrammerAvailable();
  /*public*/ AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
  /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress) ;
- /*public*/ void releaseAddressedProgrammer(AddressedProgrammer* p) ;
- /*public*/ bool isAddressedModePossible();
- /*public*/ bool isAddressedModePossible(LocoAddress* l);
- /*public*/ QList<QString> getDefaultModes();
+ /*public*/ void releaseAddressedProgrammer(AddressedProgrammer* p)override ;
+ /*public*/ bool isAddressedModePossible()override;
+ /*public*/ bool isAddressedModePossible(DccLocoAddress* l)override;
+ /*public*/ QList<QString> getDefaultModes()override;
+  //@ServiceProvider(service=InstanceInitializer.class)
+  /*public*/ /*static*/ /*final*/ class Initializer : public AbstractInstanceInitializer {
+
+      //@Override
+      /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type)const override {
+          if (type == "AddressedProgrammerManager") {
+              return new DeferringProgrammerManager();
+          }
+          if (type == "GlobalProgrammerManager") {
+              return new DeferringProgrammerManager();
+          }
+          return AbstractInstanceInitializer::getDefault(type);
+      }
+
+      //@Override
+      /*public*/ QSet</*Class<?>*/QString>* getInitalizes() {
+          QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+          set->insert("AddressedProgrammerManager");
+          set->insert("GlobalProgrammerManager");
+          return set;
+      }
+
+  };
 
 signals:
 
@@ -36,7 +61,7 @@ public slots:
 
 private:
  QString userName;// = "<Default>";
- Logger* log;
+ static Logger* log;
 
 };
 

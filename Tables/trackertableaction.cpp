@@ -51,7 +51,7 @@ TrackerTableAction::TrackerTableAction(QObject *parent) :
 /*public*/ /*static*/ int TableFrame::_maxHistorySize = 20;
 
 
-/*private*/ TrackerTableAction::TrackerTableAction(QString menuOption,QObject *parent) :
+/*private*/ TrackerTableAction::TrackerTableAction(QString menuOption, QObject *parent) :
   AbstractAction(menuOption, parent) {
     //super(menuOption);
  common();

@@ -11,7 +11,6 @@ LnPowerManager::LnPowerManager(LocoNetSystemConnectionMemo* memo, QObject *paren
     AbstractPowerManager(memo, parent)
 {
 //    super(memo);
- setObjectName("LnPowerManager");
  power = UNKNOWN;
  tc = NULL;
  // standard LocoNet - connect

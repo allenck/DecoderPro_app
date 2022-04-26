@@ -532,50 +532,50 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   //InstanceManager::store(mds,type);
   return mds;
  }
- if(type == "PerformActionModelFactory")
- {
-  PerformActionModelFactory* pamf = new PerformActionModelFactory();
-  //InstanceManager::store(pamf,type);
-  return pamf;
- }
- if(type == "StartupPauseFactory")
- {
-  StartupPauseFactory* supf = new StartupPauseFactory();
-  //InstanceManager::store(supf,type);
-  return supf->self();
- }
- if(type == "CreateButtonModelFactory")
- {
-  CreateButtonModelFactory* supf = new CreateButtonModelFactory();
-  //InstanceManager::store(supf,type);
-  return supf->self();
- }
- if(type == "TriggerRouteModelFactory")
- {
-  TriggerRouteModelFactory* supf = new TriggerRouteModelFactory();
-  InstanceManager::store(supf->self(),type);
-  return supf->self();
- }
- if(type == "ScriptButtonModelFactory")
- {
-  ScriptButtonModelFactory* supf = new ScriptButtonModelFactory();
-  //InstanceManager::store(supf,type);
-  return supf->self();
- }
+// if(type == "PerformActionModelFactory")
+// {
+//  PerformActionModelFactory* pamf = new PerformActionModelFactory();
+//  //InstanceManager::store(pamf,type);
+//  return pamf;
+// }
+// if(type == "StartupPauseFactory")
+// {
+//  StartupPauseFactory* supf = new StartupPauseFactory();
+//  //InstanceManager::store(supf,type);
+//  return supf->self();
+// }
+// if(type == "CreateButtonModelFactory")
+// {
+//  CreateButtonModelFactory* supf = new CreateButtonModelFactory();
+//  //InstanceManager::store(supf,type);
+//  return supf->self();
+// }
+// if(type == "TriggerRouteModelFactory")
+// {
+//  TriggerRouteModelFactory* supf = new TriggerRouteModelFactory();
+//  InstanceManager::store(supf->self(),type);
+//  return supf->self();
+// }
+// if(type == "ScriptButtonModelFactory")
+// {
+//  ScriptButtonModelFactory* supf = new ScriptButtonModelFactory();
+//  //InstanceManager::store(supf,type);
+//  return supf->self();
+// }
 
- if(type == "PerformFileModelFactory")
- {
-  PerformFileModelFactory* supf = new PerformFileModelFactory();
-  //InstanceManager::store(supf,type);
-  return supf->self();
- }
+// if(type == "PerformFileModelFactory")
+// {
+//  PerformFileModelFactory* supf = new PerformFileModelFactory();
+//  //InstanceManager::store(supf,type);
+//  return supf->self();
+// }
 
- if(type == "RestartStartupActionFactory")
- {
-  RestartStartupActionFactory* rsaf = new RestartStartupActionFactory();
-  //InstanceManager::store(rsaf,type);
-  return rsaf;
- }
+// if(type == "RestartStartupActionFactory")
+// {
+//  RestartStartupActionFactory* rsaf = new RestartStartupActionFactory();
+//  //InstanceManager::store(rsaf,type);
+//  return rsaf;
+// }
 
  if(type == "SignalMastLogicManager")
  {
@@ -624,12 +624,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return pitm;
  }
 
- if(type == "WarrantPreferences")
- {
-  WarrantPreferences* wp = new WarrantPreferences();
-//  InstanceManager::store(wp,type);
-  return wp;
- }
+// if(type == "WarrantPreferences")
+// {
+//  WarrantPreferences* wp = new WarrantPreferences();
+////  InstanceManager::store(wp,type);
+//  return wp;
+// }
 
 // if(type == "ConsistManager")
 // {
@@ -697,27 +697,29 @@ QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
         set->insert("VariableLightManager");
         set->insert("VSDecoderManager");
 
-        set->insert("PerformActionModelFactory");
-        set->insert("StartupPauseFactory");
-        set->insert("CreateButtonModelFactory");
-        set->insert("TriggerRouteModelFactory");
-        set->insert("ScriptButtonModelFactory");
-        set->insert("PerformFileModelFactory");
-        set->insert("RestartStartupActionFactory");
-        set->insert("JsonServerPreferences");
-        set->insert("CatalogTreeModel");
-        set->insert("ThrottleFrameManager");
+        //set->insert("PerformActionModelFactory");
+//        set->insert("StartupPauseFactory");
+//        set->insert("CreateButtonModelFactory");
+//        set->insert("TriggerRouteModelFactory");
+//        set->insert("ScriptButtonModelFactory");
+//        set->insert("PerformFileModelFactory");
+//        set->insert("RestartStartupActionFactory");
+//        set->insert("JsonServerPreferences");
+//        set->insert("CatalogTreeModel");
+//        set->insert("ThrottleFrameManager");
         set->insert("TurnoutOperationManager");
-        set->insert("ProxyIdTagManager");
-        set->insert("WarrantPreferences");
-        set->insert("ConsistManager");
-        set->insert("DefaultRouteManager");
-        set->insert("FileHistory");
-        set->insert("UserPreferencesManager");
-        set->insert("ShutDownManager");
+//        set->insert("ProxyIdTagManager");
+//        set->insert("WarrantPreferences");
+//        set->insert("ConsistManager");
+//        set->insert("DefaultRouteManager");
+//        set->insert("FileHistory");
+//        set->insert("UserPreferencesManager");
+//        set->insert("ShutDownManager");
         set->insert("StartupActionsManager");
         set->insert("ConnectionConfigManager");
         set->insert("PanelMenu");
+        set->insert("RosterConfigManager");
+        set->insert("ProgrammerConfigManager");
 //));
 return set;
 }

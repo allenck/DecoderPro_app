@@ -5,6 +5,7 @@
 #include <QtXml>
 #include "sortorder.h"
 #include "instancemanagerautoinitialize.h"
+#include "abstractinstanceinitializer.h"
 
 class Logger;
 class QDomDocument;
@@ -93,7 +94,25 @@ public:
  /*public*/ int getPreferencesSize(QString strClass) override;
  /*public*/ /*final*/ void readUserPreferences();
  Q_INVOKABLE /*public*/ void initialize() override;
+ //@ServiceProvider(service = InstanceInitializer.class)
+ /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
 
+   //Q_INTERFACES(InstanceInitializer)
+     //@Override
+     /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) const override{
+         if (type == "UserPreferencesManager") {
+             return new JmriUserPreferencesManager();
+         }
+         return AbstractInstanceInitializer::getDefault(type);
+     }
+
+     //@Override
+     /*public*/ QSet</*Class<?>*/QString>* getInitalizes() override{
+         QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+         set->insert("UserPreferencesManager");
+         return set;
+     }
+ };
 
 private:
  /*private*/ void readComboBoxLastSelections();

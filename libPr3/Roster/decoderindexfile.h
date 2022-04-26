@@ -47,7 +47,7 @@ public:
     /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
 
     //@Override
-    /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) {
+    /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) const override{
         if (type ==("DecoderIndexFile")) {
             // create and load
             DecoderIndexFile* instance = new DecoderIndexFile();
@@ -89,7 +89,7 @@ public:
     }
 
     //@Override
-    /*public*/ QSet</*Class<?>*/QString>* getInitalizes() {
+    /*public*/ QSet</*Class<?>*/QString>* getInitalizes() override {
         QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
         set->insert("DecoderIndexFile");
         return set;

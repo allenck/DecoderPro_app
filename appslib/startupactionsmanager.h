@@ -10,7 +10,7 @@ class StartupActionsManager : public AbstractPreferencesManager
 {
  Q_OBJECT
 public:
- StartupActionsManager();
+ Q_INVOKABLE StartupActionsManager();
  ~StartupActionsManager() {}
  StartupActionsManager(const StartupActionsManager& ) : AbstractPreferencesManager() {}
  /*public*/ /*final*/ static QString STARTUP;// = "startup"; // NOI18N

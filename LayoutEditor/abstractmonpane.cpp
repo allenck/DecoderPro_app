@@ -100,7 +100,7 @@ AbstractMonPane::~AbstractMonPane()
 //@Override
 /*public*/ void AbstractMonPane::initComponents() throw (Exception)
 {
- p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
+ p = (JmriUserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
  rawDataCheck = QString(getClassName())+".RawData";
  timeStampCheck = QString(getClassName())+".TimeStamp";
  alwaysOnTopCheck = QString(getClassName())+".alwaysOnTop";

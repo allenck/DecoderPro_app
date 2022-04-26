@@ -103,7 +103,9 @@
     /*public*/  void ExpressionPower::registerListenersForThisClass() {
         if (!_listenersAreRegistered) {
             ((AbstractPowerManager*)InstanceManager::getDefault("PowerManager"))
-                    ->SwingPropertyChangeSupport::addPropertyChangeListener(PowerManager::POWER, this);
+                    ->
+
+           addPropertyChangeListener(PowerManager::POWER, this);
             _listenersAreRegistered = true;
         }
     }
@@ -113,7 +115,7 @@
     /*public*/  void ExpressionPower::unregisterListenersForThisClass() {
         if (_listenersAreRegistered) {
             ((AbstractPowerManager*)InstanceManager::getDefault("PowerManager"))
-                    ->SwingPropertyChangeSupport::removePropertyChangeListener(PowerManager::POWER, this);
+                    ->removePropertyChangeListener(PowerManager::POWER, this);
             _listenersAreRegistered = false;
         }
     }

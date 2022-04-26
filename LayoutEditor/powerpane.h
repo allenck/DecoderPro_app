@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "liblayouteditor_global.h"
 #include "propertychangelistener.h"
+#include "abstractpowermanager.h"
 
 class PropertyChangeEvent;
 class PowerManager;
@@ -35,9 +36,9 @@ private:
     QLabel* onOffStatus;// 	= new QLabel(tr("Unknown"));
     QPushButton* onButton;// 	= new QPushButton(tr("On"));
     QPushButton* offButton;// 	= new QPushButton(tr("Off"));
-    PowerManager* listening;// = null;
+    PowerManager* listening = nullptr;
     void setStatus();
-    Logger* log;
+    static Logger* log;
     /*private*/ bool mgrOK();
 };
 

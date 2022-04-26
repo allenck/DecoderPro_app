@@ -2,6 +2,7 @@
 #include <QButtonGroup>
 #include "instancemanager.h"
 #include "abstractpowermanager.h"
+
 //PowerManagerMenu::PowerManagerMenu(QWidget *parent) :
 //    QMenu(parent)
 //{
@@ -18,7 +19,7 @@
 /**
  * Get the currently selected manager
  */
-/*public*/ PowerManager* PowerManagerMenu::get() {
+/*public*/ AbstractPowerManager* PowerManagerMenu::get() {
     return NULL;
 }
 
@@ -80,10 +81,10 @@ void PowerManagerMenu::setDefault()
  }
 }
 
-/*public*/ PowerManager* PowerManagerMenu::getManager()
+/*public*/ AbstractPowerManager* PowerManagerMenu::getManager()
 {
  // start with default
- PowerManager* manager = (AbstractPowerManager*)InstanceManager::getNullableDefault("PowerManager");
+ AbstractPowerManager* manager = (AbstractPowerManager*)InstanceManager::getNullableDefault("PowerManager");
  if (manager == NULL) return NULL;
  QString name = manager->getUserName();
 
@@ -100,7 +101,7 @@ void PowerManagerMenu::setDefault()
  QObjectList* managers = InstanceManager::getList("PowerManager");
  foreach (QObject* obj, *managers)
  {
-  PowerManager* mgr = (AbstractPowerManager*) obj;
+  AbstractPowerManager* mgr = (AbstractPowerManager*) obj;
   if (name==(mgr->getUserName())) return mgr;
  }
  // should not happen

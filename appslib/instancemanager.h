@@ -36,6 +36,7 @@
 #include "abstractmetermanager.h"
 #include "abstractlightmanager.h"
 #include "abstractreportermanager.h"
+#include "shutdownmanagerinitializer.h"
 
 /**
  * Provides methods for locating various interface implementations.

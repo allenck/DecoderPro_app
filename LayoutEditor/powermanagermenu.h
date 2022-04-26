@@ -5,14 +5,14 @@
 #include <QList>
 #include <QAction>
 
-class PowerManager;
+class AbstractPowerManager;
 class PowerManagerMenu : public QMenu
 {
     Q_OBJECT
 public:
     explicit PowerManagerMenu(QWidget *parent = 0);
-    /*public*/ PowerManager* getManager();
-    /*public*/ PowerManager* get();
+    /*public*/ AbstractPowerManager* getManager();
+    /*public*/ AbstractPowerManager* get();
 
 signals:
 

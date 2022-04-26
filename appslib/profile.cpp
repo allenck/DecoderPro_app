@@ -78,6 +78,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) throw (IOException, IllegalArgumentException) :
     QObject(parent)
 {
+ setObjectName("Profile");
  File* pathWithExt; // path with extension
  if (path->getName().endsWith(EXTENSION)) {
      pathWithExt = path;

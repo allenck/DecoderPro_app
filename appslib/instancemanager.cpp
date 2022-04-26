@@ -75,6 +75,9 @@
 #include "proxymetermanager.h"
 #include "instancemanagerautoinitialize.h"
 #include "rfid/proxyidtagmanager.h"
+#include "deferringprogrammermanager.h"
+#include "enginemodels.h"
+
 #ifdef HAVE_LOGIXNG
 #include "logixng_instanceinitializer.h"
 #include "logixng_analoginstanceinitializer.h"
@@ -119,7 +122,11 @@ InstanceManager::InstanceManager(QObject *parent) :
   new DefaultCatalogTreeManager::Initializer(),
   new ImageIndexEditor::Initializer(),
   new DecoderIndexFile::Initializer(),
-  //new TrackerTableAction::Initializer(),
+  new DeferringProgrammerManager::Initializer(),
+  new JmriUserPreferencesManager::Initializer(),
+  new Operations::EngineModels::Initializer(),
+  new TrackerTableAction::Initializer(),
+  new ShutDownManagerInitializer(),
  #ifdef HAVE_LOGIXNG
   new LogixNG_InstanceInitializer(),
   new LogixNG_AnalogInstanceInitializer(),
@@ -376,7 +383,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  {
   QString msg = "Required nonnull default for " + type + " does not exist.";
   log->warn(msg);
-  throw new NullPointerException(msg);
+  //throw new NullPointerException(msg);
  }
  else
  {

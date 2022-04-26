@@ -359,6 +359,7 @@
 #include "tabbedpreferencesprofileaction.h"
 #include "mergsd2signalheadxml.h"
 #include "acelasignalheadxml.h"
+#include "rosterconfigmanager.h"
 
 bool Metatypes::done = false;
 
@@ -733,5 +734,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<MergSD2SignalHeadXml>("MergSD2SignalHeadXml");
  qRegisterMetaType<AcelaSignalHeadXml>("AcelaSignalHeadXml");
  qRegisterMetaType<LocoNetSystemConnectionMemo>("LocoNetSystemConnectionMemo");
+ qRegisterMetaType<RosterConfigManager>("RosterConfigManager");
+
  Metatypes::done = true;
 }

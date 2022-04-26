@@ -90,6 +90,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
 void ProfileManager::common(File* catalog)
 {
  log = new Logger("ProfileManager");
+ setObjectName("ProfileManager");
  profiles =  QList<Profile*>();
  searchPaths =  QList<File*>();
  activeProfile = NULL;

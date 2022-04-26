@@ -2,6 +2,7 @@
 #include "globalprogrammermanager.h"
 #include "instancemanager.h"
 #include "addressedprogrammermanager.h"
+#include "loggerfactory.h"
 
 //DeferringProgrammerManager::DeferringProgrammerManager(QObject *parent) :
 //  QObject(parent)
@@ -136,10 +137,12 @@ DefaultProgrammerManager(parent) // see note in .h
  *
  * @return false if there's no chance of getting one
  */
-/*public*/ bool DeferringProgrammerManager::isAddressedModePossible(LocoAddress* l) {
+/*public*/ bool DeferringProgrammerManager::isAddressedModePossible(DccLocoAddress *l) {
     return isAddressedModePossible();
 }
 
 /*public*/ QList<QString> DeferringProgrammerManager::getDefaultModes() {
  return ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getDefaultModes();
 }
+
+/*private*/ /*final*/ /*static*/ Logger* DeferringProgrammerManager::log = LoggerFactory::getLogger("DeferringProgrammerManager");

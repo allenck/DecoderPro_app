@@ -3,50 +3,37 @@
 #include <QString>
 #include <QStringList>
 AbstractPowerManager::AbstractPowerManager(SystemConnectionMemo * memo, QObject *parent) :
-    SwingPropertyChangeSupport(this, parent)
+    PowerManager(parent)
 {
-// pcs = new SwingPropertyChangeSupport(this, nullptr);
- //this->userName = memo->getUserName();
- this->memo = memo;
- TimeKeeper* tk = new TimeKeeper(this);
- this->SwingPropertyChangeSupport::addPropertyChangeListener(tk);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
+ this->userName = memo->getUserName();
 }
 //public AbstractPowerManager(jmri.jmrix.SystemConnectionMemo memo) {
 //		this.userName = memo.getUserName();
 //	}
-    /**
-     * {@inheritDoc}
-     */
-    //@Override
-    /*public*/ int AbstractPowerManager::getPower() {
-        return power;
-    }
+QString AbstractPowerManager::getUserName() { return userName; }
 
-    /**
-     * {@inheritDoc}
-     */
-    //@Override
-    /*public*/ void AbstractPowerManager::setPower(int state)  {
-        int old = power;
-        power = state;
-        firePowerPropertyChange(old, power);
-    }
+// to hear of changes
+/*public synchronized*/
+void AbstractPowerManager::addPropertyChangeListener(PropertyChangeListener* l)
+{
+ QMutexLocker locker(&mutex);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+}
+void AbstractPowerManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l)
+{
+ QMutexLocker locker(&mutex);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, l);
+}
 
-    /** {@inheritDoc} */
-    //@Override
-    /*public*/ /*final*/ QString AbstractPowerManager::getUserName() {
-        return memo->getUserName();
-    }
+void AbstractPowerManager::firePropertyChange(QString p, QVariant old, QVariant n)
+{  pcs->firePropertyChange(p,old,n);}
 
-/**
- * Fires a {@link java.beans.PropertyChangeEvent} for the power state using
- * both property names "power" and "Power".
- *
- * @param old the old power state
- * @param current the new power state
- */
-//@SuppressWarnings("deprecation")
-/*protected*/ /*final*/ void AbstractPowerManager::firePowerPropertyChange(int old, int current) {
-    SwingPropertyChangeSupport::firePropertyChange(POWER, old, current);
-    SwingPropertyChangeSupport::firePropertyChange(POWER_OPN, old, current);
+void AbstractPowerManager::removePropertyChangeListener(PropertyChangeListener* l)
+{
+ pcs->removePropertyChangeListener(l);
+}
+void AbstractPowerManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* l)
+{
+ pcs->removePropertyChangeListener(propertyName,l);
 }

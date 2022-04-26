@@ -9,14 +9,14 @@ class Roster;
 class RosterConfigManager : public AbstractPreferencesManager, public PropertyChangeListener
 {
  Q_OBJECT
-    Q_INTERFACES(PropertyChangeListener)
+ Q_INTERFACES(PropertyChangeListener)
 public:
  Q_INVOKABLE RosterConfigManager();
  ~RosterConfigManager() {}
  RosterConfigManager(const RosterConfigManager&): AbstractPreferencesManager() {}
  /*public*/ static /*final*/ QString DIRECTORY;// = "directory";
  /*public*/ static /*final*/ QString DEFAULT_OWNER;// = "defaultOwner";
- /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/ override;
+ Q_INVOKABLE/*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/ override;
  /*public*/ void savePreferences(Profile* profile) override;
  /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString> getRequires() override;
  /*public*/ QString getDefaultOwner();
@@ -34,9 +34,7 @@ public slots:
  void propertyChange(PropertyChangeEvent*) override;
 
 private:
- Logger* log;
-// /*private*/ QString directory;// = FileUtil.PREFERENCES;
-// /*private*/ QString defaultOwner;// = "";
+ static Logger* log;
  /*private*/ /*final*/ QHash<Profile*, QString> directories;// = new HashMap<>();
  /*private*/ /*final*/ QHash<Profile*, QString> defaultOwners;// = new HashMap<>();
  /*private*/ /*final*/ QHash<Profile*, Roster*> rosters;// = new HashMap<>();

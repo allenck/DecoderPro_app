@@ -4,11 +4,13 @@
 #include <QObject>
 #include <QMetaType>
 #include "liblayouteditor_global.h"
+#include "instancemanagerautodefault.h"
 
 class OperationMemo;
-class LIBLAYOUTEDITORSHARED_EXPORT  FileHistory : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT  FileHistory : public QObject, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
  /*public*/ class OperationMemo
  {
@@ -18,7 +20,7 @@ public:
      /*public*/ QString filename;
      /*public*/ FileHistory* history;  // only with load
  };
- explicit FileHistory(QObject *parent = 0);
+ Q_INVOKABLE explicit FileHistory(QObject *parent = 0);
  ~FileHistory() {}
  FileHistory(const FileHistory&) : QObject() {}
  /*public*/ void addOperation(

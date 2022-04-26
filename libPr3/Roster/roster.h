@@ -19,7 +19,7 @@ class RosterGroup;
 class RosterEntry;
 class LIBPR3SHARED_EXPORT Roster : public XmlFile, public PropertyChangeProvider, public PropertyChangeListener
 {
-    Q_OBJECT
+ Q_OBJECT
  Q_INTERFACES(PropertyChangeProvider PropertyChangeListener)
 public:
     explicit Roster(QObject *parent = 0);

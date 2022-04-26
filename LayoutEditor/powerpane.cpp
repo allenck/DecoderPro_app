@@ -6,11 +6,8 @@
 #include <QGridLayout>
 #include "abstractpowermanager.h"
 #include "jmriexception.h"
+#include "loggerfactory.h"
 
-//PowerPane::PowerPane(QWidget *parent) :
-//    JmriPanel(parent)
-//{
-//}
 /**
  * Pane for power control
  * @author	    Bob Jacobsen   Copyright (C) 2001, 2010
@@ -39,7 +36,6 @@
 
 /*public*/ PowerPane::PowerPane(QWidget *parent) : JmriPanel(parent)
 {
- log = new Logger("PowerPane");
  onOffStatus 	= new QLabel(tr("Unknown"));
  QPushButton* onButton 	= new QPushButton(tr("On"));
  QPushButton* offButton 	= new QPushButton(tr("Off"));
@@ -171,3 +167,5 @@ void PowerPane::managerChanged() {
     //if (listening != NULL) disconnect(listening, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PowerPane::log = LoggerFactory::getLogger("PowerPane");

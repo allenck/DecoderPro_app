@@ -8,11 +8,8 @@
 #include "file.h"
 #include "vptr.h"
 #include "profilemanager.h"
+#include "loggerfactory.h"
 
-//RosterConfigManager::RosterConfigManager()
-//{
-
-//}
 /**
  * Load and store the Roster configuration.
  *
@@ -27,19 +24,16 @@
 
     /*public*/ /*static*/ /*final*/ QString RosterConfigManager::DIRECTORY = "directory";
     /*public*/ /*static*/ /*final*/ QString RosterConfigManager::DEFAULT_OWNER = "defaultOwner";
-//    /*private*/ static /*final*/ Logger log = LoggerFactory.getLogger(RosterConfigManager.class);
+    /*private*/ /*static*/ /*final*/ Logger* RosterConfigManager::log = LoggerFactory::getLogger("RosterConfigManager");
 
 /*public*/ RosterConfigManager::RosterConfigManager()
 {
  setObjectName("RosterConfigManager");
- log = new Logger("RosterConfigManager");
- //directory = FileUtil::PREFERENCES;
- //defaultOwner = "";
  directories = QHash<Profile*, QString>();
  defaultOwners = QHash<Profile*, QString>();
  rosters = QHash<Profile*, Roster*>();
 
-//    log->debug(tr("Roster is %1").arg(this->directory));
+ //log->debug(tr("Roster is %1").arg(this->directories));
 //    FileUtilSupport::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
 //        log->debug(tr("UserFiles changed from {} to {}", evt.getOldValue(), evt.getNewValue());
 //        if (RosterConfigManager.this->getDirectory().equals(evt.getOldValue())) {

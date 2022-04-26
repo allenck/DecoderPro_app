@@ -17,14 +17,34 @@ class LIBTABLESSHARED_EXPORT TrackerTableAction : public AbstractAction
 {
  Q_OBJECT
 public:
- Q_INVOKABLE explicit TrackerTableAction(QObject *parent = 0);
-    ~TrackerTableAction() {}
-    TrackerTableAction(const TrackerTableAction&) : AbstractAction() {}
+ Q_INVOKABLE explicit TrackerTableAction( QObject *parent = 0);
+ ~TrackerTableAction() {}
+ TrackerTableAction(const TrackerTableAction&) : AbstractAction() {}
  static /*public*/ Tracker* markNewTracker(OBlock* block, QString name);
  static /*public*/ void stopTracker(Tracker* t) ;
  static /*public*/ void stopTrackerIn(OBlock* block);
  /*public*/ static TrackerTableAction* getInstance(QObject* parent);
 
+ //@ServiceProvider(service = InstanceInitializer.class)
+ /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
+
+     //@Override
+     //Nonnull
+     /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) const override{
+         if (type == ("TrackerTableAction")) {
+             return new TrackerTableAction(tr("Trackers"), nullptr);
+         }
+         return AbstractInstanceInitializer::getDefault(type);
+     }
+
+     //@Override
+     //@Nonnull
+     /*public*/ QSet<QString>* getInitalizes() {
+         QSet<QString>* set = AbstractInstanceInitializer::getInitalizes();
+         set->insert("TrackerTableAction");
+         return set;
+     }
+ };
 signals:
 
 public slots:
@@ -42,6 +62,7 @@ private:
 friend class WarrantTableAction;
 friend class TableFrame;
 friend class TrackerTableModel;
+friend class Initializer;
 };
 Q_DECLARE_METATYPE(TrackerTableAction)
 

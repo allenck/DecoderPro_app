@@ -6,7 +6,7 @@ FileHistory::FileHistory(QObject *parent) :
 {
  list =  QList<OperationMemo*>();
  //setProperty("InstanceManagerAutoDefault", "yes");
-
+ setObjectName("FileHistory");
 }
 /**
  * Memo class to remember a file revision history.

@@ -14,7 +14,7 @@ class ConnectionConfigManager : public AbstractPreferencesManager
 {
  Q_OBJECT
 public:
- ConnectionConfigManager();
+ Q_INVOKABLE ConnectionConfigManager();
  ~ConnectionConfigManager() {}
  ConnectionConfigManager(const ConnectionConfigManager&) : AbstractPreferencesManager() {}
  /*public*/ /*final*/ static QString CONNECTIONS;// = "connections"; // NOI18N

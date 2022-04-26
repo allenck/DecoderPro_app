@@ -51,6 +51,7 @@
 
 void RosterTableModel::common()
 {
+ setObjectName("RosterTableModel");
  NUMCOL = PROTOCOL + 1;
  rosterGroup = "";
  editable = false;
