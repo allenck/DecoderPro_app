@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "assume.h"
 #include "memorymanager.h"
+#include "defaultmemorymanager.h"
 
 AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 {
@@ -24,28 +25,28 @@ AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 // /*public*/ abstract class <T extends ProvidingManager<E>, E extends NamedBean> extends AbstractManagerTestBase<T, E> {
 
 //@Test(expected = IllegalArgumentException.class)
-/*public*/ void AbstractProvidingMemoryManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-   MemoryManager* m = (MemoryManager*)_manager->mself();
+/*public*/ void AbstractProvidingMemoryManagerTestBase::testProvideEmpty()/* throw (IllegalArgumentException)*/ {
+   DefaultMemoryManager* m = (DefaultMemoryManager*)_manager->mself();
     try {
         m->provide(""); // this should throw an IllegalArgumentException.
-    } catch (IllegalArgumentException iae) {
+    } catch (IllegalArgumentException* iae) {
         JUnitAppender::suppressErrorMessageStartsWith("Invalid system name for", __FILE__, __LINE__);
 //        throw iae; // rethrow the expected exception, after suppressing the error
     }
 }
 
 //@Test
-/*public*/ void AbstractProvidingMemoryManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException,/* NoSuchFieldException,
-        NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException ){
-    MemoryManager* m = (MemoryManager*)_manager->mself();
+/*public*/ void AbstractProvidingMemoryManagerTestBase::testRegisterDuplicateSystemName() /*throw (PropertyVetoException, NoSuchFieldException,
+        NoSuchFieldException, IllegalArgumentException, IllegalAccessException )*/{
+    MemoryManager* m = (DefaultMemoryManager*)_manager->mself();
     QString s1 = m->makeSystemName("1");
     QString s2 = m->makeSystemName("2");
     testRegisterDuplicateSystemName(m, s1, s2);
 }
 
 /*public*/ void AbstractProvidingMemoryManagerTestBase::testRegisterDuplicateSystemName(MemoryManager* m, QString s1, QString s2)
-        throw (PropertyVetoException, /*NoSuchFieldException,
-        NoSuchFieldException, */IllegalArgumentException, IllegalAccessException) {
+        /*throw (PropertyVetoException, NoSuchFieldException,
+        NoSuchFieldException, IllegalArgumentException, IllegalAccessException)*/ {
     Assert::assertNotNull(s1, __FILE__, __LINE__);
     Assert::assertFalse(s1.isEmpty(), __FILE__, __LINE__);
     Assert::assertNotNull(s2, __FILE__, __LINE__);

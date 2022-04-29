@@ -7,6 +7,10 @@
 #include "namedbeanhandle.h"
 #include "signalhead.h"
 #include "expressionnode.h"
+#include "atomicreference.h"
+#include "threadingutil.h"
+#include "jmriexception.h"
+#include "defaultconditionalng.h"
 
 class ActionSignalHead : public AbstractDigitalAction, public VetoableChangeListener
 {
@@ -140,9 +144,70 @@ class ActionSignalHead : public AbstractDigitalAction, public VetoableChangeList
   /*private*/ void parseAppearanceFormula() /*throws ParserException*/;
   /*private*/ int getAppearanceFromName(QString name);
   /*private*/ int getNewAppearance(ConditionalNG* conditionalNG) /*throws JmriException*/;
-//  /*private*/ OperationType::TYPE getOperation() /*throws JmriException*/;
+  /*private*/ OperationType::TYPE getOperation() /*throws JmriException*/;
 //  OperationType::TYPE operation = getOperation();
   /*final*/ ConditionalNG* conditionalNG = getConditionalNG();
+  friend class ActionSignalHead_Run;
+};
+
+class ActionSignalHead_Run : public ThreadActionWithJmriException
+{
+  Q_OBJECT
+  AtomicReference<JmriException*>* ref;
+  ActionSignalHead::OperationType::TYPE operation;
+  ConditionalNG* conditionalNG;
+  SignalHead* signalHead;
+  ActionSignalHead* act;
+ public:
+  ActionSignalHead_Run(AtomicReference<JmriException*>* ref,
+                       ActionSignalHead::OperationType::TYPE operation,
+                       ConditionalNG* conditionalNG,
+                       SignalHead* signalHead,
+                       ActionSignalHead* act)
+  {
+   this->ref = ref;
+   this->operation = operation;
+   this->conditionalNG = conditionalNG;
+   this->signalHead = signalHead;
+   this->act = act;
+  }
+  void run()
+  {
+   try {
+    switch (operation) {
+       case ActionSignalHead::OperationType::Appearance:
+       {
+           int newAppearance = act->getNewAppearance(conditionalNG);
+           if (newAppearance != -1) {
+               signalHead->setAppearance(newAppearance);
+           }
+           break;
+       }
+       case ActionSignalHead::OperationType::Lit:
+           signalHead->setLit(true);
+           break;
+       case ActionSignalHead::OperationType::NotLit:
+           signalHead->setLit(false);
+           break;
+       case ActionSignalHead::OperationType::Held:
+           signalHead->setHeld(true);
+           break;
+       case ActionSignalHead::OperationType::NotHeld:
+           signalHead->setHeld(false);
+           break;
+//            case PermissiveSmlDisabled:
+//                signalHead->setPermissiveSmlDisabled(true);
+//                break;
+//            case PermissiveSmlNotDisabled:
+//                signalHead->setPermissiveSmlDisabled(false);
+//                break;
+       default:
+           throw new JmriException("Unknown enum: "+ActionSignalHead::OperationType::toString(act->_operationType));
+      }
+   } catch (JmriException* e) {
+       ref->set(e);
+   }
+  }
 };
 
 #endif // ACTIONSIGNALHEAD_H

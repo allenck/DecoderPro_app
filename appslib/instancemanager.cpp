@@ -261,6 +261,8 @@ InstanceManager::InstanceManager(QObject *parent) :
     QObjectList* l = getList(type);
     if(!l->contains(item))
      l->append(QPointer<QObject>(item));
+    if(type == "ConfigureManager")
+     log->debug(tr("register %1 as ConfigureManager").arg(item->metaObject()->className()));
     getDefault()->managerLists.insert(type, l);
     getDefault()->pcs->fireIndexedPropertyChange(getListPropertyName(type), l->indexOf(item), QVariant(), VPtr<QObject>::asQVariant(item));
 }

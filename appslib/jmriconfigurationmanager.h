@@ -51,7 +51,7 @@ public:
  /*public*/ XmlFile::Validate getValidate() override;
 
  QObject* self() override {return (QObject*)this;}
-private:
+
  /*private*/ void initializeProvider(PreferencesManager *provider, Profile* profile);
  static /*private*/ Logger* log;// = LoggerFactory.getLogger(JmriConfigurationManager.class);
  /*private*/ /*final*/ ConfigXmlManager* legacy;// = new ConfigXmlManager();

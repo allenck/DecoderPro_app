@@ -34,6 +34,14 @@
 #include "blockmanager.h"
 #include "editormanager.h"
 #include "powermanagerscaffold.h"
+#include "defaultconditionalngmanager.h"
+#include "defaultanalogactionmanager.h"
+#include "defaultdigitalactionmanager.h"
+#include "defaultstringexpressionmanager.h"
+#include "defaultanalogexpressionmanager.h"
+#include "defaultdigitalbooleanactionmanager.h"
+#include "defaultdigitalexpressionmanager.h"
+#include "defaultstringactionmanager.h"
 
 #ifdef HAVE_LOGIXNG
 #include "logixng_manager.h"
@@ -706,7 +714,8 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ /*static*/ void JUnitUtil::initConfigureManager() {
-    InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+ JmriConfigurationManager* mgr = new JmriConfigurationManager();
+    InstanceManager::setDefault("ConfigureManager", mgr);
 }
 
 /*public*/ /*static*/ void JUnitUtil::initDefaultUserMessagePreferences() {
@@ -726,59 +735,60 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 
 /*public*/ /*static*/ void JUnitUtil::initLogixNGManager(bool activate) {
 #ifdef HAVE_LOGIXNG
-    LogixNG_Manager* m1 = new DefaultLogixNGManager();
-    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->mself(), Manager::LOGIXNGS);
+ QObject* obj = InstanceManager::getNullableDefault("ConfigureManager");
+ LogixNG_Manager* m1 = new DefaultLogixNGManager();
+    if ((obj = InstanceManager::getNullableDefault("ConfigureManager")) != nullptr) {
+        ((JmriConfigurationManager*)obj)->registerConfig((QObject*)m1, Manager::LOGIXNGS);
     }
     InstanceManager::setDefault("LogixNG_Manager", m1->mself());
-#if 0
-    ConditionalNG_Manager m2 = new DefaultConditionalNGManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m2, jmri.Manager.LOGIXNG_CONDITIONALNGS);
+#if 1
+    ConditionalNG_Manager* m2 = new DefaultConditionalNGManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m2, Manager::LOGIXNG_CONDITIONALNGS);
     }
-    InstanceManager.setDefault(ConditionalNG_Manager.class, m2);
+    InstanceManager::setDefault("ConditionalNG_Manager", (QObject*)m2);
 
-    AnalogActionManager m3 = new DefaultAnalogActionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m3, jmri.Manager.LOGIXNG_ANALOG_ACTIONS);
+    AnalogActionManager* m3 = new DefaultAnalogActionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m3, Manager::LOGIXNG_ANALOG_ACTIONS);
     }
-    InstanceManager.setDefault(AnalogActionManager.class, m3);
+    InstanceManager::setDefault("AnalogActionManager",(QObject*) m3);
 
-    AnalogExpressionManager m4 = new DefaultAnalogExpressionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m4, jmri.Manager.LOGIXNG_ANALOG_EXPRESSIONS);
+    AnalogExpressionManager* m4 = new DefaultAnalogExpressionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m4, Manager::LOGIXNG_ANALOG_EXPRESSIONS);
     }
-    InstanceManager.setDefault(AnalogExpressionManager.class, m4);
+    InstanceManager::setDefault("AnalogExpressionManager", (QObject*)m4);
 
-    DigitalActionManager m5 = new DefaultDigitalActionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m5, jmri.Manager.LOGIXNG_DIGITAL_ACTIONS);
+    DigitalActionManager* m5 = new DefaultDigitalActionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m5, Manager::LOGIXNG_DIGITAL_ACTIONS);
     }
-    InstanceManager.setDefault(DigitalActionManager.class, m5);
+    InstanceManager::setDefault("DigitalActionManager", (QObject*)m5);
 
-    DigitalBooleanActionManager m6 = new DefaultDigitalBooleanActionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m6, jmri.Manager.LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
+    DigitalBooleanActionManager* m6 = new DefaultDigitalBooleanActionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m6, Manager::LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
     }
-    InstanceManager.setDefault(DigitalBooleanActionManager.class, m6);
+    InstanceManager::setDefault("DigitalBooleanActionManager", (QObject*)m6);
 
-    DigitalExpressionManager m7 = new DefaultDigitalExpressionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m7, jmri.Manager.LOGIXNG_DIGITAL_EXPRESSIONS);
+    DigitalExpressionManager* m7 = new DefaultDigitalExpressionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m7, Manager::LOGIXNG_DIGITAL_EXPRESSIONS);
     }
-    InstanceManager.setDefault(DigitalExpressionManager.class, m7);
+    InstanceManager::setDefault("DigitalExpressionManager", (QObject*)m7);
 
-    StringActionManager m8 = new DefaultStringActionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m8, jmri.Manager.LOGIXNG_STRING_ACTIONS);
+    StringActionManager* m8 = new DefaultStringActionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m8, Manager::LOGIXNG_STRING_ACTIONS);
     }
-    InstanceManager.setDefault(StringActionManager.class, m8);
+    InstanceManager::setDefault("StringActionManager", (QObject*)m8);
 
-    StringExpressionManager m9 = new DefaultStringExpressionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m9, jmri.Manager.LOGIXNG_STRING_EXPRESSIONS);
+    StringExpressionManager* m9 = new DefaultStringExpressionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m9, Manager::LOGIXNG_STRING_EXPRESSIONS);
     }
-    InstanceManager.setDefault(StringExpressionManager.class, m9);
+    InstanceManager::setDefault("StringExpressionManager", (QObject*)m9);
 #endif
     if (activate) m1->activateAllLogixNGs(false, false);
 #endif
@@ -805,23 +815,23 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ /*static*/ void JUnitUtil::initMemoryManager() {
-    MemoryManager* m = new DefaultMemoryManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    MemoryManager* m = new DefaultMemoryManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m, Manager::MEMORIES);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m, Manager::MEMORIES);
     }
 }
 
 /*public*/ /*static*/ void JUnitUtil::initReporterManager() {
     ReporterManager* m = new InternalReporterManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->self(), Manager::REPORTERS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->self(), Manager::REPORTERS);
     }
 }
 
 /*public*/ /*static*/ void JUnitUtil::initOBlockManager() {
     OBlockManager* b = new OBlockManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(b, Manager::OBLOCKS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(b, Manager::OBLOCKS);
     }
 }
 
@@ -846,14 +856,14 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initWarrantManager() {
     WarrantManager* w = new WarrantManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::WARRANTS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::WARRANTS);
     }
 }
 
 /*public*/ /*static*/ void JUnitUtil::initSignalMastLogicManager() {
     SignalMastLogicManager* w = new DefaultSignalMastLogicManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)w, Manager::SIGNALMASTLOGICS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)w, Manager::SIGNALMASTLOGICS);
     }
 }
 
@@ -867,7 +877,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initSectionManager() {
     SectionManager* w = new SectionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::SECTIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::SECTIONS);
     }
 }
 
@@ -875,7 +885,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     SignalHeadManager* m = new AbstractSignalHeadManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     InstanceManager::setDefault("SignalHeadManager", m->mself());
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->mself(), Manager::SIGNALHEADS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->mself(), Manager::SIGNALHEADS);
     }
 }
 
@@ -935,14 +945,14 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initLogixManager() {
     DefaultLogixManager* m = new DefaultLogixManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::LOGIXS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::LOGIXS);
     }
 }
 
 /*public*/ /*static*/ void JUnitUtil::initConditionalManager() {
     ConditionalManager* m = new DefaultConditionalManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::CONDITIONALS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::CONDITIONALS);
     }
 }
 #if 0

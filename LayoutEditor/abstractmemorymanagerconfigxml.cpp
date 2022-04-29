@@ -48,7 +48,7 @@ AbstractMemoryManagerConfigXML::~AbstractMemoryManagerConfigXML()
  MemoryManager* tm = (MemoryManager*) o;
  if (tm!=NULL)
  {
-  QStringListIterator iter(((AbstractMemoryManager*) tm)->getSystemNameList());
+  QStringListIterator iter(((AbstractMemoryManager*) tm->mself())->getSystemNameList());
 
   // don't return an element if there are not memories to include
   if (!iter.hasNext()) return QDomElement();
@@ -59,7 +59,7 @@ AbstractMemoryManagerConfigXML::~AbstractMemoryManagerConfigXML()
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
    log->debug("system name is "+sname);
-   Memory* m = ((AbstractMemoryManager*)tm)->getBySystemName(sname);
+   Memory* m = ((AbstractMemoryManager*)tm->mself())->getBySystemName(sname);
    QDomElement elem = doc.createElement("memory");
    //elem.setAttribute("systemName", sname);
    QDomElement e1;

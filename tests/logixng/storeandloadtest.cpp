@@ -101,6 +101,10 @@
 #include "expressionlocalvariable.h"
 #include "actionpower.h"
 #include "expressionpower.h"
+#include "for.h"
+#include "actionlight.h"
+#include "tableforeach.h"
+#include "expressionreference.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -512,89 +516,89 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionClock);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-#if 0
 
-        ActionLight actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
+
+        ActionLight* actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLight);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLight);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.Default);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::Default);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         actionLight->AbstractNamedBean::setComment("A comment");
-        actionLight.setLight(light1);
-        actionLight.setBeanState(ActionLight.LightState.Off);
-        actionLight.setAddressing(NamedBeanAddressing::Direct);
-        actionLight.setFormula("\"IT\"+index");
-        actionLight.setLocalVariable("index");
-        actionLight.setReference("{IM1}");
-        actionLight.setStateAddressing(NamedBeanAddressing::LocalVariable);
-        actionLight.setStateFormula("\"IT\"+index2");
-        actionLight.setStateLocalVariable("index2");
-        actionLight.setStateReference("{IM2}");
+        actionLight->setLight(light1);
+        actionLight->setBeanState(ActionLight::LightState::Off);
+        actionLight->setAddressing(NamedBeanAddressing::Direct);
+        actionLight->setFormula("\"IT\"+index");
+        actionLight->setLocalVariable("index");
+        actionLight->setReference("{IM1}");
+        actionLight->setStateAddressing(NamedBeanAddressing::LocalVariable);
+        actionLight->setStateFormula("\"IT\"+index2");
+        actionLight->setStateLocalVariable("index2");
+        actionLight->setStateReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionLight);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         actionLight->AbstractNamedBean::setComment("A comment");
-        actionLight.setLight(light1);
-        actionLight.setBeanState(ActionLight.LightState.Off);
-        actionLight.setAddressing(NamedBeanAddressing::LocalVariable);
-        actionLight.setFormula("\"IT\"+index");
-        actionLight.setLocalVariable("index");
-        actionLight.setReference("{IM1}");
-        actionLight.setStateAddressing(NamedBeanAddressing::Formula);
-        actionLight.setStateFormula("\"IT\"+index2");
-        actionLight.setStateLocalVariable("index2");
-        actionLight.setStateReference("{IM2}");
+        actionLight->setLight(light1);
+        actionLight->setBeanState(ActionLight::LightState::Off);
+        actionLight->setAddressing(NamedBeanAddressing::LocalVariable);
+        actionLight->setFormula("\"IT\"+index");
+        actionLight->setLocalVariable("index");
+        actionLight->setReference("{IM1}");
+        actionLight->setStateAddressing(NamedBeanAddressing::Formula);
+        actionLight->setStateFormula("\"IT\"+index2");
+        actionLight->setStateLocalVariable("index2");
+        actionLight->setStateReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionLight);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.LogError);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::LogError);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         actionLight->AbstractNamedBean::setComment("A comment");
-        actionLight.setLight(light1);
-        actionLight.setBeanState(ActionLight.LightState.Off);
-        actionLight.setAddressing(NamedBeanAddressing::Formula);
-        actionLight.setFormula("\"IT\"+index");
-        actionLight.setLocalVariable("index");
-        actionLight.setReference("{IM1}");
-        actionLight.setStateAddressing(NamedBeanAddressing::Reference);
-        actionLight.setStateFormula("\"IT\"+index2");
-        actionLight.setStateLocalVariable("index2");
-        actionLight.setStateReference("{IM2}");
+        actionLight->setLight(light1);
+        actionLight->setBeanState(ActionLight::LightState::Off);
+        actionLight->setAddressing(NamedBeanAddressing::Formula);
+        actionLight->setFormula("\"IT\"+index");
+        actionLight->setLocalVariable("index");
+        actionLight->setReference("{IM1}");
+        actionLight->setStateAddressing(NamedBeanAddressing::Reference);
+        actionLight->setStateFormula("\"IT\"+index2");
+        actionLight->setStateLocalVariable("index2");
+        actionLight->setStateReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionLight);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.LogErrorOnce);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::LogErrorOnce);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         actionLight->AbstractNamedBean::setComment("A comment");
-        actionLight.setLight(light1);
-        actionLight.setBeanState(ActionLight.LightState.Off);
-        actionLight.setAddressing(NamedBeanAddressing::Reference);
-        actionLight.setFormula("\"IT\"+index");
-        actionLight.setLocalVariable("index");
-        actionLight.setReference("{IM1}");
-        actionLight.setStateAddressing(NamedBeanAddressing::Direct);
-        actionLight.setStateFormula("\"IT\"+index2");
-        actionLight.setStateLocalVariable("index2");
-        actionLight.setStateReference("{IM2}");
+        actionLight->setLight(light1);
+        actionLight->setBeanState(ActionLight::LightState::Off);
+        actionLight->setAddressing(NamedBeanAddressing::Reference);
+        actionLight->setFormula("\"IT\"+index");
+        actionLight->setLocalVariable("index");
+        actionLight->setReference("{IM1}");
+        actionLight->setStateAddressing(NamedBeanAddressing::Direct);
+        actionLight->setStateFormula("\"IT\"+index2");
+        actionLight->setStateLocalVariable("index2");
+        actionLight->setStateReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionLight);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ShowDialogBox);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::ShowDialogBox);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 
         actionLight = new ActionLight(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLight);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ThrowException);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::ThrowException);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         ActionLightIntensity actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setEnabled(false);
@@ -602,7 +606,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.Default);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::Default);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
@@ -613,7 +617,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionLightIntensity.setLocalVariable("index");
         actionLightIntensity.setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
@@ -624,7 +628,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionLightIntensity.setLocalVariable("index");
         actionLightIntensity.setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.LogError);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::LogError);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
@@ -635,7 +639,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionLightIntensity.setLocalVariable("index");
         actionLightIntensity.setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.LogErrorOnce);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::LogErrorOnce);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
@@ -646,11 +650,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionLightIntensity.setLocalVariable("index");
         actionLightIntensity.setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ShowDialogBox);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::ShowDialogBox);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 #endif
-#if 0
+#if 1
         ActionListenOnBeans* actionListenOnBeans = new ActionListenOnBeans(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionListenOnBeans);
         maleSocket->setEnabled(false);
@@ -697,7 +701,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionListenOnBeans->addReference("Turnout:"+turnout1->getSystemName());
         maleSocket = digitalActionManager->registerAction(actionListenOnBeans);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-
+#endif
+#if 0
         actionListenOnBeans = new ActionListenOnBeans(digitalActionManager->getAutoSystemName(), "");
         actionListenOnBeans->AbstractNamedBean::setComment("A comment");
         actionListenOnBeans->addReference("Turnout:"+turnout2->getUserName());
@@ -854,12 +859,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         actionOBlock = new ActionOBlock(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.Default);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::Default);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionOBlock = new ActionOBlock(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ThrowException);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::ThrowException);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / Direct / Direct :: SetValue
@@ -876,7 +881,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionOBlock.setOBlockValue("ABC");
 
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / Direct :: ClearError
@@ -890,7 +895,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionOBlock.setOperationDirect(ActionOBlock.DirectOperation.ClearError);
 
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / LocalVariable
@@ -904,7 +909,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionOBlock.setOperationLocalVariable("index2");
 
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // LocalVariable / Formula
@@ -918,7 +923,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionOBlock.setOperationFormula("\"IT\"+index2");
 
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.LogError);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::LogError);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Formula / Reference
@@ -932,7 +937,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionOBlock.setOperationReference("{IM2}");
 
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.LogErrorOnce);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::LogErrorOnce);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Reference / Direct :: SetOutOfService
@@ -946,7 +951,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionOBlock.setOperationDirect(ActionOBlock.DirectOperation.SetOutOfService);
 
         maleSocket = digitalActionManager->registerAction(actionOBlock);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ShowDialogBox);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::ShowDialogBox);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 #endif
@@ -1457,12 +1462,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.Default);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::Default);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.ThrowException);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::ThrowException);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / Direct / Direct :: SetTrainName
@@ -1479,7 +1484,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setTrainIdName("ABC");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / Direct / Direct :: ControlAutoTrain - Resume
@@ -1496,7 +1501,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setControlAutoTrain(ActionWarrant.ControlAutoTrain.Resume);
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / Direct :: AllocateWarrantRoute
@@ -1510,7 +1515,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setOperationDirect(ActionWarrant.DirectOperation.AllocateWarrantRoute);
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Direct / LocalVariable
@@ -1524,7 +1529,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setOperationLocalVariable("index2");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // LocalVariable / Formula
@@ -1538,7 +1543,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setOperationFormula("\"IT\"+index2");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Formula / Reference
@@ -1552,7 +1557,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setOperationReference("{IM2}");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 // Reference / Direct :: DeallocateWarrant
@@ -1566,7 +1571,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant.setOperationDirect(ActionWarrant.DirectOperation.DeallocateWarrant);
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
-        maleSocket->setErrorHandlingType(MaleSocket.ErrorHandlingType.AbortExecution);
+        maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 
@@ -1778,8 +1783,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(executeDelayed);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
-        For actionFor =
+#endif
+        For* actionFor =
                 new For(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionFor);
         maleSocket->setEnabled(false);
@@ -1790,7 +1795,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionFor);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#endif
+
         IfThenElse* ifThenElse = new IfThenElse(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(ifThenElse);
         maleSocket->setEnabled(false);
@@ -1906,9 +1911,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logLocalVariables->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalActionManager->registerAction(logLocalVariables);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
+#endif
 
-
-        DigitalMany many = new DigitalMany(digitalActionManager->getAutoSystemName(), "");
+        DigitalMany* many = new DigitalMany(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(many);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
@@ -1918,7 +1923,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(many);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         Sequence sequence =
                 new Sequence(digitalActionManager->getAutoSystemName(), "");
         sequence.setRunContinuously(false);
@@ -2004,44 +2009,44 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
-        TableForEach tableForEach = new TableForEach(digitalActionManager->getAutoSystemName(), "");
-        tableForEach.setRowOrColumn(TableRowOrColumn.Column);
+#endif
+        TableForEach* tableForEach = new TableForEach(digitalActionManager->getAutoSystemName(), "");
+        tableForEach->setRowOrColumn(TableRowOrColumn::Column);
         maleSocket = digitalActionManager->registerAction(tableForEach);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         tableForEach = new TableForEach(digitalActionManager->getAutoSystemName(), "");
         tableForEach->AbstractNamedBean::setComment("A comment");
-        tableForEach.setLocalVariableName("MyLocalVariable");
-        tableForEach.setTable(csvTable);
-        tableForEach.setRowOrColumn(TableRowOrColumn.Row);
-        tableForEach.setRowOrColumnName("North yard");
+        tableForEach->setLocalVariableName("MyLocalVariable");
+        tableForEach->setTable(csvTable);
+        tableForEach->setRowOrColumn(TableRowOrColumn::Row);
+        tableForEach->setRowOrColumnName("North yard");
         maleSocket = digitalActionManager->registerAction(tableForEach);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
         maleSocket->getChild(0)->_connect(
                 digitalActionManager->registerAction(
-                        new DigitalMany(digitalActionManager->getAutoSystemName(), null)));
+                        new DigitalMany(digitalActionManager->getAutoSystemName(), "")));
 
         tableForEach = new TableForEach(digitalActionManager->getAutoSystemName(), "");
         tableForEach->AbstractNamedBean::setComment("A comment");
-        tableForEach.setLocalVariableName("MyLocalVariable");
-        tableForEach.setRowOrColumn(TableRowOrColumn.Column);
-        tableForEach.setTable(csvTable);
-        tableForEach.setTableReference("{MyTableRef}");
-        tableForEach.setTableLocalVariable("MyTableVar");
-        tableForEach.setTableFormula("MyTableFormula");
-        tableForEach.setRowOrColumnName("Second turnout");
-        tableForEach.setRowOrColumnReference("{MyRowOrColumnRef}");
-        tableForEach.setRowOrColumnLocalVariable("MyRowOrColumnVar");
-        tableForEach.setRowOrColumnFormula("MyRowOrColumnFormula");
+        tableForEach->setLocalVariableName("MyLocalVariable");
+        tableForEach->setRowOrColumn(TableRowOrColumn::Column);
+        tableForEach->setTable(csvTable);
+        tableForEach->setTableReference("{MyTableRef}");
+        tableForEach->setTableLocalVariable("MyTableVar");
+        tableForEach->setTableFormula("MyTableFormula");
+        tableForEach->setRowOrColumnName("Second turnout");
+        tableForEach->setRowOrColumnReference("{MyRowOrColumnRef}");
+        tableForEach->setRowOrColumnLocalVariable("MyRowOrColumnVar");
+        tableForEach->setRowOrColumnFormula("MyRowOrColumnFormula");
         maleSocket = digitalActionManager->registerAction(tableForEach);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
         maleSocket->getChild(0)->_connect(
                 digitalActionManager->registerAction(
-                        new DigitalMany(digitalActionManager->getAutoSystemName(), null)));
+                        new DigitalMany(digitalActionManager->getAutoSystemName(), "")));
 
-
+#if 0
         actionThrottle = new ActionThrottle(digitalActionManager->getAutoSystemName(), "");
         actionThrottle->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalActionManager->registerAction(actionThrottle);
@@ -2660,23 +2665,22 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionPower);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0
-        ExpressionReference expressionReference = new ExpressionReference(digitalExpressionManager->getAutoSystemName(), "");
+        ExpressionReference* expressionReference = new ExpressionReference(digitalExpressionManager->getAutoSystemName(), "");
         expressionReference->setPointsTo(ExpressionReference::PointsTo::LogixNGTable);
-        expressionReference.set_Is_IsNot(Is_IsNot_Enum.Is);
+        expressionReference->set_Is_IsNot(Is_IsNot_Enum::Is);
         maleSocket = digitalExpressionManager->registerExpression(expressionReference);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionReference = new ExpressionReference(digitalExpressionManager->getAutoSystemName(), "");
         expressionReference->AbstractNamedBean::setComment("A comment");
-        expressionReference.setReference("IL1");
-        expressionReference.setPointsTo(ExpressionReference.PointsTo.Light);
-        expressionReference.set_Is_IsNot(Is_IsNot_Enum.IsNot);
+        expressionReference->setReference("IL1");
+        expressionReference->setPointsTo(ExpressionReference::PointsTo::Light);
+        expressionReference->set_Is_IsNot(Is_IsNot_Enum::IsNot);
         maleSocket = digitalExpressionManager->registerExpression(expressionReference);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-
+#if 0
         ExpressionScript expressionScript = new ExpressionScript(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionScript);
         maleSocket->setEnabled(false);
@@ -3541,7 +3545,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
              //MaleAnalogActionSocket* aAnalogAction = (DefaultMaleAnalogActionSocket*)nb->self();
                 analogActionManager->deleteAnalogAction(/*aAnalogAction*/dmas);
             }
-#if 1
+#if 0
             QSet</*MaleAnalogExpressionSocket*/NamedBean*> analogExpressionSet = QSet</*MaleAnalogExpressionSocket*/NamedBean*>(analogExpressionManager->getNamedBeanSet());
             for (NamedBean* nb : analogExpressionSet) {
              QString sn = nb->getSystemName();
@@ -3550,7 +3554,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
              Base* b = aae->getParent();
              QObject* bo = (QObject*)aae->getParent();
              //DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)aae->getParent()->bself();
-             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)aae->bself();
+             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)b->bself();
              analogExpressionManager->deleteAnalogExpression(aAnalogExpression);
             }
 #endif
@@ -3614,7 +3618,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
             Assert::assertEquals(0, logixNG_Manager->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertEquals(0, analogActionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
-            Assert::assertEquals(0, analogExpressionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
+            Assert::assertEquals(0, (int)analogExpressionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertEquals(0, digitalActionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertEquals(0, digitalExpressionManager->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertEquals(0, stringActionManager->getNamedBeanSet().size(), __FILE__, __LINE__);

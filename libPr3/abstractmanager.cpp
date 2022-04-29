@@ -51,7 +51,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
  silenceableProperties.insert("beans");
  listeners = QList<Manager::ManagerDataListener*>();
- setRegisterSelf();
+ //setRegisterSelf(); must be done by subclass!
 }
 
 /*final*/ void AbstractManager::setRegisterSelf(){

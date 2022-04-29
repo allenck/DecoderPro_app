@@ -209,6 +209,7 @@ public:
      */
     /*public*/ virtual Manager/*<? extends MaleSocket>*/* getManager(QString className)=0;
 
+  QObject* mself() override {return (QObject*)this;}
 };
 Q_DECLARE_INTERFACE(LogixNG_Manager, "LogixNG_Manager")
 #endif // LOGIXNG_MANAGER_H

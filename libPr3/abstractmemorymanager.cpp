@@ -1,7 +1,8 @@
 #include "abstractmemorymanager.h"
-
-AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
-    AbstractManager(parent)
+#include "internalsystemconnectionmemo.h"
+#include "loggerfactory.h"
+AbstractMemoryManager::AbstractMemoryManager(InternalSystemConnectionMemo* memo, QObject *parent) :
+    AbstractManager(memo, parent)
 {
  lastAutoMemoryRef = 0;
  //registerSelf();
@@ -22,8 +23,14 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 
 /*public*/ QChar AbstractMemoryManager::typeLetter() const { return 'M'; }
 
-/*public*/ Memory* AbstractMemoryManager::provideMemory(QString sName)
+
+/** {@inheritDoc} */
+//@Nonnull
+//@Override
+/*public*/ Memory* AbstractMemoryManager::provideMemory(/*@Nonnull*/ QString sName)
 {
+ if(sName.isEmpty())
+  throw new IllegalArgumentException(tr("required memory name is null"));
  Memory* m = getMemory(sName);
  if (m != nullptr) {
      return m;
@@ -36,6 +43,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 }
 
 /*public*/ Memory* AbstractMemoryManager::getMemory(QString sName)  {
+
     Memory* m = getByUserName(sName);
     if (m != nullptr) {
         return m;
@@ -59,11 +67,11 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 
 /*public*/ Memory* AbstractMemoryManager::newMemory(QString systemName, QString userName)
 {
-    if (log.isDebugEnabled()) log.debug("new Memory:"
+    if (log->isDebugEnabled()) log->debug("new Memory:"
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
     if (systemName == NULL){
-        log.error("SystemName cannot be NULL. UserName was "
+        log->error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
         throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
@@ -72,13 +80,13 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     Memory* s;
     if ( (userName!=NULL) && ((s = getByUserName(userName)) != NULL)) {
         if (getBySystemName(systemName)!=s)
-            log.error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
+            log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
         return s;
     }
     if ( (s = getBySystemName(systemName)) != NULL) {
         if ((s->getUserName() == NULL) && (userName != NULL))
             s->setUserName(userName);
-        else if (userName != NULL) log.warn("Found memory via system name ("+systemName
+        else if (userName != NULL) log->warn("Found memory via system name ("+systemName
                                 +") with non-NULL user name ("+userName+")");
         return s;
     }
@@ -107,7 +115,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
                 lastAutoMemoryRef = autoNumber;
             }
         } catch (NumberFormatException* e){
-            log.warn("Auto generated SystemName "+ systemName + " is not in the correct format");
+            log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
         }
     }
     return s;
@@ -143,10 +151,10 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 
 //@Override
 //@Nonnull
-/*public*/ Memory* AbstractMemoryManager::provide(QString name)  throw (IllegalArgumentException) {
+/*public*/ Memory* AbstractMemoryManager::provide(/*@Nonnull*/ QString name) /* throw (IllegalArgumentException)*/ {
     return provideMemory(name);
 }
 
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractMemoryManager.class.getName());
+/*static*/ Logger* AbstractMemoryManager::log = LoggerFactory::getLogger("AbstractMemoryManager");
 //}

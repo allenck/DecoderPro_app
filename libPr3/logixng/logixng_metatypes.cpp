@@ -97,6 +97,12 @@
 #include "actionpowerxml.h"
 #include "expressionpowerswing.h"
 #include "expressionpowerxml.h"
+#include "forxml.h"
+#include "digitalmanyxml.h"
+#include "actionlightxml.h"
+#include "actionlightswing.h"
+#include "expressionreferenceswing.h"
+#include "expressionreferencexml.h"
 
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
@@ -160,7 +166,10 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionMemoryXml>("ExpressionMemoryXml");
    qRegisterMetaType<ActionPowerXml>("ActionPowerXml");
    qRegisterMetaType<ExpressionPowerXml>("ExpressionPowerXml");
-
+   qRegisterMetaType<ForXml>("ForXml");
+   qRegisterMetaType<DigitalManyXml>("DigitalManyXml");
+   qRegisterMetaType<ActionLightXml>("ActionLightXml");
+   qRegisterMetaType<ExpressionReferenceXml>("ExpressionReferenceXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");
@@ -195,10 +204,11 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionMemorySwing>("ExpressionMemorySwing");
    qRegisterMetaType<ExpressionLocalVariableSwing>("ExpressionLocalVariableSwing");
    qRegisterMetaType<ExpressionPowerSwing>("ExpressionPowerSwing");
+   qRegisterMetaType<ForSwing>("ForSwing");
+   qRegisterMetaType<ExpressionReferenceSwing>("ExpressionReferenceSwing");
 
    // AbstractDigitalActionSwing
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
-   qRegisterMetaType<ForSwing>("ForSwing");
    qRegisterMetaType<IfThenElseSwing>("IfThenElseSwing");
    qRegisterMetaType<ActionPositionableSwing>("ActionPositionableSwing");
    qRegisterMetaType<DigitalManySwing>("DigitalManySwing");
@@ -209,6 +219,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionLocalVariableSwing>("ActionLocalVariableSwing");
    qRegisterMetaType<ActionSignalHeadSwing>("ActionSignalHeadSwing");
    qRegisterMetaType<ActionPowerSwing>("ActionPowerSwing");
+   qRegisterMetaType<ActionLightSwing>("ActionLightSwing");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

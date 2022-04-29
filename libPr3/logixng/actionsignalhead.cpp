@@ -359,7 +359,42 @@
         }
     }
 
+    /*private*/ ActionSignalHead::OperationType::TYPE ActionSignalHead::getOperation() /*throws JmriException*/ {
 
+        QString oper = "";
+        try {
+            switch (_operationAddressing) {
+                case NamedBeanAddressing::Direct:
+                    return _operationType;
+
+                case NamedBeanAddressing::Reference:
+                    oper = ReferenceUtil::getReference(
+                            getConditionalNG()->getSymbolTable(), _operationReference);
+                    return OperationType::valueOf(oper);
+
+                case NamedBeanAddressing::LocalVariable:
+                {
+                    SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
+                    oper = TypeConversionUtil
+                            ::convertToString(symbolTable->getValue(_operationLocalVariable), false);
+                    return OperationType::valueOf(oper);
+                }
+                case NamedBeanAddressing::Formula:
+                    if (_appearanceExpressionNode != nullptr) {
+                        oper = TypeConversionUtil::convertToString(
+                                _operationExpressionNode->calculate(
+                                        getConditionalNG()->getSymbolTable()), false);
+                        return OperationType::valueOf(oper);
+                    } else {
+                        return OperationType::Appearance;
+                    }
+                default:
+                    throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_operationAddressing));
+            }
+        } catch (IllegalArgumentException* e) {
+            throw new JmriException("Unknown operation: "+oper, e);
+        }
+    }
 
     /** {@inheritDoc} */
     //@Override
@@ -410,6 +445,9 @@
         }
 
 
+        ActionSignalHead::OperationType::TYPE operation = getOperation();
+
+        /*final*/ ConditionalNG* conditionalNG = getConditionalNG();
 
 #if 0
 
@@ -450,7 +488,9 @@
         });
         if (ref->get() != nullptr) throw ref->get();
 #endif
-    }
+        AtomicReference<JmriException*>* ref = new AtomicReference<JmriException*>();
+        ThreadingUtil::runOnLayoutWithJmriException(new ActionSignalHead_Run(ref, operation, conditionalNG, signalHead, this));
+}
 
     //@Override
     /*public*/  FemaleSocket* ActionSignalHead::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {

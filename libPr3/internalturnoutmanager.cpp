@@ -48,7 +48,7 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
 //        /*protected*/ void forwardCommandChangeToLayout(int s) {}
 //        /*protected*/ void turnoutPushbuttonLockout(boolean b){}
 //    };
- return new AbstractTurnoutO1(systemName, userName);
+ return new InternalTurnoutManager_AbstractTurnout(systemName, userName);
 }
 
 //@Override

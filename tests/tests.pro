@@ -288,6 +288,10 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/analogexpressionmemorytest.cpp \
+    logixng/analogexpressionmemorytestaction.cpp \
+    logixng/analogexpressionmanagertest.cpp \
+    logixng/analogexpressionmanagertestaction.cpp \
     logixng/antecedenttestaction.cpp \
     logixng/analogactionmanagertest.cpp \
     logixng/analogactionmanagertestaction.cpp \
@@ -634,6 +638,10 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/analogexpressionmemorytest.h \
+    logixng/analogexpressionmemorytestaction.h \
+    logixng/analogexpressionmanagertest.h \
+    logixng/analogexpressionmanagertestaction.h \
     logixng/antecedenttestaction.h \
     logixng/analogactionmanagertest.h \
     logixng/analogactionmanagertestaction.h \

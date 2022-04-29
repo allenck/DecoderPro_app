@@ -1,17 +1,17 @@
-#include "analogactionmanagertestaction.h"
-#include "analogactionmanagertest.h"
+#include "analogexpressionmanagertestaction.h"
+#include "analogexpressionmanagertest.h"
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
 #include "junitutil.h"
-AnalogActionManagerTestAction::AnalogActionManagerTestAction(QObject *parent) : AbstractAction(tr("AnalogActionManager"), parent)
+AnalogExpressionManagerTestAction::AnalogExpressionManagerTestAction(QObject *parent) : AbstractAction(tr("AnalogExpression"),parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
-void AnalogActionManagerTestAction::actionPerformed(JActionEvent *)
+void AnalogExpressionManagerTestAction::actionPerformed(JActionEvent *)
 {
- AnalogActionManagerTest* test = new AnalogActionManagerTest();
+ AnalogExpressionManagerTest* test = new AnalogExpressionManagerTest();
  try
  {
   QStringList testList = QStringList()
@@ -21,8 +21,9 @@ void AnalogActionManagerTestAction::actionPerformed(JActionEvent *)
    << "testVetoableChangeListenerAddAndRemove"
    << "testMakeSystemName"
 
-   // in AnalogActionManagerTest
-   << "testRegisterAction"
+   // in AnalogExpressionManagerTest
+   << "testRegisterExpression"
+   << "testCreateFemaleSocket"
    << "testGetBeanTypeHandled"
    << "testInstance"
 
@@ -35,4 +36,4 @@ void AnalogActionManagerTestAction::actionPerformed(JActionEvent *)
   JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
  }
 }
-Logger* AnalogActionManagerTestAction::log = LoggerFactory::getLogger("AnalogActionManagerTestAction");
+Logger* AnalogExpressionManagerTestAction::log = LoggerFactory::getLogger("AnalogExpressionManagerTestAction");

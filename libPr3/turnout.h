@@ -599,6 +599,7 @@ public:
          * @param s turnout state to forward
          */
         virtual /*public*/ void setCommandedStateAtInterval(int s) = 0;
+        QObject* self() override {return (QObject*)this;}
 signals:
     
 public slots:

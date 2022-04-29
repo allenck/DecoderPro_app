@@ -21,10 +21,10 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
     try {
         ((DefaultMemoryManager*)_manager->mself())->provideMemory("IM");
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException* e) {
         // nothing to do
     }
-    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name \"" + _manager->getSystemNamePrefix() + "\" is missing suffix.");
+    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name \"" + _manager->getSystemNamePrefix() + "\" is missing suffix.", __FILE__, __LINE__);
 }
 
 //@Test
@@ -32,10 +32,10 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
     try {
         ((DefaultMemoryManager*)_manager->mself())->provideMemory("");
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException* e) {
         // nothing to do
     }
-    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name must start with \"" + _manager->getSystemNamePrefix() + "\".");
+    JUnitAppender::assertErrorMessage("Invalid system name for Memory: System name must start with \"" + _manager->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
 }
 
 //@Test
@@ -48,7 +48,7 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
 //@Before
 /*public*/ void DefaultMemoryManagerTest::setUp() {
     JUnitUtil::setUp();
-    _manager = new DefaultMemoryManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    _manager = new DefaultMemoryManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
 }
 
 //@After

@@ -10,7 +10,6 @@
 #include "conditionalng.h"
 #include "typeconversionutil.h"
 #include "defaultlogixngmanager.h"
-
 /**
  * This action sets the value of a memory.
  *
@@ -252,7 +251,7 @@
 /*private*/ void ActionMemory::parseOtherFormula() /*throws ParserException */{
     if (_memoryOperation == MemoryOperation::CalculateFormula) {
         QMap<QString, Variable*> variables = QMap<QString, Variable*>();
-#if 0
+/*
         SymbolTable* symbolTable = ((DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->getSymbolTable();
@@ -267,7 +266,7 @@
             variables.put(symbol.getName(),
                     new LocalVariableExpressionVariable(symbol.getName()));
         }
-#endif
+*/
         RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
         _otherExpressionNode = parser->parseExpression(_otherFormula);
     } else {
@@ -354,8 +353,8 @@
         return;
     }
 
-    //AtomicReference<JmriException*> ref = new AtomicReference<>();
-    std::atomic<JmriException*>* ref = new std::atomic<JmriException*>();
+    AtomicReference<JmriException*>* ref = new AtomicReference<JmriException*>();
+    //std::atomic<JmriException*>* ref = new std::atomic<JmriException*>();
 
     /*final*/ ConditionalNG* conditionalNG = getConditionalNG();
 
@@ -410,12 +409,12 @@
 //                throw new IllegalArgumentException("_memoryOperation has invalid value: {}" + _memoryOperation.name());
 //        }
 //    });
-    ThreadingUtil::runOnLayoutWithJmriException(new AMRun(ref, conditionalNG, memory, this));
+    ThreadingUtil::runOnLayoutWithJmriException(new ActionMemory_Run(ref, conditionalNG, memory, this));
     //if (ref.get() != nullptr) throw ref.get();
-    if(ref->load() != nullptr) throw ref->load();
+    if(ref->get() != nullptr) throw ref->get();
 }
 
-void AMRun::run()
+void ActionMemory_Run::run()
 {
  switch (actionMemory->_memoryOperation) {
      case ActionMemory::MemoryOperation::SetToNull:
@@ -459,7 +458,7 @@ void AMRun::run()
                  memory->setValue(actionMemory->_otherExpressionNode->calculate(
                          conditionalNG->getSymbolTable()));
              } catch (JmriException* e) {
-                 ref->store(e);
+                 ref->set(e);
              }
          }
          break;

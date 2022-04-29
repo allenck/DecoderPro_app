@@ -27,7 +27,7 @@ class DigitalMany : public AbstractDigitalAction, public FemaleSocketListener
 
  public:
   explicit DigitalMany(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  DigitalMany(QString sys, QString user, QList<QMap<QString, QString>> actionSystemNames, QObject* parent);
+  /*public*/  DigitalMany(QString sys, QString user, QList<QMap<QString, QString>> actionSystemNames, QObject* parent=nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/;
   /*public*/  QString getActionSystemName(int index);
   /*public*/  void setup()override;
@@ -53,7 +53,7 @@ class DigitalMany : public AbstractDigitalAction, public FemaleSocketListener
 
   /*private*/ /*final*/ QList<ActionEntry*> _actionEntries = QList<ActionEntry*>();
   /*private*/ bool disableCheckForUnconnectedSocket = false;
-  /*private*/ void setActionSystemNames(QList<QMap<QString, QString>> systemNames);
+  /*private*/ void setActionSystemNames(QList<QMap<QString, QString> > systemNames);
   /*private*/ void setNumSockets(int num);
   /*private*/ void checkFreeSocket();
   /*private*/ void insertNewSocket(int index);

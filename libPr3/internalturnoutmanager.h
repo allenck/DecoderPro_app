@@ -19,21 +19,23 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";
  }
- /*public*/ QString toString() {return "InternalTurnoutManager";}
+ /*public*/ QString toString() override {return "InternalTurnoutManager";}
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override { return (QObject*)this;}
   QObject* pself() override{return (QObject*)this;}
 
 protected:
-/*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) ;
+/*protected*/ Turnout* createNewTurnout(QString systemName, QString userName)override ;
 /*protected*/ QString prefix; // = "I";
 
 };
-class AbstractTurnoutO1 : public AbstractTurnout
+
+class InternalTurnoutManager_AbstractTurnout : public AbstractTurnout
 {
  Q_OBJECT
 public:
- AbstractTurnoutO1(QString systemName, QString userName) : AbstractTurnout(systemName, userName) {}
+ InternalTurnoutManager_AbstractTurnout(QString systemName, QString userName) : AbstractTurnout(systemName, userName) {}
+ QObject* self() override {return (QObject*)this;}
 protected:
  //@Override
  /*protected*/ void forwardCommandChangeToLayout(int /*s*/)  override{

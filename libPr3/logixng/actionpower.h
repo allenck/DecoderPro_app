@@ -76,11 +76,15 @@ public:
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
 
+  QObject* bself() override {return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
+
  private:
   /*private*/ PowerState::STATE _powerState = PowerState::On;
 
   friend class ActionPower_run;
 };
+
 class ActionPower_run : public ThreadActionWithJmriException
 {
   Q_OBJECT

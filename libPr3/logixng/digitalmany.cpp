@@ -24,7 +24,7 @@
                     ->createFemaleSocket(this, this, getNewSocketName())));
 }
 
-/*public*/  DigitalMany::DigitalMany(QString sys, QString user, QList<QMap<QString, QString>> actionSystemNames, QObject* parent)
+/*public*/  DigitalMany::DigitalMany(QString sys, QString user, QList<QMap<QString, QString> > actionSystemNames, QObject* parent)
         /*throws BadUserNameException, BadSystemNameException*/
   : AbstractDigitalAction(sys, user, parent)
 {

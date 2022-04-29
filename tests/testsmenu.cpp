@@ -135,6 +135,8 @@
 #include "logixng/stringmanytestaction.h"
 #include "logixng/analogactionmanagertestaction.h"
 #include "logixng/antecedenttestaction.h"
+#include "logixng/analogexpressionmanagertestaction.h"
+#include "logixng/analogexpressionmemorytestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -330,6 +332,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGTypesMenu->addAction(new ActionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new ActionSensorTestAction(this));
     logixNGTypesMenu->addAction(new AnalogActionMemoryTestAction(this));
+    logixNGTypesMenu->addAction(new AnalogExpressionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new AnalogFormulaTestAction(this));
     logixNGTypesMenu->addAction(new AntecedentTestAction(this));
     logixNGTypesMenu->addAction(new AndTestAction(this));
@@ -341,6 +344,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGTypesMenu->addAction(new TrueTestAction(this));
 
     logixNGManagerMenu->addAction(new AnalogActionManagerTestAction(this));
+    logixNGManagerMenu->addAction(new AnalogExpressionManagerTestAction(this));
     logixNGManagerMenu->addAction(new DefaultLogixNGManagerTestAction(this));
     logixNGManagerMenu->addAction(new DigitalActionManagerTestAction(this));
     logixNGManagerMenu->addAction(new DigitalExpressionManagerTestAction(this));

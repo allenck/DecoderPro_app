@@ -24,7 +24,7 @@ void DefaultMemoryManagerTestAction::actionPerformed()
     << "testMakeSystemName"
 
   // from AbstractProvidingMemoryManagerTestBase
-    << "testProvideEmpty()"
+    << "testProvideEmpty"
     << "testRegisterDuplicateSystemName"
 
   // from DefaultMemoryManagerTest

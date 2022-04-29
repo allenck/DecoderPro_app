@@ -1139,6 +1139,14 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/expressionreference.cpp \
+    logixng/expressionreferenceswing.cpp \
+    logixng/expressionreferencexml.cpp \
+    logixng/actionlight.cpp \
+    logixng/actionlightswing.cpp \
+    logixng/actionlightxml.cpp \
+    logixng/digitalmanyxml.cpp \
+    logixng/forxml.cpp \
     logixng/actionpower.cpp \
     logixng/actionpowerswing.cpp \
     logixng/actionpowerxml.cpp \
@@ -2596,6 +2604,14 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/expressionreference.h \
+    logixng/expressionreferenceswing.h \
+    logixng/expressionreferencexml.h \
+    logixng/actionlight.h \
+    logixng/actionlightswing.h \
+    logixng/actionlightxml.h \
+    logixng/digitalmanyxml.h \
+    logixng/forxml.h \
     logixng/actionpower.h \
     logixng/actionpowerswing.h \
     logixng/actionpowerxml.h \

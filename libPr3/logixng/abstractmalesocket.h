@@ -104,6 +104,8 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ QString toString()override;
 
   QObject* bself() override {return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
+
 
   bool equals(QObject* o)override;
  signals:

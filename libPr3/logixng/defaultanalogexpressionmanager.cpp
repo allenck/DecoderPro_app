@@ -99,10 +99,9 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  MaleSocket *DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/MaleSocket* maleSocket) {
-        MaleAnalogExpressionSocket* bean = (DefaultMaleAnalogExpressionSocket*)(maleSocket->bself());
-        MaleSocket* ms =  AbstractBaseManager::registerBean(/*maleSocket*/bean);
+        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
-        return /*bean*/maleSocket;
+        return bean;
     }
 
     /**
@@ -122,7 +121,7 @@
         // Check if system name is valid
         if (this->validSystemNameFormat(((AbstractNamedBean*)expression->self())->getSystemName()) != NameValidity::VALID) {
             log->warn("SystemName " + ((AbstractNamedBean*)expression->self())->getSystemName() + " is not in the correct format");
-            throw new IllegalArgumentException(QString("System name is invalid: %1").arg(expression->NamedBean::getSystemName()));
+            throw new IllegalArgumentException(QString("System name is invalid: %1").arg(((AbstractNamedBean*)expression->self())->getSystemName()));
         }
 
         // Keep track of the last created auto system name
@@ -148,7 +147,7 @@
     //@Override
     /*public*/  void DefaultAnalogExpressionManager::deleteAnalogExpression(MaleAnalogExpressionSocket* x) {
         // delete the MaleAnalogExpressionSocket
-        AbstractBaseManager::deregister((AbstractNamedBean*)x);
+       deregister(x);
         x->NamedBean::dispose();
     }
 
@@ -184,7 +183,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString DefaultAnalogExpressionManager::getBeanTypeHandled(bool plural)const {
-        return tr(plural ? "AnalogExpressions" : "AnalogExpression");
+        return tr(plural ? "Analog expressions" : "Analog expression");
     }
 
     /*static*/ /*volatile*/ DefaultAnalogExpressionManager* DefaultAnalogExpressionManager::_instance = nullptr;

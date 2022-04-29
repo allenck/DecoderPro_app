@@ -8,6 +8,7 @@
 #include "memory.h"
 #include "expressionnode.h"
 #include "threadingutil.h"
+#include "atomicreference.h"
 
 class JmriException;
 class MemoryOperation;
@@ -116,16 +117,17 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
   /*private*/ void addRemoveVetoListener();
   /*private*/ void parseFormula() /*throws ParserException*/;
 
-  friend class AMRun;
+  friend class ActionMemory_Run;
 };
-class AMRun : public ThreadActionWithJmriException{
+class ActionMemory_Run : public ThreadActionWithJmriException{
   Q_OBJECT
   ActionMemory* actionMemory;
   Memory* memory;
   ConditionalNG* conditionalNG;
-  std::atomic<JmriException*>* ref;
+  //std::atomic<JmriException*>* ref;
+  AtomicReference<JmriException*>* ref;
  public:
-  AMRun(std::atomic<JmriException*>* ref, ConditionalNG* conditionalNG, Memory* memory, ActionMemory* actionMemory) {
+  ActionMemory_Run(AtomicReference<JmriException*>* ref, ConditionalNG* conditionalNG, Memory* memory, ActionMemory* actionMemory) {
    this->ref = ref;
    this->conditionalNG = conditionalNG;
    this->memory = memory;
