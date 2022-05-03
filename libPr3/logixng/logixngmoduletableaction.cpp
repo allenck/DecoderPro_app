@@ -114,7 +114,7 @@
     /*protected*/ QString LogixNGModuleTableAction::getBeanText(NamedBean *bean) {
         StringWriter* writer = new StringWriter();
         int mutableInt = 0;
-        _curNamedBean->printTree(_printTreeSettings, new PrintWriter(writer), "    ", &mutableInt);
+        ((AbstractBase*)_curNamedBean->self())->printTree(_printTreeSettings, new PrintWriter(writer), "    ", &mutableInt);
         return writer->toString();
     }
 

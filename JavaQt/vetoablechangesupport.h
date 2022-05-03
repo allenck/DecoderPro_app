@@ -6,7 +6,7 @@
 #include "vetoablechangelistener.h"
 #include <QVector>
 #include <QMap>
-#include "jvetoablechangesupport.h"
+#include "java_vetoablechangesupport.h"
 #include "propertychangesupport.h"
 #include "vetoablechangeprovider.h"
 #include "vetoablechangefirer.h"
@@ -23,8 +23,8 @@ public:
   explicit VetoableChangeSupport( QObject* parent=nullptr);
   /*public*/ void addVetoableChangeListener(VetoableChangeListener* listener) override;
   /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName,/* @CheckForNull*/ VetoableChangeListener* listener) override;
-  /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
-  /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
+  /*public*/ QVector<VetoableChangeListener *> *getVetoableChangeListeners() override;
+  /*public*/ QVector<VetoableChangeListener*>* getVetoableChangeListeners(QString propertyName) override;
   /*public*/ void removeVetoableChangeListener(VetoableChangeListener* listener)override;
   /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener)override;
 
@@ -43,7 +43,7 @@ private:
  /**
   * Provide a {@link java.beans.VetoableChangeSupport} helper.
   */
- /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this->vself());
+ /*protected*/ /*final*/ Java_VetoableChangeSupport* vetoableChangeSupport = new Java_VetoableChangeSupport(this->vself());
 };
 
 Q_DECLARE_INTERFACE(VetoableChangeSupport, "VetoableChangeSupport")

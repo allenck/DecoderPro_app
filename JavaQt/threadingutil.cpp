@@ -200,7 +200,7 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
             }
         }
     }
-
+#if 0
     /**
      * Run some GUI-specific code before returning a value.
      * <p>
@@ -220,11 +220,11 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      * @return the value returned by ta
      */
     template<class E>
-    /*static*/ /*public*/ /*<E>*/ E ThreadingUtil::runOnGUIwithReturn(/*@Nonnull*/ ReturningThreadAction<E>* ta) {
+    /*static*/ /*public*/ /*<E>*/ int ThreadingUtil::runOnGUIwithReturn(/*@Nonnull*/ ReturningThreadAction<E>* ta) {
 #if 1 // TODO:
         if (isGUIThread()) {
             // run now
-            return ta->run();
+            /*return*/ ta->run();
         }
 //        else {
 //            warnLocks();
@@ -246,7 +246,7 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
 //        }
 #endif
     }
-
+#endif
     /**
      * Run some GUI-specific code at some later point.
      * <p>

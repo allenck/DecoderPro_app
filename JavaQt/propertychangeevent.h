@@ -105,7 +105,7 @@ private:
   */
  QVariant propagationId;
 
-    
+ friend class Java_VetoableChangeSupport;
 };
 
 #endif // PROPERTYCHANGEEVENT_H

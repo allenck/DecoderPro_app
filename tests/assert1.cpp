@@ -438,6 +438,16 @@ if(expected == actual)
     }
     //fail(tr("Objects should not be equal\nunexpected: %1\nactual:%2").arg(unexpected->metaObject()->className()).arg(actual->metaObject()->className()), file, line);
 }
+/*public*/ /*static*/ void Assert::assertNotEquals(QVariant expected, QVariant actual, QString file, int line)
+{
+ //if(actual != nullptr && expected != nullptr)
+  {
+   if(actual==(expected))
+    fail(tr(" QVariant the same %1 vs %2").arg(actual.toString()).arg(expected.toString()), file, line);
+  }
+
+}
+
 #if 0
 private static void failEquals(String message, Object actual) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">

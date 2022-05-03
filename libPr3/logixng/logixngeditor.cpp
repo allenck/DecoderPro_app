@@ -1,7 +1,25 @@
 #include "logixngeditor.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
-
+#include "defaultlogixngmanager.h"
+#include "jtable.h"
+#include "tablecolumnmodel.h"
+#include "tablecolumn.h"
+#include "borderfactory.h"
+#include "jmriuserpreferencesmanager.h"
+#include "defaultlogixng.h"
+#include "joptionpane.h"
+#include "defaultconditionalngmanager.h"
+#include "atomicboolean.h"
+#include "gridbagconstraints.h"
+#include "gridbaglayout.h"
+#include "conditionalngeditor.h"
+#include "conditionalngdebugger.h"
+#include "defaultlogixngpreferences.h"
+#include "logixng_thread.h"
+#include "defaultfemaledigitalactionsocket.h"
+#include "jeditorpane.h"
+#include <QScrollArea>
 /**
  * Editor for LogixNG
  *
@@ -26,210 +44,212 @@
     /*public*/  LogixNGEditor::LogixNGEditor(BeanTableFrame/*<LogixNG>*/* f, BeanTableDataModel/*<LogixNG>*/* m, QString sName, QObject* parent) : QObject(parent) {
         this->beanTableFrame = f;
         this->beanTableDataModel = m;
-        _logixNG_Manager = (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
+        _logixNG_Manager = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
         _curLogixNG =(LogixNG*) _logixNG_Manager->getBySystemName(sName)->self();
-//        makeEditLogixNGWindow();
+        makeEditLogixNGWindow();
     }
 
-#if 0
+#if 1
     // ------------ Methods for Edit LogixNG Pane ------------
 
     /**
      * Create and/or initialize the Edit LogixNG pane.
      */
-    void makeEditLogixNGWindow() {
-        editUserName.setText(_curLogixNG.getUserName());
+    void LogixNGEditor::makeEditLogixNGWindow() {
+        editUserName->setText(_curLogixNG->NamedBean::getUserName());
         // clear conditional table if needed
-        if (_conditionalNGTableModel != null) {
-            _conditionalNGTableModel.fireTableStructureChanged();
+        if (_conditionalNGTableModel != nullptr) {
+            _conditionalNGTableModel->fireTableStructureChanged();
         }
         _inEditMode = true;
-        if (_editLogixNGFrame == null) {
-            if (_curLogixNG.getUserName() != null) {
+        if (_editLogixNGFrame == nullptr) {
+            if (_curLogixNG->NamedBean::getUserName() != "") {
                 _editLogixNGFrame = new JmriJFrame(
-                        Bundle.getMessage("TitleEditLogixNG2",
-                                _curLogixNG.getSystemName(),   // NOI18N
-                                _curLogixNG.getUserName()),    // NOI18N
+                        tr("Edit LogixNG %1 - %2").arg(
+                                _curLogixNG->NamedBean::getSystemName(),   // NOI18N
+                                _curLogixNG->NamedBean::getUserName()),    // NOI18N
                         false,
                         false);
             } else {
                 _editLogixNGFrame = new JmriJFrame(
-                        Bundle.getMessage("TitleEditLogixNG", _curLogixNG.getSystemName()),  // NOI18N
+                        tr("Edit LogixNG %1").arg(_curLogixNG->NamedBean::getSystemName()),  // NOI18N
                         false,
                         false);
             }
-            _editLogixNGFrame.addHelpMenu(
+            _editLogixNGFrame->addHelpMenu(
                     "package.jmri.jmrit.logixng.LogixNGTableEditor", true);  // NOI18N
-            _editLogixNGFrame.setLocation(100, 30);
-            Container contentPane = _editLogixNGFrame.getContentPane();
-            contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-            JPanel panel1 = new JPanel();
-            panel1.setLayout(new FlowLayout());
-            JLabel systemNameLabel = new JLabel(Bundle.getMessage("ColumnSystemName") + ":");  // NOI18N
-            panel1.add(systemNameLabel);
-            JLabel fixedSystemName = new JLabel(_curLogixNG.getSystemName());
-            panel1.add(fixedSystemName);
-            contentPane.add(panel1);
-            JPanel panel2 = new JPanel();
-            panel2.setLayout(new FlowLayout());
-            JLabel userNameLabel = new JLabel(Bundle.getMessage("ColumnUserName") + ":");  // NOI18N
-            panel2.add(userNameLabel);
-            panel2.add(editUserName);
-            editUserName.setToolTipText(Bundle.getMessage("LogixNGUserNameHint2"));  // NOI18N
-            contentPane.add(panel2);
+            _editLogixNGFrame->setLocation(100, 30);
+            QWidget* contentPane = _editLogixNGFrame->getContentPane();
+            contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
+            JPanel* panel1 = new JPanel();
+            panel1->setLayout(new FlowLayout());
+            JLabel* systemNameLabel = new JLabel(tr("SystemName") + ":");  // NOI18N
+            panel1->layout()->addWidget(systemNameLabel);
+            JLabel* fixedSystemName = new JLabel(_curLogixNG->NamedBean::getSystemName());
+            panel1->layout()->addWidget(fixedSystemName);
+            contentPane->layout()->addWidget(panel1);
+            JPanel* panel2 = new JPanel();
+            panel2->setLayout(new FlowLayout());
+            JLabel* userNameLabel = new JLabel(tr("UserName") + ":");  // NOI18N
+            panel2->layout()->addWidget(userNameLabel);
+            panel2->layout()->addWidget(editUserName);
+            editUserName->setToolTip(tr("Enter new user name for LogixNG, e.g. Signal 2 Control"));  // NOI18N
+            contentPane->layout()->addWidget(panel2);
             // add table of ConditionalNGs
-            JPanel pctSpace = new JPanel();
-            pctSpace.setLayout(new FlowLayout());
-            pctSpace.add(new JLabel("   "));
-            contentPane.add(pctSpace);
-            JPanel pTitle = new JPanel();
-            pTitle.setLayout(new FlowLayout());
-            pTitle.add(new JLabel(Bundle.getMessage("ConditionalNGTableTitle")));  // NOI18N
-            contentPane.add(pTitle);
+            JPanel* pctSpace = new JPanel();
+            pctSpace->setLayout(new FlowLayout());
+            pctSpace->layout()->addWidget(new JLabel("   "));
+            contentPane->layout()->addWidget(pctSpace);
+            JPanel* pTitle = new JPanel();
+            pTitle->setLayout(new FlowLayout());
+            pTitle->layout()->addWidget(new JLabel(tr("ConditionalNGs (in Order of Calculation)")));  // NOI18N
+            contentPane->layout()->addWidget(pTitle);
             // initialize table of conditionals
-            _conditionalNGTableModel = new ConditionalNGTableModel();
-            JTable conditionalTable = new JTable(_conditionalNGTableModel);
-            conditionalTable.setRowSelectionAllowed(false);
-            TableColumnModel conditionalColumnModel = conditionalTable
-                    .getColumnModel();
-            TableColumn sNameColumn = conditionalColumnModel
-                    .getColumn(ConditionalNGTableModel.SNAME_COLUMN);
-            sNameColumn.setResizable(true);
-            sNameColumn.setMinWidth(100);
-            sNameColumn.setPreferredWidth(130);
-            TableColumn uNameColumn = conditionalColumnModel
-                    .getColumn(ConditionalNGTableModel.UNAME_COLUMN);
-            uNameColumn.setResizable(true);
-            uNameColumn.setMinWidth(210);
-            uNameColumn.setPreferredWidth(260);
-            TableColumn threadColumn = conditionalColumnModel
-                    .getColumn(ConditionalNGTableModel.THREAD_COLUMN);
-            threadColumn.setResizable(true);
-            threadColumn.setMinWidth(210);
-            threadColumn.setPreferredWidth(260);
-            TableColumn buttonColumn = conditionalColumnModel
-                    .getColumn(ConditionalNGTableModel.BUTTON_COLUMN);
-            TableColumn buttonDeleteColumn = conditionalColumnModel
-                    .getColumn(ConditionalNGTableModel.BUTTON_DELETE_COLUMN);
-            TableColumn buttonEditThreadsColumn = conditionalColumnModel
-                    .getColumn(ConditionalNGTableModel.BUTTON_EDIT_THREADS_COLUMN);
+            _conditionalNGTableModel = new ConditionalNGTableModel(this);
+            JTable* conditionalTable = new JTable(_conditionalNGTableModel);
+            conditionalTable->setRowSelectionAllowed(false);
+            TableColumnModel* conditionalColumnModel = conditionalTable
+                    ->getColumnModel();
+            TableColumn* sNameColumn = conditionalColumnModel
+                    ->getColumn(ConditionalNGTableModel::SNAME_COLUMN);
+            sNameColumn->setResizable(true);
+            sNameColumn->setMinWidth(100);
+            sNameColumn->setPreferredWidth(130);
+            TableColumn* uNameColumn = conditionalColumnModel
+                    ->getColumn(ConditionalNGTableModel::UNAME_COLUMN);
+            uNameColumn->setResizable(true);
+            uNameColumn->setMinWidth(210);
+            uNameColumn->setPreferredWidth(260);
+            TableColumn* threadColumn = conditionalColumnModel
+                    ->getColumn(ConditionalNGTableModel::THREAD_COLUMN);
+            threadColumn->setResizable(true);
+            threadColumn->setMinWidth(210);
+            threadColumn->setPreferredWidth(260);
+            TableColumn* buttonColumn = conditionalColumnModel
+                    ->getColumn(ConditionalNGTableModel::BUTTON_COLUMN);
+            TableColumn* buttonDeleteColumn = conditionalColumnModel
+                    ->getColumn(ConditionalNGTableModel::BUTTON_DELETE_COLUMN);
+            TableColumn* buttonEditThreadsColumn = conditionalColumnModel
+                    ->getColumn(ConditionalNGTableModel::BUTTON_EDIT_THREADS_COLUMN);
 
             // install button renderer and editor
-            ButtonRenderer buttonRenderer = new ButtonRenderer();
-            conditionalTable.setDefaultRenderer(JButton.class, buttonRenderer);
-            TableCellEditor buttonEditor = new ButtonEditor(new JButton());
-            conditionalTable.setDefaultEditor(JButton.class, buttonEditor);
-            JButton testButton = new JButton("XXXXXX");  // NOI18N
-            JButton testButton2 = new JButton("XXXXXXXXXX");  // NOI18N
-            conditionalTable.setRowHeight(testButton.getPreferredSize().height);
-            buttonColumn.setMinWidth(testButton.getPreferredSize().width);
-            buttonColumn.setMaxWidth(testButton.getPreferredSize().width);
-            buttonColumn.setResizable(false);
-            buttonDeleteColumn.setMinWidth(testButton.getPreferredSize().width);
-            buttonDeleteColumn.setMaxWidth(testButton.getPreferredSize().width);
-            buttonDeleteColumn.setResizable(false);
-            buttonEditThreadsColumn.setMinWidth(testButton2.getPreferredSize().width);
-            buttonEditThreadsColumn.setMaxWidth(testButton2.getPreferredSize().width);
-            buttonEditThreadsColumn.setResizable(false);
+            ButtonRenderer* buttonRenderer = new ButtonRenderer();
+            conditionalTable->setDefaultRenderer("JButton", buttonRenderer);
+//            TableCellEditor* buttonEditor = new ButtonEditor(new JButton());
+//            conditionalTable->setDefaultEditor("JButton", buttonEditor);
+            JButton* testButton = new JButton("XXXXXX");  // NOI18N
+            JButton* testButton2 = new JButton("XXXXXXXXXX");  // NOI18N
+            conditionalTable->setRowHeight(testButton->sizeHint().height());
+            buttonColumn->setMinWidth(testButton->sizeHint().width());
+            buttonColumn->setMaxWidth(testButton->sizeHint().width());
+            buttonColumn->setResizable(false);
+            buttonDeleteColumn->setMinWidth(testButton->sizeHint().width());
+            buttonDeleteColumn->setMaxWidth(testButton->sizeHint().width());
+            buttonDeleteColumn->setResizable(false);
+            buttonEditThreadsColumn->setMinWidth(testButton2->sizeHint().width());
+            buttonEditThreadsColumn->setMaxWidth(testButton2->sizeHint().width());
+            buttonEditThreadsColumn->setResizable(false);
 
-            JScrollPane conditionalTableScrollPane = new JScrollPane(conditionalTable);
-            Dimension dim = conditionalTable.getPreferredSize();
-            dim.height = 450;
-            conditionalTableScrollPane.getViewport().setPreferredSize(dim);
-            contentPane.add(conditionalTableScrollPane);
+//            JScrollPane conditionalTableScrollPane = new JScrollPane(conditionalTable);
+//            Dimension dim = conditionalTable->getPreferredSize();
+//            dim.height = 450;
+//            conditionalTableScrollPane->getViewport()->setPreferredSize(dim);
+            contentPane->layout()->addWidget(/*conditionalTableScrollPane*/conditionalTable);
 
-            _showStartupThreadsCheckBox = new JCheckBox(Bundle.getMessage("ShowStartupThreadCheckBox"));
-            contentPane.add(_showStartupThreadsCheckBox);
-            _showStartupThreadsCheckBox.addActionListener((evt) -> {
-                _conditionalNGTableModel.setShowStartupThreads(
-                        _showStartupThreadsCheckBox.isSelected());
+            _showStartupThreadsCheckBox = new JCheckBox(tr("Show startup thread"));
+            contentPane->layout()->addWidget(_showStartupThreadsCheckBox);
+            connect(_showStartupThreadsCheckBox, &JCheckBox::clicked, [=] {
+                _conditionalNGTableModel->setShowStartupThreads(
+                        _showStartupThreadsCheckBox->isSelected());
             });
 
             // add message area between table and buttons
-            JPanel panel4 = new JPanel();
-            panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
-            JPanel panel41 = new JPanel();
-            panel41.setLayout(new FlowLayout());
-            panel41.add(status);
-            panel4.add(panel41);
-            JPanel panel42 = new JPanel();
-            panel42.setLayout(new FlowLayout());
+            JPanel* panel4 = new JPanel();
+            panel4->setLayout(new QVBoxLayout());//panel4, BoxLayout.Y_AXIS));
+            JPanel* panel41 = new JPanel();
+            panel41->setLayout(new FlowLayout());
+            panel41->layout()->addWidget(status);
+            panel4->layout()->addWidget(panel41);
+            JPanel* panel42 = new JPanel();
+            panel42->setLayout(new FlowLayout());
             // ConditionalNG panel buttons - New ConditionalNG
-            JButton newConditionalNGButton = new JButton(Bundle.getMessage("NewConditionalNGButton"));  // NOI18N
-            panel42.add(newConditionalNGButton);
-            newConditionalNGButton.addActionListener((e) -> {
-                newConditionalNGPressed(e);
+            JButton* newConditionalNGButton = new JButton(tr("New ConditionalNG"));  // NOI18N
+            panel42->layout()->addWidget(newConditionalNGButton);
+            connect(newConditionalNGButton, &JButton::clicked, [=] {
+                newConditionalNGPressed(/*e*/);
             });
-            newConditionalNGButton.setToolTipText(Bundle.getMessage("NewConditionalNGButtonHint"));  // NOI18N
+            newConditionalNGButton->setToolTip(tr("Press for window to create a new ConditionalNG"));  // NOI18N
             // ConditionalNG panel buttons - Reorder
-            JButton reorderButton = new JButton(Bundle.getMessage("ReorderButton"));  // NOI18N
-            panel42.add(reorderButton);
-            reorderButton.addActionListener((e) -> {
-                reorderPressed(e);
+            JButton* reorderButton = new JButton(tr("Reorder"));  // NOI18N
+            panel42->layout()->addWidget(reorderButton);
+            connect(reorderButton, &JButton::clicked, [=] {
+                reorderPressed(/*e*/);
             });
-            reorderButton.setToolTipText(Bundle.getMessage("ReorderButtonHint"));  // NOI18N
+            reorderButton->setToolTip(tr("Press then click in right column in order desired (disabled while type is Mixed)"));  // NOI18N
             // ConditionalNG panel buttons - Calculate
-            JButton executeButton = new JButton(Bundle.getMessage("ExecuteButton"));  // NOI18N
-            panel42.add(executeButton);
-            executeButton.addActionListener((e) -> {
-                executePressed(e);
+            JButton* executeButton = new JButton(tr("Execute"));  // NOI18N
+            panel42->layout()->addWidget(executeButton);
+            connect(executeButton, &JButton::clicked, [=] {
+                executePressed(/*e*/);
             });
-            executeButton.setToolTipText(Bundle.getMessage("ExecuteButtonHint"));  // NOI18N
-            panel4.add(panel42);
-            Border panel4Border = BorderFactory.createEtchedBorder();
-            panel4.setBorder(panel4Border);
-            contentPane.add(panel4);
+            executeButton->setToolTip(tr("Press to execute all the ConditionalNGs"));  // NOI18N
+            panel4->layout()->addWidget(panel42);
+            Border* panel4Border = BorderFactory::createEtchedBorder();
+            panel4->setBorder(panel4Border);
+            contentPane->layout()->addWidget(panel4);
             // add buttons at bottom of window
-            JPanel panel5 = new JPanel();
-            panel5.setLayout(new FlowLayout());
+            JPanel* panel5 = new JPanel();
+            panel5->setLayout(new FlowLayout());
             // Bottom Buttons - Done LogixNG
-            JButton done = new JButton(Bundle.getMessage("ButtonDone"));  // NOI18N
-            panel5.add(done);
-            done.addActionListener((e) -> {
-                donePressed(e);
+            JButton* done = new JButton(tr("Done"));  // NOI18N
+            panel5->layout()->addWidget(done);
+            connect(done, &JButton::clicked, [=] {
+                donePressed(/*e*/);
             });
-            done.setToolTipText(Bundle.getMessage("DoneButtonHint"));  // NOI18N
+            done->setToolTip(tr("Press to save any user name changes and return to Logix Table"));  // NOI18N
             // Delete LogixNG
-            JButton delete = new JButton(Bundle.getMessage("ButtonDelete"));  // NOI18N
-            panel5.add(delete);
-            delete.addActionListener((e) -> {
+            JButton* _delete = new JButton(tr("Delete"));  // NOI18N
+            panel5->layout()->addWidget(_delete);
+            connect(_delete, &JButton::clicked, [=] {
                 deletePressed();
             });
-            delete.setToolTipText(Bundle.getMessage("DeleteLogixNGButtonHint"));  // NOI18N
-            contentPane.add(panel5);
+            _delete->setToolTip(tr("Press to delete this LogixNG and all its ConditionalNGs"));  // NOI18N
+            contentPane->layout()->addWidget(panel5);
         }
 
-        _editLogixNGFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            //@Override
-            /*public*/  void windowClosing(java.awt.event.WindowEvent e) {
-                if (_inEditMode) {
-                    donePressed(null);
-                } else {
-                    finishDone();
-                }
-            }
-        });
-        _editLogixNGFrame.pack();
-        _editLogixNGFrame.setVisible(true);
+//        _editLogixNGFrame.addWindowListener(new event.WindowAdapter() {
+//            //@Override
+//            /*public*/  void windowClosing(event.WindowEvent e) {
+//                if (_inEditMode) {
+//                    donePressed(null);
+//                } else {
+//                    finishDone();
+//                }
+//            }
+//        });
+        _editLogixNGFrame->addWindowListener(new LogixNGEditor_windowListener(this));
+
+        _editLogixNGFrame->pack();
+        _editLogixNGFrame->setVisible(true);
     }
 
     //@Override
-    /*public*/  void bringToFront() {
-        if (_editLogixNGFrame != null) {
-            _editLogixNGFrame.setVisible(true);
+    /*public*/  void LogixNGEditor::bringToFront() {
+        if (_editLogixNGFrame != nullptr) {
+            _editLogixNGFrame->setVisible(true);
         }
     }
 
     /**
      * Display reminder to save.
      */
-    void showSaveReminder() {
+    void LogixNGEditor::showSaveReminder() {
         if (_showReminder) {
-            if (InstanceManager.getNullableDefault(jmri.UserPreferencesManager.class) != null) {
-                InstanceManager.getDefault(jmri.UserPreferencesManager.class).
-                        showInfoMessage(Bundle.getMessage("ReminderTitle"), // NOI18N
-                                Bundle.getMessage("ReminderSaveString", // NOI18N
-                                        Bundle.getMessage("MenuItemLogixNGTable")), // NOI18N
+            if (InstanceManager::getNullableDefault("UserPreferencesManager") != nullptr) {
+                ((JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
+                        showInfoMessage(tr("Reminder"), // NOI18N
+                                tr("html>Remember to save your %1 information in your Configuration.<br>(choose Store &gt; Store Configuration... from the File menu)</html>").arg(// NOI18N
+                                        tr("LogixNGs")), // NOI18N
                                 getClassName(),
                                 "remindSaveLogixNG"); // NOI18N
             }
@@ -241,7 +261,7 @@
      *
      * @param e The event heard
      */
-    void reorderPressed(ActionEvent e) {
+    void LogixNGEditor::reorderPressed(JActionEvent* e) {
         if (checkEditConditionalNG()) {
             return;
         }
@@ -249,8 +269,8 @@
         _showReminder = true;
         _nextInOrder = 0;
         _inReorderMode = true;
-        status.setText(Bundle.getMessage("ReorderMessage"));  // NOI18N
-        _conditionalNGTableModel.fireTableDataChanged();
+        status->setText(tr("Please press First, then Next, Next, ... in desired order."));  // NOI18N
+        _conditionalNGTableModel->fireTableDataChanged();
     }
 
     /**
@@ -259,14 +279,14 @@
      * @param row index of the row to put as next in line (instead of the one
      *            that was supposed to be next)
      */
-    void swapConditionalNG(int row) {
-        _curLogixNG.swapConditionalNG(_nextInOrder, row);
+    void LogixNGEditor::swapConditionalNG(int row) {
+        _curLogixNG->swapConditionalNG(_nextInOrder, row);
         _nextInOrder++;
         if (_nextInOrder >= _numConditionalNGs) {
             _inReorderMode = false;
         }
-        //status.setText("");
-        _conditionalNGTableModel.fireTableDataChanged();
+        //status->setText("");
+        _conditionalNGTableModel->fireTableDataChanged();
     }
 
     /**
@@ -274,7 +294,7 @@
      *
      * @param e The event heard
      */
-    void executePressed(ActionEvent e) {
+    void LogixNGEditor::executePressed(JActionEvent* e) {
         if (checkEditConditionalNG()) {
             return;
         }
@@ -282,11 +302,11 @@
         if (_numConditionalNGs > 0) {
             // There are conditionals to calculate
             for (int i = 0; i < _numConditionalNGs; i++) {
-                ConditionalNG c = _curLogixNG.getConditionalNG(i);
-                if (c == null) {
-                    log.error("Invalid conditional system name when executing"); // NOI18N
+                ConditionalNG* c = _curLogixNG->getConditionalNG(i);
+                if (c == nullptr) {
+                    log->error("Invalid conditional system name when executing"); // NOI18N
                 } else {
-                    c.execute();
+                    c->execute();
                 }
             }
             // force the table to update
@@ -303,61 +323,61 @@
      *
      * @param e The event heard
      */
-    void donePressed(ActionEvent e) {
+    void LogixNGEditor::donePressed(JActionEvent* e) {
         if (checkEditConditionalNG()) {
             return;
         }
         // Check if the User Name has been changed
-        String uName = editUserName.getText().trim();
-        if (!(uName.equals(_curLogixNG.getUserName()))) {
+        QString uName = editUserName->text().trimmed();
+        if ((uName != (_curLogixNG->NamedBean::getUserName()))) {
             // user name has changed - check if already in use
             if (uName.length() > 0) {
-                LogixNG p = _logixNG_Manager.getByUserName(uName);
-                if (p != null) {
+                LogixNG* p = (DefaultLogixNG*)_logixNG_Manager->getByUserName(uName)->self();
+                if (p != nullptr) {
                     // LogixNG with this user name already exists
-                    log.error("Failure to update LogixNG with Duplicate User Name: " // NOI18N
+                    log->error("Failure to update LogixNG with Duplicate User Name: " // NOI18N
                             + uName);
-                    JOptionPane.showMessageDialog(_editLogixNGFrame,
-                            Bundle.getMessage("Error6"),
-                            Bundle.getMessage("ErrorTitle"), // NOI18N
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane::showMessageDialog(_editLogixNGFrame,
+                            tr("New user name is already in use. Cannot update this Logix.\nPlease change user name and try again."),
+                            tr("Error"), // NOI18N
+                            JOptionPane::ERROR_MESSAGE);
                     return;
                 }
             }
             // user name is unique, change it
             // user name is unique, change it
             logixNG_Data.clear();
-            logixNG_Data.put("chgUname", uName);  // NOI18N
+            logixNG_Data.insert("chgUname", uName);  // NOI18N
             fireEditorEvent();
         }
         // complete update and activate LogixNG
         finishDone();
     }
 
-    void finishDone() {
+    void LogixNGEditor::finishDone() {
         showSaveReminder();
         _inEditMode = false;
-        if (_editLogixNGFrame != null) {
-            _editLogixNGFrame.setVisible(false);
-            _editLogixNGFrame.dispose();
-            _editLogixNGFrame = null;
+        if (_editLogixNGFrame != nullptr) {
+            _editLogixNGFrame->setVisible(false);
+            _editLogixNGFrame->dispose();
+            _editLogixNGFrame = nullptr;
         }
         logixNG_Data.clear();
-        logixNG_Data.put("Finish", _curLogixNG.getSystemName());   // NOI18N
+        logixNG_Data.insert("Finish", _curLogixNG->NamedBean::getSystemName());   // NOI18N
         fireEditorEvent();
     }
 
     /**
      * Respond to the Delete button in the Edit LogixNG window.
      */
-    void deletePressed() {
+    void LogixNGEditor::deletePressed() {
         if (checkEditConditionalNG()) {
             return;
         }
 
         _showReminder = true;
         logixNG_Data.clear();
-        logixNG_Data.put("Delete", _curLogixNG.getSystemName());   // NOI18N
+        logixNG_Data.insert("Delete", _curLogixNG->NamedBean::getSystemName());   // NOI18N
         fireEditorEvent();
         finishDone();
     }
@@ -367,29 +387,29 @@
      *
      * @param e The event heard
      */
-    void newConditionalNGPressed(ActionEvent e) {
+    void LogixNGEditor::newConditionalNGPressed(JActionEvent* e) {
         if (checkEditConditionalNG()) {
             return;
         }
 
         // make an Add Item Frame
         if (showAddLogixNGFrame()) {
-            if (_systemName.getText().isEmpty() && _autoSystemName.isSelected()) {
-                _systemName.setText(InstanceManager.getDefault(ConditionalNG_Manager.class).getAutoSystemName());
+            if (_systemName->text().isEmpty() && _autoSystemName->isSelected()) {
+                _systemName->setText(((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->AbstractManager::getAutoSystemName());
             }
 
             // Create ConditionalNG
-            _curConditionalNG =
-                    InstanceManager.getDefault(ConditionalNG_Manager.class)
-                            .createConditionalNG(_curLogixNG, _systemName.getText(), _addUserName.getText());
+            _curConditionalNG = ((DefaultConditionalNGManager*)
+                    InstanceManager::getDefault("ConditionalNG_Manager"))
+                            ->createConditionalNG(_curLogixNG, _systemName->text(), _addUserName->text());
 
-            if (_curConditionalNG == null) {
+            if (_curConditionalNG == nullptr) {
                 // should never get here unless there is an assignment conflict
-                log.error("Failure to create ConditionalNG"); // NOI18N
+                log->error("Failure to create ConditionalNG"); // NOI18N
                 return;
             }
             // add to LogixNG at the end of the calculate order
-            _conditionalNGTableModel.fireTableRowsInserted(_numConditionalNGs, _numConditionalNGs);
+            _conditionalNGTableModel->fireTableRowsInserted(_numConditionalNGs, _numConditionalNGs);
             _conditionalRowNumber = _numConditionalNGs;
             _numConditionalNGs++;
             _showReminder = true;
@@ -400,135 +420,140 @@
     /**
      * Create or edit action/expression dialog.
      */
-    /*private*/ bool showAddLogixNGFrame() {
+    /*private*/ bool LogixNGEditor::showAddLogixNGFrame() {
 
-        Atomicbool result = new Atomicbool(false);
+        AtomicBoolean* result = new AtomicBoolean(false);
 
-        JDialog dialog  = new JDialog(
+        JDialog* dialog  = new JDialog(
                 _editLogixNGFrame,
-                Bundle.getMessage("AddConditionalNGDialogTitle"),
+                tr("Add ConditionalNG"),
                 true);
 //        frame.addHelpMenu(
 //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
-        Container contentPanel = dialog.getContentPane();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        QWidget* contentPanel = dialog->getContentPane();
+        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
-        JPanel p;
+        JPanel* p;
         p = new JPanel();
-//        p.setLayout(new FlowLayout());
-        p.setLayout(new java.awt.GridBagLayout());
-        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+//        p->setLayout(new FlowLayout());
+        GridBagLayout* pLayout;
+        p->setLayout(pLayout = new GridBagLayout());
+        GridBagConstraints c = GridBagConstraints();
         c.gridwidth = 1;
         c.gridheight = 1;
         c.gridx = 0;
         c.gridy = 0;
-        c.anchor = java.awt.GridBagConstraints.EAST;
-        p.add(_sysNameLabel, c);
+        c.anchor = GridBagConstraints::EAST;
+        pLayout->addWidget(_sysNameLabel, c);
         c.gridy = 1;
-        p.add(_userNameLabel, c);
+        pLayout->addWidget(_userNameLabel, c);
         c.gridx = 1;
         c.gridy = 0;
-        c.anchor = java.awt.GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints::WEST;
         c.weightx = 1.0;
-        c.fill = java.awt.GridBagConstraints.HORIZONTAL;  // text field will expand
-        p.add(_systemName, c);
+        c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
+        pLayout->addWidget(_systemName, c);
         c.gridy = 1;
-        p.add(_addUserName, c);
+        pLayout->addWidget(_addUserName, c);
         c.gridx = 2;
         c.gridy = 1;
-        c.anchor = java.awt.GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints::WEST;
         c.weightx = 1.0;
-        c.fill = java.awt.GridBagConstraints.HORIZONTAL;  // text field will expand
+        c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
         c.gridy = 0;
-        p.add(_autoSystemName, c);
+        pLayout->addWidget(_autoSystemName, c);
 
-        _systemName.setText("");
-        _systemName.setEnabled(true);
-        _addUserName.setText("");
+        _systemName->setText("");
+        _systemName->setEnabled(true);
+        _addUserName->setText("");
 
-        _addUserName.setToolTipText(Bundle.getMessage("UserNameHint"));    // NOI18N
-//        _addUserName.setToolTipText("LogixNGUserNameHint");    // NOI18N
-        _systemName.setToolTipText(Bundle.getMessage("LogixNGSystemNameHint"));   // NOI18N
-//        _systemName.setToolTipText("LogixNGSystemNameHint");   // NOI18N
-        contentPanel.add(p);
+        _addUserName->setToolTip(tr("Enter user name for new LogixNG, e.g. Signal 2 Control"));    // NOI18N
+//        _addUserName->setToolTipText("LogixNGUserNameHint");    // NOI18N
+        _systemName->setToolTip(tr("Enter system name for new LogixNG, e.g. IQ13"));   // NOI18N
+//        _systemName->setToolTipText("LogixNGSystemNameHint");   // NOI18N
+        contentPanel->layout()->addWidget(p);
         // set up message
-        JPanel panel3 = new JPanel();
-        panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
-        JPanel panel31 = new JPanel();
-//        panel31.setLayout(new FlowLayout());
-        JPanel panel32 = new JPanel();
-        JLabel message1 = new JLabel(Bundle.getMessage("AddMessage1"));  // NOI18N
-        panel31.add(message1);
-        JLabel message2 = new JLabel(Bundle.getMessage("AddMessage2"));  // NOI18N
-        panel32.add(message2);
+        JPanel* panel3 = new JPanel();
+        panel3->setLayout(new QVBoxLayout());//panel3, BoxLayout.Y_AXIS));
+        JPanel* panel31 = new JPanel();
+//        panel31->setLayout(new FlowLayout());
+        JPanel* panel32 = new JPanel();
+        JLabel* message1 = new JLabel(tr("Please enter system name and user name, then"));  // NOI18N
+        panel31->layout()->addWidget(message1);
+        JLabel* message2 = new JLabel(tr("click [Create]."));  // NOI18N
+        panel32->layout()->addWidget(message2);
 
         // set up create and cancel buttons
-        JPanel panel5 = new JPanel();
-        panel5.setLayout(new FlowLayout());
+        JPanel* panel5 = new JPanel();
+        panel5->setLayout(new FlowLayout());
 
         // Get panel for the item
-        panel3.add(panel31);
-        panel3.add(panel32);
-        contentPanel.add(panel3);
+        panel3->layout()->addWidget(panel31);
+        panel3->layout()->addWidget(panel32);
+        contentPanel->layout()->addWidget(panel3);
 
         // Cancel
-        JButton cancel = new JButton(Bundle.getMessage("ButtonCancel"));    // NOI18N
-        panel5.add(cancel);
-        cancel.addActionListener((ActionEvent e) -> {
-            dialog.dispose();
+        JButton* cancel = new JButton(tr("Cancel"));    // NOI18N
+        panel5->layout()->addWidget(cancel);
+        connect(cancel, &JButton::clicked, [=] {
+            dialog->dispose();
         });
-//        cancel.setToolTipText(Bundle.getMessage("CancelLogixButtonHint"));      // NOI18N
-        cancel.setToolTipText("CancelLogixButtonHint");      // NOI18N
+//        cancel->setToolTipText(Bundle->getMessage("CancelLogixButtonHint"));      // NOI18N
+        cancel->setToolTip("CancelLogixButtonHint");      // NOI18N
 
-        JButton create = new JButton(Bundle.getMessage("ButtonCreate"));  // NOI18N
-        create.addActionListener((ActionEvent e2) -> {
-            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefMgr) -> {
-                prefMgr.setCheckboxPreferenceState(systemNameAuto, _autoSystemName.isSelected());
-            });
-            result.set(true);
-            dialog.dispose();
-        });
-        create.setToolTipText(Bundle.getMessage("CreateButtonHint"));  // NOI18N
-
-        panel5.add(create);
-
-        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-            //@Override
-            /*public*/  void windowClosing(java.awt.event.WindowEvent e) {
-                dialog.dispose();
+        JButton* create = new JButton(tr("Create"));  // NOI18N
+        connect(create, &JButton::clicked, [=]{
+            JmriUserPreferencesManager* prefMgr = (JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+            if(prefMgr){
+                prefMgr->setCheckboxPreferenceState(systemNameAuto, _autoSystemName->isSelected());
             }
+           // });
+            result->set(true);
+            dialog->dispose();
         });
+        create->setToolTip(tr("Press to create"));  // NOI18N
 
-        contentPanel.add(panel5);
+        panel5->layout()->addWidget(create);
 
-        _autoSystemName.addItemListener((ItemEvent e) -> {
+//        dialog.addWindowListener(new event.WindowAdapter() {
+//            //@Override
+//            /*public*/  void windowClosing(event.WindowEvent e) {
+//                dialog.dispose();
+//            }
+//        });
+
+        contentPanel->layout()->addWidget(panel5);
+
+        connect(_autoSystemName, &JCheckBox::clicked, [=]{
             autoSystemName();
         });
-//        addLogixNGFrame.setLocationRelativeTo(component);
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
+//        addLogixNGFrame->setLocationRelativeTo(component);
+        dialog->pack();
+        dialog->setLocationRelativeTo(nullptr);
 
-        _autoSystemName.setSelected(true);
-        InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefMgr) -> {
-            _autoSystemName.setSelected(prefMgr.getCheckboxPreferenceState(systemNameAuto, true));
-        });
+        _autoSystemName->setSelected(true);
+        JmriUserPreferencesManager* prefMgr = (JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager"); //.ifPresent((prefMgr) -> {
+        if(prefMgr)
+        {
+        _autoSystemName->setSelected(prefMgr->getCheckboxPreferenceState(systemNameAuto, true));
+        }//);
 
-        dialog.setVisible(true);
+        dialog->setVisible(true);
 
-        return result.get();
+        return result->get();
     }
 
     /**
      * Enable/disable fields for data entry when user selects to have system
      * name automatically generated.
      */
-    void autoSystemName() {
-        if (_autoSystemName.isSelected()) {
-            _systemName.setEnabled(false);
-            _sysNameLabel.setEnabled(false);
+    void LogixNGEditor::autoSystemName() {
+        if (_autoSystemName->isSelected()) {
+            _systemName->setEnabled(false);
+            _sysNameLabel->setEnabled(false);
         } else {
-            _systemName.setEnabled(true);
-            _sysNameLabel.setEnabled(true);
+            _systemName->setEnabled(true);
+            _sysNameLabel->setEnabled(true);
         }
     }
 
@@ -541,18 +566,18 @@
      * (newConditionalPressed) or via an Edit button in the Conditional table of
      * the Edit Logix window.
      */
-    void makeEditConditionalNGWindow() {
+    void LogixNGEditor::makeEditConditionalNGWindow() {
         // Create a new LogixNG edit view, add the listener.
         _treeEdit = new ConditionalNGEditor(_curConditionalNG);
-        _treeEdit.initComponents();
-        _treeEdit.setVisible(true);
+        _treeEdit->initComponents();
+        _treeEdit->setVisible(true);
         _inEditConditionalNGMode = true;
         _editConditionalNGFrame = _treeEdit;
-        _editConditionalNGFrame.addHelpMenu(
+        _editConditionalNGFrame->addHelpMenu(
                 "package.jmri.jmrit.logixng.ConditionalNGEditor", true);  // NOI18N
 
-        /*final*/ LogixNGEditor logixNGEditor = this;
-        _treeEdit.addLogixNGEventListener(new LogixNGEventListenerImpl(logixNGEditor));
+        /*final*/ LogixNGEditor* logixNGEditor = this;
+        _treeEdit->addLogixNGEventListener(new LogixNGEventListenerImpl(logixNGEditor));
     }
 
     /**
@@ -562,16 +587,16 @@
      * (newConditionalPressed) or via an Edit button in the Conditional table of
      * the Edit Logix window.
      */
-    void makeDebugConditionalNGWindow() {
+    void LogixNGEditor::makeDebugConditionalNGWindow() {
         // Create a new LogixNG edit view, add the listener.
         _debugger = new ConditionalNGDebugger(_curConditionalNG);
-        _debugger.initComponents();
-        _debugger.setVisible(true);
+        _debugger->initComponents();
+        _debugger->setVisible(true);
         _inEditConditionalNGMode = true;
         _editConditionalNGFrame = _debugger;
 
-        /*final*/ LogixNGEditor logixNGEditor = this;
-        _debugger.addLogixNGEventListener(new LogixNG_DebuggerEventListenerImpl(logixNGEditor));
+        /*final*/ LogixNGEditor* logixNGEditor = this;
+        _debugger->addLogixNGEventListener(new LogixNG_DebuggerEventListenerImpl(logixNGEditor));
     }
 
     // ------------ Methods for Edit ConditionalNG Pane ------------
@@ -581,14 +606,14 @@
      *
      * @param rx index (row number) of ConditionalNG to be edited
      */
-    void editConditionalNGPressed(int rx) {
+    void LogixNGEditor::editConditionalNGPressed(int rx) {
         if (checkEditConditionalNG()) {
             return;
         }
         // get ConditionalNG to edit
-        _curConditionalNG = _curLogixNG.getConditionalNG(rx);
-        if (_curConditionalNG == null) {
-            log.error("Attempted edit of non-existant conditional.");  // NOI18N
+        _curConditionalNG = _curLogixNG->getConditionalNG(rx);
+        if (_curConditionalNG == nullptr) {
+            log->error("Attempted edit of non-existant conditional.");  // NOI18N
             return;
         }
         _conditionalRowNumber = rx;
@@ -601,14 +626,14 @@
      *
      * @param rx index (row number) of ConditionalNG to be edited
      */
-    void debugConditionalNGPressed(int rx) {
+    void LogixNGEditor::debugConditionalNGPressed(int rx) {
         if (checkEditConditionalNG()) {
             return;
         }
         // get ConditionalNG to edit
-        _curConditionalNG = _curLogixNG.getConditionalNG(rx);
-        if (_curConditionalNG == null) {
-            log.error("Attempted edit of non-existant conditional.");  // NOI18N
+        _curConditionalNG = _curLogixNG->getConditionalNG(rx);
+        if (_curConditionalNG == nullptr) {
+            log->error("Attempted edit of non-existant conditional.");  // NOI18N
             return;
         }
         _conditionalRowNumber = rx;
@@ -621,31 +646,31 @@
      *
      * @return true if this is the case, after showing dialog to user
      */
-    /*private*/ bool checkEditConditionalNG() {
+    /*private*/ bool LogixNGEditor::checkEditConditionalNG() {
         if (_inEditConditionalNGMode) {
             // Already editing a ConditionalNG, ask for completion of that edit
-            JOptionPane.showMessageDialog(_editConditionalNGFrame,
-                    Bundle.getMessage("Error_ConditionalNGInEditMode", _curConditionalNG.getSystemName()), // NOI18N
-                    Bundle.getMessage("ErrorTitle"), // NOI18N
-                    JOptionPane.ERROR_MESSAGE);
-            _editConditionalNGFrame.setVisible(true);
+            JOptionPane::showMessageDialog(_editConditionalNGFrame,
+                    tr("Edit ConditionalNG(s) %1 in progress. Please complete edit of any ConditionalNGs and try again.").arg(_curConditionalNG->NamedBean::getSystemName()), // NOI18N
+                    tr("Error"), // NOI18N
+                    JOptionPane::ERROR_MESSAGE);
+            _editConditionalNGFrame->setVisible(true);
             return true;
         }
         return false;
     }
 
-    bool checkConditionalNGUserName(String uName, LogixNG logixNG) {
-        if ((uName != null) && (!(uName.equals("")))) {
-            for (int i=0; i < logixNG.getNumConditionalNGs(); i++) {
-                ConditionalNG p = logixNG.getConditionalNG(i);
-                if (uName.equals(p.getUserName())) {
+    bool LogixNGEditor::checkConditionalNGUserName(QString uName, LogixNG* logixNG) {
+        if ((uName != "") && ((uName != ("")))) {
+            for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
+                ConditionalNG* p = logixNG->getConditionalNG(i);
+                if (uName == (p->NamedBean::getUserName())) {
                     // ConditionalNG with this user name already exists
-                    log.error("Failure to update ConditionalNG with Duplicate User Name: " // NOI18N
+                    log->error("Failure to update ConditionalNG with Duplicate User Name: " // NOI18N
                             + uName);
-                    JOptionPane.showMessageDialog(_editConditionalNGFrame,
-                            Bundle.getMessage("Error10"),    // NOI18N
-                            Bundle.getMessage("ErrorTitle"), // NOI18N
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane::showMessageDialog(_editConditionalNGFrame,
+                           tr("New user name is already in use. Cannot update this Conditional.\nPlease change user name and try again."),    // NOI18N
+                            tr("Error"), // NOI18N
+                            JOptionPane::ERROR_MESSAGE);
                     return false;
                 }
             }
@@ -659,10 +684,10 @@
      * @param sName system name of bean to be checked
      * @return false if sName is empty string or null
      */
-    bool checkConditionalNGSystemName(String sName) {
-        if ((sName != null) && (!(sName.equals("")))) {
-            ConditionalNG p = _curLogixNG.getConditionalNG(sName);
-            if (p != null) {
+    bool LogixNGEditor::checkConditionalNGSystemName(QString sName) {
+        if ((sName != "") && ((sName!=("")))) {
+            ConditionalNG* p = _curLogixNG->getConditionalNG(sName);
+            if (p != nullptr) {
                 return false;
             }
         } else {
@@ -676,54 +701,47 @@
     /**
      * Table model for ConditionalNGs in the Edit LogixNG pane.
      */
-    /*public*/  /*final*/ class ConditionalNGTableModel extends AbstractTableModel
-            implements PropertyChangeListener {
+//    /*public*/  /*final*/ class ConditionalNGTableModel extends AbstractTableModel
+//            implements PropertyChangeListener {
 
-        /*public*/  static /*final*/ int SNAME_COLUMN = 0;
-        /*public*/  static /*final*/ int UNAME_COLUMN = SNAME_COLUMN + 1;
-        /*public*/  static /*final*/ int THREAD_COLUMN = UNAME_COLUMN + 1;
-        /*public*/  static /*final*/ int BUTTON_COLUMN = THREAD_COLUMN + 1;
-        /*public*/  static /*final*/ int BUTTON_DEBUG_COLUMN = BUTTON_COLUMN + 1;
-        /*public*/  static /*final*/ int BUTTON_DELETE_COLUMN = BUTTON_DEBUG_COLUMN + 1;
-        /*public*/  static /*final*/ int BUTTON_EDIT_THREADS_COLUMN = BUTTON_DELETE_COLUMN + 1;
-        /*public*/  static /*final*/ int NUM_COLUMNS = BUTTON_EDIT_THREADS_COLUMN + 1;
-
-        /*private*/ bool _showStartupThreads;
+//        /*private*/ bool _showStartupThreads;
 
 
-        /*public*/  ConditionalNGTableModel() {
-            super();
+        /*public*/  ConditionalNGTableModel::ConditionalNGTableModel(QObject* parent) : AbstractTableModel(parent){
+            //super();
+            setObjectName("ConditionalNGTableModel");
+            editor = (LogixNGEditor*)parent;
             updateConditionalNGListeners();
         }
 
-        synchronized void updateConditionalNGListeners() {
+        /*synchronized*/ void ConditionalNGTableModel::updateConditionalNGListeners() {
             // first, remove listeners from the individual objects
-            ConditionalNG c;
-            _numConditionalNGs = _curLogixNG.getNumConditionalNGs();
-            for (int i = 0; i < _numConditionalNGs; i++) {
+            ConditionalNG* c;
+            editor->_numConditionalNGs = editor->_curLogixNG->getNumConditionalNGs();
+            for (int i = 0; i < editor->_numConditionalNGs; i++) {
                 // if object has been deleted, it's not here; ignore it
-                c = _curLogixNG.getConditionalNG(i);
-                if (c != null) {
-                    c.removePropertyChangeListener(this);
+                c = editor->_curLogixNG->getConditionalNG(i);
+                if (c != nullptr) {
+                    c->NamedBean::removePropertyChangeListener(this);
                 }
             }
             // and add them back in
-            for (int i = 0; i < _numConditionalNGs; i++) {
-                c = _curLogixNG.getConditionalNG(i);
-                if (c != null) {
-                    c.addPropertyChangeListener(this);
+            for (int i = 0; i < editor->_numConditionalNGs; i++) {
+                c = editor->_curLogixNG->getConditionalNG(i);
+                if (c != nullptr) {
+                    c->NamedBean::addPropertyChangeListener(this);
                 }
             }
         }
 
-        /*public*/  void setShowStartupThreads(bool showStartupThreads) {
+        /*public*/  void ConditionalNGTableModel::setShowStartupThreads(bool showStartupThreads) {
             _showStartupThreads = showStartupThreads;
-            fireTableRowsUpdated(0, _curLogixNG.getNumConditionalNGs()-1);
+            fireTableRowsUpdated(0, editor->_curLogixNG->getNumConditionalNGs()-1);
         }
 
         //@Override
-        /*public*/  void propertyChange(java.beans.PropertyChangeEvent e) {
-            if (e.getPropertyName().equals("length")) {  // NOI18N
+        /*public*/  void ConditionalNGTableModel::propertyChange(PropertyChangeEvent* e) {
+            if (e->getPropertyName() == ("length")) {  // NOI18N
                 // a new NamedBean is available in the manager
                 updateConditionalNGListeners();
                 fireTableDataChanged();
@@ -743,57 +761,61 @@
          * @param e the event heard
          * @return true if a change in State or Appearance was heard
          */
-        bool matchPropertyName(java.beans.PropertyChangeEvent e) {
-            return (e.getPropertyName().contains("UserName") ||      // NOI18N
-                    e.getPropertyName().contains("Thread"));  // NOI18N
+        bool ConditionalNGTableModel::matchPropertyName(PropertyChangeEvent* e) {
+            return (e->getPropertyName().contains("UserName") ||      // NOI18N
+                    e->getPropertyName().contains("Thread"));  // NOI18N
         }
 
         //@Override
-        /*public*/  Class<?> getColumnClass(int c) {
+        /*public*/  /*Class<?>*/QString ConditionalNGTableModel::getColumnClass(int c) const{
             if ((c == BUTTON_COLUMN)
                     || (c == BUTTON_DEBUG_COLUMN)
                     || (c == BUTTON_DELETE_COLUMN)
                     || (c == BUTTON_EDIT_THREADS_COLUMN)) {
-                return JButton.class;
+                return "JButton";
             }
-            return String.class;
+            return "String";
         }
 
         //@Override
-        /*public*/  int getColumnCount() {
+        /*public*/  int ConditionalNGTableModel::columnCount(const QModelIndex &parent) const {
             return NUM_COLUMNS;
         }
 
         //@Override
-        /*public*/  int getRowCount() {
-            return (_numConditionalNGs);
+        /*public*/  int ConditionalNGTableModel::rowCount(const QModelIndex &parent) const  {
+            return (editor->_numConditionalNGs);
         }
 
         //@Override
-        /*public*/  bool isCellEditable(int r, int c) {
-            if (!_inReorderMode) {
+        /*public*/  Qt::ItemFlags ConditionalNGTableModel::flags(const QModelIndex &index) const {
+         int c= index.column();
+         int r = index.row();
+            if (!editor->_inReorderMode) {
                 return ((c == UNAME_COLUMN)
                         || (c == BUTTON_COLUMN)
-                        || ((c == BUTTON_DEBUG_COLUMN) && InstanceManager.getDefault(LogixNGPreferences.class).getInstallDebugger())
+                        || ((c == BUTTON_DEBUG_COLUMN) && ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger())
                         || (c == BUTTON_DELETE_COLUMN)
-                        || (c == BUTTON_EDIT_THREADS_COLUMN));
+                        || (c == BUTTON_EDIT_THREADS_COLUMN))?Qt::ItemIsEditable | Qt::ItemIsEnabled: Qt::ItemIsEnabled;
             } else if (c == BUTTON_COLUMN) {
-                if (r >= _nextInOrder) {
-                    return (true);
+                if (r >= editor->_nextInOrder) {
+                    return (Qt::ItemIsEditable | Qt::ItemIsEnabled);
                 }
             }
-            return (false);
+            return (Qt::ItemIsEnabled);
         }
 
         //@Override
-        /*public*/  String getColumnName(int col) {
-            switch (col) {
+        /*public*/  QVariant ConditionalNGTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
+         if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
+         {
+            switch (section) {
                 case SNAME_COLUMN:
-                    return Bundle.getMessage("ColumnSystemName");  // NOI18N
+                    return tr("SystemName");  // NOI18N
                 case UNAME_COLUMN:
-                    return Bundle.getMessage("ColumnUserName");  // NOI18N
+                    return tr("UserName");  // NOI18N
                 case THREAD_COLUMN:
-                    return Bundle.getMessage("ConditionalNG_Table_ColumnThreadName");  // NOI18N
+                    return tr("Thread");  // NOI18N
                 case BUTTON_COLUMN:
                     return ""; // no label
                 case BUTTON_DEBUG_COLUMN:
@@ -805,147 +827,158 @@
                 default:
                     throw new IllegalArgumentException("Unknown column");
             }
+         }
         }
 
-        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "DB_DUPLICATE_SWITCH_CLAUSES",
-                justification = "better to keep cases in column order rather than to combine")
-        /*public*/  int getPreferredWidth(int col) {
+        //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "DB_DUPLICATE_SWITCH_CLAUSES",
+        //        justification = "better to keep cases in column order rather than to combine")
+        /*public*/  int ConditionalNGTableModel::getPreferredWidth(int col) {
             switch (col) {
                 case SNAME_COLUMN:
-                    return new JTextField(6).getPreferredSize().width;
+                    return JTextField(6).getPreferredSize().width();
                 case UNAME_COLUMN:
-                    return new JTextField(17).getPreferredSize().width;
+                    return JTextField(17).getPreferredSize().width();
                 case THREAD_COLUMN:
-                    return new JTextField(10).getPreferredSize().width;
+                    return JTextField(10).getPreferredSize().width();
                 case BUTTON_COLUMN:
-                    return new JTextField(6).getPreferredSize().width;
+                    return JTextField(6).getPreferredSize().width();
                 case BUTTON_DEBUG_COLUMN:
-                    return new JTextField(6).getPreferredSize().width;
+                    return JTextField(6).getPreferredSize().width();
                 case BUTTON_DELETE_COLUMN:
-                    return new JTextField(6).getPreferredSize().width;
+                    return JTextField(6).getPreferredSize().width();
                 case BUTTON_EDIT_THREADS_COLUMN:
-                    return new JTextField(12).getPreferredSize().width;
+                    return JTextField(12).getPreferredSize().width();
                 default:
                     throw new IllegalArgumentException("Unknown column");
             }
         }
 
         //@Override
-        /*public*/  Object getValueAt(int r, int col) {
+        /*public*/  QVariant ConditionalNGTableModel::data(const QModelIndex &index, int role) const {
+         if(role == Qt::DisplayRole)
+         {
+          int col = index.column();
+          int r = index.row();
             int rx = r;
-            if ((rx > _numConditionalNGs) || (_curLogixNG == null)) {
-                return null;
+            if ((rx > editor->_numConditionalNGs) || (editor->_curLogixNG == nullptr)) {
+                return QVariant();
             }
             switch (col) {
                 case BUTTON_COLUMN:
-                    if (!_inReorderMode) {
-                        return Bundle.getMessage("ButtonEdit");  // NOI18N
-                    } else if (_nextInOrder == 0) {
-                        return Bundle.getMessage("ButtonFirst");  // NOI18N
-                    } else if (_nextInOrder <= r) {
-                        return Bundle.getMessage("ButtonNext");  // NOI18N
+                    if (!editor->_inReorderMode) {
+                        return tr("Edit");  // NOI18N
+                    } else if (editor->_nextInOrder == 0) {
+                        return tr("First");  // NOI18N
+                    } else if (editor->_nextInOrder <= r) {
+                        return tr("ButtonNext");  // NOI18N
                     } else {
-                        return Integer.toString(rx + 1);
+                        return /*Integer.toString*/(rx + 1);
                     }
                 case BUTTON_DEBUG_COLUMN:
-                    return Bundle.getMessage("ConditionalNG_Table_ButtonDebug");  // NOI18N
+                    return tr("Debug");  // NOI18N
                 case BUTTON_DELETE_COLUMN:
-                    return Bundle.getMessage("ButtonDelete");  // NOI18N
+                    return tr("Delete");  // NOI18N
                 case BUTTON_EDIT_THREADS_COLUMN:
-                    return Bundle.getMessage("ConditionalNG_Table_ButtonEditThreads");  // NOI18N
+                    return tr("Edit threads");  // NOI18N
                 case SNAME_COLUMN:
-                    return _curLogixNG.getConditionalNG(rx);
+                    return editor->_curLogixNG->getConditionalNG(rx)->NamedBean::getSystemName();
                 case UNAME_COLUMN: {
-                    //log.debug("ConditionalNGTableModel: {}", _curLogixNG.getConditionalNGByNumberOrder(rx));  // NOI18N
-                    ConditionalNG c = _curLogixNG.getConditionalNG(rx);
-                    if (c != null) {
-                        return c.getUserName();
+                    //log.debug("ConditionalNGTableModel: {}", _curLogixNG->getConditionalNGByNumberOrder(rx));  // NOI18N
+                    ConditionalNG* c = editor->_curLogixNG->getConditionalNG(rx);
+                    if (c != nullptr) {
+                        return c->NamedBean::getUserName();
                     }
                     return "";
                 }
                 case THREAD_COLUMN:
                     if (_showStartupThreads) {
-                        return LogixNG_Thread.getThread(
-                                _curLogixNG.getConditionalNG(r).getStartupThreadId())
-                                .getThreadName();
+                        return LogixNG_Thread::getThread(
+                                editor->_curLogixNG->getConditionalNG(r)->getStartupThreadId())
+                                ->getThreadName();
                     } else {
-                        return _curLogixNG.getConditionalNG(r).getCurrentThread().getThreadName();
+                        return editor->_curLogixNG->getConditionalNG(r)->getCurrentThread()->getThreadName();
                     }
                 default:
                     throw new IllegalArgumentException("Unknown column");
             }
+         }
+         return QVariant();
         }
 
-        /*private*/ void buttomColumnClicked(int row, int col) {
-            if (_inReorderMode) {
-                swapConditionalNG(row);
+        /*private*/ void ConditionalNGTableModel::buttomColumnClicked(int row, int col) {
+            if (editor->_inReorderMode) {
+                editor->swapConditionalNG(row);
             } else {
                 // Use separate Runnable so window is created on top
-                class WindowMaker implements Runnable {
+//                class WindowMaker implements Runnable {
 
-                    int row;
+//                    int row;
 
-                    WindowMaker(int r) {
-                        row = r;
-                    }
+//                    WindowMaker(int r) {
+//                        row = r;
+//                    }
 
-                    //@Override
-                    /*public*/  void run() {
-                        editConditionalNGPressed(row);
-                    }
+//                    //@Override
+//                    /*public*/  void run() {
+                        editor->editConditionalNGPressed(row);
+//                    }
                 }
-                WindowMaker t = new WindowMaker(row);
-                javax.swing.SwingUtilities.invokeLater(t);
+//                WindowMaker t = new WindowMaker(row);
+//                javax.swing.SwingUtilities.invokeLater(t);
+//            }
+        }
+
+        /*private*/ void ConditionalNGTableModel::buttomDebugClicked(int row, int col) {
+            if (editor->_inReorderMode) {
+                editor->swapConditionalNG(row);
+            } else {
+                // Use separate Runnable so window is created on top
+//                class WindowMaker implements Runnable {
+
+//                    int row;
+
+//                    WindowMaker(int r) {
+//                        row = r;
+//                    }
+
+//                    //@Override
+//                    /*public*/  void run() {
+                        editor->debugConditionalNGPressed(row);
+//                    }
+//                }
+//                WindowMaker t = new WindowMaker(row);
+//                javax.swing.SwingUtilities.invokeLater(t);
             }
         }
 
-        /*private*/ void buttomDebugClicked(int row, int col) {
-            if (_inReorderMode) {
-                swapConditionalNG(row);
-            } else {
-                // Use separate Runnable so window is created on top
-                class WindowMaker implements Runnable {
-
-                    int row;
-
-                    WindowMaker(int r) {
-                        row = r;
-                    }
-
-                    //@Override
-                    /*public*/  void run() {
-                        debugConditionalNGPressed(row);
-                    }
-                }
-                WindowMaker t = new WindowMaker(row);
-                javax.swing.SwingUtilities.invokeLater(t);
-            }
+        /*private*/ void ConditionalNGTableModel::deleteConditionalNG(int row) {
+            LogixNGEditor_DeleteBeanWorker* worker = new LogixNGEditor_DeleteBeanWorker(editor->_curLogixNG->getConditionalNG(row), row, editor);
+            worker->execute();
         }
 
-        /*private*/ void deleteConditionalNG(int row) {
-            DeleteBeanWorker worker = new DeleteBeanWorker(_curLogixNG.getConditionalNG(row), row);
-            worker.execute();
-        }
-
-        /*private*/ void changeUserName(Object value, int row) {
-            String uName = (String) value;
-            ConditionalNG cn = _curLogixNG.getConditionalNGByUserName(uName);
-            if (cn == null) {
-                ConditionalNG cdl = _curLogixNG.getConditionalNG(row);
-                cdl.setUserName(uName.trim()); // N11N
+        /*private*/ void ConditionalNGTableModel::changeUserName(QVariant value, int row) {
+            QString uName =  value.toString();
+            ConditionalNG* cn =  editor->_curLogixNG->getConditionalNGByUserName(uName);
+            if (cn == nullptr) {
+                ConditionalNG* cdl =  editor->_curLogixNG->getConditionalNG(row);
+                cdl->NamedBean::setUserName(uName.trimmed()); // N11N
                 fireTableRowsUpdated(row, row);
             } else {
                 // Duplicate user name
-                if (cn != _curLogixNG.getConditionalNG(row)) {
-                    messageDuplicateConditionalNGUserName(cn.getSystemName());
+                if (cn !=  editor->_curLogixNG->getConditionalNG(row)) {
+                    messageDuplicateConditionalNGUserName(cn->NamedBean::getSystemName());
                 }
             }
         }
 
         //@Override
-        /*public*/  void setValueAt(Object value, int row, int col) {
-            if ((row > _numConditionalNGs) || (_curLogixNG == null)) {
-                return;
+        /*public*/  bool ConditionalNGTableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+         int row = index.row();
+         int col = index.column();
+         if(role == Qt::EditRole)
+         {
+            if ((row >  editor->_numConditionalNGs) || ( editor->_curLogixNG == nullptr)) {
+                return false;
             }
             switch (col) {
                 case BUTTON_COLUMN:
@@ -958,8 +991,8 @@
                     deleteConditionalNG(row);
                     break;
                 case BUTTON_EDIT_THREADS_COLUMN:
-                    EditThreadsDialog dialog = new EditThreadsDialog(_curLogixNG.getConditionalNG(row));
-                    dialog.showDialog();
+// TODO:                    EditThreadsDialog* dialog = new EditThreadsDialog(_curLogixNG->getConditionalNG(row));
+//                    dialog.showDialog();
                     break;
                 case SNAME_COLUMN:
                     throw new IllegalArgumentException("System name cannot be changed");
@@ -971,6 +1004,7 @@
                     throw new IllegalArgumentException("Unknown column");
             }
         }
+        return false;
     }
 
     /**
@@ -978,15 +1012,15 @@
      *
      * @param svName proposed name that duplicates an existing name
      */
-    void messageDuplicateConditionalNGUserName(String svName) {
-        JOptionPane.showMessageDialog(null,
-                Bundle.getMessage("Error30", svName),
-                Bundle.getMessage("ErrorTitle"), // NOI18N
-                JOptionPane.ERROR_MESSAGE);
+    void ConditionalNGTableModel::messageDuplicateConditionalNGUserName(QString svName) {
+        JOptionPane::showMessageDialog(nullptr,
+                tr("Duplicate user name error. Entered user name is already in use by Conditional \"%1\".\nPlease enter a different user name from others in this table.").arg(svName),
+                tr("Error"), // NOI18N
+                JOptionPane::ERROR_MESSAGE);
     }
 
-    /*protected*/ String getClassName() {
-        return LogixNGEditor.class.getName();
+    /*protected*/ QString LogixNGEditor::getClassName() {
+        return "jmri.jmrit.logixng.tools.swing.LogixNGEditor";
     }
 
 
@@ -999,24 +1033,24 @@
     // 1) Notify the calling LogixNG that the LogixNG user name has been changed.
     // 2) Notify the calling LogixNG that the conditional view is closing
     // 3) Notify the calling LogixNG that it is to be deleted
-    /**
-     * Create a custom listener event.
-     */
-    /*public*/  interface LogixNGEventListener extends EventListener {
+//    /**
+//     * Create a custom listener event.
+//     */
+//    /*public*/  interface LogixNGEventListener extends EventListener {
 
-        void logixNGEventOccurred();
-    }
+//        void logixNGEventOccurred();
+//    }
 
-    /**
-     * Maintain a list of listeners -- normally only one.
-     */
-    List<EditorEventListener> listenerList = new ArrayList<>();
+//    /**
+//     * Maintain a list of listeners -- normally only one.
+//     */
+//    List<EditorEventListener> listenerList = new ArrayList<>();
 
-    /**
-     * This contains a list of commands to be processed by the listener
-     * recipient.
-     */
-    /*private*/ HashMap<String, String> logixNG_Data = new HashMap<>();
+//    /**
+//     * This contains a list of commands to be processed by the listener
+//     * recipient.
+//     */
+//    /*private*/ HashMap<String, String> logixNG_Data = new HashMap<>();
 
     /**
      * Add a listener.
@@ -1024,8 +1058,8 @@
      * @param listener The recipient
      */
     //@Override
-    /*public*/  void addEditorEventListener(EditorEventListener listener) {
-        listenerList.add(listener);
+    /*public*/  void LogixNGEditor::addEditorEventListener(EditorEventListener* listener) {
+        listenerList.append(listener);
     }
 
     /**
@@ -1034,115 +1068,116 @@
      * @param listener The recipient
      */
     //@Override
-    /*public*/  void removeEditorEventListener(EditorEventListener listener) {
-        listenerList.remove(listener);
+    /*public*/  void LogixNGEditor::removeEditorEventListener(EditorEventListener* listener) {
+        listenerList.removeOne(listener);
     }
 
     /**
      * Notify the listeners to check for new data.
      */
-    /*private*/ void fireEditorEvent() {
-        for (EditorEventListener l : listenerList) {
-            l.editorEventOccurred(logixNG_Data);
+    /*private*/ void LogixNGEditor::fireEditorEvent() {
+        for (EditorEventListener* l : listenerList) {
+            l->editorEventOccurred(logixNG_Data);
         }
     }
 
 
-    /*private*/ class LogixNGEventListenerImpl implements ConditionalNGEditor.ConditionalNGEventListener {
+//    /*private*/ class LogixNGEventListenerImpl implements ConditionalNGEditor.ConditionalNGEventListener {
 
-        /*private*/ /*final*/ LogixNGEditor _logixNGEditor;
+//        /*private*/ /*final*/ LogixNGEditor _logixNGEditor;
 
-        /*public*/  LogixNGEventListenerImpl(LogixNGEditor logixNGEditor) {
-            this._logixNGEditor = logixNGEditor;
-        }
+//        /*public*/  LogixNGEventListenerImpl(LogixNGEditor logixNGEditor) {
+//            this._logixNGEditor = logixNGEditor;
+//        }
 
-        //@Override
-        /*public*/  void conditionalNGEventOccurred() {
-            String lgxName = _curLogixNG.getSystemName();
-            _treeEdit.logixNGData.forEach((key, value) -> {
-                if (key.equals("Finish")) {                  // NOI18N
-                    _treeEdit = null;
-                    _inEditConditionalNGMode = false;
-                    _logixNGEditor.bringToFront();
-                } else if (key.equals("Delete")) {           // NOI18N
-                    deletePressed();
-                } else if (key.equals("chgUname")) {         // NOI18N
-                    LogixNG x = _logixNG_Manager.getBySystemName(lgxName);
-                    if (x == null) {
-                        log.error("Found no logixNG for name {} when changing user name (2)", lgxName);
-                        return;
-                    }
-                    x.setUserName(value);
-                    beanTableDataModel.fireTableDataChanged();
-                }
-            });
-        }
-    }
+//        //@Override
+//        /*public*/  void conditionalNGEventOccurred() {
+//            String lgxName = _curLogixNG->getSystemName();
+//            _treeEdit.logixNGData.forEach((key, value) -> {
+//                if (key.equals("Finish")) {                  // NOI18N
+//                    _treeEdit = null;
+//                    _inEditConditionalNGMode = false;
+//                    _logixNGEditor.bringToFront();
+//                } else if (key.equals("Delete")) {           // NOI18N
+//                    deletePressed();
+//                } else if (key.equals("chgUname")) {         // NOI18N
+//                    LogixNG x = _logixNG_Manager->getBySystemName(lgxName);
+//                    if (x == null) {
+//                        log.error("Found no logixNG for name {} when changing user name (2)", lgxName);
+//                        return;
+//                    }
+//                    x->setUserName(value);
+//                    beanTableDataModel.fireTableDataChanged();
+//                }
+//            });
+//        }
+//    }
 
 
-    /*private*/ class LogixNG_DebuggerEventListenerImpl
-            implements ConditionalNGDebugger.ConditionalNGEventListener {
+//    /*private*/ class LogixNG_DebuggerEventListenerImpl
+//            implements ConditionalNGDebugger.ConditionalNGEventListener {
 
-        /*private*/ /*final*/ LogixNGEditor _logixNGEditor;
+//        /*private*/ /*final*/ LogixNGEditor _logixNGEditor;
 
-        /*public*/  LogixNG_DebuggerEventListenerImpl(LogixNGEditor logixNGEditor) {
-            this._logixNGEditor = logixNGEditor;
-        }
+//        /*public*/  LogixNG_DebuggerEventListenerImpl::LogixNG_DebuggerEventListenerImpl(LogixNGEditor* logixNGEditor) {
+//            this->_logixNGEditor = logixNGEditor;
+//        }
 
-        //@Override
-        /*public*/  void conditionalNGEventOccurred() {
-            String lgxName = _curLogixNG.getSystemName();
-            _debugger.logixNGData.forEach((key, value) -> {
-                if (key.equals("Finish")) {                  // NOI18N
-                    _debugger = null;
-                    _inEditConditionalNGMode = false;
-                    _logixNGEditor.bringToFront();
-                } else if (key.equals("Delete")) {           // NOI18N
-                    deletePressed();
-                } else if (key.equals("chgUname")) {         // NOI18N
-                    LogixNG x = _logixNG_Manager.getBySystemName(lgxName);
-                    if (x == null) {
-                        log.error("Found no logixNG for name {} when changing user name (2)", lgxName);
-                        return;
-                    }
-                    x.setUserName(value);
-                    beanTableDataModel.fireTableDataChanged();
-                }
-            });
-        }
-    }
+//        //@Override
+//        /*public*/  void conditionalNGEventOccurred() {
+//            String lgxName = _curLogixNG->getSystemName();
+//            _debugger.logixNGData.forEach((key, value) -> {
+//                if (key.equals("Finish")) {                  // NOI18N
+//                    _debugger = null;
+//                    _inEditConditionalNGMode = false;
+//                    _logixNGEditor.bringToFront();
+//                } else if (key.equals("Delete")) {           // NOI18N
+//                    deletePressed();
+//                } else if (key.equals("chgUname")) {         // NOI18N
+//                    LogixNG x = _logixNG_Manager->getBySystemName(lgxName);
+//                    if (x == null) {
+//                        log.error("Found no logixNG for name {} when changing user name (2)", lgxName);
+//                        return;
+//                    }
+//                    x->setUserName(value);
+//                    beanTableDataModel.fireTableDataChanged();
+//                }
+//            });
+//        }
+//    }
 
 
     // This class is copied from BeanTableDataModel
-    /*private*/ class DeleteBeanWorker extends SwingWorker<Void, Void> {
+//    /*private*/ class DeleteBeanWorker extends SwingWorker<Void, Void> {
 
-        /*private*/ /*final*/ ConditionalNG _conditionalNG;
-        /*private*/ /*final*/ int _row;
-        bool _hasDeleted = false;
+//        /*private*/ /*final*/ ConditionalNG _conditionalNG;
+//        /*private*/ /*final*/ int _row;
+//        bool _hasDeleted = false;
 
-        /*public*/  DeleteBeanWorker(ConditionalNG conditionalNG, int row) {
+        /*public*/  LogixNGEditor_DeleteBeanWorker::LogixNGEditor_DeleteBeanWorker(ConditionalNG* conditionalNG, int row, LogixNGEditor* editor) {
             _conditionalNG = conditionalNG;
             _row = row;
+            this->editor = editor;
         }
 
-        /*public*/  int getDisplayDeleteMsg() {
-            return InstanceManager.getDefault(UserPreferencesManager.class).getMultipleChoiceOption(TreeEditor.class.getName(), "deleteInUse");
+        /*public*/  int LogixNGEditor_DeleteBeanWorker::getDisplayDeleteMsg() {
+            return ((JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption("jmri.jmrit.logixng.tools.swing.TreeEditor", "deleteInUse");
         }
 
-        /*public*/  void setDisplayDeleteMsg(int boo) {
-            InstanceManager.getDefault(UserPreferencesManager.class).setMultipleChoiceOption(TreeEditor.class.getName(), "deleteInUse", boo);
+        /*public*/  void LogixNGEditor_DeleteBeanWorker::setDisplayDeleteMsg(int boo) {
+            ((JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption("jmri.jmrit.logixng.tools.swing.TreeEditor", "deleteInUse", boo);
         }
 
-        /*public*/  void doDelete() {
+        /*public*/  void LogixNGEditor_DeleteBeanWorker::doDelete() {
             try {
-                InstanceManager.getDefault(ConditionalNG_Manager.class).deleteBean(_conditionalNG, "DoDelete");  // NOI18N
-                _conditionalNGTableModel.fireTableRowsDeleted(_row, _row);
-                _numConditionalNGs--;
-                _showReminder = true;
+                ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean(_conditionalNG, "DoDelete");  // NOI18N
+                editor->_conditionalNGTableModel->fireTableRowsDeleted(_row, _row);
+                editor->_numConditionalNGs--;
+                editor->_showReminder = true;
                 _hasDeleted = true;
-            } catch (PropertyVetoException e) {
+            } catch (PropertyVetoException* e) {
                 //At this stage the DoDelete shouldn't fail, as we have already done a can delete, which would trigger a veto
-                log.error(e.getMessage());
+                editor->log->error(e->getMessage());
             }
         }
 
@@ -1150,135 +1185,138 @@
          * {@inheritDoc}
          */
         //@Override
-        /*public*/  Void doInBackground() {
-            _conditionalNG.getFemaleSocket().unregisterListeners();
+        /*public*/  void LogixNGEditor_DeleteBeanWorker::doInBackground() {
+            _conditionalNG->getFemaleSocket()->unregisterListeners();
 
-            StringBuilder message = new StringBuilder();
+            QString message;// = new StringBuilder();
             try {
-                InstanceManager.getDefault(ConditionalNG_Manager.class).deleteBean(_conditionalNG, "CanDelete");  // NOI18N
-            } catch (PropertyVetoException e) {
-                if (e.getPropertyChangeEvent().getPropertyName().equals("DoNotDelete")) { // NOI18N
-                    log.warn(e.getMessage());
-                    message.append(Bundle.getMessage("VetoDeleteBean", _conditionalNG.getBeanType(), _conditionalNG.getDisplayName(NamedBean.DisplayOptions.USERNAME_SYSTEMNAME), e.getMessage()));
-                    JOptionPane.showMessageDialog(null, message.toString(),
-                            Bundle.getMessage("WarningTitle"),
-                            JOptionPane.ERROR_MESSAGE);
-                    return null;
+                ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean(_conditionalNG, "CanDelete");  // NOI18N
+            } catch (PropertyVetoException* e) {
+                if (e->getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { // NOI18N
+                    editor->log->warn(e->getMessage());
+                    message.append(tr("%1 %2 Can not be deleted\n%3").arg(_conditionalNG->getBeanType(), _conditionalNG->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME), e->getMessage()));
+                    JOptionPane::showMessageDialog(nullptr, message/*.toString()*/,
+                            tr("Warning"),
+                            JOptionPane::ERROR_MESSAGE);
+                    return /*nullptr*/;
                 }
-                message.append(e.getMessage());
+                message.append(e->getMessage());
             }
-            List<String> listenerRefs = new ArrayList<>();
-            _conditionalNG.getListenerRefsIncludingChildren(listenerRefs);
+            QList<QString> listenerRefs = QList<QString>();
+            _conditionalNG->getListenerRefsIncludingChildren(listenerRefs);
             int listenerRefsCount = listenerRefs.size();
-            log.debug("Delete with {}", listenerRefsCount);
-            if (getDisplayDeleteMsg() == 0x02 && message.toString().isEmpty()) {
+            editor->log->debug(tr("Delete with %1").arg(listenerRefsCount));
+            if (getDisplayDeleteMsg() == 0x02 && message.isEmpty()) {
                 doDelete();
             } else {
-                /*final*/ JDialog dialog = new JDialog();
-                dialog.setTitle(Bundle.getMessage("WarningTitle"));
-                dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                JPanel container = new JPanel();
-                container.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+                /*final*/ JDialog* dialog = new JDialog();
+                dialog->setTitle(tr("Warning"));
+                dialog->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+                JPanel* container = new JPanel();
+                container->setLayout(new QVBoxLayout());//container, BoxLayout.Y_AXIS));
+                container->setBorder(BorderFactory::createEmptyBorder(10, 10, 10, 10));
 
                 if (listenerRefsCount > 0) { // warn of listeners attached before delete
-                    String prompt = _conditionalNG.getFemaleSocket().isConnected()
+                    QString prompt = _conditionalNG->getFemaleSocket()->isConnected()
                             ? "DeleteWithChildrenPrompt" : "DeletePrompt";
-                    JLabel question = new JLabel(Bundle.getMessage(prompt, _conditionalNG.getDisplayName(NamedBean.DisplayOptions.USERNAME_SYSTEMNAME)));
-                    question.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    container.add(question);
+                    JLabel* question = new JLabel(QString(prompt).arg(_conditionalNG->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME)));
+                    question->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+                    container->layout()->addWidget(question);
 
-                    ArrayList<String> listeners = new ArrayList<>();
-                    for (String listenerRef : listenerRefs) {
+                    QList<QString> listeners = QList<QString>();
+                    for (QString listenerRef : listenerRefs) {
                         if (!listeners.contains(listenerRef)) {
-                            listeners.add(listenerRef);
+                            listeners.append(listenerRef);
                         }
                     }
 
                     message.append("<br>");
-                    message.append(Bundle.getMessage("ReminderInUse", listenerRefsCount));
+                    message.append(tr("It is in use by %1 other objects including.").arg(listenerRefsCount));
                     message.append("<ul>");
-                    for (String listener : listeners) {
+                    for (QString listener : listeners) {
                         message.append("<li>");
                         message.append(listener);
                         message.append("</li>");
                     }
                     message.append("</ul>");
 
-                    JEditorPane pane = new JEditorPane();
-                    pane.setContentType("text/html");
-                    pane.setText("<html>" + message.toString() + "</html>");
-                    pane.setEditable(false);
-                    JScrollPane jScrollPane = new JScrollPane(pane);
-                    container.add(jScrollPane);
+                    JEditorPane* pane = new JEditorPane();
+                    pane->setContentType("text/html");
+                    pane->setText("<html>" + message/*.toString()*/ + "</html>");
+                    pane->setEditable(false);
+                    QScrollArea* jScrollPane = new QScrollArea(/*pane*/);
+                    jScrollPane->setWidget(pane);
+                    container->layout()->addWidget(jScrollPane);
                 } else {
-                    String prompt = _conditionalNG.getFemaleSocket().isConnected()
+                    QString prompt = _conditionalNG->getFemaleSocket()->isConnected()
                             ? "DeleteWithChildrenPrompt" : "DeletePrompt";
-                    String msg = MessageFormat.format(
-                            Bundle.getMessage(prompt), _conditionalNG.getSystemName());
-                    JLabel question = new JLabel(msg);
-                    question.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    container.add(question);
+                    QString msg = QString(prompt).arg(_conditionalNG->NamedBean::getSystemName());
+                    JLabel* question = new JLabel(msg);
+                    question->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+                    container->layout()->addWidget(question);
                 }
 
-                /*final*/ JCheckBox remember = new JCheckBox(Bundle.getMessage("MessageRememberSetting"));
-                remember.setFont(remember.getFont().deriveFont(10f));
-                remember.setAlignmentX(Component.CENTER_ALIGNMENT);
+                /*final*/ JCheckBox* remember = new JCheckBox(tr("Remember this setting for next time?"));
+                //remember->setFont(remember->getFont().deriveFont(10f));
+                QFont f = remember->font();
+                f.setPixelSize(10);
+                remember->setFont(f);
+//                remember->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
 
-                JButton yesButton = new JButton(Bundle.getMessage("ButtonYes"));
-                JButton noButton = new JButton(Bundle.getMessage("ButtonNo"));
-                JPanel button = new JPanel();
-                button.setAlignmentX(Component.CENTER_ALIGNMENT);
-                button.add(yesButton);
-                button.add(noButton);
-                container.add(button);
+                JButton* yesButton = new JButton(tr("Yes"));
+                JButton* noButton = new JButton(tr("No"));
+                JPanel* button = new JPanel(new FlowLayout());
+//                button->setAlignmentX(Component.CENTER_ALIGNMENT);
+                button->layout()->addWidget(yesButton);
+                button->layout()->addWidget(noButton);
+                container->layout()->addWidget(button);
 
-                noButton.addActionListener((ActionEvent e) -> {
+                connect(noButton, &JButton::clicked, [=] {
                     //there is no point in remembering this the user will never be
                     //able to delete a bean!
-                    dialog.dispose();
+                    dialog->dispose();
                 });
 
-                yesButton.addActionListener((ActionEvent e) -> {
-                    if (remember.isSelected()) {
+                connect(yesButton, &JButton::clicked, [=] {
+                    if (remember->isSelected()) {
                         setDisplayDeleteMsg(0x02);
                     }
                     doDelete();
-                    dialog.dispose();
+                    dialog->dispose();
                 });
-                container.add(remember);
-                container.setAlignmentX(Component.CENTER_ALIGNMENT);
-                container.setAlignmentY(Component.CENTER_ALIGNMENT);
-                dialog.getContentPane().add(container);
-                dialog.pack();
-
-                dialog.getRootPane().setDefaultButton(noButton);
+                container->layout()->addWidget(remember);
+//                container->setAlignmentX(Component.CENTER_ALIGNMENT);
+//                container->setAlignmentY(Component.CENTER_ALIGNMENT);
+                dialog->getContentPane()->layout()->addWidget(container);
+                dialog->pack();
+#if 0
+                dialog->getRootPane()->setDefaultButton(noButton);
                 noButton.requestFocusInWindow(); // set default keyboard focus, after pack() before setVisible(true)
-                dialog.getRootPane().registerKeyboardAction(e -> { // escape to exit
-                        dialog.setVisible(false);
+                dialog->getRootPane().registerKeyboardAction(e -> { // escape to exit
+                        dialog->setVisible(false);
                         dialog.dispose(); },
-                    KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-
-                dialog.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialog.getWidth() / 2, (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialog.getHeight() / 2);
-                dialog.setModal(true);
-                dialog.setVisible(true);
+                    KeyStroke->getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+#endif
+// todo                dialog->setLocation((Toolkit->getDefaultToolkit()->getScreenSize().width()) / 2 - dialog->getWidth() / 2, (Toolkit->getDefaultToolkit()->getScreenSize().height) / 2 - dialog->getHeight() / 2);
+                dialog->setModal(true);
+                dialog->setVisible(true);
             }
-            if (!_hasDeleted && _conditionalNG.getFemaleSocket().isActive()) _conditionalNG.getFemaleSocket().registerListeners();
-            return null;
+            if (!_hasDeleted && _conditionalNG->getFemaleSocket()->isActive()) _conditionalNG->getFemaleSocket()->registerListeners();
+            return /*nullptr*/;
         }
 
         /**
          * {@inheritDoc} Minimal implementation to catch and log errors
          */
         //@Override
-        /*protected*/ void done() {
+        /*protected*/ void LogixNGEditor_DeleteBeanWorker::done() {
             try {
-                get();  // called to get errors
-            } catch (InterruptedException | java.util.concurrent.ExecutionException e) {
-                log.error("Exception while deleting bean", e);
+                 get();  // called to get errors
+            } catch (InterruptedException/* | java.util.concurrent.ExecutionException*/* e) {
+                editor->log->error("Exception while deleting bean", e);
             }
         }
-    }
+//    }
 #endif
 
     /*private*/ /*final*/ /*static*/ Logger* LogixNGEditor::log = LoggerFactory::getLogger("LogixNGEditor");

@@ -25,16 +25,17 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
  public:
-  ConditionalNGDebugger(ConditionalNG* conditionalNG, QWidget* parent = nullptr);
-  /*public*/  void initMinimumSize(QSize dimension);
-  /*public*/  void windowClosed(QCloseEvent* e);
   /*public*/  /*interface*/ class ConditionalNGEventListener : public EventListener {
 
      /*public*/ virtual  void conditionalNGEventOccurred()=0;
    friend class ConditionalNGDebugger;
   };
+  ConditionalNGDebugger(ConditionalNG* conditionalNG, QWidget* parent = nullptr);
+  /*public*/  void initMinimumSize(QSize dimension);
+  /*public*/  void windowClosed(QCloseEvent* e);
   /*public*/  void addLogixNGEventListener(ConditionalNGEventListener* listener);
 
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* evt)override;
 
@@ -84,6 +85,7 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
  friend class PopupMenu;
  friend class CDRun1;
  friend class CDRun2;
+ friend class LogixNG_DebuggerEventListenerImpl;
 };
 
  /*protected*/ class PopupMenu : QMenu , public ActionListener {

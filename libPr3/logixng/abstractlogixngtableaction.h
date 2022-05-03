@@ -43,7 +43,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   JTextField* _addUserName = new JTextField(20);
   JCheckBox* _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));   // NOI18N
   JLabel* _sysNameLabel = new JLabel(tr("LogixNG") + " " + tr("SystemName") + ":");  // NOI18N
-  JLabel* _userNameLabel = new JLabel(tr("LogixNG") + " " + tr("ColumnUserName") + ":");   // NOI18N
+  JLabel* _userNameLabel = new JLabel(tr("LogixNG") + " " + tr("UserName") + ":");   // NOI18N
   QString systemNameAuto = QString("jmri.jmrit.beantable.AbstractLogixNGTableAction") + ".AutoSystemName";       // NOI18N
   JButton* create =nullptr;
 
@@ -93,7 +93,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   /*protected*/ void createModel()override;
   /*protected*/ void setTitle()override;
   /*protected*/ QString helpTarget()override;
-  /*protected*/ Base* _curNamedBean = nullptr;
+  /*protected*/ NamedBean* _curNamedBean = nullptr;
   /*protected*/ /*final*/ Base::PrintTreeSettings* _printTreeSettings = new  Base::PrintTreeSettings();
   /*protected*/ /*abstract*/virtual JPanel* makeAddFrame(QString titleId, QString startMessageId)=0;
   /*protected*/ QString getClassName()override;

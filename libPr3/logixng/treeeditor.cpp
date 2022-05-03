@@ -387,90 +387,91 @@
             _addSwingConfiguratorInterface = swingConfiguratorInterface;
             // Create item
             _create = new JButton(tr("Create"));  // NOI18N
-#if 0
+#if 1
             connect(_create, &JButton::clicked, [=] {
                 _treePane->_femaleRootSocket->unregisterListeners();
 
                 runOnConditionalNGThreadOrGUIThreadEventually(
-                        _treePane->_femaleRootSocket->getConditionalNG(),
-                        () -> {
+                        _treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run1(path, femaleSocket, commentStr, this));
+//                        () -> {
 
-                    QList<String> errorMessages = QList<String>();
+//                    QList<String> errorMessages = QList<String>();
 
-                    bool isValid = true;
+//                    bool isValid = true;
 
-                    if (!_prefs.getShowSystemUserNames()
-                            || (_systemName->text().isEmpty() && _autoSystemName.isSelected())) {
-                        _systemName.setText(_addSwingConfiguratorInterface.getAutoSystemName());
-                    }
+//                    if (!_prefs.getShowSystemUserNames()
+//                            || (_systemName->text().isEmpty() && _autoSystemName.isSelected())) {
+//                        _systemName.setText(_addSwingConfiguratorInterface.getAutoSystemName());
+//                    }
 
-                    if (_addSwingConfiguratorInterface.getManager()
-                            .validSystemNameFormat(_systemName->text()) != Manager.NameValidity.VALID) {
-                        isValid = false;
-                        errorMessages.add(Bundle.getMessage("InvalidSystemName", _systemName->text()));
-                    }
+//                    if (_addSwingConfiguratorInterface.getManager()
+//                            .validSystemNameFormat(_systemName->text()) != Manager.NameValidity.VALID) {
+//                        isValid = false;
+//                        errorMessages.add(Bundle.getMessage("InvalidSystemName", _systemName->text()));
+//                    }
 
-                    isValid &= _addSwingConfiguratorInterface.validate(errorMessages);
+//                    isValid &= _addSwingConfiguratorInterface.validate(errorMessages);
 
-                    if (isValid) {
-                        MaleSocket socket;
-                        if (_addUserName->text().isEmpty()) {
-                            socket = _addSwingConfiguratorInterface.createNewObject(_systemName->text(), null);
-                        } else {
-                            socket = _addSwingConfiguratorInterface.createNewObject(_systemName->text(), _addUserName->text());
-                        }
-                        _addSwingConfiguratorInterfaceMaleSocket.updateObject(socket);
-    //                    for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
-    //                        entry.getKey().updateObject(entry.getValue());
-    //                    }
-                        socket.setComment(commentStr.getValue());
-                        try {
-                            femaleSocket->connect(socket);
-                        } catch (SocketAlreadyConnectedException ex) {
-                            throw new RuntimeException(ex);
-                        }
+//                    if (isValid) {
+//                        MaleSocket socket;
+//                        if (_addUserName->text().isEmpty()) {
+//                            socket = _addSwingConfiguratorInterface.createNewObject(_systemName->text(), null);
+//                        } else {
+//                            socket = _addSwingConfiguratorInterface.createNewObject(_systemName->text(), _addUserName->text());
+//                        }
+//                        _addSwingConfiguratorInterfaceMaleSocket.updateObject(socket);
+//    //                    for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
+//    //                        entry.getKey().updateObject(entry.getValue());
+//    //                    }
+//                        socket.setComment(commentStr.getValue());
+//                        try {
+//                            femaleSocket->connect(socket);
+//                        } catch (SocketAlreadyConnectedException ex) {
+//                            throw new RuntimeException(ex);
+//                        }
 
-                        femaleSocket->forEntireTree((Base b) -> {
-                            b.addPropertyChangeListener(_treePane);
-                        });
+//                        femaleSocket->forEntireTree((Base b) -> {
+//                            b.addPropertyChangeListener(_treePane);
+//                        });
 
-                        ThreadingUtil.runOnGUIEventually(() -> {
-                            _addSwingConfiguratorInterface.dispose();
-                            _addItemDialog.dispose();
-                            _addItemDialog = null;
+//                        ThreadingUtil.runOnGUIEventually(() -> {
+//                            _addSwingConfiguratorInterface.dispose();
+//                            _addItemDialog.dispose();
+//                            _addItemDialog = null;
 
-                            for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
-                                TreeModelEvent tme = new TreeModelEvent(
-                                        femaleSocket,
-                                        path.getPath()
-                                );
-                                l.treeNodesChanged(tme);
-                            }
-                            _treePane._tree.expandPath(path);
-                            _treePane._tree.updateUI();
+//                            for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+//                                TreeModelEvent tme = new TreeModelEvent(
+//                                        femaleSocket,
+//                                        path.getPath()
+//                                );
+//                                l.treeNodesChanged(tme);
+//                            }
+//                            _treePane._tree.expandPath(path);
+//                            _treePane._tree.updateUI();
 
-                            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefMgr) -> {
-                                prefMgr.setCheckboxPreferenceState(_systemNameAuto, _autoSystemName.isSelected());
-                            });
-                        });
-                    } else {
-                        StringBuilder errorMsg = new StringBuilder();
-                        for (String s : errorMessages) {
-                            if (errorMsg.length() > 0) errorMsg.append("<br>");
-                            errorMsg.append(s);
-                        }
-                        JOptionPane.showMessageDialog(null,
-                                Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
-                                Bundle.getMessage("Data is not valid"),
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                    ThreadingUtil.runOnGUIEventually(() -> {
-                        if (_treePane._femaleRootSocket.isActive()) {
-                            _treePane._femaleRootSocket.registerListeners();
-                        }
-                    });
+//                            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefMgr) -> {
+//                                prefMgr.setCheckboxPreferenceState(_systemNameAuto, _autoSystemName.isSelected());
+//                            });
+//                        });
+//                    } else {
+//                        StringBuilder errorMsg = new StringBuilder();
+//                        for (String s : errorMessages) {
+//                            if (errorMsg.length() > 0) errorMsg.append("<br>");
+//                            errorMsg.append(s);
+//                        }
+//                        JOptionPane.showMessageDialog(null,
+//                                Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
+//                                Bundle.getMessage("Data is not valid"),
+//                                JOptionPane.ERROR_MESSAGE);
+//                    }
+//                    ThreadingUtil.runOnGUIEventually(() -> {
+//                        if (_treePane._femaleRootSocket.isActive()) {
+//                            _treePane._femaleRootSocket.registerListeners();
+//                        }
+//                    });
 
-                });
+//                });
+
             });
 #endif
             _create->setToolTip(tr("Press to create"));  // NOI18N
@@ -497,82 +498,85 @@
             QString commentStr = QString();
             // Edit ConditionalNG
             _edit = new JButton(tr("OK"));  // NOI18N
-#if 0
+#if 1
             connect(_edit, &JButton::clicked, [=] {
 
                 runOnConditionalNGThreadOrGUIThreadEventually(
-                        _treePane._femaleRootSocket.getConditionalNG(),
-                        () -> {
+                        _treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run4(path, femaleSocket, object, commentStr, this));
+//                        () -> {
 
-                    List<String> errorMessages = new ArrayList<>();
+//                    List<String> errorMessages = new ArrayList<>();
 
-                    bool isValid = true;
+//                    bool isValid = true;
 
-                    if (_editSwingConfiguratorInterface.getManager() != null) {
-                        if (_editSwingConfiguratorInterface.getManager()
-                                .validSystemNameFormat(_systemName->text()) != Manager.NameValidity.VALID) {
-                            isValid = false;
-                            errorMessages.add(Bundle.getMessage("InvalidSystemName", _systemName->text()));
-                        }
-                    } else {
-                        log.debug("_editSwingConfiguratorInterface.getManager() returns null");
-                    }
+//                    if (_editSwingConfiguratorInterface.getManager() != null) {
+//                        if (_editSwingConfiguratorInterface.getManager()
+//                                .validSystemNameFormat(_systemName->text()) != Manager.NameValidity.VALID) {
+//                            isValid = false;
+//                            errorMessages.add(Bundle.getMessage("InvalidSystemName", _systemName->text()));
+//                        }
+//                    } else {
+//                        log.debug("_editSwingConfiguratorInterface.getManager() returns null");
+//                    }
 
-                    isValid &= _editSwingConfiguratorInterface.validate(errorMessages);
+//                    isValid &= _editSwingConfiguratorInterface.validate(errorMessages);
 
-                    if (isValid) {
-                        ThreadingUtil.runOnGUIEventually(() -> {
-                            femaleSocket->unregisterListeners();
+//                    if (isValid) {
+//                        ThreadingUtil.runOnGUIEventually(() -> {
+//                            femaleSocket->unregisterListeners();
 
-//                            Base object = femaleSocket->getConnectedSocket().getObject();
-                            if (_addUserName->text().isEmpty()) {
-                                ((NamedBean)object).setUserName(null);
-                            } else {
-                                ((NamedBean)object).setUserName(_addUserName->text());
-                            }
-                            ((NamedBean)object).setComment(commentStr.getValue());
-                            for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
-                                entry.getKey().updateObject(entry.getValue());
-                                entry.getKey().dispose();
-                            }
-                            for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
-                                TreeModelEvent tme = new TreeModelEvent(
-                                        femaleSocket,
-                                        path.getPath()
-                                );
-                                l.treeNodesChanged(tme);
-                            }
-                            _editActionExpressionDialog.dispose();
-                            _editActionExpressionDialog = null;
-                            _treePane._tree.updateUI();
+////                            Base object = femaleSocket->getConnectedSocket().getObject();
+//                            if (_addUserName->text().isEmpty()) {
+//                                ((NamedBean)object).setUserName(null);
+//                            } else {
+//                                ((NamedBean)object).setUserName(_addUserName->text());
+//                            }
+//                            ((NamedBean)object).setComment(commentStr.getValue());
+//                            for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
+//                                entry.getKey().updateObject(entry.getValue());
+//                                entry.getKey().dispose();
+//                            }
+//                            for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+//                                TreeModelEvent tme = new TreeModelEvent(
+//                                        femaleSocket,
+//                                        path.getPath()
+//                                );
+//                                l.treeNodesChanged(tme);
+//                            }
+//                            _editActionExpressionDialog.dispose();
+//                            _editActionExpressionDialog = null;
+//                            _treePane._tree.updateUI();
 
-//                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
-                            if (_treePane._femaleRootSocket.isActive()) {
-                                _treePane._femaleRootSocket.registerListeners();
-                            }
-                        });
-                    } else {
-                        StringBuilder errorMsg = new StringBuilder();
-                        for (String s : errorMessages) {
-                            if (errorMsg.length() > 0) errorMsg.append("<br>");
-                            errorMsg.append(s);
-                        }
-                        ThreadingUtil.runOnGUIEventually(() -> {
-                            JOptionPane.showMessageDialog(null,
-                                    Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
-                                    Bundle.getMessage("Data is not valid"),
-                                    JOptionPane.ERROR_MESSAGE);
-                        });
-                    }
+////                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
+//                            if (_treePane._femaleRootSocket.isActive()) {
+//                                _treePane._femaleRootSocket.registerListeners();
+//                            }
+//                        });
+//                    } else {
+//                        StringBuilder errorMsg = new StringBuilder();
+//                        for (String s : errorMessages) {
+//                            if (errorMsg.length() > 0) errorMsg.append("<br>");
+//                            errorMsg.append(s);
+//                        }
+//                        ThreadingUtil.runOnGUIEventually(() -> {
+//                            JOptionPane.showMessageDialog(null,
+//                                    Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
+//                                    Bundle.getMessage("Data is not valid"),
+//                                    JOptionPane.ERROR_MESSAGE);
+//                        });
+//                    }
 
-                });
-            });
+//                });
+//            });
 #endif
             _edit->setToolTip(tr("Press to save"));  // NOI18N
 
+            if (_addSwingConfiguratorInterface != nullptr) {
             makeAddEditFrame(false, femaleSocket, _edit, commentStr);
-        }
+            }
+        });
     }
+}
 
     /**
      * Create or edit action/expression dialog.
@@ -1960,6 +1964,68 @@
         }
 //    };
 
+        void TreeEditor_run2::run(Base* b)
+        {
+         b->PropertyChangeProvider::addPropertyChangeListener(_treePane);
+        }
+
+        void TreeEditor_run3::run()
+        {
+         treeEditor->_addSwingConfiguratorInterface->dispose();
+         treeEditor->_addItemDialog->dispose();
+         treeEditor->_addItemDialog = nullptr;
+
+         for (TreeModelListener* l : treeEditor->_treePane->femaleSocketTreeModel->listeners) {
+             TreeModelEvent* tme = new TreeModelEvent(
+                     femaleSocket->bself(),
+                     path->getPath()
+             );
+             l->treeNodesChanged(tme);
+         }
+         treeEditor->_treePane->_tree->expandPath(path);
+      //   treeEditor->_treePane->_tree->updateUI();
+
+         UserPreferencesManager* prefMgr = (JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+         if(prefMgr)  {
+             prefMgr->setCheckboxPreferenceState(treeEditor->_systemNameAuto, treeEditor->_autoSystemName->isSelected());
+         }//);
+        }
+
+        void TreeEditor_run5::run()
+        {
+         femaleSocket->unregisterListeners();
+
+      //                            Base object = femaleSocket->getConnectedSocket().getObject();
+         if (treeEditor->_addUserName->text().isEmpty()) {
+             ((NamedBean*)object->bself())->setUserName(nullptr);
+         } else {
+             ((NamedBean*)object)->setUserName(treeEditor->_addUserName->text());
+         }
+         ((NamedBean*)object)->setComment(commentStr/*.getValue()*/);
+         for (QMap<SwingConfiguratorInterface*, Base*> map : treeEditor->_swingConfiguratorInterfaceList) {
+          QMapIterator<SwingConfiguratorInterface*, Base*> entry(map);
+          while(entry.hasNext()){
+           entry.next();
+             entry.key()->updateObject(entry.value());
+             entry.key()->dispose();
+          }
+         }
+         for (TreeModelListener* l : treeEditor->_treePane->femaleSocketTreeModel->listeners) {
+             TreeModelEvent* tme = new TreeModelEvent(
+                     femaleSocket->bself(),
+                     path->getPath()
+             );
+             l->treeNodesChanged(tme);
+         }
+         treeEditor->_editActionExpressionDialog->dispose();
+         treeEditor->_editActionExpressionDialog = nullptr;
+      //   treeEditor->_treePane._tree.updateUI();
+
+      //                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
+         if (treeEditor->_treePane->_femaleRootSocket->isActive()) {
+             treeEditor->_treePane->_femaleRootSocket->registerListeners();
+         }
+        }
 
 
     /*private*/ /*final*/ /*static*/ Logger* TreeEditor::log =LoggerFactory::getLogger("TreeEditor");

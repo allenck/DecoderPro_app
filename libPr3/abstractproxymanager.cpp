@@ -119,7 +119,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
          //for(Manager* m : mgrs)
           m->PropertyChangeSupport::addPropertyChangeListener(l);
         //Arrays.stream(getVetoableChangeListeners()).forEach(l -> m.addVetoableChangeListener(l));
-        for(VetoableChangeListener* l : VetoableChangeSupport::getVetoableChangeListeners())
+        for(VetoableChangeListener* l : *VetoableChangeSupport::getVetoableChangeListeners())
          //for(AbstractManager* m : mgrs)
              m->VetoableChangeSupport::addVetoableChangeListener(l);
 //        boundPropertyNames
@@ -132,7 +132,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
 //                .forEach(n -> Arrays.stream(getVetoableChangeListeners(n))
 //                .forEach(l -> m.addVetoableChangeListener(n, l)));
         for(QString n : vetoablePropertyNames)
-         for(VetoableChangeListener* l : VetoableChangeSupport::getVetoableChangeListeners(n))
+         for(VetoableChangeListener* l : *VetoableChangeSupport::getVetoableChangeListeners(n))
           m->VetoableChangeSupport::addVetoableChangeListener(n, l);
         m->PropertyChangeSupport::addPropertyChangeListener("beans", this);
         ((AbstractManager*)m)->addDataListener(this);

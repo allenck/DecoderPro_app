@@ -426,9 +426,12 @@
      * @param e The event heard
      */
     void AbstractLogixNGTableAction::cancelAddPressed(JActionEvent* e) {
+     if(addLogixNGFrame)
+     {
         addLogixNGFrame->setVisible(false);
         addLogixNGFrame->dispose();
         addLogixNGFrame = nullptr;
+     }
         _inCopyMode = false;
         if (f != nullptr) {
             f->setVisible(true);
@@ -656,7 +659,7 @@
             if (!checkLogixNGUserName(uName)) {
                 return;
             }
-            _curNamedBean = (Base*)createBean(uName);
+            _curNamedBean = createBean(uName);
             if (_curNamedBean == nullptr) {
                 log->error(tr("Failure to create bean with System Name: %1").arg("none"));  // NOI18N
                 return;
@@ -688,7 +691,7 @@
                 return;
             }
             // Create the new bean
-            _curNamedBean = (Base*)createBean(sName, uName);
+            _curNamedBean = createBean(sName, uName);
             if (_curNamedBean == nullptr) {
                 // should never get here unless there is an assignment conflict
                 log->error(tr("Failure to create bean with System Name: %1").arg(sName));  // NOI18N
@@ -720,7 +723,7 @@
      * @param sName system name of LogixNG to be edited
      */
     void AbstractLogixNGTableAction::editPressed(QString sName) {
-        _curNamedBean = (Base*)getManager()->getBySystemName(sName);
+        _curNamedBean = getManager()->getBySystemName(sName);
         if (!checkFlags(sName)) {
             return;
         }
@@ -928,7 +931,7 @@
      */
     void AbstractLogixNGTableAction::browserPressed(QString sName) {
         // bean was found, create the window
-        _curNamedBean = (Base*)getManager()->getBySystemName(sName);
+        _curNamedBean = getManager()->getBySystemName(sName);
         getPrintTreeSettings();
         makeBrowserWindow();
     }

@@ -19,7 +19,16 @@
 #include "threadingutil.h"
 //#include "clipboardeditor.h"
 #include "abstractfemalesocket.h"
+#include "joptionpane.h"
+#include "threadingutil.h"
+#include "runtimeexception.h"
+#include "treepane.h"
+#include "treemodelevent.h"
+#include "jmriuserpreferencesmanager.h"
+//#include "treepane.h"
 
+
+class TreeEditor_run2;
 class TEPopupMenu;
 class FemaleSocket;
 class ClipboardEventListener;
@@ -131,6 +140,10 @@ class TreeEditor : public TreeViewer
  friend class DeleteBeanWorker2;
  friend class TEPopupMenu;
  friend class DeleteBeanWorker2;
+ friend class TreeEditor_run1;
+ friend class TreeEditor_run3;
+ friend class TreeEditor_run4;
+ friend class TreeEditor_run5;
 #if 0
  class TEClipboardListener : public ClipboardEventListener
  {
@@ -166,7 +179,6 @@ class TreeEditor : public TreeViewer
      /*public*/  void doDelete();
      /*public*/  void doInBackground();
      /*protected*/ void done();
-
  };
 
 
@@ -262,6 +274,246 @@ class TEClipboardListener : public QObject, public /*ClipboardEventListener*/Eve
 #endif
   }
   QObject* self() override {return (QObject*)this;}
+};
+
+class TreeEditor_run2 : public RunnableWithBase
+{
+  Q_OBJECT
+  TreePane* _treePane;
+  Base* b;
+
+ public:
+  TreeEditor_run2(/*Base* b, */TreePane* _treePane) {/*this->b = b;*/ this->_treePane = _treePane;}
+
+  void run(Base* b);
+//  {
+//   b->PropertyChangeProvider::addPropertyChangeListener(_treePane);
+//  }
+};
+
+class TreeEditor_run3 : public ThreadAction
+{
+  Q_OBJECT
+  TreeEditor* treeEditor;
+  TreePath* path;
+  FemaleSocket* femaleSocket;
+ public:
+  TreeEditor_run3(FemaleSocket* femaleSocket,TreePath* path, TreeEditor* treeEditor) {
+   this->femaleSocket = femaleSocket;
+   this->path = path;
+   this->treeEditor = treeEditor;}
+  void run();
+};
+
+class TreeEditor_run1 : public ThreadAction
+{
+  Q_OBJECT
+  TreeEditor* treeEditor;
+  QString commentStr;
+  FemaleSocket* femaleSocket;
+  TreePath* path;
+ public:
+  TreeEditor_run1(TreePath* path, FemaleSocket* femaleSocket,QString commentStr, TreeEditor* treeEditor) {
+   this->path = path;
+   this->treeEditor = treeEditor;
+   this->commentStr = commentStr;
+   this->femaleSocket= femaleSocket;
+  }
+  void run()
+  {
+   QList<QString>* errorMessages = new QList<QString>();
+
+   bool isValid = true;
+
+   if (!treeEditor->_prefs->getShowSystemUserNames()
+           || (treeEditor->_systemName->text().isEmpty() && treeEditor->_autoSystemName->isSelected())) {
+       treeEditor->_systemName->setText(treeEditor->_addSwingConfiguratorInterface->getAutoSystemName());
+   }
+
+   if (treeEditor->_addSwingConfiguratorInterface->getManager()
+           ->validSystemNameFormat(treeEditor->_systemName->text()) != Manager::NameValidity::VALID) {
+       isValid = false;
+       errorMessages->append(tr("Invalid System Name \"%1\"").arg(treeEditor->_systemName->text()));
+   }
+
+   isValid &= treeEditor->_addSwingConfiguratorInterface->validate(errorMessages);
+
+   if (isValid) {
+       MaleSocket* socket;
+       if (treeEditor->_addUserName->text().isEmpty()) {
+           socket = treeEditor->_addSwingConfiguratorInterface->createNewObject(treeEditor->_systemName->text(), "");
+       } else {
+           socket = treeEditor->_addSwingConfiguratorInterface->createNewObject(treeEditor->_systemName->text(), treeEditor->_addUserName->text());
+       }
+       treeEditor->_addSwingConfiguratorInterfaceMaleSocket->updateObject(socket);
+ //                    for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
+ //                        entry.getKey().updateObject(entry.getValue());
+ //                    }
+       socket->setComment(commentStr/*.getValue()*/);
+       try {
+           femaleSocket->_connect(socket);
+       } catch (SocketAlreadyConnectedException* ex) {
+           throw new RuntimeException(ex);
+       }
+ #if 1
+//       femaleSocket->forEntireTree((Base b) -> {
+//           b.addPropertyChangeListener(_treePane);
+//       });
+       femaleSocket->forEntireTree(new TreeEditor_run2( treeEditor->_treePane));
+
+       ThreadingUtil::runOnGUIEventually(/*() -> {*/ new TreeEditor_run3(femaleSocket, path, treeEditor));
+//           _addSwingConfiguratorInterface.dispose();
+//           _addItemDialog.dispose();
+//           _addItemDialog = null;
+
+//           for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+//               TreeModelEvent tme = new TreeModelEvent(
+//                       femaleSocket,
+//                       path.getPath()
+//               );
+//               l.treeNodesChanged(tme);
+//           }
+//           _treePane._tree.expandPath(path);
+//           _treePane._tree.updateUI();
+
+//           InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefMgr) -> {
+//               prefMgr.setCheckboxPreferenceState(_systemNameAuto, _autoSystemName.isSelected());
+//           });
+//       });
+   } else {
+       QString errorMsg;// = new StringBuilder();
+       for (QString s : *errorMessages) {
+           if (errorMsg.length() > 0) errorMsg.append("<br>");
+           errorMsg.append(s);
+       }
+       JOptionPane::showMessageDialog(nullptr,
+               tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
+               tr("Data is not valid"),
+               JOptionPane::ERROR_MESSAGE);
+#endif
+  }
+ }
+};
+class TreeEditor_run5 : public ThreadAction
+{
+  Q_OBJECT
+  TreeEditor* treeEditor;
+  FemaleSocket* femaleSocket;
+  Base* object;
+  QString commentStr;
+  TreePath* path;
+ public:
+  TreeEditor_run5(Base* object, FemaleSocket* femaleSocket, TreePath* path, QString commentStr, TreeEditor* treeEditor)
+  {
+   this->object = object;
+   this->femaleSocket = femaleSocket;
+   this->path = path;
+   this->commentStr = commentStr;
+   this->treeEditor = treeEditor;
+  }
+  void run();
+
+};
+
+class TreeEditor_run6 : public ThreadAction
+{
+  Q_OBJECT
+  QString errorMsg;
+ public:
+  TreeEditor_run6(QString errorMsg) {this->errorMsg = errorMsg;}
+  void run()
+  {
+   JOptionPane::showMessageDialog(nullptr,
+           tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
+           tr("Data is not valid"),
+           JOptionPane::ERROR_MESSAGE);
+
+  }
+};
+
+class TreeEditor_run4 : public ThreadAction
+{
+  Q_OBJECT
+  TreeEditor* treeEditor;
+  QString commentStr;
+  FemaleSocket* femaleSocket;
+  TreePath* path;
+  Base* object;
+ public:
+  TreeEditor_run4(TreePath* path, FemaleSocket* femaleSocket, Base* object, QString commentStr, TreeEditor* treeEditor) {
+   this->path = path;
+   this->treeEditor = treeEditor;
+   this->object = object;
+   this->commentStr = commentStr;
+   this->femaleSocket= femaleSocket;
+  }
+  void run()
+  {
+   QList<QString>* errorMessages = new QList<QString>();
+
+   bool isValid = true;
+
+   if (treeEditor->_editSwingConfiguratorInterface->getManager() != nullptr) {
+       if (treeEditor->_editSwingConfiguratorInterface->getManager()
+               ->validSystemNameFormat(treeEditor->_systemName->text()) != Manager::NameValidity::VALID) {
+           isValid = false;
+           errorMessages->append(tr("Invalid System Name \"%1\"").arg(treeEditor->_systemName->text()));
+       }
+   } else {
+       treeEditor->log->debug("_editSwingConfiguratorInterface.getManager() returns null");
+   }
+
+   isValid &=treeEditor-> _editSwingConfiguratorInterface->validate(errorMessages);
+
+   if (isValid) {
+//       ThreadingUtil.runOnGUIEventually(() -> {
+//           femaleSocket->unregisterListeners();
+
+////                            Base object = femaleSocket->getConnectedSocket().getObject();
+//           if (_addUserName->text().isEmpty()) {
+//               ((NamedBean)object).setUserName(null);
+//           } else {
+//               ((NamedBean)object).setUserName(_addUserName->text());
+//           }
+//           ((NamedBean)object).setComment(commentStr.getValue());
+//           for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
+//               entry.getKey().updateObject(entry.getValue());
+//               entry.getKey().dispose();
+//           }
+//           for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+//               TreeModelEvent tme = new TreeModelEvent(
+//                       femaleSocket,
+//                       path.getPath()
+//               );
+//               l.treeNodesChanged(tme);
+//           }
+//           _editActionExpressionDialog.dispose();
+//           _editActionExpressionDialog = null;
+//           _treePane._tree.updateUI();
+
+////                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
+//           if (_treePane._femaleRootSocket.isActive()) {
+//               _treePane._femaleRootSocket.registerListeners();
+//           }
+//       });
+//    Base* object, FemaleSocket* femaleSocket, TreePath* path, QString commentStr, TreeEditor* treeEditor
+    ThreadingUtil::runOnGUIEventually(new TreeEditor_run5(object, femaleSocket, path, commentStr, treeEditor));
+   } else {
+       QString errorMsg;// = new StringBuilder();
+       for (QString s : *errorMessages) {
+           if (errorMsg.length() > 0) errorMsg.append("<br>");
+           errorMsg.append(s);
+       }
+//       ThreadingUtil.runOnGUIEventually(() -> {
+//           JOptionPane.showMessageDialog(null,
+//                   Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
+//                   Bundle.getMessage("Data is not valid"),
+//                   JOptionPane.ERROR_MESSAGE);
+//       });
+       ThreadingUtil::runOnGUIEventually(new TreeEditor_run6(errorMsg));
+   }
+
+  }
 };
 
 #endif // TREEEDITOR_H

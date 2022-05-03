@@ -213,7 +213,7 @@
     //@OverridingMethodsMustInvokeSuper
     /*public*/  void DefaultModuleManager::fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException*/ {
         PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, QVariant());
-        for (VetoableChangeListener* vc : VetoableChangeSupport::getVetoableChangeListeners()) {
+        for (VetoableChangeListener* vc : *VetoableChangeSupport::getVetoableChangeListeners()) {
             vc->vetoableChange(evt);
         }
     }

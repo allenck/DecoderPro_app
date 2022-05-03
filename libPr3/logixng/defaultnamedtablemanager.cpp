@@ -289,7 +289,7 @@
 //@OverridingMethodsMustInvokeSuper
 /*public*/  void DefaultNamedTableManager::fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException */{
     PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, QVariant());
-    for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
+    for (VetoableChangeListener* vc : *vetoableChangeSupport->getVetoableChangeListeners()) {
         vc->vetoableChange(evt);
     }
 }

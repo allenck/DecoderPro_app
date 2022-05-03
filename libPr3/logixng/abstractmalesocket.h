@@ -10,6 +10,7 @@
 #include "abstractnamedbean.h"
 #include "abstractbase.h"
 #include "threadingutil.h"
+#include "errorhandlingdialog_multiline.h"
 
 class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleSocket
 {
@@ -138,15 +139,15 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*abstract*/ /*protected*/virtual void unregisterListenersForThisClass()=0;
   /*abstract*/ /*protected*/ virtual void disposeMe()=0;
 };
-#if 0
+#if 1
 //template<class E>
-class AMSRun1 : public ThreadingUtil::ReturningThreadAction<bool>
+class AMSRun1 : public ReturningThreadAction<bool>
 {
-
+ Q_OBJECT
   Base* item;
   QString message;
  public:
-  AMSRun1(Base* item, QString message) {
+  AMSRun1(Base* item, QString message) : ReturningThreadAction<bool>() {
    this->item = item;
    this->message = message;
   }
@@ -154,4 +155,24 @@ class AMSRun1 : public ThreadingUtil::ReturningThreadAction<bool>
   void run();
 };
 #endif
+
+class AMSRun2 : public ReturningThreadAction<int>
+{
+  Q_OBJECT
+  Base* item;
+  QString message;
+  QList<QString> messageList;
+  int rslt;
+ public:
+  AMSRun2(Base* item, QString message, QList<QString> messageList) : ReturningThreadAction<int>() {
+   this->item = item;
+   this->message = message;
+   this->messageList = messageList;
+  }
+  void run()
+  {
+   ErrorHandlingDialog_MultiLine* dialog = new ErrorHandlingDialog_MultiLine();
+   rslt = dialog->showDialog(item, message, messageList);
+  }
+};
 #endif // ABSTRACTMALESOCKET_H

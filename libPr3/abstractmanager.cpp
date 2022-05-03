@@ -629,7 +629,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, n);
     if (p == ("CanDelete")) { // NOI18N
         QString message;// = new StringBuilder();
-        for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
+        for (VetoableChangeListener* vc : *vetoableChangeSupport->getVetoableChangeListeners()) {
             try {
                 vc->vetoableChange(evt);
             } catch (PropertyVetoException* e) {

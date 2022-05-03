@@ -16,7 +16,7 @@
       public VetoableChangeListener
    //implements VetoableChangeListener
  {
-  Q_OBJECT
+  //Q_OBJECT
   Q_INTERFACES(VetoableChangeListener)
    /**propertyc
     * The name of the property to listen for. Package visible for use by
@@ -52,6 +52,7 @@
     */
    /*public*/ QString getPropertyName();
 
+   friend class Java_VetoableChangeSupport;
  }; // class VetoableChangeListenerProxy
 
 #endif // VETOABLECHANGELISTENERPROXY_H

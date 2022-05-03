@@ -12,6 +12,8 @@ class Logger;
 /*static*/ /*public*/ /*interface*/ class ThreadAction : public Runnable {
   Q_OBJECT
  public:
+  ThreadAction() : Runnable() {}
+
     /**
      * {@inheritDoc}
      * <p>
@@ -43,6 +45,16 @@ class Logger;
      */
   /*public*/ void run() /*throws JmriException, RuntimeException*/{}
 };
+template <class E>
+/*static*/ /*public*/ class ReturningThreadAction : public ThreadAction
+{
+  //Q_OBJECT
+ public:
+  ReturningThreadAction() : ThreadAction() {}
+ public:
+  /*public*/ void run() {}
+};
+
 class ThreadingUtil : public QObject
 {
   Q_OBJECT
@@ -64,18 +76,14 @@ class ThreadingUtil : public QObject
    * @param <E> the type returned
    */
   //@FunctionalInterface
+  //template<class E>
   template<class E>
-  /*static*/ /*public*/ class ReturningThreadAction : public ThreadAction
-  {
-    //Q_OBJECT
-   public:
-    ReturningThreadAction() : ThreadAction() {}
-   public:
-      /*public*/ void run();
-  };
-  template<class E>
-  static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ ReturningThreadAction<E>* ta);
-
+  static /*public*/ /*<E>*/ int runOnGUIwithReturn(/*@Nonnull*/ ReturningThreadAction<E>* ta){
+   if (isGUIThread()) {
+       // run now
+       /*return*/ ta->run();
+   }
+  }
  signals:
 
  public slots:

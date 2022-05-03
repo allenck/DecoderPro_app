@@ -91,7 +91,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ QVector<VetoableChangeListener*> VetoableChangeSupport::getVetoableChangeListeners() {
+    /*public*/ QVector<VetoableChangeListener*>* VetoableChangeSupport::getVetoableChangeListeners() {
         return vetoableChangeSupport->getVetoableChangeListeners();
     }
 
@@ -99,7 +99,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ QVector<VetoableChangeListener*> VetoableChangeSupport::getVetoableChangeListeners(QString propertyName) {
+    /*public*/ QVector<VetoableChangeListener *> *VetoableChangeSupport::getVetoableChangeListeners(QString propertyName) {
         return vetoableChangeSupport->getVetoableChangeListeners(propertyName);
     }
 

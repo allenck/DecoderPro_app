@@ -16,8 +16,8 @@ public:
  /*public*/ void setIndexedProperty(QString key, int index, QVariant value);
  /*public*/ void addVetoableChangeListener(VetoableChangeListener* listener);
  /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
- /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
- /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
+ /*public*/ QVector<VetoableChangeListener *> *getVetoableChangeListeners();
+ /*public*/ QVector<VetoableChangeListener*> *getVetoableChangeListeners(QString propertyName);
  /*public*/ void removeVetoableChangeListener(VetoableChangeListener* listener);
  /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
  /*public*/ void fireVetoableChange(PropertyChangeEvent *event) /*throw (PropertyVetoException)*/;
@@ -26,7 +26,7 @@ public:
  /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/ ;
 
 protected:
- /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this);
+ /*protected*/ /*final*/ Java_VetoableChangeSupport* vetoableChangeSupport = new Java_VetoableChangeSupport(this);
 
 };
 

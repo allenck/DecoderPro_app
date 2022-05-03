@@ -7,7 +7,6 @@
 #include "abortconditionalngexecutionexception.h"
 #include "loggerfactory.h"
 #include "errorhandlingdialog.h"
-#include "errorhandlingdialog_multiline.h"
 #include "abstractbase.h"
 #include "abstractdigitalaction.h"
 #include "defaultconditionalng.h"
@@ -643,7 +642,7 @@
 
             if (abort) throw  AbortConditionalNGExecutionException(e);
 #else
-//     bool abort = ThreadingUtil::runOnGUIwithReturn(new AMSRun1(item, message));
+     bool abort = ThreadingUtil::runOnGUIwithReturn(new AMSRun1(item, message));
 #endif
             break;
         }
@@ -666,7 +665,7 @@
             throw e;
     }
 }
-#if 0
+#if 1
 void AMSRun1::run()
 {
  ErrorHandlingDialog* dialog = new ErrorHandlingDialog();
@@ -697,6 +696,9 @@ void AMSRun1::run()
                 return dialog->showDialog(item, message, messageList);
             });
             if (abort) throw  AbortConditionalNGExecutionException(e);
+#else
+     bool abort = ThreadingUtil::runOnGUIwithReturn(new AMSRun2(item, message, messageList));
+     if (abort) throw  AbortConditionalNGExecutionException(e);
 #endif
             break;
     }

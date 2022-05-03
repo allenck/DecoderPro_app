@@ -86,7 +86,7 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
     //@Test
     /*public*/ /*final*/ void AbstractManagerTestBase::testVetoableChangeListenerAddAndRemove()
     {
-        int base = ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length();
+        int base = ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length();
 
         VetoableChangeListener* listener = new VetoableChangeListenerO1();
 //        {
@@ -96,18 +96,18 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
 //            }
 //        };
 
-        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length(), __FILE__, __LINE__);
+        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
         ((AbstractManager*)_manager->mself())->VetoableChangeSupport::addVetoableChangeListener(listener);
-        Assert::assertEquals(base + 1, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length(), __FILE__, __LINE__);
+        Assert::assertEquals(base + 1, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
         ((AbstractManager*)_manager->mself())->VetoableChangeSupport::removeVetoableChangeListener(listener);
-        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length(), __FILE__, __LINE__);
+        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
 
-        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length(), __FILE__, __LINE__);
+        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
         ((AbstractManager*)_manager->mself())->VetoableChangeSupport::addVetoableChangeListener("property", listener);
-        Assert::assertEquals(base + 1, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length(), __FILE__, __LINE__);
-        Assert::assertEquals(1, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners("property").length(), __FILE__, __LINE__);
+        Assert::assertEquals(base + 1, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
+        Assert::assertEquals(1, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners("property")->length(), __FILE__, __LINE__);
         ((AbstractManager*)_manager->mself())->VetoableChangeSupport::removeVetoableChangeListener("property", listener);
-        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners().length(), __FILE__, __LINE__);
+        Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
     }
 
     /*public*/ void VetoableChangeListenerO1::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {

@@ -44,6 +44,8 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
+ misc/vetoablechangesupporttest.cpp \
+ misc/vetoablechangesupporttestaction.cpp \
         powermanagerscaffold.cpp \
         tests.cpp \
         logix/defaultconditionalmanagertest.cpp \
@@ -206,6 +208,7 @@ SOURCES += \
     logix/logixactiontest.cpp \
     logix/logixactiontestaction.cpp \
     logix/configxmlmanagertest.cpp \
+ testvetoablechangelistener.cpp \
     warrants/warranttest.cpp \
     mockshutdownmanager.cpp \
     warrants/warranttestaction.cpp \
@@ -393,6 +396,8 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
+ misc/vetoablechangesupporttest.h \
+ misc/vetoablechangesupporttestaction.h \
         powermanagerscaffold.h \
         tests.h \
         tests_global.h \
@@ -555,6 +560,7 @@ HEADERS += \
     logix/logixactiontest.h \
     logix/logixactiontestaction.h \
     logix/configxmlmanagertest.h \
+ testvetoablechangelistener.h \
     warrants/warranttest.h \
     mockshutdownmanager.h \
     warrants/warranttestaction.h \

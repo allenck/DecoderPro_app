@@ -3545,7 +3545,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
              //MaleAnalogActionSocket* aAnalogAction = (DefaultMaleAnalogActionSocket*)nb->self();
                 analogActionManager->deleteAnalogAction(/*aAnalogAction*/dmas);
             }
-#if 0
+#if 1
             QSet</*MaleAnalogExpressionSocket*/NamedBean*> analogExpressionSet = QSet</*MaleAnalogExpressionSocket*/NamedBean*>(analogExpressionManager->getNamedBeanSet());
             for (NamedBean* nb : analogExpressionSet) {
              QString sn = nb->getSystemName();
@@ -3554,7 +3554,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
              Base* b = aae->getParent();
              QObject* bo = (QObject*)aae->getParent();
              //DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)aae->getParent()->bself();
-             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)b->bself();
+             DefaultMaleAnalogExpressionSocket* aAnalogExpression = (DefaultMaleAnalogExpressionSocket*)bo;
              analogExpressionManager->deleteAnalogExpression(aAnalogExpression);
             }
 #endif

@@ -9,9 +9,17 @@
 class ConditionalNGEventListener;
 class ConditionalNGEditor : public TreeEditor
 {
+  Q_OBJECT
  public:
+  /*public*/  class ConditionalNGEventListener :   public EventListener
+  {
+       //Q_OBJECT
+       //Q_INTERFACES(EventListener)
+   public:
+    /*public*/  void conditionalNGEventOccurred() {}
+  };
   ConditionalNGEditor(QWidget* parent=nullptr);
-  /*/*public*/  ConditionalNGEditor(/*@Nonnull*/ ConditionalNG* conditionalNG, QWidget* parent);
+  /*/*public*/  ConditionalNGEditor(/*@Nonnull*/ ConditionalNG* conditionalNG, QWidget* parent=nullptr);
   /*public*/  void windowClosed(QCloseEvent* e);
   /*public*/  void addLogixNGEventListener(ConditionalNGEventListener* listener);
 
@@ -31,15 +39,9 @@ class ConditionalNGEditor : public TreeEditor
  protected:
   /*protected*/ /*final*/ ConditionalNG* _conditionalNG;
   friend class ConditionalNGEventListener;
+  friend class LogixNGEventListenerImpl;
 };
 
-/*public*/  class ConditionalNGEventListener : public QObject,  public EventListener
-{
-     Q_OBJECT
-     Q_INTERFACES(EventListener)
- public:
-  /*public*/  void conditionalNGEventOccurred() {}
-};
 class CNGEFemaleSocketListener : public QObject, public FemaleSocketListener
 {
  public:

@@ -56,12 +56,12 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
     }
 
     //@Override
-    /*public*/ QVector<VetoableChangeListener*> ConstrainedBean::getVetoableChangeListeners() {
+    /*public*/ QVector<VetoableChangeListener*>* ConstrainedBean::getVetoableChangeListeners() {
         return this->vetoableChangeSupport->getVetoableChangeListeners();
     }
 
     //@Override
-    /*public*/ QVector<VetoableChangeListener*> ConstrainedBean::getVetoableChangeListeners(QString propertyName) {
+    /*public*/ QVector<VetoableChangeListener*>* ConstrainedBean::getVetoableChangeListeners(QString propertyName) {
         return this->vetoableChangeSupport->getVetoableChangeListeners(propertyName);
     }
 

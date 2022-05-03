@@ -92,6 +92,8 @@
 #include "misc/cvutiltestaction.h"
 #include "misc/fileutilsupporttestaction.h"
 #include "programmers/abstractprogrammertestaction.h"
+#include "misc/vetoablechangesupporttestaction.h"
+
 #ifdef HAVE_LOGIXNG
 #include "logixng/symboltabletestaction.h"
 #include "logixng/logixng_initializationmanagertestaction.h"
@@ -302,6 +304,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     miscMenu->addAction(new OBlockTableActionTestAction(this));
     miscMenu->addAction(new CvUtilTestAction(this));
     miscMenu->addAction(new FileUtilSupportTestAction(this));
+    miscMenu->addAction(new VetoableChangeSupportTestAction(this));
 
     QMenu* layoutEditorMenu = new QMenu("LayoutEditor");
     addMenu(layoutEditorMenu);

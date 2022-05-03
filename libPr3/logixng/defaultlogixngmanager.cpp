@@ -457,7 +457,7 @@ for (LogixNG* logixNG : initLogixNGs) {
 //@OverridingMethodsMustInvokeSuper
 /*public*/ void DefaultLogixNGManager::fireVetoableChange(QString p, QVariant old) /*throw new (PropertyVetoException)*/ {
     PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, QVariant());
-    for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
+    for (VetoableChangeListener* vc : *vetoableChangeSupport->getVetoableChangeListeners()) {
         vc->vetoableChange(evt);
     }
 }

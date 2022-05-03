@@ -46,7 +46,7 @@ public:
      * @return An array of VetoableChangeListeners.
      */
     //@Nonnull
-    virtual /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() {return QVector<VetoableChangeListener*>();}
+    virtual /*public*/ QVector<VetoableChangeListener*>* getVetoableChangeListeners() {return new QVector<VetoableChangeListener*>();}
 
     /**
      * Get all {@link java.beans.VetoableChangeListener}s currently listening to
@@ -56,7 +56,7 @@ public:
      * @return An array of VetoableChangeListeners.
      */
     //@Nonnull
-    virtual /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(/*@CheckForNull*/ QString /*propertyName*/) {return QVector<VetoableChangeListener*>();}
+    virtual /*public*/ QVector<VetoableChangeListener*>* getVetoableChangeListeners(/*@CheckForNull*/ QString /*propertyName*/) {return new QVector<VetoableChangeListener*>();}
 
     /**
      * Remove the specified listener from this object.

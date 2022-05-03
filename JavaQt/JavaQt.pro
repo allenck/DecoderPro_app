@@ -45,6 +45,7 @@ SOURCES += javaqt.cpp \
     files.cpp \
     filesystemview.cpp \
     invalidconditionalactionexception.cpp \
+    java_vetoablechangesupport.cpp \
     jeditorpane.cpp \
     jframe.cpp \
     jinputvalidator.cpp \
@@ -309,6 +310,7 @@ HEADERS += javaqt.h\
  filesystemview.h \
  invalidconditionalactionexception.h \
  invalidconditionalvariableexception.h \
+ java_vetoablechangesupport.h \
         javaqt_global.h \
     calendar.h \
     box.h \

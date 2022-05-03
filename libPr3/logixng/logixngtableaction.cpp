@@ -2,6 +2,8 @@
 #include "logixngeditor.h"
 #include "loggerfactory.h"
 #include "gridbaglayout.h"
+#include "defaultlogixngmanager.h"
+
 /**
  * Swing action to create and register a LogixNG Table.
  * <p>
@@ -44,7 +46,7 @@
 
     //@Override
     /*protected*/ Manager/*<LogixNG>*/* LogixNGTableAction::getManager() {
-        return (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
+        return (AbstractManager*)(DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
     }
 
     //@Override
@@ -67,7 +69,7 @@
 
     //@Override
     /*protected*/ NamedBean* LogixNGTableAction::createBean(QString userName) {
-        LogixNG* logixNG = (LogixNG*) ((LogixNG_Manager*)
+        LogixNG* logixNG = (LogixNG*) ((DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->createLogixNG(userName);
         logixNG->setEnabled(true);
@@ -76,7 +78,7 @@
 
     //@Override
     /*protected*/ NamedBean* LogixNGTableAction::createBean(QString systemName, QString userName) {
-        LogixNG* logixNG =(LogixNG*) ((LogixNG_Manager*)
+        LogixNG* logixNG =(LogixNG*) ((DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->createLogixNG(systemName, userName);
         logixNG->setEnabled(true);
@@ -87,7 +89,7 @@
     /*public*/  void LogixNGTableAction::deleteBean(NamedBean* logixNG) {
         ((LogixNG*)logixNG->self())->setEnabled(false);
         try {
-            ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->deleteBean(logixNG, "DoDelete");
+            ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->deleteBean(logixNG, "DoDelete");
         } catch (PropertyVetoException* e) {
             //At this stage the DoDelete shouldn't fail, as we have already done a can delete, which would trigger a veto
             log->error(e->getMessage());

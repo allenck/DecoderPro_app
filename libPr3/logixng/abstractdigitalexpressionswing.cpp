@@ -4,6 +4,7 @@
 #include "runtimeexception.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "defaultsymboltable.h"
+#include "logixng_thread.h"
 
 /**
  * Abstract class for SwingConfiguratorInterface
@@ -47,6 +48,8 @@
 
             conditionalNG.setSymbolTable(oldSymbolTable);
         });
+#else
+        conditionalNG->getCurrentThread()->runOnLogixNGEventually(new AbstractDigitalExpressionSwing_run1(object, symbolTable, conditionalNG,this));
 #endif
     }
 

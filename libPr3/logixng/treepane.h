@@ -57,6 +57,9 @@ class TreePane : public JPanel, public PropertyChangeListener
   friend class DeleteBeanWorker2;
   friend class TEPopupMenu;
   friend class ModuleEditor;
+  friend class TreeEditor_run3;
+  friend class TreeEditor_run5;
+
 };
 
 class ThreadAction1 : public ThreadAction
@@ -121,6 +124,8 @@ protected:
   friend class ConditionalNGDebugger;
   friend class TreeEditor;
   friend class DeleteBeanWorker2;
+  friend class TreeEditor_run3;
+  friend class TreeEditor_run5;
 };
 
 /*private*/ /*static*/ /*final*/ class FemaleSocketTreeRenderer : public QObject, public TreeCellRenderer {
