@@ -262,7 +262,7 @@ int AbstractTableModel::columnCount(const QModelIndex &parent) const
     //fireTableChanged(new TableModelEvent(this, firstRow, lastRow,
 //                         TableModelEvent::ALL_COLUMNS, TableModelEvent::INSERT));
  int rows = rowCount(QModelIndex());
- Q_ASSERT(lastRow < rows);
+ Q_ASSERT(lastRow >= rows);
  beginInsertRows(QModelIndex(), firstRow, lastRow);
  endInsertRows();
  //setPersistentButtons();

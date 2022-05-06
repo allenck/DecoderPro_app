@@ -10,7 +10,7 @@ class TreeViewer : public JmriJFrame
   Q_OBJECT
  public:
   TreeViewer(FemaleSocket* femaleRootSocket, QWidget* parent = nullptr);
-  /*public*/ /*final*/ TreePane* _treePane;
+  /*public*/ /*final*/ TreePane* _treePane = nullptr;
   /*public*/ void initComponents()override;
   /*public*/ void initMinimumSize(QSize dimension);
   /*public*/ bool getRootVisible();

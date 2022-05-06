@@ -1,7 +1,7 @@
 #include "debuggermalestringexpressionsocketfactory.h"
 #include "malestringexpressionsocket.h"
 #include "instancemanager.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "debuggermalestringexpressionsocket.h"
 /**
  *
@@ -13,7 +13,7 @@
     //@Override
     /*public*/ /*MaleStringExpressionSocket*/MaleSocket *DebuggerMaleStringExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, /*MaleStringExpressionSocket*/MaleSocket *maleSocket) {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 

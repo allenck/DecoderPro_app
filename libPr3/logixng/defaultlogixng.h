@@ -41,10 +41,10 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ void setConditionalNG_SystemName(int index, QString systemName)override;
   /*public*/ int getNumConditionalNGs() override;
   /*public*/ void swapConditionalNG(int nextInOrder, int row)override;
-  /*public*/ ConditionalNG* getConditionalNG(int order)override;
+  /*public*/ DefaultConditionalNG *getConditionalNG(int order)override;
   /*public*/ bool addConditionalNG(DefaultConditionalNG *conditionalNG) override;
-  /*public*/ ConditionalNG* getConditionalNG(QString systemName) override;
-  /*public*/ ConditionalNG* getConditionalNGByUserName(QString userName)override;
+  /*public*/ DefaultConditionalNG *getConditionalNG(QString systemName) override;
+  /*public*/ DefaultConditionalNG* getConditionalNGByUserName(QString userName)override;
   /*public*/ void deleteConditionalNG(ConditionalNG* conditionalNG) override;
   /*public*/ bool isActive()override;
   /*public*/ void execute()override;

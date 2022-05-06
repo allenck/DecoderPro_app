@@ -45,7 +45,7 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2020
  */
-/*public*/ /*interface*/class Module : public Base, public virtual NamedBean {
+/*public*/ /*interface*/class Module : public virtual Base, public virtual NamedBean {
     Q_INTERFACES(Base NamedBean)
  public:
   /**

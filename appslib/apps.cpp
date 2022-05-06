@@ -534,7 +534,7 @@ bool Apps::configDeferredLoadOK = false;
   new LogixNG_Metatypes();
  LogixNG_Manager* logixNG_Manager = (DefaultLogixNGManager*) InstanceManager::getDefault("LogixNG_Manager");
  logixNG_Manager->setupAllLogixNGs();
- if (((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getStartLogixNGOnStartup()) {
+ if (((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getStartLogixNGOnStartup()) {
      logixNG_Manager->activateAllLogixNGs();
  }
 #endif

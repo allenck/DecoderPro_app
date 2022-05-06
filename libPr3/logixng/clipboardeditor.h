@@ -28,11 +28,12 @@ class ClipboardEditor : public TreeEditor
   friend class TreeEditor;
   friend class TEClipboardListener;
 };
-class ClipboardEventListener : public EventListener
-{
-  Q_INTERFACES(EventListener)
- public:
-  /*public*/ virtual void clipboardEventOccurred(){};
-};
-Q_DECLARE_INTERFACE(ClipboardEventListener, "ClipboardEventListener")
+
+//class ClipboardEventListener : public EventListener
+//{
+//  Q_INTERFACES(EventListener)
+// public:
+//  /*public*/ virtual void clipboardEventOccurred(){};
+//};
+//Q_DECLARE_INTERFACE(ClipboardEventListener, "ClipboardEventListener")
 #endif // CLIPBOARDEDITOR_H

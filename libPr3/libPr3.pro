@@ -1520,6 +1520,7 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+ logixng/clipboardeventlistener.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2604,6 +2605,7 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/analogexpressionbean.h \
     logixng/expressionreference.h \
     logixng/expressionreferenceswing.h \
     logixng/expressionreferencexml.h \
@@ -2966,7 +2968,6 @@ HEADERS += \
     logixng/stringexpressionmanager.h \
     logixng/table.h \
     logixng/tableroworcolumn.h \
-    logixng/Analogexpressionbean.h \
     logixng/abortconditionalexecutionexception.h \
     logixng/analogaction.h \
     logixng/analogactionbean.h \

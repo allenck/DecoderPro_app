@@ -166,6 +166,8 @@ friend class LightTableDataModel;
 friend class LightTableAction;
 friend class ReporterTableAction;
 friend class IdTagTableAction;
+friend class AbstractLogixNGTableAction;
+friend class LogixNGEditor;
 };
 
 class DeleteBeanWorker : public QObject//extends SwingWorker<Void, Void>

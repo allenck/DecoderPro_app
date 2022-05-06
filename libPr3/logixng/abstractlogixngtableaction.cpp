@@ -3,7 +3,7 @@
 #include "vptr.h"
 #include "tablecolumnmodel.h"
 #include "tablecolumn.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include <QMenuBar>
 #include <QMenu>
 #include "logixngtabletableaction.h"
@@ -15,6 +15,7 @@
 #include "abstractlogixngtableaction.h"
 #include "logixngtableaction.h"
 #include <QScrollArea>
+#include "jmriuserpreferencesmanager.h"
 
 /**
  * Swing action to create and register a LogixNG Table.
@@ -144,7 +145,7 @@
              if(role == Qt::CheckStateRole)
              {
               if (index.column() == ENABLECOL) {
-                    NamedBean* x = VPtr<NamedBean>::asPtr( getValueAt(index.row(), SYSNAMECOL));
+                    NamedBean* x = VPtr<NamedBean>::asPtr( BeanTableDataModel::getValueAt(index.row(), SYSNAMECOL));
                     if (x == nullptr) {
                         return Qt::Unchecked;
                     }
@@ -161,23 +162,23 @@
              {
                 if (index.column() == EDITCOL) {
                     // set up to edit
-                    QString sName = VPtr<NamedBean>::asPtr(getValueAt(index.row(), SYSNAMECOL))->getSystemName();
-                    if (tr("ButtonEdit") == (value)) {  // NOI18N
+                    QString sName = VPtr<NamedBean>::asPtr(BeanTableDataModel::getValueAt(index.row(), SYSNAMECOL))->getSystemName();
+                    if (tr("Edit") == (value)) {  // NOI18N
                         act->editPressed(sName);
 
-                    } else if (tr("BrowserButton") == (value)) {  // NOI18N
+                    } else if (tr("Browse") == (value)) {  // NOI18N
                         act->conditionalRowNumber = index.row();
                         act->browserPressed(sName);
 
                     } else if (tr("Copy") == (value)) {  // NOI18N
                         act->copyPressed(sName);
 
-                    } else if (tr("ButtonDelete") == (value)) {  // NOI18N
+                    } else if (tr("Delete") == (value)) {  // NOI18N
                         act->deletePressed(sName);
                     }
                 } else if (index.column() == ENABLECOL) {
                     // alternate
-                    NamedBean* x = VPtr<NamedBean>::asPtr(getValueAt(index.row(), SYSNAMECOL));
+                    NamedBean* x = VPtr<NamedBean>::asPtr(BeanTableDataModel::getValueAt(index.row(), SYSNAMECOL));
                     bool v = act->isEnabled(x);
                     act->setEnabled(x, !v);
                 }
@@ -231,7 +232,7 @@
 //                table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
 //                table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
 //                table.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
-                if (!(qobject_cast<LogixNG_Manager*>(getManager()->mself()))) {
+                if (!(qobject_cast<DefaultLogixNGManager*>(getManager()->mself()))) {
                     table->getColumnModel()->getColumn(2)->setMinWidth(0);
                     table->getColumnModel()->getColumn(2)->setMaxWidth(0);
                 }
@@ -278,7 +279,7 @@
      */
     //@Override
     /*protected*/ void AbstractLogixNGTableAction::setTitle() {
-        f->setTitle(tr("TitleLogixNGTable"));
+        f->setTitle(tr("LogixNG Table"));
     }
 
     /**
@@ -397,9 +398,10 @@
         addLogixNGFrame->pack();
         addLogixNGFrame->setVisible(true);
         _autoSystemName->setSelected(false);
-        UserPreferencesManager* prefMgr =(UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+        UserPreferencesManager* prefMgr =(JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
           if(prefMgr)
             _autoSystemName->setSelected(prefMgr->getCheckboxPreferenceState(systemNameAuto, true));
+          m->updateNameList();
     }
 
     // /*protected*/ abstract JPanel makeAddFrame(String titleId, String startMessageId);
@@ -675,7 +677,7 @@
             NamedBean* x = nullptr;
             try {
                 x = getManager()->getBySystemName(sName);
-            } catch (Exception ex) {
+            } catch (Exception* ex) {
                 // user input no good
                 handleCreateException(sName);
                 return;  // without creating
@@ -701,7 +703,7 @@
         cancelAddPressed(nullptr);
         // create the Edit bean Window
         editPressed(sName);
-        UserPreferencesManager* prefMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+        UserPreferencesManager* prefMgr = (JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
         if(prefMgr)
         {
             prefMgr->setCheckboxPreferenceState(systemNameAuto, _autoSystemName->isSelected());
@@ -758,6 +760,7 @@
             });
         });
 #endif
+       _editor->addEditorEventListener(new AbstractLogixNGTableAction_EventListener(sName, this));
     }
 
     /**

@@ -108,7 +108,7 @@
     /*public*/  Module* DefaultModuleManager::getBySystemName(QString name) {
         //return (Module*)_tsys->value(name)->self();
      if(_tsys->value(name))
-      return (Module*)_tsys->value(name)->self();
+      return (DefaultModule*)_tsys->value(name)->self();
      return nullptr;
     }
 

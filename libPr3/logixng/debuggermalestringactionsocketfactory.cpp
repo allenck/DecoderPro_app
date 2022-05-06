@@ -1,6 +1,6 @@
 #include "debuggermalestringactionsocketfactory.h"
 #include "instancemanager.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "debuggermalestringactionsocket.h"
 
 /**
@@ -13,7 +13,7 @@
     //@Override
     /*public*/ /*MaleStringActionSocket*/MaleSocket *DebuggerMaleStringActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, /*MaleStringActionSocket*/MaleSocket *maleSocket) {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 

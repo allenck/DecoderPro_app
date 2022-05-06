@@ -3,6 +3,7 @@
 #include "loggerfactory.h"
 #include "gridbaglayout.h"
 #include "defaultlogixngmanager.h"
+#include "defaultlogixng.h"
 
 /**
  * Swing action to create and register a LogixNG Table.
@@ -30,6 +31,7 @@
      */
     /*public*/  LogixNGTableAction::LogixNGTableAction(QString s, QObject* parent) : AbstractLogixNGTableAction(s, parent){
         //super(s);
+        setObjectName("LogixNGTableAction");
     }
 
     /**
@@ -37,6 +39,7 @@
      */
     /*public*/  LogixNGTableAction::LogixNGTableAction(QObject* parent) : AbstractLogixNGTableAction(tr("LogixNG Table"), parent){
         //this(Bundle.getMessage("TitleLogixNGTable"));
+        setObjectName("LogixNGTableAction");
     }
 
     //@Override
@@ -69,16 +72,16 @@
 
     //@Override
     /*protected*/ NamedBean* LogixNGTableAction::createBean(QString userName) {
-        LogixNG* logixNG = (LogixNG*) ((DefaultLogixNGManager*)
+        LogixNG* logixNG = (DefaultLogixNG*) ((DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->createLogixNG(userName);
         logixNG->setEnabled(true);
-        return (NamedBean*)logixNG;
+        return logixNG;
     }
 
     //@Override
     /*protected*/ NamedBean* LogixNGTableAction::createBean(QString systemName, QString userName) {
-        LogixNG* logixNG =(LogixNG*) ((DefaultLogixNGManager*)
+        LogixNG* logixNG =(DefaultLogixNG*) ((DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->createLogixNG(systemName, userName);
         logixNG->setEnabled(true);
@@ -99,8 +102,9 @@
     //@Override
     /*protected*/ QString LogixNGTableAction::getBeanText(NamedBean* e) {
         QString writer;// = new StringWriter();
-#if 0
-        ((LogixNG*)_curNamedBean)->printTree(_printTreeSettings, new PrintWriter(writer), "    ", new MutableInt(0));
+#if 1
+        int mutableInt =0;
+        ((DefaultLogixNG*)_curNamedBean->self())->printTree(_printTreeSettings, new PrintWriter(writer), "    ", &mutableInt);
 #endif
         return writer;
     }
@@ -206,14 +210,14 @@
 
     //@Override
     /*protected*/ void LogixNGTableAction::getListenerRefsIncludingChildren(NamedBean* logixNG,QList<QString> list) {
-        ((LogixNG*)logixNG->self())->getListenerRefsIncludingChildren(list);
+        ((DefaultLogixNG*)logixNG->self())->getListenerRefsIncludingChildren(list);
     }
 
     //@Override
     /*protected*/ bool LogixNGTableAction::hasChildren(NamedBean* logixNG) {
-        return ((LogixNG*)logixNG->self())->getNumConditionalNGs() > 0;
+        return ((DefaultLogixNG*)logixNG->self())->getNumConditionalNGs() > 0;
     }
 
 /*public*/ QString LogixNGTableAction::getClassDescription() {return  "LogixNG";}
 
-    /*private*/ /*final*/ /*static*/ Logger* LogixNGTableAction::log = LoggerFactory::getLogger("LogixNGTableAction");
+/*private*/ /*final*/ /*static*/ Logger* LogixNGTableAction::log = LoggerFactory::getLogger("LogixNGTableAction");

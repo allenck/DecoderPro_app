@@ -123,12 +123,12 @@
 
 //@Override
 /*public*/ NamedBean* DefaultLogixNGManager::getByUserName(QString name) {
-    return (NamedBean*)_tuser->value(name);
+    return _tuser->value(name);
 }
 
 //@Override
 /*public*/ NamedBean* DefaultLogixNGManager::getBySystemName(QString name) {
-    return(NamedBean*) _tsys->value(name);
+    return _tsys->value(name);
 }
 
 /** {@inheritDoc} */

@@ -1,7 +1,7 @@
 #ifndef MALEANALOGEXPRESSIONSOCKET_H
 #define MALEANALOGEXPRESSIONSOCKET_H
 #include "malesocket.h"
-#include "Analogexpressionbean.h"
+#include "analogexpressionbean.h"
 /**
  * A LogixNG male AnalogExpressionBean socket.
  */

@@ -1,6 +1,6 @@
 #include "debuggermaledigitalbooleanactionsocketfactory.h"
 #include "instancemanager.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "debuggermaledigitalbooleanactionsocket.h"
 /**
  *
@@ -12,7 +12,7 @@
     //@Override
     /*public*/ MaleDigitalBooleanActionSocket* DebuggerMaleDigitalBooleanActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalBooleanActionSocket>*/* manager, MaleDigitalBooleanActionSocket* maleSocket) {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 

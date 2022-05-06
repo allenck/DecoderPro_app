@@ -10,7 +10,7 @@
 #include "threadingutil.h"
 #include "femalesocketoperation.h"
 #include "clipboard.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "joptionpane.h"
 #include "swingtools.h"
 #include "gridbaglayout.h"
@@ -72,7 +72,7 @@
 
     //@Override
     /*final*/ /*public*/  void TreeEditor::initComponents() {
-        JmriJFrame::initComponents();
+        TreeViewer::initComponents();
 
         // The menu is created in parent class TreeViewer
         QMenuBar* menuBar = this->menuBar();
@@ -90,23 +90,24 @@
 
         TEPopupMenu* popup = new TEPopupMenu(this);
         popup->init();
-/*
-        // The JTree can get big, so allow it to scroll
-        JScrollPane scrollpane = new JScrollPane(tree);
 
-        // create panel
-        JPanel* pPanel = new JPanel();
-        pPanel.setLayout(new BoxLayout(pPanel, BoxLayout.Y_AXIS));
+        /*
+                // The JTree can get big, so allow it to scroll
+                JScrollPane scrollpane = new JScrollPane(tree);
 
-        // Display it all in a window and make the window appear
-        pPanel.add(scrollpane, "Center");
+                // create panel
+                JPanel pPanel = new JPanel();
+                pPanel.setLayout(new BoxLayout(pPanel, BoxLayout.Y_AXIS));
 
-        // add panels
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        getContentPane().add(pPanel);
+                // Display it all in a window and make the window appear
+                pPanel.add(scrollpane, "Center");
 
-//        initMinimumSize(new Dimension(panelWidth700, panelHeight500));
-*/
+                // add panels
+                getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+                getContentPane().add(pPanel);
+
+        //        initMinimumSize(new Dimension(panelWidth700, panelHeight500));
+        */
     }
 
 
@@ -115,7 +116,7 @@
             _clipboardEditor = new ClipboardEditor();
             /*_clipboardEditor->*/initComponents();
             /*_clipboardEditor->*/setVisible(true);
-#if 0
+#if 1
             _clipboardEditor->addClipboardEventListener(new TEClipboardListener(this));
 #endif
 //             //);
@@ -780,7 +781,7 @@
         }
 
         _autoSystemName->setSelected(true);
-        UserPreferencesManager* prefMgr =((UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager"));
+        UserPreferencesManager* prefMgr =((JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager"));
         if(prefMgr)
         {
             _autoSystemName->setSelected(prefMgr->getCheckboxPreferenceState(_systemNameAuto, true));
@@ -1404,7 +1405,7 @@
             _currentFemaleSocket = femaleSocket;
             _currentPath = path;
 
-            DefaultClipboard* clipboard = ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
+            DefaultClipboard* clipboard = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
 
             MaleSocket* topItem = clipboard->getTopItem();
 
@@ -1793,11 +1794,11 @@
         }
 
         /*public*/  int DeleteBeanWorker2::getDisplayDeleteMsg() {
-            return ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption("TreeEditor", "deleteInUse");
+            return ((JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption("TreeEditor", "deleteInUse");
         }
 
         /*public*/  void DeleteBeanWorker2::setDisplayDeleteMsg(int boo) {
-            ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption("TreeEditor", "deleteInUse", boo);
+            ((JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption("TreeEditor", "deleteInUse", boo);
         }
 
         /*public*/  void DeleteBeanWorker2::doDelete() {

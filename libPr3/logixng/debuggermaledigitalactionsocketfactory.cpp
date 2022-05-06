@@ -1,6 +1,5 @@
 #include "debuggermaledigitalactionsocketfactory.h"
 #include "instancemanager.h"
-#include "logixngpreferences.h"
 #include "debuggermaledigitalactionsocket.h"
 #include "defaultlogixngpreferences.h"
 /**

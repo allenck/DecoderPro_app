@@ -107,7 +107,7 @@ Q_OBJECT
     /*private*/ /*final*/ FemaleSocket* _root;
     public:
 
-    /*public*/  FemaleSocketTreeModel(FemaleSocket* root);
+    /*public*/  FemaleSocketTreeModel(FemaleSocket* root, QObject* parent = nullptr);
     /*public*/  QObject* getRoot()override;
     /*public*/  bool isLeaf(QObject* node)override;
     /*public*/  int getChildCount(QObject* parent)override;
@@ -145,4 +145,34 @@ protected:
     /*public*/ virtual JPanel* decorate(FemaleSocket* femaleSocket, JPanel* panel)=0;
 };
 Q_DECLARE_INTERFACE(FemaleSocketDecorator, "FemaleSocketDecorator")
+
+class TreePane_RunnableWithBase : public RunnableWithBase
+{
+  Q_OBJECT
+  TreePane* treePane;
+ public:
+  TreePane_RunnableWithBase(TreePane* treePane) {this->treePane = treePane;}
+  void run(Base* b)
+  {
+   b->PropertyChangeProvider::addPropertyChangeListener(treePane);
+  }
+};
+
+class TreePane_FemaleSocketDecorator : public QObject,public FemaleSocketDecorator
+{
+  Q_OBJECT
+  Q_INTERFACES(FemaleSocketDecorator)
+  FemaleSocket* femaleSocket;
+  JPanel* panel;
+ public:
+  TreePane_FemaleSocketDecorator(FemaleSocket* femaleSocket, JPanel* panel) {
+   this->femaleSocket = femaleSocket;
+   this->panel = panel;
+  }
+  JPanel* decorate(FemaleSocket* femaleSocket, JPanel* panel)
+  {
+   return panel;
+  }
+};
+
 #endif // TREEPANE_H

@@ -67,7 +67,7 @@
 void ListedTableFrame::common()
 {
  setObjectName("ListedTableFrame");
- pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ pref = (JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  itemBeingAdded = NULL;
  log = new Logger("ListedTableFrame");
  lastSelectedItem = NULL;
@@ -128,7 +128,7 @@ void ListedTableFrame::common()
 
  detailpanel = new QStackedWidget();
  detailpanel->setObjectName("detailPanel");
- //resize(900,600);
+ resize(900,600);
  //QVBoxLayout* detailPanelLayout;
  //detailpanel->setLayout(detailPanelLayout = new QVBoxLayout()); // Java CardLayout
  //QVBoxLayout* detailPanelLayout = new QVBoxLayout(detailpanel);

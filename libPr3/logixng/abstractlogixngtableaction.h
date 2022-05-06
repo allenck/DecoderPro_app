@@ -14,7 +14,8 @@
 #include "joptionpane.h"
 #include "runnable.h"
 #include "instancemanager.h"
-#include "userpreferencesmanager.h"
+#include "jmriuserpreferencesmanager.h"
+#include <QMapIterator>
 
 class AbstractLogixNGTableAction : public AbstractTableAction
 {
@@ -109,6 +110,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   friend class LNGTE_windowListener;;
   friend class LogixNGModuleTableAction;
   friend class LogixNGModuleTableAction_WindowListener;
+  friend class AbstractLogixNGTableAction_EventListener;
 };
 
 class LNGBeanTableDataModel : public BeanTableDataModel
@@ -127,7 +129,7 @@ class LNGBeanTableDataModel : public BeanTableDataModel
   /*public*/  int getPreferredWidth(int col)override ;
   /*public*/  Qt::ItemFlags flags(const QModelIndex &index) const override;
   /*public*/  QVariant data(const QModelIndex &index, int role) const override;
-  /*public*/  bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/  bool setData(const QModelIndex &index, const QVariant &value, int role)override;
   /*public*/  Manager/*<E>*/* getManager()override;
   /*public*/  NamedBean* getBySystemName(QString name)const override;
   /*public*/  NamedBean* getByUserName(QString name)override;
@@ -168,7 +170,7 @@ class ALNGRunnable : public Runnable
           act->addLogixNGFrame->pack();
           act->addLogixNGFrame->setVisible(true);
           act->_autoSystemName->setSelected(false);
-          UserPreferencesManager* prefMgr =(UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+          UserPreferencesManager* prefMgr =(JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
           if(prefMgr) {
               act->_autoSystemName->setSelected(prefMgr->getCheckboxPreferenceState(act->systemNameAuto, true));
           }//);
@@ -176,33 +178,48 @@ class ALNGRunnable : public Runnable
       act->_inCopyMode = false;
   }
 };
-#if 0
-class ALNGEventListener : public QObject, public EventListener
+#if 1
+class AbstractLogixNGTableAction_EventListener : public QObject, public AbstractLogixNGEditor::EditorEventListener
 {
   Q_OBJECT
-  Q_INTERFACES(EVentListener)
+  Q_INTERFACES(AbstractLogixNGEditor::EditorEventListener)
   AbstractLogixNGTableAction* act;
+  QString sName;
  public:
-  ALNGEventListener(AbstractLogixNGTableAction* act) {this->act = act;}
-  QString lgxName = sName;
-  data.forEach((key, value) -> {
-      if (key.equals("Finish")) {                  // NOI18N
-          _editor = null;
-          _inEditMode = false;
-          f.setVisible(true);
-      } else if (key.equals("Delete")) {           // NOI18N
-          _inEditMode = false;
-          deletePressed(value);
-      } else if (key.equals("chgUname")) {         // NOI18N
-          E x = getManager().getBySystemName(lgxName);
-          if (x == null) {
-              log.error("Found no logixNG for name {} when changing user name (2)", lgxName);
+  AbstractLogixNGTableAction_EventListener(QString sName, AbstractLogixNGTableAction* act) {
+   this->act = act;
+   this->sName = sName;
+
+  //data.forEach((key, value)
+  }
+  void editorEventOccurred(QMap<QString, QString> _data)override {
+   QString lgxName = sName;
+
+   QMapIterator<QString, QString> iter(_data);
+   while(iter.hasNext())
+   {
+    iter.next();
+    QString key = iter.key();
+    QString value = iter.value();
+      if (key ==("Finish")) {                  // NOI18N
+          act->_editor = nullptr;
+          act->_inEditMode = false;
+          act->f->setVisible(true);
+      } else if (key==("Delete")) {           // NOI18N
+          act->_inEditMode = false;
+          act->deletePressed(value);
+      } else if (key == ("chgUname")) {         // NOI18N
+          NamedBean* x = act->getManager()->getBySystemName(lgxName);
+          if (x == nullptr) {
+              act->log->error(tr("Found no logixNG for name %1 when changing user name (2)").arg(lgxName));
               return;
           }
-          x.setUserName(value);
-          m.fireTableDataChanged();
+          x->setUserName(value);
+          act->m->fireTableDataChanged();
       }
-  });
+   }//);
+  }
+  QObject* self() override {return (QObject*)this;}
 };
 #endif
 

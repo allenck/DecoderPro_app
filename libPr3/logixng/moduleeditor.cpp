@@ -1,7 +1,7 @@
 #include "moduleeditor.h"
 #include "runtimeexception.h"
 #include "treepane.h"
-#include "module.h"
+#include "defaultmodule.h"
 #include "logixng_thread.h"
 #include "defaultmodulemanager.h"
 
@@ -34,7 +34,7 @@
                 EnableRootPopup::EnableRootPopup,
                 EnableExecuteEvaluate::EnableExecuteEvaluate,
         parent){
-
+        setObjectName("ModuleEditor");
         this->beanTableDataModel = m;
 
         if (!_treePane->_femaleRootSocket->isConnected()) {
@@ -45,7 +45,7 @@
             // This should never happen
             throw new RuntimeException("Connected socket is not a Module");
         }
-        _module = (Module*) _treePane->_femaleRootSocket->getConnectedSocket()->getObject();
+        _module = (Module*) _treePane->_femaleRootSocket->getConnectedSocket()->getObject()->bself();
 
         if (_module->NamedBean::getUserName() == "") {
             this->setTitle(
@@ -82,7 +82,7 @@
     }
 
     /*private*/ /*static*/ FemaleSocket* ModuleEditor::setupRootSocket(Base* parent, QString sName) {
-        FemaleSocket* socket = new RootSocket(parent, new FemaleSocketListener13()
+        AbstractFemaleSocket* socket = new RootSocket(parent, new ModuleEditor_FemaleSocketListener1()
 //                                              {
 //            //@Override
 //            /*public*/  void connected(FemaleSocket socket) {
@@ -96,15 +96,14 @@
 //        }
                                               , "Root");
 
-        Module* module = ((DefaultModuleManager*)InstanceManager::getDefault("ModuleManager"))->getBySystemName(sName);
-
+        //Module* module = ((DefaultModuleManager*)InstanceManager::getDefault("ModuleManager"))->getBySystemName(sName)->self();
+        NamedBean* module = ((DefaultModuleManager*)InstanceManager::getDefault("ModuleManager"))->getBySystemName(sName);
         try {
-            socket->_connect(new ModuleEditorMaleSocket(nullptr, module));
+            socket->_connect(new ModuleEditorMaleSocket(nullptr, (DefaultModule*)module->self()));
         } catch (SocketAlreadyConnectedException* e) {
             // This should never happen
             throw new RuntimeException("Socket already connected", e);
         }
-
         return socket;
     }
 

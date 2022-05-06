@@ -1,6 +1,6 @@
 #include "abstractanalogexpressiontestbase.h"
 #include "assert1.h"
-#include "Analogexpressionbean.h"
+#include "analogexpressionbean.h"
 #include "analogio.h"
 #include "junitappender.h"
 #include "malesocket.h"

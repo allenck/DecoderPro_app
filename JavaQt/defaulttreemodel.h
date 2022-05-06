@@ -12,7 +12,7 @@ class JAVAQTSHARED_EXPORT DefaultTreeModel : public TreeModel
 {
     Q_OBJECT
 public:
-    explicit DefaultTreeModel(QObject *parent = 0);
+//    explicit DefaultTreeModel(QObject *parent = 0);
     /*public*/ DefaultTreeModel(TreeNode* root, QObject *parent = 0);
     /*public*/ DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent = 0);
     /*public*/ void setAsksAllowsChildren(bool newValue);
@@ -70,7 +70,7 @@ private:
     bool _asksAllowsChildren;
 protected:
     /** Root of the tree. */
-    /*protected*/ TreeNode* root;
+    /*protected*/ TreeNode* root = nullptr;
     /** Listeners. */
     /*protected*/ EventListenerList* listenerList;// = new EventListenerList();
     /**

@@ -1,6 +1,6 @@
 #include "debuggermaledigitalexpressionsocketfactory.h"
 #include "instancemanager.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "maledigitalexpressionsocket.h"
 #include "debuggermaledigitalexpressionsocket.h"
 
@@ -14,7 +14,7 @@
     //@Override
     /*public*/ /*MaleDigitalExpressionSocket*/MaleSocket *DebuggerMaleDigitalExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, /*MaleDigitalExpressionSocket*/MaleSocket *maleSocket) {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 

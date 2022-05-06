@@ -3,7 +3,7 @@
 
 #include <abstractmanagertestbase.h>
 #include "abstractbase.h"
-#include "Analogexpressionbean.h"
+#include "analogexpressionbean.h"
 #include "femalesocketlistener.h"
 
 

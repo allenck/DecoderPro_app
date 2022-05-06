@@ -43,7 +43,7 @@
     /**
      * Create a LogixNGTableAction instance with default title.
      */
-    /*public*/  LogixNGModuleTableAction::LogixNGModuleTableAction(QObject *parent) : AbstractLogixNGTableAction(tr("LogixNGModuleTable"), parent){
+    /*public*/  LogixNGModuleTableAction::LogixNGModuleTableAction(QObject *parent) : AbstractLogixNGTableAction(tr("LogixNGModule Table"), parent){
         //this(Bundle.getMessage("TitleLogixNGModuleTable"));
       setObjectName("LogixNGModuleTableAction");
     }
@@ -156,7 +156,7 @@
 
         _femaleSocketType->clear();
         for (FemaleSocketManager::SocketType* socketType : list) {
-            _femaleSocketType->addItem(VPtr<FemaleSocketManager::SocketType>::asQVariant(socketType));
+            _femaleSocketType->addItem(socketType->getName(), VPtr<FemaleSocketManager::SocketType>::asQVariant(socketType));
             if ("DefaultFemaleDigitalActionSocket" == (socketType->getName())) {
                 _femaleSocketType->setSelectedItem(VPtr<FemaleSocketManager::SocketType>::asQVariant(socketType));
             }
@@ -206,10 +206,10 @@
         panel3->setLayout(new QVBoxLayout());//panel3, BoxLayout.Y_AXIS));
         JPanel* panel31 = new JPanel();
         panel31->setLayout(new FlowLayout());
-        JLabel* message1 = new JLabel(startMessageId + tr("Please enter system name and user name, then"));  // NOI18N
+        JLabel* message1 = new JLabel(startMessageId==tr("Add")? tr("Please enter system name and user name, then"): tr("Please enter System Name and User Name\n"));  // NOI18N
         panel31->layout()->addWidget(message1);
         JPanel* panel32 = new JPanel(new FlowLayout());
-        JLabel* message2 = new JLabel(startMessageId + tr("click [Create]."));  // NOI18N
+        JLabel* message2 = new JLabel(startMessageId==tr("Add")? tr("click [Create]."): tr("of target LogixNG Table, then click [Copy]"));  // NOI18N
         panel32->layout()->addWidget(message2);
         panel3->layout()->addWidget(panel31);
         panel3->layout()->addWidget(panel32);

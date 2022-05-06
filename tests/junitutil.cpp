@@ -736,57 +736,58 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initLogixNGManager(bool activate) {
 #ifdef HAVE_LOGIXNG
  QObject* obj = InstanceManager::getNullableDefault("ConfigureManager");
- LogixNG_Manager* m1 = new DefaultLogixNGManager();
+ DefaultLogixNGManager* m1 = new DefaultLogixNGManager();
+ QString cn = m1->metaObject()->className();
     if ((obj = InstanceManager::getNullableDefault("ConfigureManager")) != nullptr) {
-        ((JmriConfigurationManager*)obj)->registerConfig((QObject*)m1, Manager::LOGIXNGS);
+        ((JmriConfigurationManager*)obj)->registerConfig(m1, Manager::LOGIXNGS);
     }
     InstanceManager::setDefault("LogixNG_Manager", m1->mself());
 #if 1
-    ConditionalNG_Manager* m2 = new DefaultConditionalNGManager();
+    DefaultConditionalNGManager* m2 = new DefaultConditionalNGManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m2, Manager::LOGIXNG_CONDITIONALNGS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m2, Manager::LOGIXNG_CONDITIONALNGS);
     }
     InstanceManager::setDefault("ConditionalNG_Manager", (QObject*)m2);
 
-    AnalogActionManager* m3 = new DefaultAnalogActionManager();
+    DefaultAnalogActionManager* m3 = new DefaultAnalogActionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m3, Manager::LOGIXNG_ANALOG_ACTIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m3, Manager::LOGIXNG_ANALOG_ACTIONS);
     }
     InstanceManager::setDefault("AnalogActionManager",(QObject*) m3);
 
-    AnalogExpressionManager* m4 = new DefaultAnalogExpressionManager();
+    DefaultAnalogExpressionManager* m4 = new DefaultAnalogExpressionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m4, Manager::LOGIXNG_ANALOG_EXPRESSIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m4, Manager::LOGIXNG_ANALOG_EXPRESSIONS);
     }
     InstanceManager::setDefault("AnalogExpressionManager", (QObject*)m4);
 
-    DigitalActionManager* m5 = new DefaultDigitalActionManager();
+    DefaultDigitalActionManager* m5 = new DefaultDigitalActionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m5, Manager::LOGIXNG_DIGITAL_ACTIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m5, Manager::LOGIXNG_DIGITAL_ACTIONS);
     }
     InstanceManager::setDefault("DigitalActionManager", (QObject*)m5);
 
-    DigitalBooleanActionManager* m6 = new DefaultDigitalBooleanActionManager();
+    DefaultDigitalBooleanActionManager* m6 = new DefaultDigitalBooleanActionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m6, Manager::LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m6, Manager::LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
     }
     InstanceManager::setDefault("DigitalBooleanActionManager", (QObject*)m6);
 
-    DigitalExpressionManager* m7 = new DefaultDigitalExpressionManager();
+    DefaultDigitalExpressionManager* m7 = new DefaultDigitalExpressionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m7, Manager::LOGIXNG_DIGITAL_EXPRESSIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m7, Manager::LOGIXNG_DIGITAL_EXPRESSIONS);
     }
     InstanceManager::setDefault("DigitalExpressionManager", (QObject*)m7);
 
-    StringActionManager* m8 = new DefaultStringActionManager();
+    DefaultStringActionManager* m8 = new DefaultStringActionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m8, Manager::LOGIXNG_STRING_ACTIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m8, Manager::LOGIXNG_STRING_ACTIONS);
     }
     InstanceManager::setDefault("StringActionManager", (QObject*)m8);
 
-    StringExpressionManager* m9 = new DefaultStringExpressionManager();
+    DefaultStringExpressionManager* m9 = new DefaultStringExpressionManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m9, Manager::LOGIXNG_STRING_EXPRESSIONS);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m9, Manager::LOGIXNG_STRING_EXPRESSIONS);
     }
     InstanceManager::setDefault("StringExpressionManager", (QObject*)m9);
 #endif

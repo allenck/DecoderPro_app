@@ -2,7 +2,7 @@
 #define ABSTRACTANALOGEXPRESSION_H
 
 #include "abstractbase.h"
-#include "Analogexpressionbean.h"
+#include "analogexpressionbean.h"
 
 class AbstractAnalogExpression : public AbstractBase, public AnalogExpressionBean
 {

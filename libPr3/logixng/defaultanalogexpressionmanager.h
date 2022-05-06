@@ -3,7 +3,7 @@
 
 #include "abstractbasemanager.h"
 #include "instancemanagerautodefault.h"
-#include "Analogexpressionbean.h"
+#include "analogexpressionbean.h"
 #include "defaultmaleanalogexpressionsocket.h"
 #include "analogexpressionmanager.h"
 

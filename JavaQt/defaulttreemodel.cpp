@@ -11,10 +11,11 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-DefaultTreeModel::DefaultTreeModel(QObject *parent) :
-    TreeModel(parent)
-{
-}
+//DefaultTreeModel::DefaultTreeModel(QObject *parent) :
+//    TreeModel(parent)
+//{
+// setObjectName("DefaultTreeModel");
+//}
 /**
  * A simple tree data model that uses TreeNodes.
  * For further information and examples that use DefaultTreeModel,
@@ -44,10 +45,13 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
   * @see #DefaultTreeModel(TreeNode, boolean)
   */
 // //@ConstructorProperties({"root"})
- /*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* root, QObject *parent) : TreeModel(parent)
+ /*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* aRoot, QObject *parent) : TreeModel(parent)
 {
     //this(root, false);
- this->root = root;
+ if (aRoot == nullptr)
+   aRoot = new DefaultMutableTreeNode();
+ this->root = aRoot;
+
  this->_asksAllowsChildren = false;
  listenerList = new EventListenerList();
 }
@@ -62,10 +66,12 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
   *        it can have children
   * @see #asksAllowsChildren
   */
-/*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent) : TreeModel(parent){
+/*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* aRoot, bool asksAllowsChildren, QObject *parent) : TreeModel(parent){
     //super();
     listenerList = new EventListenerList();
-    this->root = root;
+    if (aRoot == nullptr)
+      aRoot = new DefaultMutableTreeNode();
+    this->root = aRoot;
     this->_asksAllowsChildren = asksAllowsChildren;
 }
 
@@ -751,6 +757,8 @@ int DefaultTreeModel::rowCount(const QModelIndex &parent) const
    parentItem = root;
   else
    parentItem = static_cast<DefaultMutableTreeNode*>(parent.internalPointer());
+  if(!parentItem)
+   parentItem = root;
   return parentItem->getChildCount();
 }
 

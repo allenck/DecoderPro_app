@@ -1,6 +1,6 @@
 #include "abstractmalesocket.h"
 #include "femalesocket.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "instancemanager.h"
 #include "loggingutil.h"
 #include "threadingutil.h"
@@ -28,13 +28,13 @@
  if(objectName().isEmpty())
   setObjectName("AbstractMaleSocket");
  if(mSystemName.isEmpty())
-  mSystemName = ((AbstractNamedBean*)object->bself())->getSystemName();
+  mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
 
  _manager = manager;
-        QObject* obj = (QObject*)object;
-        if(static_cast<AbstractMaleSocket*>(obj))
-         _object = (AbstractMaleSocket*) obj;
-        else
+ QObject* obj = (QObject*)object;
+ if(static_cast<AbstractMaleSocket*>(obj))
+  _object = (AbstractMaleSocket*) obj;
+ else
  _object = object;
 }
 
@@ -627,7 +627,7 @@
 
     ErrorHandlingType::TYPES errorHandlingType = getErrorHandlingType();
     if (errorHandlingType == ErrorHandlingType::Default) {
-        errorHandlingType = ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))
+        errorHandlingType = ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))
                 ->getErrorHandlingType();
     }
 
@@ -683,7 +683,7 @@ void AMSRun1::run()
 
     ErrorHandlingType::TYPES errorHandlingType = getErrorHandlingType();
     if (errorHandlingType == ErrorHandlingType::Default) {
-        errorHandlingType = ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))
+        errorHandlingType = ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))
                 ->getErrorHandlingType();
     }
 
@@ -726,7 +726,7 @@ void AMSRun1::run()
 
     ErrorHandlingType::TYPES errorHandlingType = getErrorHandlingType();
     if (errorHandlingType == ErrorHandlingType::Default) {
-        errorHandlingType = ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))
+        errorHandlingType = ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))
                 ->getErrorHandlingType();
     }
 

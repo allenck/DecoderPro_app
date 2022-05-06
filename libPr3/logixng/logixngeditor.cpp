@@ -20,6 +20,8 @@
 #include "defaultfemaledigitalactionsocket.h"
 #include "jeditorpane.h"
 #include <QScrollArea>
+#include "pushbuttondelegate.h"
+
 /**
  * Editor for LogixNG
  *
@@ -42,10 +44,14 @@
      * @param sName name of the LogixNG being edited
      */
     /*public*/  LogixNGEditor::LogixNGEditor(BeanTableFrame/*<LogixNG>*/* f, BeanTableDataModel/*<LogixNG>*/* m, QString sName, QObject* parent) : QObject(parent) {
+        setObjectName("LogixNGEditor");
         this->beanTableFrame = f;
         this->beanTableDataModel = m;
         _logixNG_Manager = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
-        _curLogixNG =(LogixNG*) _logixNG_Manager->getBySystemName(sName)->self();
+        _curLogixNG =(DefaultLogixNG*) _logixNG_Manager->getBySystemName(sName)->self();
+//       beanTableDataModel->updateNameList();
+//       beanTableDataModel->fireTableDataChanged();
+        beanTableDataModel->init();
         makeEditLogixNGWindow();
     }
 
@@ -56,23 +62,23 @@
      * Create and/or initialize the Edit LogixNG pane.
      */
     void LogixNGEditor::makeEditLogixNGWindow() {
-        editUserName->setText(_curLogixNG->NamedBean::getUserName());
+        editUserName->setText(_curLogixNG->getUserName());
         // clear conditional table if needed
         if (_conditionalNGTableModel != nullptr) {
             _conditionalNGTableModel->fireTableStructureChanged();
         }
         _inEditMode = true;
         if (_editLogixNGFrame == nullptr) {
-            if (_curLogixNG->NamedBean::getUserName() != "") {
+            if (_curLogixNG->getUserName() != "") {
                 _editLogixNGFrame = new JmriJFrame(
                         tr("Edit LogixNG %1 - %2").arg(
-                                _curLogixNG->NamedBean::getSystemName(),   // NOI18N
-                                _curLogixNG->NamedBean::getUserName()),    // NOI18N
+                                _curLogixNG->getSystemName(),   // NOI18N
+                                _curLogixNG->getUserName()),    // NOI18N
                         false,
                         false);
             } else {
                 _editLogixNGFrame = new JmriJFrame(
-                        tr("Edit LogixNG %1").arg(_curLogixNG->NamedBean::getSystemName()),  // NOI18N
+                        tr("Edit LogixNG %1").arg(_curLogixNG->getSystemName()),  // NOI18N
                         false,
                         false);
             }
@@ -85,7 +91,7 @@
             panel1->setLayout(new FlowLayout());
             JLabel* systemNameLabel = new JLabel(tr("SystemName") + ":");  // NOI18N
             panel1->layout()->addWidget(systemNameLabel);
-            JLabel* fixedSystemName = new JLabel(_curLogixNG->NamedBean::getSystemName());
+            JLabel* fixedSystemName = new JLabel(_curLogixNG->getSystemName());
             panel1->layout()->addWidget(fixedSystemName);
             contentPane->layout()->addWidget(panel1);
             JPanel* panel2 = new JPanel();
@@ -150,11 +156,15 @@
             buttonEditThreadsColumn->setMaxWidth(testButton2->sizeHint().width());
             buttonEditThreadsColumn->setResizable(false);
 
+            conditionalTable->setItemDelegateForColumn(ConditionalNGTableModel::BUTTON_COLUMN, new PushButtonDelegate());
+            conditionalTable->setItemDelegateForColumn(ConditionalNGTableModel::BUTTON_DELETE_COLUMN, new PushButtonDelegate());
+            conditionalTable->setItemDelegateForColumn(ConditionalNGTableModel::BUTTON_EDIT_THREADS_COLUMN, new PushButtonDelegate());
+            conditionalTable->setItemDelegateForColumn(ConditionalNGTableModel::BUTTON_DEBUG_COLUMN, new PushButtonDelegate());
 //            JScrollPane conditionalTableScrollPane = new JScrollPane(conditionalTable);
 //            Dimension dim = conditionalTable->getPreferredSize();
 //            dim.height = 450;
 //            conditionalTableScrollPane->getViewport()->setPreferredSize(dim);
-            contentPane->layout()->addWidget(/*conditionalTableScrollPane*/conditionalTable);
+            ((QVBoxLayout*)contentPane->layout())->addWidget(/*conditionalTableScrollPane*/conditionalTable,1);
 
             _showStartupThreadsCheckBox = new JCheckBox(tr("Show startup thread"));
             contentPane->layout()->addWidget(_showStartupThreadsCheckBox);
@@ -329,11 +339,15 @@
         }
         // Check if the User Name has been changed
         QString uName = editUserName->text().trimmed();
-        if ((uName != (_curLogixNG->NamedBean::getUserName()))) {
+        if ((uName != (_curLogixNG->getUserName()))) {
             // user name has changed - check if already in use
             if (uName.length() > 0) {
-                LogixNG* p = (DefaultLogixNG*)_logixNG_Manager->getByUserName(uName)->self();
-                if (p != nullptr) {
+                //LogixNG* p = (DefaultLogixNG*)_logixNG_Manager->getByUserName(uName)->self();
+            NamedBean* nb = _logixNG_Manager->getByUserName(uName);
+            LogixNG* p = nullptr;
+            if(nb)
+             p = (DefaultLogixNG*)nb->self();
+             if (p != nullptr) {
                     // LogixNG with this user name already exists
                     log->error("Failure to update LogixNG with Duplicate User Name: " // NOI18N
                             + uName);
@@ -363,7 +377,7 @@
             _editLogixNGFrame = nullptr;
         }
         logixNG_Data.clear();
-        logixNG_Data.insert("Finish", _curLogixNG->NamedBean::getSystemName());   // NOI18N
+        logixNG_Data.insert("Finish", _curLogixNG->getSystemName());   // NOI18N
         fireEditorEvent();
     }
 
@@ -377,7 +391,7 @@
 
         _showReminder = true;
         logixNG_Data.clear();
-        logixNG_Data.insert("Delete", _curLogixNG->NamedBean::getSystemName());   // NOI18N
+        logixNG_Data.insert("Delete", _curLogixNG->getSystemName());   // NOI18N
         fireEditorEvent();
         finishDone();
     }
@@ -475,9 +489,9 @@
         // set up message
         JPanel* panel3 = new JPanel();
         panel3->setLayout(new QVBoxLayout());//panel3, BoxLayout.Y_AXIS));
-        JPanel* panel31 = new JPanel();
+        JPanel* panel31 = new JPanel(new FlowLayout());
 //        panel31->setLayout(new FlowLayout());
-        JPanel* panel32 = new JPanel();
+        JPanel* panel32 = new JPanel(new FlowLayout());
         JLabel* message1 = new JLabel(tr("Please enter system name and user name, then"));  // NOI18N
         panel31->layout()->addWidget(message1);
         JLabel* message2 = new JLabel(tr("click [Create]."));  // NOI18N
@@ -539,6 +553,7 @@
         }//);
 
         dialog->setVisible(true);
+        dialog->exec();
 
         return result->get();
     }
@@ -578,6 +593,8 @@
 
         /*final*/ LogixNGEditor* logixNGEditor = this;
         _treeEdit->addLogixNGEventListener(new LogixNGEventListenerImpl(logixNGEditor));
+        _treeEdit->setMinimumSize(600, 400);
+        _treeEdit->pack();
     }
 
     /**
@@ -796,7 +813,7 @@
                         || (c == BUTTON_COLUMN)
                         || ((c == BUTTON_DEBUG_COLUMN) && ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger())
                         || (c == BUTTON_DELETE_COLUMN)
-                        || (c == BUTTON_EDIT_THREADS_COLUMN))?Qt::ItemIsEditable | Qt::ItemIsEnabled: Qt::ItemIsEnabled;
+                        || (c == BUTTON_EDIT_THREADS_COLUMN))?Qt::ItemIsEditable | Qt::ItemIsEnabled : Qt::ItemIsEnabled;
             } else if (c == BUTTON_COLUMN) {
                 if (r >= editor->_nextInOrder) {
                     return (Qt::ItemIsEditable | Qt::ItemIsEnabled);
@@ -828,6 +845,7 @@
                     throw new IllegalArgumentException("Unknown column");
             }
          }
+         return QVariant();
         }
 
         //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "DB_DUPLICATE_SWITCH_CLAUSES",
@@ -881,12 +899,12 @@
                 case BUTTON_EDIT_THREADS_COLUMN:
                     return tr("Edit threads");  // NOI18N
                 case SNAME_COLUMN:
-                    return editor->_curLogixNG->getConditionalNG(rx)->NamedBean::getSystemName();
+                    return editor->_curLogixNG->getConditionalNG(rx)->AbstractNamedBean::getSystemName();
                 case UNAME_COLUMN: {
                     //log.debug("ConditionalNGTableModel: {}", _curLogixNG->getConditionalNGByNumberOrder(rx));  // NOI18N
-                    ConditionalNG* c = editor->_curLogixNG->getConditionalNG(rx);
+                    DefaultConditionalNG* c = editor->_curLogixNG->getConditionalNG(rx);
                     if (c != nullptr) {
-                        return c->NamedBean::getUserName();
+                        return c->AbstractNamedBean::getUserName();
                     }
                     return "";
                 }
@@ -1080,6 +1098,7 @@
             l->editorEventOccurred(logixNG_Data);
         }
     }
+
 
 
 //    /*private*/ class LogixNGEventListenerImpl implements ConditionalNGEditor.ConditionalNGEventListener {

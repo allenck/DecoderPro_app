@@ -11,8 +11,10 @@
 
 //    Module _module;
 
-    /*public*/  ModuleEditorMaleSocket::ModuleEditorMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Module* module, QObject* parent) : AbstractMaleSocket(manager, module, parent){
+    /*public*/  ModuleEditorMaleSocket::ModuleEditorMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Module* module, QObject* parent)
+     : AbstractMaleSocket(manager, module, parent){
         //super(manager, module);
+        setObjectName("ModuleEditorMaleSocket");
     }
 
     //@Override
@@ -27,7 +29,7 @@
 
     //@Override
     /*protected*/ void ModuleEditorMaleSocket::disposeMe() {
-        ((Module*)getObject())->Base::dispose();
+        ((Module*)getObject()->bself())->Base::dispose();
     }
 
     //@Override
@@ -62,10 +64,10 @@
 
     //@Override
     /*public*/  QString ModuleEditorMaleSocket::getComment() {
-        return ((Module*)getObject())->Base::getComment();
+        return ((Module*)getObject()->bself())->Base::getComment();
     }
 
     //@Override
     /*public*/  void ModuleEditorMaleSocket::setComment(QString comment) {
-        ((Module*)getObject())->Base::setComment(comment);
+        ((Module*)getObject()->bself())->Base::setComment(comment);
     }

@@ -162,7 +162,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNG(int order) {
+/*public*/ DefaultConditionalNG* DefaultLogixNG::getConditionalNG(int order) {
     try {
      if(order < 0 || order>=_conditionalNG_Entries.size())
       throw new IndexOutOfBoundsException();
@@ -197,7 +197,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNG(QString systemName) {
+/*public*/ DefaultConditionalNG* DefaultLogixNG::getConditionalNG(QString systemName) {
     for (int i = 0; i < getNumConditionalNGs(); i++) {
         if (systemName ==(_conditionalNG_Entries.at(i)->_systemName)) {
             return _conditionalNG_Entries.at(i)->_conditionalNG;
@@ -208,7 +208,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ ConditionalNG* DefaultLogixNG::getConditionalNGByUserName(QString userName) {
+/*public*/ DefaultConditionalNG *DefaultLogixNG::getConditionalNGByUserName(QString userName) {
     for (ConditionalNG_Entry* entry : _conditionalNG_Entries) {
         if (userName == (((AbstractNamedBean*)entry->_conditionalNG->self())->getUserName())) {
             return entry->_conditionalNG;
@@ -420,7 +420,7 @@
 
     level++;
     for (int i=0; i < this->getNumConditionalNGs(); i++) {
-        getConditionalNG(i)->getUsageTree(level, bean, report, (NamedBean*)getConditionalNG(i));
+        getConditionalNG(i)->AbstractBase::getUsageTree(level, bean, report, (AbstractNamedBean*)getConditionalNG(i));
     }
 }
 
@@ -438,7 +438,7 @@
      list.append(s);
     }
     for (int i=0; i < getNumConditionalNGs(); i++) {
-        getConditionalNG(i)->getListenerRefsIncludingChildren(list);
+        getConditionalNG(i)->AbstractBase::getListenerRefsIncludingChildren(list);
     }
 }
 

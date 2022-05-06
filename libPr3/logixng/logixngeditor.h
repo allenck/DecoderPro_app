@@ -14,7 +14,9 @@
 #include "windowadapter.h"
 #include "conditionalngeditor.h"
 #include "conditionalngdebugger.h"
+#include "defaultlogixng.h"
 
+class LogixNGEventListenerImpl;
 class ConditionalNGTableModel;
 class ConditionalNGDebugger;
 class ConditionalNGEditor;
@@ -52,7 +54,7 @@ class LogixNGEditor : public QObject, public AbstractLogixNGEditor
   BeanTableDataModel/*<LogixNG>*/* beanTableDataModel;
 
   LogixNG_Manager* _logixNG_Manager = nullptr;
-  LogixNG* _curLogixNG = nullptr;
+  DefaultLogixNG* _curLogixNG = nullptr;
 
   ConditionalNGEditor* _treeEdit = nullptr;
   ConditionalNGDebugger* _debugger = nullptr;
@@ -137,6 +139,7 @@ class LogixNGEditor : public QObject, public AbstractLogixNGEditor
   friend class LogixNGEditor_DeleteBeanWorker;
   friend class LogixNGEventListenerImpl;
   friend class LogixNG_DebuggerEventListenerImpl;
+  friend class AbstractLogixNGTableAction;
 };
 
 /*public*/  /*final*/ class ConditionalNGTableModel : public AbstractTableModel,
@@ -238,8 +241,8 @@ public:
   QObject* pself() override {return (QObject*)this;}
 
     //@Override
-    /*public*/  void conditionalNGEventOccurred() {
-        QString lgxName =_logixNGEditor-> _curLogixNG->NamedBean::getSystemName();
+    /*public*/  void conditionalNGEventOccurred() override{
+        QString lgxName =_logixNGEditor-> _curLogixNG->getSystemName();
        //_logixNGEditor-> _treeEdit->logixNGData.forEach((key, value) ->
         QMapIterator<QString, QString> iter(_logixNGEditor->_treeEdit->logixNGData);
         while(iter.hasNext())
@@ -267,20 +270,20 @@ public:
 };
 
 /*private*/ class LogixNG_DebuggerEventListenerImpl
-        : public QObject, public ConditionalNGDebugger::ConditionalNGEventListener, public PropertyChangeListener {
+        : public QObject, public ConditionalNGDebugger::ConditionalNGEventListener {
   Q_OBJECT
-  Q_INTERFACES(PropertyChangeListener)
+  Q_INTERFACES( ConditionalNGDebugger::ConditionalNGEventListener)
     /*private*/ /*final*/ LogixNGEditor* _logixNGEditor;
 public:
     /*public*/  LogixNG_DebuggerEventListenerImpl(LogixNGEditor* logixNGEditor) {
         this->_logixNGEditor = logixNGEditor;
     }
   QObject* self() override {return (QObject*)this;}
-  QObject* pself() override {return (QObject*)this;}
+  //QObject* pself() override {return (QObject*)this;}
 
     //@Override
-    /*public*/  void conditionalNGEventOccurred() {
-        QString lgxName = _logixNGEditor->_curLogixNG->NamedBean::getSystemName();
+    /*public*/  void conditionalNGEventOccurred() override{
+        QString lgxName = _logixNGEditor->_curLogixNG->getSystemName();
         //_debugger.logixNGData.forEach((key, value) -> {
         QMapIterator<QString, QString> iter(_logixNGEditor->_debugger->logixNGData);
         while (iter.hasNext()) {

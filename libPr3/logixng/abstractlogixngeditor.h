@@ -1,6 +1,7 @@
 #ifndef ABSTRACTLOGIXNGEDITOR_H
 #define ABSTRACTLOGIXNGEDITOR_H
 #include "eventlistener.h"
+#include <QMap>
 /**
  *
  * @author Daniel Bergqvist copyright (c) 2019
@@ -42,4 +43,5 @@
 
 };
 Q_DECLARE_INTERFACE(AbstractLogixNGEditor, "AbstractLogixNGEditor")
+Q_DECLARE_INTERFACE(AbstractLogixNGEditor::EditorEventListener, "AbstractLogixNGEditor::EditorEventListener")
 #endif // ABSTRACTLOGIXNGEDITOR_H

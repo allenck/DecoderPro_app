@@ -3,7 +3,7 @@
 
 #include "treeviewer.h"
 //#include "femalesocket.h"
-#include "logixngpreferences.h"
+#include "defaultlogixngpreferences.h"
 #include "instancemanager.h"
 #include "jdialog.h"
 #include "jtextfield.h"
@@ -17,7 +17,7 @@
 #include <QMenu>
 #include "jmenuitem.h"
 #include "threadingutil.h"
-//#include "clipboardeditor.h"
+#include "clipboardeventlistener.h"
 #include "abstractfemalesocket.h"
 #include "joptionpane.h"
 #include "threadingutil.h"
@@ -58,7 +58,7 @@ class TreeEditor : public TreeViewer
   QString getClassName() override{return "jmri.jmrit.logixng.tools.TreeEditor";}
  private:
   static Logger* log;
-  /*private*/ /*final*/ LogixNGPreferences* _prefs = (LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences");
+  /*private*/ /*final*/ LogixNGPreferences* _prefs = (DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences");
 
   ClipboardEditor* _clipboardEditor = nullptr;
 
@@ -257,12 +257,13 @@ friend class TreeEditor;
 friend class DeleteBeanWorker2;
 };
 
-class TEClipboardListener : public QObject, public /*ClipboardEventListener*/EventListener
+class TEClipboardListener : public QObject, public ClipboardEventListener
 {
   Q_OBJECT
   TreeEditor* te;
  public:
-  TEClipboardListener(TreeEditor* te)
+  TEClipboardListener(TreeEditor* te) {this->te = te;}
+  void clipboardEventOccurred()override
   {
 #if 0
    //_clipboardEditor->clipboardData.forEach((key, value) -> {

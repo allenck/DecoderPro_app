@@ -16,7 +16,7 @@ class ConditionalNGEditor : public TreeEditor
        //Q_OBJECT
        //Q_INTERFACES(EventListener)
    public:
-    /*public*/  void conditionalNGEventOccurred() {}
+    /*public*/ virtual void conditionalNGEventOccurred() {}
   };
   ConditionalNGEditor(QWidget* parent=nullptr);
   /*/*public*/  ConditionalNGEditor(/*@Nonnull*/ ConditionalNG* conditionalNG, QWidget* parent=nullptr);

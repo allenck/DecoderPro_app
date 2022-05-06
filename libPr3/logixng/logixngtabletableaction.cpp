@@ -176,7 +176,7 @@
 
     //@Override
     /*protected*/ QString LogixNGTableTableAction::getAddTitleKey() {
-        return "TitleLogixNGTableTable";
+        return "LogixNGTable Table";
     }
 
     //@Override
@@ -300,10 +300,13 @@
         panel3->setLayout(new QVBoxLayout());//panel3, BoxLayout.Y_AXIS));
         JPanel* panel31 = new JPanel();
         panel31->setLayout(new FlowLayout());
-        JLabel* message1 = new JLabel(QString(startMessageId) + tr("LogixNGTableMessage1"));  // NOI18N
+        //JLabel* message1 = new JLabel(QString(startMessageId) + tr("LogixNGTableMessage1"));  // NOI18N
+        JLabel* message1 = new JLabel(startMessageId==tr("Add")? tr("Please enter system name and user name, then") :
+                  tr("Please enter System Name and User Name\n "));
         panel31->layout()->addWidget(message1);
         JPanel* panel32 = new JPanel(new FlowLayout());
-        JLabel* message2 = new JLabel(QString(startMessageId) + tr("LogixNGTableMessage2"));  // NOI18N
+        //JLabel* message2 = new JLabel(QString(startMessageId) + tr("LogixNGTableMessage2"));  // NOI18N
+        JLabel* message2= new JLabel(startMessageId==tr("Add")? tr("click [Create].") : tr("of target LogixNG Table, then click [Copy]"));
         panel32->layout()->addWidget(message2);
         panel3->layout()->addWidget(panel31);
         panel3->layout()->addWidget(panel32);

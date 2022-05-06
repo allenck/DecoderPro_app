@@ -16,7 +16,7 @@ class CatalogTreeModel : public DefaultTreeModel, public InstanceManagerAutoDefa
 public:
  Q_INVOKABLE /*public*/ CatalogTreeModel(QObject* parent = 0);
   ~CatalogTreeModel() {}
-  CatalogTreeModel(const CatalogTreeModel&) : DefaultTreeModel() {}
+  CatalogTreeModel(const CatalogTreeModel&) : DefaultTreeModel(new DefaultMutableTreeNode("Root")) {}
  //QT_DEPRECATED static /*public*/ CatalogTreeModel* instance();
  static /*final*/ QString resourceRoot;// = "resources";
  static /*final*/ QString fileRoot;// = FileUtil::getUserFilesPath() + "resources";
