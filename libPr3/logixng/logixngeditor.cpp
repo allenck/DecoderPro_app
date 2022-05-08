@@ -513,7 +513,7 @@
             dialog->dispose();
         });
 //        cancel->setToolTipText(Bundle->getMessage("CancelLogixButtonHint"));      // NOI18N
-        cancel->setToolTip("CancelLogixButtonHint");      // NOI18N
+        cancel->setToolTip("Press to return to Logix Table without any changes");      // NOI18N
 
         JButton* create = new JButton(tr("Create"));  // NOI18N
         connect(create, &JButton::clicked, [=]{
@@ -542,6 +542,7 @@
             autoSystemName();
         });
 //        addLogixNGFrame->setLocationRelativeTo(component);
+        dialog->resize(400, 400);
         dialog->pack();
         dialog->setLocationRelativeTo(nullptr);
 
@@ -593,7 +594,7 @@
 
         /*final*/ LogixNGEditor* logixNGEditor = this;
         _treeEdit->addLogixNGEventListener(new LogixNGEventListenerImpl(logixNGEditor));
-        _treeEdit->setMinimumSize(600, 400);
+        _treeEdit->resize(600, 400);
         _treeEdit->pack();
     }
 

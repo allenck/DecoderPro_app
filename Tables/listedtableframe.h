@@ -47,7 +47,7 @@ private:
     QSplitter* cardHolder;
     JList* list;
     //ScrollPane listScroller;
-    QWidget* buttonpanel;
+    QWidget* listPanel;
     QStackedWidget* detailpanel;
     static bool init;// = false;
     LTFTabbedTableItem* itemBeingAdded;// = NULL;

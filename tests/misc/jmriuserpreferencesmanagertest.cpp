@@ -554,7 +554,7 @@ JmriUserPreferencesManagerTest::JmriUserPreferencesManagerTest(QObject *parent) 
     //Bundle.getMessage("Reminder"), Bundle.getMessage("ReminderLine"), getClassName(), "reminder"
     m->displayRememberMsg();
     Assert::assertEquals(tr("Reminder"), m->title, __FILE__, __LINE__);
-    Assert::assertEquals(tr("ReminderLine"), m->message, __FILE__, __LINE__);
+    Assert::assertEquals(tr("You can re-display this message from 'Edit|Preferences|Message' Menu."), m->message, __FILE__, __LINE__);
     Assert::assertEquals(m->getClassName(), m->strClass, __FILE__, __LINE__);
     Assert::assertEquals("reminder", m->item, __FILE__, __LINE__);
     Assert::assertTrue(m->alwaysRemember, __FILE__, __LINE__);

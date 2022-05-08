@@ -69,7 +69,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void ConditionalNGEditor::windowClosed(QCloseEvent* e) {
+    /*public*/  void ConditionalNGEditor::closeEvent(QCloseEvent *e) {
         logixNGData.clear();
         logixNGData.insert("Finish", _conditionalNG->NamedBean::getSystemName());  // NOI18N
         fireLogixNGEvent();

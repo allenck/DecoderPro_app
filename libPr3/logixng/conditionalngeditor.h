@@ -20,7 +20,7 @@ class ConditionalNGEditor : public TreeEditor
   };
   ConditionalNGEditor(QWidget* parent=nullptr);
   /*/*public*/  ConditionalNGEditor(/*@Nonnull*/ ConditionalNG* conditionalNG, QWidget* parent=nullptr);
-  /*public*/  void windowClosed(QCloseEvent* e);
+  /*public*/  void closeEvent(QCloseEvent* e);
   /*public*/  void addLogixNGEventListener(ConditionalNGEventListener* listener);
 
  private:

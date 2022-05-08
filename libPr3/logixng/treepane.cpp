@@ -43,7 +43,7 @@
 //        _femaleRootSocket->forEntireTree([=] (Base* b)  {
 //            b->addPropertyChangeListener(this);
 //        });
-#if 0
+#if 1
         _femaleRootSocket->forEntireTree(new TreePane_RunnableWithBase(this));
 #endif
     }
@@ -210,9 +210,7 @@
 //        _femaleRootSocket.forEntireTree((Base* b) -> {
 //            b->addPropertyChangeListener(TreePane.this);
 //        });
-      for (int i=0; i < _femaleRootSocket->getChildCount(); i++) {
-          ((AbstractBase*)_femaleRootSocket->getChild(i)->bself())->AbstractNamedBean::removePropertyChangeListener(this);
-      }
+          _femaleRootSocket->forEntireTree(new TreePane_RunnableWithBase(this));
     }
 
 
@@ -226,7 +224,8 @@
 //        protected final List<TreeModelListener> listeners = new ArrayList<>();
 
 
-        /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(FemaleSocket* root, QObject* parent) : DefaultTreeModel(nullptr, parent) {
+        /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(FemaleSocket* root, QObject* parent)
+          : DefaultTreeModel(nullptr, parent) {
             this->_root = root;
         }
 

@@ -170,10 +170,11 @@ void ListedTableFrame::common()
  connect(list, SIGNAL(pressed(QModelIndex)), this, SLOT(On_listSelection(QModelIndex)));
 
 
- buttonpanel = new QWidget();
- buttonpanel->setLayout(new QVBoxLayout); //BorderLayout(5, 0));
- buttonpanel->setLayout(new QVBoxLayout); //BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
- buttonpanel->layout()->addWidget(/*listScroller*/list);
+ listPanel = new QWidget();
+ listPanel->setLayout(new QVBoxLayout); //BorderLayout(5, 0));
+ listPanel->setLayout(new QVBoxLayout); //BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
+ listPanel->layout()->addWidget(/*listScroller*/list);
+ listPanel->setMinimumSize(QSize(140, 400));
 
  if(!tabbedTableArray->isEmpty())
  {
@@ -182,7 +183,7 @@ void ListedTableFrame::common()
  }
  cardHolder = new QSplitter(Qt::Horizontal); //JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
  //            buttonpanel, detailpanel);
- cardHolder->addWidget(buttonpanel);
+ cardHolder->addWidget(listPanel);
  cardHolder->addWidget(detailpanel);
 
  connect(cardHolder, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int, int)));
@@ -275,8 +276,8 @@ for (int x = 0; x < tabbedTableArray->size(); x++)
   for (LTFTabbedTableItem* tti : *tabbedTableArray) {
       tti->dispose();
   }
-//  if (list->getListSelectionListeners().length > 0) {
-//      list.removeListSelectionListener(list.getListSelectionListeners()[0]);
+//  if (list != nullptr && list->getListSelectionListeners().length() > 0) {
+//      list->removeListSelectionListener(list->getListSelectionListeners()[0]);
 //  }
   BeanTableFrame::dispose();
   pref->setSaveAllowed(true);
@@ -439,7 +440,7 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
     dataPanel = new QWidget();
     dataPanel->setObjectName("dataPanel");
     dataPanel->resize(800,600);
-    dataPanel->setMinimumSize(300,300);
+    dataPanel->setMinimumSize(500,300);
     log = new Logger("LTFTabbedTableItem");
 
     className = aaClass;

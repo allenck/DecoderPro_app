@@ -106,8 +106,8 @@ void ListedTableAction::common()
   f->gotoListItem(gotoListItem);
   return;
  }
-//  UserPreferencesManager* prefs = ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"));
-//  QSize saveSize = prefs->getWindowSize("jmri.jmrit.beantable.ListedTableFrame:Turnout Table");
+  UserPreferencesManager* prefs = ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"));
+  QSize saveSize = prefs->getWindowSize("jmri.jmrit.beantable.ListedTableFrame:Turnout Table");
   f = new ListedTableFrame(title);
   f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   //                /**
@@ -123,7 +123,7 @@ void ListedTableAction::common()
   f->setDividerLocation(dividerLocation);
   f->setVisible(true);
   f->setFrameLocation();
-//  f->resize(saveSize);
+  f->resize(saveSize);
 
 //        }
 //    };

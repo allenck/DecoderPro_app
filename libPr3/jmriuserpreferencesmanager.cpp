@@ -468,7 +468,7 @@
     if (loading) {
         return;
     }
-    showInfoMessage(tr("Reminder"), tr("ReminderLine"), getClassName(), "reminder"); // NOI18N
+    showInfoMessage(tr("Reminder"), tr("You can re-display this message from 'Edit|Preferences|Message' Menu."), getClassName(), "reminder"); // NOI18N
 }
 
 //@Override

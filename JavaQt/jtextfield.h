@@ -59,6 +59,8 @@ public:
     /*public*/ void setEnabled(bool b) override {QLineEdit::setEnabled(b);}
     /*public*/ void setEditable(bool b) {setEnabled(b);}
     /*public*/ void requestFocus() { QLineEdit::setFocus();};
+    /*public*/ void setLabelFor(QWidget* c) {labelFor = c;}
+
 signals:
  void enterField();
  void leaveField();
@@ -93,6 +95,7 @@ private:
 // void keyPressEvent(QKeyEvent *);
 // void keyReleaseEvent(QKeyEvent*);
  QList<KeyAdapter*> keyAdapterList = QList<KeyAdapter*>();
+ QWidget* labelFor = nullptr;
 
 private slots:
  void updateShare();
