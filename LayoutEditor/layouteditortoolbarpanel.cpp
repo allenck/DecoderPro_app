@@ -87,7 +87,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
  textLabelTextField = new JTextField(12);
 
  memoryButton = new QRadioButton(tr("Memory"));
- textMemoryComboBox = new NamedBeanComboBox((MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ textMemoryComboBox = new NamedBeanComboBox((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  blockContentsButton = new QRadioButton(tr("Block Contents"));
  blockContentsComboBox = new NamedBeanComboBox((AbstractManager*) InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);

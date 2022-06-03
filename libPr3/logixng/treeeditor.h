@@ -47,7 +47,7 @@ class TreeEditor : public TreeViewer
   /*public*/  enum class EnableRootRemoveCutCopy { EnableRootRemoveCutCopy, DisableRootRemoveCutCopy };
   /*public*/  enum class EnableRootPopup { EnableRootPopup, DisableRootPopup };
   /*public*/  enum class EnableExecuteEvaluate { EnableExecuteEvaluate, DisableExecuteEvaluate };
-  TreeEditor(/*@Nonnull*/ FemaleSocket* femaleRootSocket,
+  TreeEditor(/*@Nonnull*/ AbstractFemaleSocket *femaleRootSocket,
              EnableClipboard enableClipboard,
              EnableRootRemoveCutCopy enableRootRemoveCutCopy,
              EnableRootPopup enableRootPopup,
@@ -113,7 +113,7 @@ class TreeEditor : public TreeViewer
     bool parentIsSystem,
     bool itemIsSystem,
     QString command);
-
+AbstractFemaleSocket* femaleRootSocket;
  protected:
   /*protected*/ bool _showReminder = false;
   /*final*/ /*protected*/ void renameSocketPressed(FemaleSocket* femaleSocket, TreePath* path);
@@ -144,6 +144,8 @@ class TreeEditor : public TreeViewer
  friend class TreeEditor_run3;
  friend class TreeEditor_run4;
  friend class TreeEditor_run5;
+ friend class ConditionalNGEditor;
+
 #if 0
  class TEClipboardListener : public ClipboardEventListener
  {
@@ -213,11 +215,11 @@ class TreeEditor : public TreeViewer
 //        /*private*/ static final String ACTION_COMMAND_EXPAND_TREE = "expandTree";
 /*private*/ /*final*/ JTree* _tree;
 //        /*private*/ final FemaleSocketTreeModel _model;
-/*private*/ FemaleSocket* _currentFemaleSocket;
-/*private*/ TreePath* _currentPath;
+/*private*/ FemaleSocket* _currentFemaleSocket = nullptr;
+/*private*/ TreePath* _currentPath = nullptr;
 
 /*private*/ JMenuItem* menuItemRenameSocket;
-/*private*/ JMenuItem* menuItemAdd;
+/*private*/ JMenuItem* menuItemAdd = nullptr;
 /*private*/ JMenuItem* menuItemRemove;
 /*private*/ JMenuItem* menuItemEdit;
 /*private*/ JMenuItem* menuItemCut;
@@ -234,6 +236,8 @@ class TreeEditor : public TreeViewer
 /*private*/ JMenuItem* menuItemExecuteEvaluate;
 //        /*private*/ JMenuItem* menuItemExpandTree;
 TreeEditor* editor;
+ /*private*/ void openPopupMenu(QContextMenuEvent* evt);
+
 public:
  TEPopupMenu(TreeEditor* editor);
 /*public*/  void actionPerformed(JActionEvent* e = nullptr)override;
@@ -255,6 +259,7 @@ private:
 friend class TreePane;
 friend class TreeEditor;
 friend class DeleteBeanWorker2;
+friend class ConditionalNGEditor;
 };
 
 class TEClipboardListener : public QObject, public ClipboardEventListener

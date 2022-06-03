@@ -397,7 +397,7 @@ void ImageIndexEditor::deleteNode() {
 /*private*/ int ImageIndexEditor::countSubNodes(CatalogTreeNode* node)
 {
  int cnt = 0;
- QVectorIterator<TreeNode*> it(*node->children());
+ QVectorIterator<MutableTreeNode*> it(*node->children());
  while(it.hasNext())
  {
   CatalogTreeNode* item = (CatalogTreeNode*)it.next();
@@ -411,7 +411,7 @@ void ImageIndexEditor::deleteNode() {
 /*private*/ int ImageIndexEditor::countIcons(CatalogTreeNode* node)
 {
  int cnt = 0;
- QVectorIterator<TreeNode*> it(*node->children());
+ QVectorIterator<MutableTreeNode*> it(*node->children());
  while(it.hasNext())
  {
   TreeNode* item = it.next();

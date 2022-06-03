@@ -103,7 +103,7 @@
   DefaultMutableTreeNode* lst = treeNodes.last();
   treeNodes.last()->add(node);
  }
- QVector<TreeNode*>* path = node->getPath();
+ QVector<MutableTreeNode*>* path = node->getPath();
  QVector<QObject*>* ol = new QVector<QObject*>();
  foreach(TreeNode* n, *path) ol->append((QObject*)n);
  if(_nstored == _pathArray->length())

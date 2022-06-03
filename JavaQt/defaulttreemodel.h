@@ -13,29 +13,29 @@ class JAVAQTSHARED_EXPORT DefaultTreeModel : public TreeModel
     Q_OBJECT
 public:
 //    explicit DefaultTreeModel(QObject *parent = 0);
-    /*public*/ DefaultTreeModel(TreeNode* root, QObject *parent = 0);
-    /*public*/ DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent = 0);
+    /*public*/ DefaultTreeModel(MutableTreeNode *root, QObject *parent = 0);
+    /*public*/ DefaultTreeModel(MutableTreeNode* root, bool asksAllowsChildren, QObject *parent = 0);
     /*public*/ void setAsksAllowsChildren(bool newValue);
     /*public*/ bool asksAllowsChildren();
-    /*public*/ void setRoot(TreeNode* root);
+    /*public*/ void setRoot(MutableTreeNode *root);
     /*public*/ QObject* getRoot() ;
     /*public*/ int getIndexOfChild(QObject* parent, QObject* child) ;
     /*public*/ QObject* getChild(QObject* parent, int index);
-    /*public*/ int getChildCount(QObject* parent);
+    /*public*/ int getChildCount(QObject* parent) const;
     /*public*/ bool isLeaf(QObject* node) ;
     /*public*/ void reload() ;
     /*public*/ void valueForPathChanged(TreePath* path, QVariant newValue);
     /*public*/ void insertNodeInto(MutableTreeNode* newChild,
                                MutableTreeNode* parent, int index);
     /*public*/ void removeNodeFromParent(MutableTreeNode* node);
-    /*public*/ void nodeChanged(TreeNode* node) ;
-    /*public*/ void reload(TreeNode* node) ;
-    /*public*/ void nodesWereInserted(TreeNode* node, QList<int>* childIndices);
-    /*public*/ void nodesWereRemoved(TreeNode* node, QList<int>* childIndices,
+    /*public*/ void nodeChanged(MutableTreeNode *node) ;
+    /*public*/ void reload(MutableTreeNode *node) ;
+    /*public*/ void nodesWereInserted(MutableTreeNode *node, QList<int>* childIndices);
+    /*public*/ void nodesWereRemoved(MutableTreeNode* node, QList<int>* childIndices,
                                  QList<QObject*>* removedChildren) ;
-    /*public*/ void nodesChanged(TreeNode* node, QList<int>* childIndices) ;
-    /*public*/ void nodeStructureChanged(TreeNode* node);
-    /*public*/ QList<TreeNode*>* getPathToRoot(TreeNode* aNode);
+    /*public*/ void nodesChanged(MutableTreeNode* node, QList<int>* childIndices) ;
+    /*public*/ void nodeStructureChanged(MutableTreeNode *node);
+    /*public*/ QList<MutableTreeNode *> *getPathToRoot(MutableTreeNode *aNode);
     /*public*/ void addTreeModelListener(TreeModelListener* l);
     /*public*/ void removeTreeModelListener(TreeModelListener* l);
     /*public*/ QList<TreeModelListener*> getTreeModelListeners();
@@ -70,7 +70,7 @@ private:
     bool _asksAllowsChildren;
 protected:
     /** Root of the tree. */
-    /*protected*/ TreeNode* root = nullptr;
+    /*protected*/ MutableTreeNode* root = nullptr;
     /** Listeners. */
     /*protected*/ EventListenerList* listenerList;// = new EventListenerList();
     /**
@@ -90,7 +90,7 @@ protected:
       * @see #setAsksAllowsChildren
       */
 //    /*protected*/ bool asksAllowsChildren;
-    /*protected*/ QList<TreeNode*>* getPathToRoot(TreeNode* aNode, int depth);
+    /*protected*/ QList<MutableTreeNode *> *getPathToRoot(MutableTreeNode *aNode, int depth);
     /*protected*/ void fireTreeNodesChanged(QObject* source, QList<QObject*>* path,
                                             QList<int>* childIndices,
                                             QList<QObject*>* children);

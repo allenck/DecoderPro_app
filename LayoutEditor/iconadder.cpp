@@ -851,7 +851,7 @@ void IconAdder::closeCatalog()
   tree = manager->newCatalogTree("NXDI", "Default Icons");
  }
  CatalogTreeNode* root = (CatalogTreeNode*)tree->getRoot();
- QVectorIterator<TreeNode*>* e = root->children();
+ QVectorIterator<MutableTreeNode*>* e = root->children();
  if(_defaultIcons == NULL) return;
  QString name = _defaultIcons->toString();
  while (e->hasNext())

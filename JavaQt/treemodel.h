@@ -76,7 +76,7 @@ public:
      * @param   parent  a node in the tree, obtained from this data source
      * @return  the number of children of the node <code>parent</code>
      */
-    /*public*/ virtual int getChildCount(QObject* parent) = 0;
+    /*public*/ virtual int getChildCount(QObject* parent)const  = 0;
 
 
     /**

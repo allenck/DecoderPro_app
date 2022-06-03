@@ -3,13 +3,13 @@
 
 #include <jmrijframe.h>
 
-class FemaleSocket;
+class AbstractFemaleSocket;
 class TreePane;
 class TreeViewer : public JmriJFrame
 {
   Q_OBJECT
  public:
-  TreeViewer(FemaleSocket* femaleRootSocket, QWidget* parent = nullptr);
+  TreeViewer(AbstractFemaleSocket *femaleRootSocket, QWidget* parent = nullptr);
   /*public*/ /*final*/ TreePane* _treePane = nullptr;
   /*public*/ void initComponents()override;
   /*public*/ void initMinimumSize(QSize dimension);

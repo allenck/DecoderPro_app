@@ -45,7 +45,7 @@
   * @see #DefaultTreeModel(TreeNode, boolean)
   */
 // //@ConstructorProperties({"root"})
- /*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* aRoot, QObject *parent) : TreeModel(parent)
+ /*public*/ DefaultTreeModel::DefaultTreeModel(MutableTreeNode* aRoot, QObject *parent) : TreeModel(parent)
 {
     //this(root, false);
  if (aRoot == nullptr)
@@ -66,7 +66,7 @@
   *        it can have children
   * @see #asksAllowsChildren
   */
-/*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* aRoot, bool asksAllowsChildren, QObject *parent) : TreeModel(parent){
+/*public*/ DefaultTreeModel::DefaultTreeModel(MutableTreeNode *aRoot, bool asksAllowsChildren, QObject *parent) : TreeModel(parent){
     //super();
     listenerList = new EventListenerList();
     if (aRoot == nullptr)
@@ -100,8 +100,8 @@
  * Sets the root to <code>root</code>. A NULL <code>root</code> implies
  * the tree is to display nothing, and is legal.
  */
-/*public*/ void DefaultTreeModel::setRoot(TreeNode* root) {
-    QObject* oldRoot = this->root;
+/*public*/ void DefaultTreeModel::setRoot(MutableTreeNode* root) {
+    QObject* oldRoot = this->root->tself();
     this->root = root;
     if (root == NULL && oldRoot != NULL) {
         fireTreeStructureChanged((QObject*)this, NULL);
@@ -118,7 +118,7 @@
  * @return  the root of the tree
  */
 /*public*/ QObject* DefaultTreeModel::getRoot() {
-    return root;
+    return root->tself();
 }
 
 /**
@@ -132,7 +132,7 @@
 /*public*/ int DefaultTreeModel::getIndexOfChild(QObject* parent, QObject* child) {
     if(parent == NULL || child == NULL)
         return -1;
-    return ((TreeNode*)parent)->getIndex((TreeNode*)child);
+    return ((MutableTreeNode*)parent)->getIndex((MutableTreeNode*)child);
 }
 
 /**
@@ -146,7 +146,7 @@
  * @return  the child of <I>parent</I> at index <I>index</I>
  */
 /*public*/ QObject* DefaultTreeModel::getChild(QObject* parent, int index) {
-    return ((TreeNode*)parent)->getChildAt(index);
+    return ((TreeNode*)parent)->getChildAt(index)->tself();
 }
 
 /**
@@ -157,7 +157,7 @@
  * @param   parent  a node in the tree, obtained from this data source
  * @return  the number of children of the node <I>parent</I>
  */
-/*public*/ int DefaultTreeModel::getChildCount(QObject* parent) {
+/*public*/ int DefaultTreeModel::getChildCount(QObject* parent)const  {
     return ((TreeNode*)parent)->getChildCount();
 }
 
@@ -208,6 +208,7 @@
  */
 /*public*/ void DefaultTreeModel::insertNodeInto(MutableTreeNode* newChild,
                            MutableTreeNode* parent, int index){
+ QObject* o = newChild->tself();
     parent->insert(newChild, index);
 
     QList<int>*          newIndexs = new QList<int>();
@@ -241,9 +242,9 @@
   * Invoke this method after you've changed how node is to be
   * represented in the tree.
   */
-/*public*/ void DefaultTreeModel::nodeChanged(TreeNode* node) {
+/*public*/ void DefaultTreeModel::nodeChanged(MutableTreeNode* node) {
     if(/*listenerList != NULL &&*/ node != NULL) {
-        TreeNode*         parent = node->getParent();
+        MutableTreeNode*         parent = node->getParent();
 
         if(parent != NULL) {
             int        anIndex = parent->getIndex(node);
@@ -254,7 +255,7 @@
                 nodesChanged(parent, cIndexs);
             }
         }
-        else if (node == getRoot()) {
+        else if (node->tself() == getRoot()) {
             nodesChanged(node, NULL);
         }
     }
@@ -267,7 +268,7 @@
  *
  * @param node the node below which the model has changed
  */
-/*public*/ void DefaultTreeModel::reload(TreeNode* node) {
+/*public*/ void DefaultTreeModel::reload(MutableTreeNode* node) {
     if(node != NULL) {
         fireTreeStructureChanged((QObject*)this, (QList<QObject*>*)getPathToRoot(node), NULL, NULL);
     }
@@ -278,14 +279,14 @@
   * node.  childIndices should be the index of the new elements and
   * must be sorted in ascending order.
   */
-/*public*/ void DefaultTreeModel::nodesWereInserted(TreeNode* node, QList<int>* childIndices) {
+/*public*/ void DefaultTreeModel::nodesWereInserted(MutableTreeNode* node, QList<int>* childIndices) {
     if(/*listenerList != NULL &&*/ node != NULL && childIndices != NULL
             && childIndices->length() > 0) {
         int               cCount = childIndices->length();
         QList<QObject*>*          newChildren = new QList<QObject*>();
 
         for(int counter = 0; counter < cCount; counter++)
-            newChildren->append( node->getChildAt(childIndices->at(counter)));
+            newChildren->append( node->getChildAt(childIndices->at(counter))->tself());
         fireTreeNodesInserted((QObject*)this, (QList<QObject*>*)getPathToRoot(node), childIndices,
                               newChildren);
     }
@@ -297,7 +298,7 @@
   * must be sorted in ascending order. And removedChildren should be
   * the array of the children objects that were removed.
   */
-/*public*/ void DefaultTreeModel::nodesWereRemoved(TreeNode* node, QList<int>* childIndices,
+/*public*/ void DefaultTreeModel::nodesWereRemoved(MutableTreeNode *node, QList<int>* childIndices,
                              QList<QObject*>* removedChildren) {
     if(node != NULL && childIndices != NULL) {
         fireTreeNodesRemoved((QObject*)this, (QList<QObject*>*)getPathToRoot(node), childIndices,
@@ -309,7 +310,7 @@
   * Invoke this method after you've changed how the children identified by
   * childIndicies are to be represented in the tree.
   */
-/*public*/ void DefaultTreeModel::nodesChanged(TreeNode* node, QList<int>* childIndices) {
+/*public*/ void DefaultTreeModel::nodesChanged(MutableTreeNode *node, QList<int>* childIndices) {
     if(node != NULL) {
         if (childIndices != NULL) {
             int            cCount = childIndices->length();
@@ -319,12 +320,12 @@
 
                 for(int counter = 0; counter < cCount; counter++)
                     cChildren->append( node->getChildAt
-                        (childIndices->at(counter)));
+                        (childIndices->at(counter))->tself());
                 fireTreeNodesChanged((QObject*)this, (QList<QObject*>*)getPathToRoot(node),
                                      childIndices, cChildren);
             }
         }
-        else if (node == getRoot()) {
+        else if (node->tself() == getRoot()) {
             fireTreeNodesChanged((QObject*)this, (QList<QObject*>*)getPathToRoot(node), NULL, NULL);
         }
     }
@@ -335,7 +336,7 @@
   * node and its childrens children...  This will post a
   * treeStructureChanged event.
   */
-/*public*/ void DefaultTreeModel::nodeStructureChanged(TreeNode* node)
+/*public*/ void DefaultTreeModel::nodeStructureChanged(MutableTreeNode* node)
 {
  if(node != NULL) {
     fireTreeStructureChanged((QObject*)this, (QList<QObject*>*)getPathToRoot(node), NULL, NULL);
@@ -350,7 +351,7 @@
  *
  * @param aNode the TreeNode to get the path for
  */
-/*public*/ QList<TreeNode*>* DefaultTreeModel::getPathToRoot(TreeNode* aNode) {
+/*public*/ QList<MutableTreeNode*>* DefaultTreeModel::getPathToRoot(MutableTreeNode* aNode) {
     return getPathToRoot(aNode, 0);
 }
 
@@ -366,9 +367,9 @@
  * @return an array of TreeNodes giving the path from the root to the
  *         specified node
  */
-/*protected*/ QList<TreeNode*>* DefaultTreeModel::getPathToRoot(TreeNode* aNode, int depth)
+/*protected*/ QList<MutableTreeNode*>* DefaultTreeModel::getPathToRoot(MutableTreeNode* aNode, int depth)
 {
-  QList<TreeNode*>*            retNodes;
+  QList<MutableTreeNode*>*            retNodes;
   // This method recurses, traversing towards the root in order
   // size the array. On the way back, it fills in the nodes,
   // starting from the root and working back to the original node.
@@ -382,7 +383,7 @@
       else
       {
           //retNodes = new QVector<TreeNode*>(depth);
-          retNodes = new QList<TreeNode*>();
+          retNodes = new QList<MutableTreeNode*>();
           for(int i=0; i < depth; i++)
            retNodes->append(NULL);
       }
@@ -390,10 +391,10 @@
   else
   {
       depth++;
-      if(aNode == root)
+      if(aNode->tself() == root->tself())
       {
           //retNodes = new QVector<TreeNode*>(depth);
-          retNodes = new QList<TreeNode*>();
+          retNodes = new QList<MutableTreeNode*>();
           for(int i=0; i < depth; i++)
            retNodes->append(NULL);
       }
@@ -750,7 +751,7 @@ int DefaultTreeModel::rowCount(const QModelIndex &parent) const
 {
 // if(QString(metaObject()->className()) == "DefaultTreeModel")
 // {
-  TreeNode* parentItem;
+  MutableTreeNode* parentItem;
   if (parent.column() > 0)
    return 0;
   if (!parent.isValid())

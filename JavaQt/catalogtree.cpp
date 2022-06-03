@@ -4,6 +4,7 @@
 CatalogTree::CatalogTree(QObject *parent) :
     CatalogTreeModel(parent)
 {
+ setObjectName("CatalogTree");
 //    IMAGE    = 'I';    // letter to filter for images/icons
 //    SOUND    = 'S';    // letter to filter for sounds
 //    SCRIPT   = 'T';    // letter to filter for scripts

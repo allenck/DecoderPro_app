@@ -70,11 +70,10 @@
 DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
     : MutableTreeNode(oparent)
 {
- common();
- this->userObject = QVariant("");
- this->allowsChildren = true;
+ common(QVariant(), true);
 }
-/*static*/ /*public*/ /*final*/ QVectorIterator<TreeNode*>* DefaultMutableTreeNode::EMPTY_ENUMERATION = new QVectorIterator<TreeNode*>(QVector<TreeNode*>());
+
+/*static*/ /*public*/ /*final*/ QVectorIterator<MutableTreeNode*>* DefaultMutableTreeNode::EMPTY_ENUMERATION = new QVectorIterator<MutableTreeNode*>(QVector<MutableTreeNode*>());
 
 /**
  * Creates a tree node with no parent, no children, but which allows
@@ -87,10 +86,7 @@ DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
 : MutableTreeNode(oparent)
 {
  //this(userObject, true);
- common();
- this->userObject = userObject;
- this->allowsChildren = true;
- setObjectName(userObject.toString());
+ common(userObject, true);
 }
 
 /**
@@ -107,19 +103,17 @@ DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
 : MutableTreeNode(oparent)
 {
     //super();
- common();
- //parent = NULL;
- this->allowsChildren = allowsChildren;
- this->userObject = userObject;
- setObjectName(userObject.toString());
+ common(userObject, allowsChildren);
 }
 
-void DefaultMutableTreeNode::common()
+void DefaultMutableTreeNode::common(QVariant userObject, bool allowsChildren)
 {
  log = new Logger("DefaultMutableTreeNode");
  setObjectName("DefaultMutableTreeNode");
- _children = NULL;
- _parent = NULL;
+ this->allowsChildren = allowsChildren;
+ this->userObject = userObject;
+ if(!userObject.isValid())
+  log->warn(tr("invalid QVariant"));
 }
 
 //
@@ -169,7 +163,8 @@ void DefaultMutableTreeNode::common()
  newChild->setParent(this);
  if (_children == NULL)
  {
-  _children = (QVector<TreeNode*>*) new QVector<CatalogTreeNode*>();
+  //_children = (QVector<TreeNode*>*) new QVector<CatalogTreeNode*>();
+  _children = new QVector<MutableTreeNode*>();
  }
  _children->insert(childIndex, newChild);
 }
@@ -210,7 +205,7 @@ void DefaultMutableTreeNode::common()
  *
  * @return  this node's parent TreeNode, or NULL if this node has no parent
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getParent()
+/*public*/ MutableTreeNode* DefaultMutableTreeNode::getParent()
 {
  return _parent;
 }
@@ -223,7 +218,7 @@ void DefaultMutableTreeNode::common()
  *                                          is out of bounds
  * @return  the TreeNode in this node's child array at  the specified index
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getChildAt(int index)
+/*public*/ MutableTreeNode *DefaultMutableTreeNode::getChildAt(int index)
 {
  if (_children == NULL || _children->isEmpty())
  {
@@ -231,7 +226,7 @@ void DefaultMutableTreeNode::common()
   return NULL;
   //throw new ArrayIndexOutOfBoundsException("node has no children");
  }
- return (TreeNode*)_children->at(index);
+ return (MutableTreeNode*)_children->at(index);
 }
 
 /**
@@ -264,7 +259,7 @@ void DefaultMutableTreeNode::common()
  *          array, or <code>-1</code> if the specified node is a not
  *          a child of this node
  */
-/*public*/ int DefaultMutableTreeNode::getIndex(TreeNode* aChild)
+/*public*/ int DefaultMutableTreeNode::getIndex(MutableTreeNode* aChild)
 {
     if (aChild == NULL)
     {
@@ -285,7 +280,7 @@ void DefaultMutableTreeNode::common()
  *
  * @return  an Enumeration of this node's children
  */
-/*public*/ QVectorIterator<TreeNode*>* DefaultMutableTreeNode::children()
+/*public*/ QVectorIterator<MutableTreeNode*>* DefaultMutableTreeNode::children()
 {
  if (_children == NULL)
  {
@@ -294,7 +289,7 @@ void DefaultMutableTreeNode::common()
  else
  {
   //return _children->elements();
-  return new QVectorIterator<TreeNode*> (*_children);
+  return new QVectorIterator<MutableTreeNode*> (*_children);
  }
 }
 
@@ -444,7 +439,7 @@ void DefaultMutableTreeNode::common()
  * @param   anotherNode     node to test as an ancestor of this node
  * @return  true if this node is a descendant of <code>anotherNode</code>
  */
-/*public*/ bool DefaultMutableTreeNode::isNodeAncestor(TreeNode* anotherNode)
+/*public*/ bool DefaultMutableTreeNode::isNodeAncestor(MutableTreeNode* anotherNode)
 {
  if (anotherNode == NULL)
  {
@@ -589,7 +584,7 @@ void DefaultMutableTreeNode::common()
 
     while (enum_->hasNext())
     {
-        last = enum_->next();
+        last = enum_->next()->tself();
     }
 
     if (last == NULL)
@@ -632,7 +627,7 @@ void DefaultMutableTreeNode::common()
   *         first element in the path is the root and the last
   *         element is this node.
   */
-/*public*/ QVector<TreeNode*>* DefaultMutableTreeNode::getPath()
+/*public*/ QVector<MutableTreeNode*>* DefaultMutableTreeNode::getPath()
 {
  return getPathToRoot(this, 0);
 }
@@ -649,9 +644,9 @@ void DefaultMutableTreeNode::common()
  * @return an array of TreeNodes giving the path from the root to the
  *         specified node
  */
-/*protected*/ QVector<TreeNode*>* DefaultMutableTreeNode::getPathToRoot(TreeNode* aNode, int depth)
+/*protected*/ QVector<MutableTreeNode *> *DefaultMutableTreeNode::getPathToRoot(MutableTreeNode* aNode, int depth)
 {
- QVector<TreeNode*>* retNodes;
+ QVector<MutableTreeNode*>* retNodes;
 
  /* Check for NULL, in case someone passed in a NULL node, or
        they passed in an element that isn't rooted at root. */
@@ -660,7 +655,7 @@ void DefaultMutableTreeNode::common()
   if(depth == 0)
    return NULL;
   else
-   retNodes = new QVector<TreeNode*>(depth);
+   retNodes = new QVector<MutableTreeNode*>(depth);
  }
  else
  {
@@ -678,7 +673,7 @@ void DefaultMutableTreeNode::common()
   */
 /*public*/ QVector<QVariant>* DefaultMutableTreeNode::getUserObjectPath()
 {
- QVector<TreeNode*>*         realPath = getPath();
+ QVector<MutableTreeNode*>*         realPath = getPath();
  QVector<QVariant>*           retPath = new QVector<QVariant>(realPath->size());
 
  for(int counter = 0; counter < realPath->size(); counter++)
@@ -694,10 +689,10 @@ void DefaultMutableTreeNode::common()
  * @see     #isNodeAncestor
  * @return  the root of the tree that contains this node
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getRoot()
+/*public*/ MutableTreeNode *DefaultMutableTreeNode::getRoot()
 {
- TreeNode* ancestor = this;
- TreeNode* previous;
+ MutableTreeNode* ancestor = this;
+ MutableTreeNode* previous;
 
  do
  {
@@ -934,7 +929,7 @@ void DefaultMutableTreeNode::common()
  * @return  the first child of this node
  * @exception       NoSuchElementException  if this node has no children
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getFirstChild() {
+/*public*/ MutableTreeNode *DefaultMutableTreeNode::getFirstChild() {
     if (getChildCount() == 0) {
         throw new NoSuchElementException("node has no children");
     }
@@ -949,7 +944,7 @@ void DefaultMutableTreeNode::common()
  * @return  the last child of this node
  * @exception       NoSuchElementException  if this node has no children
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getLastChild() {
+/*public*/ MutableTreeNode* DefaultMutableTreeNode::getLastChild() {
     if (getChildCount() == 0) {
         throw new NoSuchElementException("node has no children");
     }
@@ -971,7 +966,7 @@ void DefaultMutableTreeNode::common()
  * @return  the child of this node that immediately follows
  *          <code>aChild</code>
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getChildAfter(TreeNode* aChild) {
+/*public*/ MutableTreeNode* DefaultMutableTreeNode::getChildAfter(MutableTreeNode* aChild) {
     if (aChild == NULL) {
         throw new IllegalArgumentException("argument is NULL");
     }
@@ -1002,7 +997,7 @@ void DefaultMutableTreeNode::common()
  * @return  the child of this node that immediately precedes
  *          <code>aChild</code>
  */
-/*public*/ TreeNode* DefaultMutableTreeNode::getChildBefore(TreeNode* aChild) {
+/*public*/ MutableTreeNode* DefaultMutableTreeNode::getChildBefore(MutableTreeNode* aChild) {
     if (aChild == NULL) {
         throw new IllegalArgumentException("argument is NULL");
     }
@@ -1365,23 +1360,23 @@ private void readObject(ObjectInputStream s)
 //    Q_OBJECT
 //    /*private*/ /*final*/ QStack< QVectorIterator<TreeNode*>* >* stack;// = new Stack<QList<CatalogTreeNode*>*>();
 //public:
-/*public*/ PreorderEnumeration::PreorderEnumeration(TreeNode* rootNode)
+/*public*/ PreorderEnumeration::PreorderEnumeration(MutableTreeNode* rootNode)
 {
     //super();
-    stack = new QStack<QVectorIterator<TreeNode*>*  >();
-    QVector<TreeNode*> v =   QVector<TreeNode*>(1);
+    stack = new QStack<QVectorIterator<MutableTreeNode*>*  >();
+    QVector<MutableTreeNode*> v =   QVector<MutableTreeNode*>(1);
     v.append(rootNode);     // PENDING: don't really need a vector
-    stack->push( new QVectorIterator<TreeNode*>(v));
+    stack->push( new QVectorIterator<MutableTreeNode*>(v));
 }
 
 /*public*/ bool PreorderEnumeration::hasMoreElements() {
     return (!stack->isEmpty() && stack->top()->hasNext());
 }
 
-/*public*/ TreeNode* PreorderEnumeration::nextElement() {
-    QVectorIterator<TreeNode*>* enumer = stack->top();
-    TreeNode*    node = enumer->next();
-    QVectorIterator<TreeNode*>* children = node->children();
+/*public*/ MutableTreeNode *PreorderEnumeration::nextElement() {
+    QVectorIterator<MutableTreeNode*>* enumer = stack->top();
+    MutableTreeNode*    node = enumer->next();
+    QVectorIterator<MutableTreeNode*>* children = node->TreeNode::children();
 
     if (!enumer->hasNext()) {
         stack->pop();
@@ -1404,7 +1399,7 @@ private void readObject(ObjectInputStream s)
 //    /*protected*/ QVectorIterator<TreeNode*>* children;
 //    /*protected*/ QVectorIterator<TreeNode*>* subtree;
 //public:
-/*public*/ PostorderEnumeration::PostorderEnumeration(TreeNode* rootNode) {
+/*public*/ PostorderEnumeration::PostorderEnumeration(MutableTreeNode* rootNode) {
     //super();
     root = rootNode;
     children = root->children();
@@ -1421,7 +1416,7 @@ private void readObject(ObjectInputStream s)
     if (subtree->hasNext()) {
         retval = subtree->next();
     } else if (children->hasNext()) {
-        subtree = (QVectorIterator<TreeNode*>*) new PostorderEnumeration(children->next());
+        subtree = (QVectorIterator<MutableTreeNode*>*) new PostorderEnumeration(children->next());
         retval = subtree->next();
     } else {
         retval = root;
@@ -1495,12 +1490,12 @@ private void readObject(ObjectInputStream s)
 //     friend class BreadthFirstEnumeration;
 //    }; // End of class Queue
 
-/*public*/ BreadthFirstEnumeration::BreadthFirstEnumeration(TreeNode* rootNode) {
+/*public*/ BreadthFirstEnumeration::BreadthFirstEnumeration(MutableTreeNode* rootNode) {
     //super();
-    QVector<TreeNode*> v =  QVector<TreeNode*>(1);
+    QVector<MutableTreeNode*> v =  QVector<MutableTreeNode*>(1);
     v.append(rootNode);     // PENDING: don't really need a vector
-    queue = new QQueue<QVectorIterator<TreeNode*>*>();
-    queue->enqueue(new QVectorIterator<TreeNode*>(v));
+    queue = new QQueue<QVectorIterator<MutableTreeNode*>*>();
+    queue->enqueue(new QVectorIterator<MutableTreeNode*>(v));
 }
 
 /*public*/ bool BreadthFirstEnumeration::hasMoreElements() {
@@ -1508,10 +1503,10 @@ private void readObject(ObjectInputStream s)
             ((QVectorIterator<TreeNode*>*)queue->head())->hasNext());
 }
 
-/*public*/ TreeNode* BreadthFirstEnumeration::nextElement() {
-    QVectorIterator<TreeNode*>* enumer = (QVectorIterator<TreeNode*>*)queue->head();
-    TreeNode*    node = (TreeNode*)enumer->next();
-    QVectorIterator<TreeNode*>* children = node->children();
+/*public*/ MutableTreeNode* BreadthFirstEnumeration::nextElement() {
+    QVectorIterator<MutableTreeNode*>* enumer = (QVectorIterator<MutableTreeNode*>*)queue->head();
+    MutableTreeNode*    node = (MutableTreeNode*)enumer->next();
+    QVectorIterator<MutableTreeNode*>* children = node->TreeNode::children();
 
     if (!enumer->hasNext()) {
         queue->dequeue();
@@ -1553,8 +1548,8 @@ private void readObject(ObjectInputStream s)
     while (current != ancestor) {
         current = current->getParent();
         if (current == NULL && descendant != ancestor) {
-            throw new IllegalArgumentException(QString("node ") + ancestor->objectName() +
-                        QString(" is not an ancestor of ") + descendant->objectName());
+            throw new IllegalArgumentException(QString("node ") + ancestor->tself()->objectName() +
+                        QString(" is not an ancestor of ") + descendant->tself()->objectName());
         }
         stack->push(current);
     }

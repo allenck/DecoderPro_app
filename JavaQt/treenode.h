@@ -3,7 +3,9 @@
 #include <QObject>
 #include <QVector>
 #include "javaqt_global.h"
+//#include "mutabletreenode.h"
 
+class MutableTreeNode;
 /**
  * Defines the requirements for an object that can be used as a
  * tree node in a JTree.
@@ -21,12 +23,12 @@
  * @author Scott Violet
  */
 
-/*public*/ /*interface*/ class JAVAQTSHARED_EXPORT TreeNode : public QObject
+/*public*/ /*interface*/ class JAVAQTSHARED_EXPORT TreeNode //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    TreeNode(QObject* oparent) : QObject(oparent){setObjectName("TreeNode");}
-    virtual ~TreeNode() { }
+    //TreeNode(QObject* oparent) : QObject(oparent){setObjectName("TreeNode");}
+    //virtual ~TreeNode() { }
     /**
      * Returns the child <code>TreeNode</code> at index
      * <code>childIndex</code>.
@@ -42,14 +44,14 @@ public:
     /**
      * Returns the parent <code>TreeNode</code> of the receiver.
      */
-    virtual TreeNode* getParent() {return NULL;}
+    virtual MutableTreeNode* getParent() {return NULL;}
 
     /**
      * Returns the index of <code>node</code> in the receivers children.
      * If the receiver does not contain <code>node</code>, -1 will be
      * returned.
      */
-    virtual int getIndex(TreeNode* /*node*/) {return 0;}
+    virtual int getIndex(MutableTreeNode* /*node*/) {return 0;}
 
     /**
      * Returns true if the receiver allows children.
@@ -65,6 +67,8 @@ public:
      * Returns the children of the receiver as an <code>Enumeration</code>.
      */
     //template <class E>
-     virtual QVectorIterator<TreeNode*>* children() {return NULL;}
+     virtual QVectorIterator<MutableTreeNode*>* children() {return NULL;}
+  virtual QObject* tself() =0;
 };
+Q_DECLARE_INTERFACE(TreeNode, "TreeNode")
 #endif // TREENODE_H

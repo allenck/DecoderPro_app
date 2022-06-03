@@ -875,7 +875,7 @@ namespace TimeTable
         _timetableModel->nodeStructureChanged(_timetableRoot);
 
         // Switch to new node
-        QVector<TreeNode*>* v = _curNode->getPath();
+        QVector<MutableTreeNode*>* v = _curNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -899,7 +899,7 @@ namespace TimeTable
 
         // Switch to new node
         //_timetableTree->setSelectionPath(new TreePath(_leafNode->getPath()));
-        QVector<TreeNode*>* v = _leafNode->getPath();
+        QVector<MutableTreeNode*>* v = _leafNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -922,7 +922,7 @@ namespace TimeTable
 
         // Switch to new node
         //_timetableTree->setSelectionPath(new TreePath(_leafNode->getPath()));
-        QVector<TreeNode*>* v = _leafNode->getPath();
+        QVector<MutableTreeNode*>* v = _leafNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -943,7 +943,7 @@ namespace TimeTable
 
         // Switch to new node
         //_timetableTree->setSelectionPath(new TreePath(_leafNode->getPath()));
-        QVector<TreeNode*>* v = _leafNode->getPath();
+        QVector<MutableTreeNode*>* v = _leafNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -966,7 +966,7 @@ namespace TimeTable
 
         // Switch to new node
         //_timetableTree->setSelectionPath(new TreePath(_leafNode->getPath()));
-        QVector<TreeNode*>* v = _leafNode->getPath();
+        QVector<MutableTreeNode*>* v = _leafNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -984,7 +984,7 @@ namespace TimeTable
 
         // Switch to new node
         //_timetableTree->setSelectionPath(new TreePath(_leafNode->getPath()));
-        QVector<TreeNode*>* v = _leafNode->getPath();
+        QVector<MutableTreeNode*>* v = _leafNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -1003,7 +1003,7 @@ namespace TimeTable
 
         // Switch to new node
         //_timetableTree->setSelectionPath(new TreePath(_leafNode->getPath()));
-        QVector<TreeNode*>* v = _leafNode->getPath();
+        QVector<MutableTreeNode*>* v = _leafNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -1851,7 +1851,7 @@ namespace TimeTable
 
         // Update the tree
 //         TreePath parentPath = _curTreePath.getParentPath();
-        TreeNode* parentNode = _curNode->getParent();
+        MutableTreeNode* parentNode = _curNode->getParent();
         _curNode->removeFromParent();
         _curNode  =  nullptr;
         _timetableModel->nodeStructureChanged(parentNode);
@@ -2161,7 +2161,7 @@ namespace TimeTable
         parentNode->insert(_curNode, _curNodeRow - 1);
         _timetableModel->nodeStructureChanged(parentNode);
         //_timetableTree->setSelectionPath(new TreePath(_curNode->getPath()));
-        QVector<TreeNode*>* v = _curNode->getPath();
+        QVector<MutableTreeNode*>* v = _curNode->getPath();
         QVector<QObject*>* ov = new QVector<QObject*>();
         foreach(TreeNode* n, *v)
          ov->append((QObject*)n);
@@ -2504,7 +2504,7 @@ namespace TimeTable
         createTimeTableContent();
 
         // build the tree GUI
-        _timetableTree->expandPath(new TreePath(_timetableRoot));
+        _timetableTree->expandPath(new TreePath(_timetableRoot, nullptr));
         _timetableTree->setRootVisible(false);
         _timetableTree->setShowsRootHandles(true);
         _timetableTree->setScrollsOnExpand(true);

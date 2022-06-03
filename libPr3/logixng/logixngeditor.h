@@ -80,7 +80,7 @@ class LogixNGEditor : public QObject, public AbstractLogixNGEditor
   // ------------ ConditionalNG Variables ------------
   /*private*/ ConditionalNGTableModel* _conditionalNGTableModel = nullptr;
   /*private*/ JCheckBox* _showStartupThreadsCheckBox = nullptr;
-  /*private*/ ConditionalNG* _curConditionalNG = nullptr;
+  /*private*/ DefaultConditionalNG* _curConditionalNG = nullptr;
   int _conditionalRowNumber = 0;
   bool _inReorderMode = false;
   bool _inActReorder = false;

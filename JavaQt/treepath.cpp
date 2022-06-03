@@ -95,7 +95,7 @@
  * @throws IllegalArgumentException if {@code lastPathComponent} is
  *         {@code NULL}
  */
-/*public*/  TreePath::TreePath(TreeNode* lastPathComponent, QObject* parent) : QObject(parent)
+/*public*/  TreePath::TreePath(MutableTreeNode *lastPathComponent, QObject* parent) : QObject(parent)
 {
  common();
  if(lastPathComponent == NULL)

@@ -571,6 +571,8 @@ class Base;
     /*public*/ virtual/*default*/ void forEntireTree(RunnableWithBase* r) {
         r->run(this);
         for (int i=0; i < getChildCount(); i++) {
+         FemaleSocket* s = getChild(i);
+
             ((Base*)getChild(i))->forEntireTree(r);
         }
     }

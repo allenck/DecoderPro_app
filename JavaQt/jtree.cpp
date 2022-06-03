@@ -75,6 +75,7 @@ void JTree::common()
  selectionModel = new DefaultTreeSelectionModel();
  tree = NULL;
  rootVisible = true;
+ setRootIsDecorated(true);
  pcs = new SwingPropertyChangeSupport(this, nullptr);
  expandedStack =  QStack<QStack<TreePath*> >();
  expandedState = QHash<TreePath*, bool>();
@@ -312,10 +313,10 @@ void JTree::on_clicked(QModelIndex index)
  //DefaultMutableTreeNode* node = VPtr<DefaultMutableTreeNode>::asPtr(index.data(Qt::UserRole));
  DefaultMutableTreeNode* node = static_cast<DefaultMutableTreeNode*>(index.internalPointer());
 
- QVector<TreeNode*>* p = node->getPath();
+ QVector<MutableTreeNode*>* p = node->getPath();
 
  QVector<QObject*>* pp = new QVector<QObject*>();
- foreach(TreeNode* n, *p)
+ foreach(MutableTreeNode* n, *p)
   pp->append((QObject*)n);
  TreePath* tp = new TreePath(pp);
  pp->removeAt(0); // hack
@@ -704,7 +705,7 @@ void JTree::on_clicked(QModelIndex index)
 
 #else
  DefaultMutableTreeNode* node = VPtr<DefaultMutableTreeNode>::asPtr(((DefaultTreeModel*)model())->data(model()->index(row,0),Qt::UserRole));
- QList<TreeNode*>* path = ((DefaultTreeModel*)model())->getPathToRoot(node);
+ QList<MutableTreeNode*>* path = ((DefaultTreeModel*)model())->getPathToRoot(node);
  QVector<QObject*>* ol = new  QVector<QObject*>();
  foreach(TreeNode* node, *path)
   ol->append((QObject*)node);
@@ -731,9 +732,9 @@ void JTree::rowCollapsed(const QModelIndex index)
 
  DefaultMutableTreeNode* node = VPtr<DefaultMutableTreeNode>::asPtr(index.data(Qt::UserRole));
 
- QList<TreeNode*>* path = ((DefaultTreeModel*)index.model())->getPathToRoot(node);
+ QList<MutableTreeNode*>* path = ((DefaultTreeModel*)index.model())->getPathToRoot(node);
  QVector<QObject*>* ol = new  QVector<QObject*>();
- foreach(TreeNode* node, *path)
+ foreach(MutableTreeNode* node, *path)
   ol->append((QObject*)node);
  TreeExpansionEvent* tee = new TreeExpansionEvent((QObject*)this, new TreePath(ol));
  emit treeCollapsed(tee);
@@ -747,9 +748,9 @@ void JTree::rowExpanded(const QModelIndex index)
 
  DefaultMutableTreeNode* node = VPtr<DefaultMutableTreeNode>::asPtr(index.data(Qt::UserRole));
 
- QList<TreeNode*>* path = ((DefaultTreeModel*)index.model())->getPathToRoot(node);
+ QList<MutableTreeNode*>* path = ((DefaultTreeModel*)index.model())->getPathToRoot(node);
  QVector<QObject*>* ol = new  QVector<QObject*>();
- foreach(TreeNode* node, *path)
+ foreach(MutableTreeNode* node, *path)
   ol->append((QObject*)node);
  TreeExpansionEvent* tee = new TreeExpansionEvent((QObject*)this, new TreePath(ol));
  emit treeExpanded(tee);

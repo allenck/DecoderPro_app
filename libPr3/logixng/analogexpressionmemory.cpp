@@ -3,7 +3,7 @@
 #include "analogexpressionmanager.h"
 #include "instancemanager.h"
 #include "vptr.h"
-#include "memorymanager.h"
+#include "defaultmemorymanager.h"
 #include "typeconversionutil.h"
 #include "conditionalng.h"
 #include "maleanalogexpressionsocket.h"
@@ -62,7 +62,7 @@
 
     /*public*/  void AnalogExpressionMemory::setMemory(/*@Nonnull*/ QString memoryName) {
         assertListenersAreNotRegistered(log, "setMemory");
-        Memory* memory = ((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(memoryName);
+        Memory* memory = ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(memoryName);
         if (memory != nullptr) {
             setMemory(memory);
         } else {

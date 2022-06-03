@@ -1,6 +1,7 @@
 #include "conditionalngeditor.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
+#include "defaultconditionalng.h"
 
 #include "conditionalng.h"
 /**
@@ -17,7 +18,7 @@
      * instance of this class.
      */
     /*public*/  ConditionalNGEditor::ConditionalNGEditor(QWidget *parent) :
-        TreeEditor(((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->
+        TreeEditor((AbstractFemaleSocket*)((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->
                    createFemaleSocket(nullptr, new CNGEFemaleSocketListener()
 //    {
 //            //@Override
@@ -45,12 +46,12 @@
      *
      * @param conditionalNG the ConditionalNG to be edited
      */
-    /*/*public*/  ConditionalNGEditor::ConditionalNGEditor(/*@Nonnull*/ ConditionalNG* conditionalNG, QWidget* parent) :
-        TreeEditor(conditionalNG->getFemaleSocket(),
+    /*/*public*/  ConditionalNGEditor::ConditionalNGEditor(/*@Nonnull*/ DefaultConditionalNG* conditionalNG, QWidget* parent) :
+        TreeEditor((AbstractFemaleSocket*)conditionalNG->getFemaleSocket()->bself(),
                 EnableClipboard::EnableClipboard,
                 EnableRootRemoveCutCopy::EnableRootRemoveCutCopy,
                 EnableRootPopup::EnableRootPopup,
-                EnableExecuteEvaluate::EnableExecuteEvaluate
+                EnableExecuteEvaluate::EnableExecuteEvaluate, parent
         ){
 
         _conditionalNG = conditionalNG;
@@ -93,7 +94,13 @@
 
 //        /*public*/  void conditionalNGEventOccurred();
 //    }
+void ConditionalNGEditor::contextMenuEvent(QContextMenuEvent* evt)
+{
+  TEPopupMenu* menu = new TEPopupMenu(this);
+  menu->init();
+  menu->openPopupMenu(evt);
 
+}
 
 //    private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConditionalNGEditor.class);
 

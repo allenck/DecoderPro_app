@@ -8,6 +8,7 @@
 #include "defaultstack.h"
 #include "threadingutil.h"
 
+class DefaultFemaleDigitalActionSocket;
 class ExecuteTask;
 class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public FemaleSocketListener
 {
@@ -21,7 +22,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   /*public*/  void setStartupThreadId(int threadId)override;
   /*public*/  Base* getParent() const override;
   /*public*/  void setParent(Base* parent)override;
-  /*public*/  FemaleDigitalActionSocket* getFemaleSocket() override;
+  /*public*/  FemaleDigitalActionSocket *getFemaleSocket() override;
   /*public*/  void setRunDelayed(bool value)override;
   /*public*/  bool getRunDelayed()override;
   /*public*/ void execute()override;
@@ -59,7 +60,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   /*private*/ int _startupThreadId;
   /*private*/ Base* _parent = nullptr;
   /*private*/ QString _socketSystemName = nullptr;
-  /*private*/ /*final*/ FemaleDigitalActionSocket* _femaleSocket = nullptr;
+  /*private*/ /*final*/ DefaultFemaleDigitalActionSocket* _femaleSocket = nullptr;
   /*private*/ bool _enabled = true;
   /*private*/ /*final*/ ExecuteLock* _executeLock = new ExecuteLock();
   /*private*/ bool _runDelayed = true;

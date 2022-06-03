@@ -1,6 +1,6 @@
 #include "memorytabledatamodel.h"
 #include "loggerfactory.h"
-#include "memorymanager.h"
+#include "defaultmemorymanager.h"
 #include "instancemanager.h"
 #include "vptr.h"
 #include "reportable.h"
@@ -27,7 +27,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ QString MemoryTableDataModel::getValue(QString name) {
-        Memory* mem = ((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getBySystemName(name);
+        Memory* mem = ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getBySystemName(name);
         if (mem == nullptr) {
             return "?";
         }
@@ -53,13 +53,13 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ NamedBean* MemoryTableDataModel::getBySystemName(/*@Nonnull*/ QString name) const{
-        return ((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getBySystemName(name);
+        return ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getBySystemName(name);
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/ NamedBean* MemoryTableDataModel::getByUserName(/*@Nonnull*/ QString name) {
-        return ((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getByUserName(name);
+        return ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getByUserName(name);
     }
 
     /** {@inheritDoc} */

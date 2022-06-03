@@ -52,17 +52,19 @@
      * @param enableRootPopup          should the popup menu be disabled for root?
      * @param enableExecuteEvaluate    should the popup menu show execute/evaluate?
      */
-    /*public*/  TreeEditor::TreeEditor(/*@Nonnull*/ FemaleSocket* femaleRootSocket,
+    /*public*/  TreeEditor::TreeEditor(/*@Nonnull*/ AbstractFemaleSocket* femaleRootSocket,
             EnableClipboard enableClipboard,
             EnableRootRemoveCutCopy enableRootRemoveCutCopy,
             EnableRootPopup enableRootPopup,
-            EnableExecuteEvaluate enableExecuteEvaluate, QWidget *parent) : TreeViewer(femaleRootSocket, parent){
+            EnableExecuteEvaluate enableExecuteEvaluate, QWidget *parent)
+      : TreeViewer(femaleRootSocket, parent){
 
         //super(femaleRootSocket);
         _enableClipboard = enableClipboard == EnableClipboard::EnableClipboard;
         _disableRootRemoveCutCopy = enableRootRemoveCutCopy == EnableRootRemoveCutCopy::DisableRootRemoveCutCopy;
         _disableRootPopup = enableRootPopup == EnableRootPopup::DisableRootPopup;
         _enableExecuteEvaluate = enableExecuteEvaluate == EnableExecuteEvaluate::EnableExecuteEvaluate;
+        this->femaleRootSocket = femaleRootSocket;
     }
     /*public*/ int TreeEditor::SwingConfiguratorInterfaceComparator::compare(SwingConfiguratorInterface* o1, SwingConfiguratorInterface* o2) {
          //return ((Comparable<QVariant>*)o1)->compareTo(o2);
@@ -1400,6 +1402,26 @@
             );
 #endif
         }
+#if 1
+        /*private*/ void TEPopupMenu::openPopupMenu(QContextMenuEvent* e) {
+//            if (e->isPopupTrigger() && !popupMenu->isVisible()) {
+                // Get the row the user has clicked on
+                //TreePath* path = _tree->getClosestPathForLocation(e->x(), e->y());
+                TreePath* path = _tree->getPathForRow(0);
+                if (path != nullptr) {
+                    // Check that the user has clicked on a row.
+//                    QRect rect = _tree->getPathBounds(path);
+//                    if ((e->y() >= rect.y()) && (e->y() <= rect.y() + rect.height())) {
+                        // Select the row the user clicked on
+                        _tree->setSelectionPath(path);
+
+                        FemaleSocket* femaleSocket = (AbstractFemaleSocket*) path->getLastPathComponent();
+                        showPopup(e->x(), e->y(), femaleSocket, path);
+//                    }
+                }
+//            }
+        }
+    #endif
 
         /*private*/ void TEPopupMenu::showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path) {
             _currentFemaleSocket = femaleSocket;

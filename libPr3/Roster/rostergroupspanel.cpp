@@ -244,9 +244,9 @@
     _tree->removeTreeSelectionListener(_TSL);
     if (group == NULL || group==(Roster::ALLENTRIES) || group==(""))
     {
-     QList<TreeNode*>* l = _model->getPathToRoot(_groups->getFirstChild());
+     QList<MutableTreeNode*>* l = _model->getPathToRoot(_groups->getFirstChild());
      QVector<QObject*>* ol = new QVector<QObject*>();
-     foreach(TreeNode* n, *l)
+     foreach(MutableTreeNode* n, *l)
       ol->append((QObject*)n);
      _tree->setSelectionPath(new TreePath(ol));
     } else {
@@ -257,9 +257,9 @@
       DefaultMutableTreeNode* n= (DefaultMutableTreeNode*)_groups->children()->next();
      if (n->toString()==(group))
      {
-      QList<TreeNode*>* l = _model->getPathToRoot(n);
+      QList<MutableTreeNode*>* l = _model->getPathToRoot(n);
       QVector<QObject*>* ol = new QVector<QObject*>();
-      foreach(TreeNode* n, *l)
+      foreach(MutableTreeNode* n, *l)
         ol->append((QObject*)n);
       _tree->setSelectionPath(new TreePath(/*_model->getPathToRoot(n)*/ ol));
      }
@@ -338,9 +338,9 @@ void RosterGroupsPanel::on_actButton_Clicked()
 {
  //if (ie.getStateChange() == ItemEvent.SELECTED) {
   //TreePath* g = new TreePath(_model->getPathToRoot(_groups));
- QList<TreeNode*>* l = _model->getPathToRoot(_groups);
+ QList<MutableTreeNode*>* l = _model->getPathToRoot(_groups);
  QVector<QObject*>* ol = new QVector<QObject*>();
- foreach (TreeNode* n, *l) {
+ foreach (MutableTreeNode* n, *l) {
   ol->append((QObject*)n);
  }
  TreePath* g = new TreePath(ol);
@@ -547,7 +547,7 @@ void MenuActionListener::addAction(QAction* act)
 /*public*/  void MenuActionListener::actionPerformed(QObject* o)
 {
  QAction* e = (QAction*)o;
- QList<TreeNode*>* l = panel->_model->getPathToRoot(panel->_groups);
+ QList<MutableTreeNode*>* l = panel->_model->getPathToRoot(panel->_groups);
  QVector<QObject*>* ol = new QVector<QObject*>();
  foreach (TreeNode* n, *l) {
   ol->append((QObject*)n);
@@ -733,9 +733,9 @@ MyTreeSelectionListener::MyTreeSelectionListener(RosterGroupsPanel *panel)
 //@Override
 /*public*/  void MyTreeSelectionListener::valueChanged(TreeSelectionEvent* e)
 {
- QList<TreeNode*>* list = panel->_model->getPathToRoot(panel->_groups);
+ QList<MutableTreeNode*>* list = panel->_model->getPathToRoot(panel->_groups);
  QVector<QObject*>* ol = new QVector<QObject*>();
- foreach(TreeNode* n, *list) ol->append((QObject*)n);
+ foreach(MutableTreeNode* n, *list) ol->append((QObject*)n);
  TreePath* g = new TreePath(ol);
  QString oldGroup = panel->selectedRosterGroup;
  if (e->getNewLeadSelectionPath() == NULL)

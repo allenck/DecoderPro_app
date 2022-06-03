@@ -1266,7 +1266,7 @@ return true;
 */
 /*protected*/ void WarrantRoute::showRoute(DefaultMutableTreeNode* destNode, DefaultTreeModel* tree)
 {
- QList<TreeNode*>* nodes = tree->getPathToRoot(destNode);
+ QList<MutableTreeNode*>* nodes = tree->getPathToRoot(destNode);
  _orders->clear();
  for (int i=0; i<nodes->length(); i++)
  {

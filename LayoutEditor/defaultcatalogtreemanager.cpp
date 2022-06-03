@@ -73,9 +73,10 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
  if (log->isDebugEnabled())
  {
   log->debug("getBySystemName: systemName= "+name);
-  CatalogTree* tree = (CatalogTree*)_tsys->value(name);
-  if (tree != NULL)
+  NamedBean* nb = _tsys->value(name);
+  if (nb != NULL)
   {
+   CatalogTree* tree = (CatalogTree*)nb->self();
    CatalogTreeNode* root = (CatalogTreeNode*)((AbstractCatalogTree*)tree)->getRoot();
    log->debug("root= "+root->toString()+
                       ", has "+QString::number(root->getChildCount())+" children");
@@ -100,13 +101,15 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 
  // return existing if there is one
  CatalogTree* s;
- if ( (userName!="") && ((s = (CatalogTree*)getByUserName(userName)) != NULL))
+ NamedBean* nb = getByUserName(userName);
+ if ( (userName!="") && nb &&((s = (CatalogTree*)getByUserName(userName)->self()) != NULL))
  {
-     if ((CatalogTree*)getBySystemName(systemName)!=s)
+     if ((CatalogTree*)getBySystemName(systemName)->self()!=s)
          log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
      return s;
  }
- if ( (s = (CatalogTree*)getBySystemName(systemName)) != NULL)
+ nb = getBySystemName(systemName);
+ if (nb && (s = (CatalogTree*)getBySystemName(systemName)->self()) != NULL)
  {
      if ((s->getUserName() == NULL) && (userName != NULL))
          s->setUserName(userName);

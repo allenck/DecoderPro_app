@@ -168,6 +168,7 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+ logixng/editthreadsdialog.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1521,6 +1522,7 @@ HEADERS += \
     lnconstants.h \
     llnmon.h \
  logixng/clipboardeventlistener.h \
+ logixng/editthreadsdialog.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \

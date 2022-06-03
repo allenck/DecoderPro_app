@@ -103,7 +103,7 @@
 #include "actionlightswing.h"
 #include "expressionreferenceswing.h"
 #include "expressionreferencexml.h"
-
+#include "defaultdigitalactionmanagerxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -170,6 +170,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DigitalManyXml>("DigitalManyXml");
    qRegisterMetaType<ActionLightXml>("ActionLightXml");
    qRegisterMetaType<ExpressionReferenceXml>("ExpressionReferenceXml");
+   qRegisterMetaType<DefaultDigitalActionManagerXml>("DefaultDigitalActionManagerXml");
 
    // AbstractAnalogExpressionSwing
    qRegisterMetaType<AnalogFormulaSwing>("AnalogFormulaSwing");

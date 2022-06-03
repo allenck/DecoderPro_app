@@ -1,7 +1,7 @@
 #include "jsonmemorysocketservice.h"
 #include "json.h"
 #include "jsonmemoryhttpservice.h"
-#include "memorymanager.h"
+#include "defaultmemorymanager.h"
 #include "instancemanager.h"
 #include "jmriexception.h"
 
@@ -34,7 +34,7 @@
  }
  if (!this->memories->contains(name))
  {
-  Memory* memory = ((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(name);
+  Memory* memory = ((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getMemory(name);
   if (memory != NULL)
   {
    MemoryListener* listener = new MemoryListener(memory, this);

@@ -28,6 +28,7 @@
 #include "entryexitpairs.h"
 #include "signalheadmanager.h"
 #include "signalmastmanager.h"
+#include "defaultmemorymanager.h"
 
 /**
  * Create a where used report based on the selected bean.  The selection combo box is
@@ -315,7 +316,7 @@
                 nameBox = new NamedBeanComboBox/*<Reporter>*/((ReporterManager*)InstanceManager::getDefault("ReporterManager"));
                 break;
             case ItemType::MEMORY:
-                nameBox = new NamedBeanComboBox/*<Memory>*/((MemoryManager*)InstanceManager::getDefault("MemoryManager"));
+                nameBox = new NamedBeanComboBox/*<Memory>*/((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"));
                 break;
             case ItemType::ROUTE:
                 nameBox = new NamedBeanComboBox/*<Route>*/((RouteManager*)InstanceManager::getDefault("RouteManager"));

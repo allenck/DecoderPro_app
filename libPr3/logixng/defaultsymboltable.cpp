@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "defaultstack.h"
 #include "memory.h"
-#include "memorymanager.h"
+#include "defaultmemorymanager.h"
 #include "instancemanager.h"
 #include "referenceutil.h"
 #include "localvariableexpressionvariable.h"
@@ -182,7 +182,7 @@
 
                 case InitialValueType::Memory:
                 {
-                    Memory* m = (Memory*)((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getNamedBean(variable->getInitialValueData())->self();
+                    Memory* m = (Memory*)((DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"))->getNamedBean(variable->getInitialValueData())->self();
                     if (m != nullptr) initialValue = m->getValue();
                     break;
                 }

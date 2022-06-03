@@ -112,17 +112,16 @@ CatalogPanel::~CatalogPanel()
 
 void CatalogPanel::common()
 {
+ setObjectName("CatalogPanel");
  _grayColor =  QColor(235,235,235);
  _currentBackground = _grayColor;
  _previewLabel = new QLabel();
- _branchModel = new QList <CatalogTree*>();
  log = new Logger("CatalogPanel");
  log->setDebugEnabled(true);
  _noMemory = false;
  _model = nullptr;
  _preview = nullptr;
  colorChoice =  QList<QColor>() <<QColor(Qt::white) << _grayColor << _darkGrayColor;
-
 }
 #if 0
 /*public*/ void setToolTipText(QString tip) {
@@ -231,7 +230,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 */
 /*public*/ void CatalogPanel::createNewBranch(QString systemName, QString userName, QString path)
 {
- CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
+ CatalogTreeManager* manager = (DefaultCatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  CatalogTree* tree = (CatalogTree*)manager->getBySystemName(systemName);
  if (tree == nullptr)
  {
@@ -239,7 +238,6 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
   tree->insertNodes(path);
  }
  addTree(tree);
-
 }
 
 /**
@@ -257,6 +255,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
   }
  }
 
+ QObject* r = tree->getRoot();
   addTreeBranch((CatalogTreeNode*)tree->getRoot());
  _branchModel->append(tree);
  _model->reload();
@@ -275,10 +274,10 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
  }
     //String name = node.toString();
     CatalogTreeNode* root = (CatalogTreeNode*)_model->getRoot();
-    QVectorIterator<CatalogTreeNode*>* e = (QVectorIterator<CatalogTreeNode*>*)node->children();
+    QVectorIterator<MutableTreeNode*>* e = (QVectorIterator<MutableTreeNode*>*)node->children();
     while (e->hasNext()) {
-        CatalogTreeNode* n = e->next();
-        addNode(root, n);
+        MutableTreeNode* n = e->next();
+        addNode(root, (CatalogTreeNode*)n);
     }
 }
 
@@ -288,6 +287,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 //@SuppressWarnings("unchecked")
 /*private*/ void CatalogPanel::addNode(CatalogTreeNode* parent, CatalogTreeNode* n)
 {
+ QObject* obj = n->tself();
  CatalogTreeNode* node = new CatalogTreeNode(n->getUserObject().toString());
  node->setLeaves(n->getLeaves());
  parent->add(node);
@@ -305,7 +305,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 */
 /*private*/ CatalogTreeNode* CatalogPanel::getCorrespondingNode(CatalogTreeNode* node)
 {
- QVector<TreeNode*>* nodes = node->getPath();
+ QVector<MutableTreeNode*>* nodes = node->getPath();
  CatalogTreeNode* cNode = nullptr;
  for (int i=0; i<_branchModel->size(); i++)
  {
@@ -324,7 +324,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 * displayed node.
 */
 //@SuppressWarnings("unchecked")
-/*private*/ CatalogTreeNode* CatalogPanel::match(CatalogTreeNode* cRoot, QVector<TreeNode*>* nodes, int idx)
+/*private*/ CatalogTreeNode* CatalogPanel::match(CatalogTreeNode* cRoot, QVector<MutableTreeNode*>* nodes, int idx)
 {
  if (idx == nodes->size())
  {
@@ -350,7 +350,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 */
 /*private*/ CatalogTree* CatalogPanel::getCorespondingModel(CatalogTreeNode* node)
 {
- QVector<TreeNode*>* nodes = node->getPath();
+ QVector<MutableTreeNode*>* nodes = node->getPath();
  CatalogTree* model = nullptr;
  for (int i=0; i<_branchModel->size(); i++)
  {
@@ -374,7 +374,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
      return false;
  }
  int index = 0;
- QVectorIterator<TreeNode*> e(*parent->children());
+ QVectorIterator<MutableTreeNode*> e(*parent->children());
  while (e.hasNext()) {
      TreeNode* n = e.next();
      if (name < ((CatalogTreeNode*)n)->toString()) {
@@ -428,7 +428,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 */
 /*private*/ bool CatalogPanel::nameOK(CatalogTreeNode* node, QString name)
 {
- QVector<TreeNode*>* nodes = node->getPath();
+ QVector<MutableTreeNode*>* nodes = node->getPath();
  for (int i=0; i<nodes->size(); i++)
  {
   if (name==(((CatalogTreeNode*)nodes->at(i))->toString()))

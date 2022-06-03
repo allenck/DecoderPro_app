@@ -15,6 +15,8 @@
 #include "proxylightmanager.h"
 #include "lroutetableaction.h"
 #include "defaultlistselectionmodel.h"
+#include "defaultmemorymanager.h"
+
 /**
  * This is the base class for the Conditional edit view classes. Contains shared
  * variables and methods.
@@ -338,7 +340,7 @@ JmriBeanComboBox* ConditionalEditBase::createNameBox(int itemType) {
                     InstanceManager::getDefault("SignalMastManager"), NULL, JmriBeanComboBox::DISPLAYNAME);
             break;
         case Conditional::ITEM_TYPE_MEMORY:      // 6
-            nameBox = new JmriBeanComboBox((MemoryManager*)
+            nameBox = new JmriBeanComboBox((DefaultMemoryManager*)
                     InstanceManager::getDefault("MemoryManager"), NULL, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
             break;
         case Conditional::ITEM_TYPE_LOGIX:       // 7

@@ -15,7 +15,7 @@ class DefaultConditionalNGManager : public AbstractManager, public ConditionalNG
   /*public*/  int getXMLOrder() const override;
   /*public*/  QChar typeLetter() const override;
   /*public*/  NameValidity validSystemNameFormat(QString systemName)override;
-  /*public*/  ConditionalNG* createConditionalNG(LogixNG* logixNG, QString systemName, QString userName)
+  /*public*/  DefaultConditionalNG *createConditionalNG(LogixNG* logixNG, QString systemName, QString userName)
           /*throws IllegalArgumentException*/override;
   /*public*/  DefaultConditionalNG *createConditionalNG(
           LogixNG* logixNG, QString systemName, QString userName, int threadID)

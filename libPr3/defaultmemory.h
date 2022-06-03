@@ -6,7 +6,8 @@ class DefaultMemory : public AbstractMemory
 {
     Q_OBJECT
 public:
-  explicit DefaultMemory(QString sysName, QString userName="", QObject *parent = 0) : AbstractMemory(sysName, userName, parent){
+  explicit DefaultMemory(QString sysName, QString userName="", QObject *parent = 0)
+   : AbstractMemory(sysName, userName, parent){
   setObjectName("DefaultMemory");}
     /**
      * Provide generic access to internal state.

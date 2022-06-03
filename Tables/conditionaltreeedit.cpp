@@ -680,9 +680,9 @@
    _cdlModel->nodeStructureChanged(_cdlRoot);
 
    // Switch to new node
-   QVector<TreeNode*>* path = _curNode->getPath();
+   QVector<MutableTreeNode*>* path = _curNode->getPath();
    QVector<QObject*>* pathList = new QVector<QObject*>();
-   for(TreeNode* node : *path) { pathList->append((QObject*)node);}
+   for(MutableTreeNode* node : *path) { pathList->append((QObject*)node);}
    _cdlTree->setSelectionPath(new TreePath(pathList));
   }
   else if (_curNodeType ==  "Variables")    // NOI18N
@@ -754,9 +754,9 @@
 
      // Switch to new node
      ConditionalTreeNode* tempNode = (ConditionalTreeNode*) _varHead->getLastChild();
-     QVector<TreeNode*>* path = tempNode->getPath();
+     QVector<MutableTreeNode*>* path = tempNode->getPath();
      QVector<QObject*>* pathList = new QVector<QObject*>();
-     for(TreeNode* node : *path) { pathList->append((QObject*)node);}
+     for(MutableTreeNode* node : *path) { pathList->append((QObject*)node);}
      TreePath* newPath = new TreePath(pathList);
      _cdlTree->setSelectionPath(newPath);
      _cdlTree->expandPath(newPath);
@@ -796,9 +796,9 @@
 
      // Switch to new node
      ConditionalTreeNode* tempNode = (ConditionalTreeNode*) _actHead->getLastChild();
-     QVector<TreeNode*>* path = tempNode->getPath();
+     QVector<MutableTreeNode*>* path = tempNode->getPath();
      QVector<QObject*>* pathList = new QVector<QObject*>();
-     for(TreeNode* node : *path) { pathList->append((QObject*)node);}
+     for(MutableTreeNode* node : *path) { pathList->append((QObject*)node);}
      TreePath* newPath = new TreePath(pathList);
      _cdlTree->setSelectionPath(newPath);
      _cdlTree->expandPath(newPath);
@@ -1464,9 +1464,9 @@ else
          parentNode->insert(_curNode, _curNodeRow);
          _cdlModel->nodeStructureChanged(parentNode);
      }
-     QVector<TreeNode*>* path = _curNode->getPath();
+     QVector<MutableTreeNode*>* path = _curNode->getPath();
      QVector<QObject*>* pathList = new QVector<QObject*>();
-     for(TreeNode* node : *path) { pathList->append((QObject*)node);}
+     for(MutableTreeNode* node : *path) { pathList->append((QObject*)node);}
      _cdlTree->setSelectionPath(new TreePath(pathList));
      setMoveButtons();
  }
@@ -1603,7 +1603,7 @@ else
      createConditionalContent();
 
      // build the tree GUI
-     _cdlTree->expandPath(new TreePath(_cdlRoot));
+     _cdlTree->expandPath(new TreePath(_cdlRoot, nullptr));
      _cdlTree->setRootVisible(false);
      _cdlTree->setShowsRootHandles(true);
      _cdlTree->setScrollsOnExpand(true);

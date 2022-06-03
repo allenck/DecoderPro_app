@@ -20,6 +20,8 @@ public:
     /*public*/ int getNumLeaves() ;
     /*public*/ void setLeaves(QVector <CatalogTreeLeaf*>* leaves);
 
+    QObject* tself() {return (QObject*)this;}
+
 signals:
 
 public slots:

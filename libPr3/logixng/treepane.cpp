@@ -14,6 +14,9 @@
 #include "femalesocket.h"
 #include "abstractbase.h"
 #include "treenode.h"
+#include "abstractfemalesocket.h"
+#include "defaultdigitalactionmanager.h"
+#include "ifthenelse.h"
 
 /**
  * Show the action/expression tree.
@@ -33,7 +36,8 @@
      *
      * @param femaleRootSocket the root of the tree
      */
-    /*public*/  TreePane::TreePane(FemaleSocket* femaleRootSocket, QWidget* parent) : JPanel(parent) {
+    /*public*/  TreePane::TreePane(AbstractFemaleSocket* femaleRootSocket, QWidget* parent)
+     : JPanel(parent) {
         _femaleRootSocket = femaleRootSocket;
         // Note!! This must be made dynamic, so that new socket types are recognized automaticly and added to the list
         // and the list must be saved between runs.
@@ -44,8 +48,11 @@
 //            b->addPropertyChangeListener(this);
 //        });
 #if 1
-        _femaleRootSocket->forEntireTree(new TreePane_RunnableWithBase(this));
+        RunnableWithBase* rb= new TreePane_RunnableWithBase(this);
+        QString name = _femaleRootSocket->getName();
+        _femaleRootSocket->forEntireTree(rb);
 #endif
+
     }
 
     /*public*/  void TreePane::initComponents() {
@@ -69,10 +76,13 @@
 
         _tree->setRootVisible(_rootVisible);
         _tree->setShowsRootHandles(true);
+        _tree->setHeaderHidden(true);
+        _tree->setRootIsDecorated(true);
+
 
         // Expand the entire tree
         for (int i = 0; i < _tree->getRowCount(); i++) {
-            FemaleSocket* femaleSocket = (FemaleSocket*) _tree->getPathForRow(i)->getLastPathComponent();
+            FemaleSocket* femaleSocket = (AbstractFemaleSocket*) _tree->getPathForRow(i)->getLastPathComponent();
             if (femaleSocket->isConnected() && femaleSocket->getConnectedSocket()->isEnabled()) {
                 _tree->expandRow(i);
             }
@@ -104,7 +114,7 @@
      */
     /*protected*/ void TreePane::getPath(Base* base, QList<FemaleSocket*>* list) {
         for (Base* b = base; b != nullptr; b = b->getParent()) {
-            if (qobject_cast<FemaleSocket*>(b->bself())) list->insert(0, (FemaleSocket*)b->bself());
+            if (qobject_cast<AbstractFemaleSocket*>(b->bself())) list->insert(0, (AbstractFemaleSocket*)b->bself());
         }
     }
 
@@ -224,9 +234,11 @@
 //        protected final List<TreeModelListener> listeners = new ArrayList<>();
 
 
-        /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(FemaleSocket* root, QObject* parent)
-          : DefaultTreeModel(nullptr, parent) {
+        /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(AbstractFemaleSocket* root, QObject* parent)
+          : DefaultTreeModel(new TreePane_FemaleSocketTreeNode(root), parent) {
+          setObjectName("FemaleSocketTreeModel");
             this->_root = root;
+          nodeStructureChanged((MutableTreeNode*)root);
         }
 
         //@Override
@@ -236,7 +248,7 @@
 
         //@Override
         /*public*/  bool FemaleSocketTreeModel::isLeaf(QObject* node) {
-            FemaleSocket* socket = (FemaleSocket*) node;
+            FemaleSocket* socket = (AbstractFemaleSocket*) node;
             if (!socket->isConnected()) {
                 return true;
             }
@@ -244,8 +256,8 @@
         }
 
         //@Override
-        /*public*/  int FemaleSocketTreeModel::getChildCount(QObject* parent) {
-            FemaleSocket* socket = (FemaleSocket*) parent;
+        /*public*/  int FemaleSocketTreeModel::getChildCount(QObject* parent) const{
+            AbstractFemaleSocket* socket = (AbstractFemaleSocket*) parent;
             if (!socket->isConnected()) {
                 return 0;
             }
@@ -254,7 +266,7 @@
 
         //@Override
         /*public*/  QObject* FemaleSocketTreeModel::getChild(QObject* parent, int index) {
-            FemaleSocket* socket = (FemaleSocket*) parent;
+            AbstractFemaleSocket* socket = (AbstractFemaleSocket*) parent;
             if (!socket->isConnected()) {
                 return nullptr;
             }
@@ -263,14 +275,14 @@
 
         //@Override
         /*public*/  int FemaleSocketTreeModel::getIndexOfChild(QObject* parent, QObject* child) {
-            FemaleSocket* socket = (FemaleSocket*) parent;
+            FemaleSocket* socket = (AbstractFemaleSocket*) parent;
             if (!socket->isConnected()) {
                 return -1;
             }
 
             MaleSocket* connectedSocket = socket->getConnectedSocket();
             for (int i = 0; i < connectedSocket->getChildCount(); i++) {
-                if ((FemaleSocket*)child == connectedSocket->getChild(i)) {
+                if ((AbstractFemaleSocket*)child == connectedSocket->getChild(i)) {
                     return i;
                 }
             }
@@ -293,8 +305,6 @@
         /*public*/  void FemaleSocketTreeModel::removeTreeModelListener(TreeModelListener* l) {
             listeners.removeOne(l);
         }
-
-//    }
 
 
 //    private static final class FemaleSocketTreeRenderer implements TreeCellRenderer {
@@ -432,6 +442,14 @@
             return _decorator->decorate(socket, mainPanel);
         }
 
+TreePane_FemaleSocketTreeNode::TreePane_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent)
+ : DefaultMutableTreeNode(femaleSocket->getName(), parent){
+ this->femaleSocket = femaleSocket;
+}
 
+int TreePane_FemaleSocketTreeNode::getChildCount()
+{
+ return this->femaleSocket->getChildCount();
+}
 
 //    private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TreeViewer.class);

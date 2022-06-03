@@ -7,6 +7,7 @@
 #include "logger.h"
 #include "jpanel.h"
 
+class MutableTreeNode;
 class GridBagLayout;
 class CPIconDisplayPanel;
 class IconItemPanel;
@@ -74,11 +75,11 @@ private:
     //QScrollArea*             _treePane;
     JTree*                   _dTree;
     DefaultTreeModel*        _model;
-    QList<CatalogTree*>* _branchModel;// = new QList <CatalogTree>();
+    QList<CatalogTree*>* _branchModel = new QList <CatalogTree*>();
     /*private*/ void setupPanel();
     void common();
     /*private*/ bool nameOK(CatalogTreeNode* node, QString name);
-    /*private*/ CatalogTreeNode* match(CatalogTreeNode* cRoot, QVector<TreeNode*>* nodes, int idx);
+    /*private*/ CatalogTreeNode* match(CatalogTreeNode* cRoot, QVector<MutableTreeNode *> *nodes, int idx);
     /*private*/ void addNode(CatalogTreeNode* parent, CatalogTreeNode* n);
     /*private*/ CatalogTree* getCorespondingModel(CatalogTreeNode* node);
     /*private*/ CatalogTreeNode* getCorrespondingNode(CatalogTreeNode* node);

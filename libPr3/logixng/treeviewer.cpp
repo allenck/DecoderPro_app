@@ -23,7 +23,7 @@
      *
      * @param femaleRootSocket the root of the tree
      */
-    /*public*/ TreeViewer::TreeViewer(FemaleSocket* femaleRootSocket, QWidget* parent): JmriJFrame((parent)) {
+    /*public*/ TreeViewer::TreeViewer(AbstractFemaleSocket* femaleRootSocket, QWidget* parent): JmriJFrame((parent)) {
         _treePane = new TreePane(femaleRootSocket);
     }
 

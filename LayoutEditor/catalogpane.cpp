@@ -23,9 +23,9 @@
 
 
 /*public*/ CatalogPane::CatalogPane(QWidget* parent) :QWidget(parent) {
-
     //super(true); // isDoubleBuffered???
- log->setDebugEnabled(true);
+    setObjectName("CatalogPane");
+    log->setDebugEnabled(true);
     preview = new QLabel();
     preview->setMinimumSize(50,50);
 

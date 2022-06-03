@@ -13,6 +13,8 @@
 #include "threadingutil.h"
 #include "abstractfemalesocket.h"
 #include "treeeditor.h"
+#include "treenode.h"
+#include "defaultmutabletreenode.h"
 
 class FemaleSocketDecorator;
 class FemaleSocketTreeModel;
@@ -21,7 +23,7 @@ class TreePane : public JPanel, public PropertyChangeListener
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
  public:
-  TreePane(FemaleSocket* femaleRootSocket, QWidget* parent = nullptr);
+  TreePane(AbstractFemaleSocket *femaleRootSocket, QWidget* parent = nullptr);
   ~TreePane() {}
   TreePane(const TreePane&) : JPanel() {}
   /*public*/  void initComponents();
@@ -30,6 +32,7 @@ class TreePane : public JPanel, public PropertyChangeListener
   /*public*/  void setRootVisible(bool rootVisible);
   /*public*/  void updateTree(Base* item);
   /*public*/  void dispose();
+
 
   QObject* pself() override {return (QObject*)this; }
  public slots:
@@ -43,7 +46,7 @@ class TreePane : public JPanel, public PropertyChangeListener
   JTree* _tree;
 
  protected:
-  /*protected*/ /*final*/ FemaleSocket* _femaleRootSocket;
+  /*protected*/ /*final*/ AbstractFemaleSocket* _femaleRootSocket;
   /*protected*/ FemaleSocketTreeModel* femaleSocketTreeModel;
   /*protected*/ void getPath(Base* base, QList<FemaleSocket *> *list);
   /*protected*/ void updateTree(FemaleSocket* currentFemaleSocket, QVector<QObject *> *currentPath);
@@ -101,21 +104,59 @@ class ThreadAction2 : public ThreadAction
   }
 };
 
-/*public*/  /*static*/ class FemaleSocketTreeModel : public DefaultTreeModel {
-Q_OBJECT
+class TreePane_FemaleSocketTreeNode : public DefaultMutableTreeNode
+{
+  Q_OBJECT
+  AbstractFemaleSocket* femaleSocket;
+ public:
+  TreePane_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent = nullptr);
+  int getChildCount() override;
+};
 
-    /*private*/ /*final*/ FemaleSocket* _root;
+/*public*/  /*static*/ class FemaleSocketTreeModel : public DefaultTreeModel //, public TreeNode
+{
+Q_OBJECT
+//Q_INTERFACES(TreeNode)
+    /*private*/ /*final*/ AbstractFemaleSocket* _root;
     public:
 
-    /*public*/  FemaleSocketTreeModel(FemaleSocket* root, QObject* parent = nullptr);
+    /*public*/  FemaleSocketTreeModel(AbstractFemaleSocket* root, QObject* parent = nullptr);
     /*public*/  QObject* getRoot()override;
     /*public*/  bool isLeaf(QObject* node)override;
-    /*public*/  int getChildCount(QObject* parent)override;
+    /*public*/  int getChildCount(QObject* parent)const override;
     /*public*/  QObject* getChild(QObject* parent, int index) override;
     /*public*/  int getIndexOfChild(QObject* parent, QObject* child)override;
     /*public*/  void valueForPathChanged(TreePath* path, QVariant newvalue)override;
     /*public*/  void addTreeModelListener(TreeModelListener* l)override;
     /*public*/  void removeTreeModelListener(TreeModelListener* l) override;
+
+  int rowCount(const QModelIndex &parent) const override
+  {
+  // if(QString(metaObject()->className()) == "DefaultTreeModel")
+  // {
+    MutableTreeNode* parentItem;
+    if (parent.column() > 0)
+     return 0;
+    if (!parent.isValid())
+     parentItem = root;
+    else
+     parentItem = static_cast<DefaultMutableTreeNode*>(parent.internalPointer());
+    if(!parentItem)
+     parentItem = root;
+    return getChildCount(((QObject*)root));
+  }
+
+  QVariant headerData(int /*section*/, Qt::Orientation orientation, int role) const override
+  {
+   if(role == Qt::DisplayRole &&  orientation == Qt::Horizontal)
+   {
+   return tr("");
+   }
+   return QVariant();
+  }
+
+
+  //QObject* tself() override {return (QObject*)this;}
 
 protected:
   /*protected*/ /*final*/ QList<TreeModelListener*> listeners = QList<TreeModelListener*>();
@@ -151,10 +192,13 @@ class TreePane_RunnableWithBase : public RunnableWithBase
   Q_OBJECT
   TreePane* treePane;
  public:
-  TreePane_RunnableWithBase(TreePane* treePane) {this->treePane = treePane;}
+  TreePane_RunnableWithBase(TreePane* treePane) {
+   this->treePane = treePane;
+   setObjectName("TreePane_RunnableWithBase");
+  }
   void run(Base* b)
   {
-   b->PropertyChangeProvider::addPropertyChangeListener(treePane);
+   ((AbstractFemaleSocket*)b->bself())->PropertyChangeProvider::addPropertyChangeListener(treePane);
   }
 };
 
@@ -174,5 +218,6 @@ class TreePane_FemaleSocketDecorator : public QObject,public FemaleSocketDecorat
    return panel;
   }
 };
+
 
 #endif // TREEPANE_H

@@ -44,7 +44,7 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
  private:
   /*private*/ SocketType _socketType;             // The type of the socket the user has selected
   /*private*/ SocketType _currentSocketType;      // The current type of the socket.
-  /*private*/ FemaleSocket* _currentActiveSocket;  // The socket that is currently in use, if any. Null otherwise.
+  /*private*/ FemaleSocket* _currentActiveSocket= nullptr;  // The socket that is currently in use, if any. Null otherwise.
   /*private*/ /*final*/ FemaleAnalogExpressionSocket* _analogSocket;// = new DefaultFemaleAnalogExpressionSocket(this, this, "A");
   /*private*/ /*final*/ FemaleDigitalExpressionSocket* _digitalSocket;// = new DefaultFemaleDigitalExpressionSocket(this, this, "D");
   /*private*/ /*final*/ FemaleStringExpressionSocket* _stringSocket;// = new DefaultFemaleStringExpressionSocket(this, this, "S");

@@ -17,11 +17,12 @@
  * @author Scott Violet
  */
 
-/*public*/ /*interface*/ class JAVAQTSHARED_EXPORT MutableTreeNode : public TreeNode
+/*public*/ /*interface*/ class JAVAQTSHARED_EXPORT MutableTreeNode : public QObject, public TreeNode
 {
     Q_OBJECT
+  Q_INTERFACES(TreeNode)
 public:
-    MutableTreeNode(QObject* oparent ) : TreeNode(oparent) {}
+    MutableTreeNode(QObject* oparent ) : QObject(oparent) {}
     virtual ~MutableTreeNode() {}
     /**
      * Adds <code>child</code> to the receiver at <code>index</code>.
@@ -54,6 +55,7 @@ public:
      * Sets the parent of the receiver to <code>newParent</code>.
      */
     virtual void setParent(MutableTreeNode* /*newParent*/) {}
+    QObject* tself() override {return (QObject*)this;}
 };
 
 #endif // MUTABLETREENODE_H

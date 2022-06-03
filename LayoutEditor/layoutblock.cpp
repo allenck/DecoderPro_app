@@ -100,7 +100,7 @@ long LayoutBlock::time=0;
  sensorDebounceGlobalCheck = new /*JCheckBox*/ QCheckBox();
  sensorDebounceGlobalCheck->setText(tr("Use Global Debounce Values"));
  memoryComboBox = new NamedBeanComboBox(
-             (MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, DisplayOptions::DISPLAYNAME);
+             (DefaultMemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, DisplayOptions::DISPLAYNAME);
  memoryNameField = new /*JTextField*/ QLineEdit();
  memoryNameField->setMaxLength(16);
  //metricField = JTextField();

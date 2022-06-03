@@ -1,6 +1,6 @@
 #include "clipboardeditor.h"
 #include "instancemanager.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "femalesocket.h"
 
 /**
@@ -15,7 +15,7 @@
      * Construct a ConditionalEditor.
      */
     /*public*/  ClipboardEditor::ClipboardEditor(QWidget *parent)
-        : TreeEditor((FemaleSocket*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard()->getFemaleSocket(),
+        : TreeEditor((AbstractFemaleSocket*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard()->getFemaleSocket()->bself(),
                 EnableClipboard::DisableClipboard,
                 EnableRootRemoveCutCopy::EnableRootRemoveCutCopy,
                 EnableRootPopup::DisableRootPopup,

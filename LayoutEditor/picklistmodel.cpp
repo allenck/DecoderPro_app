@@ -492,7 +492,7 @@ bool systemNameComparator(QString o1, QString o2)
  }
  else if (qobject_cast< AbstractNamedBean*>(e->getSource())) {
   // a value changed.  Find it, to avoid complete redraw
-  NamedBean* bean = (NamedBean*)e->getSource();
+  AbstractNamedBean* bean = (AbstractNamedBean*)e->getSource();
   for (int i=0; i<_pickList->size(); i++)
   {
    if (bean->equals(_pickList->at(i)->self()))
@@ -890,7 +890,7 @@ void MultiSensorPickModel::tableClicked(QModelIndex index)
 //class SignalHeadPickModel extends PickListModel {
 SignalHeadPickModel::SignalHeadPickModel (QObject *parent) : PickListModel(parent)
 {
- manager = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ manager = qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  _name = tr("Signal Table");
  AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)),this, SLOT(newSignalHeadCreated(NamedBean*)));
@@ -1020,7 +1020,7 @@ void MemoryPickModel::newMemoryCreated(Memory*t)
 //class ReporterPickModel extends PickListModel {
 ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
 {
- manager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
+ manager = (ProxyReporterManager*)InstanceManager::getDefault("ReporterManager");
  _name = tr("Reporter Table");
  ProxyReporterManager* mgr = (ProxyReporterManager*)manager;
  QList<AbstractManager*> mgrList = mgr->getManagerList();

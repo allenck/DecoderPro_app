@@ -22,6 +22,7 @@
 /*public*/ CatalogTreeNode::CatalogTreeNode(QString name, QObject *parent) : DefaultMutableTreeNode(name, parent)
 {
  //super(name);
+ setObjectName("CatalogTreeNode");
  log = new Logger("CatalogTreeNode");
  _leafs = new QVector<CatalogTreeLeaf*>();
 }

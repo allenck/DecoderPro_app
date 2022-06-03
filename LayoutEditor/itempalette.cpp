@@ -215,7 +215,7 @@ void ItemPalette::changeEvent(QEvent * e)
     QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* familyMap =
                             new QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>();
     //@SuppressWarnings("unchecked")
-    QVectorIterator<TreeNode*>* ee (node->children());
+    QVectorIterator<MutableTreeNode*>* ee (node->children());
     while (ee->hasNext()) {
         CatalogTreeNode* famNode = (CatalogTreeNode*)ee->next();
         QString name = famNode->getUserObject().toString();
@@ -483,9 +483,9 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     addItemTab(itemPanel, "Sensor", tr("Sensor"));
     itemPanel->init();
 
-    itemPanel = new SignalHeadItemPanel(palette, "SignalHead", NULL, PickListModel::signalHeadPickModelInstance(), editor, palette);
-    addItemTab(itemPanel, ("SignalHead"), tr("Signal Head"));
-    itemPanel->init();
+//    itemPanel = new SignalHeadItemPanel(palette, "SignalHead", NULL, PickListModel::signalHeadPickModelInstance(), editor, palette);
+//    addItemTab(itemPanel, ("SignalHead"), tr("Signal Head"));
+//    itemPanel->init();
 
     itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor, palette);
     addItemTab(itemPanel, ("SignalMast"), tr("Signal Mast"));

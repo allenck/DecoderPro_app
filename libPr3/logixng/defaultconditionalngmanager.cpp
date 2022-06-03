@@ -49,7 +49,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  ConditionalNG*  DefaultConditionalNGManager::createConditionalNG(LogixNG* logixNG, QString systemName, QString userName)
+    /*public*/  DefaultConditionalNG*  DefaultConditionalNGManager::createConditionalNG(LogixNG* logixNG, QString systemName, QString userName)
             /*throws IllegalArgumentException*/ {
 
         return createConditionalNG(logixNG, systemName, userName, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);

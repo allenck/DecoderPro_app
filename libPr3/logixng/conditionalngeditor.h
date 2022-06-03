@@ -5,6 +5,7 @@
 #include "eventlistener.h"
 #include <QObject>
 #include "femalesocketlistener.h"
+#include "defaultconditionalng.h"
 
 class ConditionalNGEventListener;
 class ConditionalNGEditor : public TreeEditor
@@ -19,7 +20,7 @@ class ConditionalNGEditor : public TreeEditor
     /*public*/ virtual void conditionalNGEventOccurred() {}
   };
   ConditionalNGEditor(QWidget* parent=nullptr);
-  /*/*public*/  ConditionalNGEditor(/*@Nonnull*/ ConditionalNG* conditionalNG, QWidget* parent=nullptr);
+  /*/*public*/  ConditionalNGEditor(/*@Nonnull*/ DefaultConditionalNG *conditionalNG, QWidget* parent=nullptr);
   /*public*/  void closeEvent(QCloseEvent* e);
   /*public*/  void addLogixNGEventListener(ConditionalNGEventListener* listener);
 
@@ -35,6 +36,7 @@ class ConditionalNGEditor : public TreeEditor
    */
   /*final*/ QMap<QString, QString> logixNGData = QMap<QString, QString>();
   void fireLogixNGEvent();
+  void contextMenuEvent(QContextMenuEvent* evt);
 
  protected:
   /*protected*/ /*final*/ ConditionalNG* _conditionalNG;

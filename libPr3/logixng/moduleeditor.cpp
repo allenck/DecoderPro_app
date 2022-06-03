@@ -28,7 +28,7 @@
     /*public*/  ModuleEditor::ModuleEditor(BeanTableFrame/*<Module>*/* f,
             BeanTableDataModel/*<Module>*/* m, QString sName, QWidget* parent) :
 
-        TreeEditor(setupRootSocket(nullptr, sName),
+        TreeEditor((AbstractFemaleSocket*)setupRootSocket(nullptr, sName)->bself(),
                 EnableClipboard::EnableClipboard,
                 EnableRootRemoveCutCopy::DisableRootRemoveCutCopy,
                 EnableRootPopup::EnableRootPopup,

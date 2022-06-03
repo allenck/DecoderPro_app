@@ -34,7 +34,7 @@
 
         _conditionalNG = conditionalNG;
 
-        _treePane = new TreePane(conditionalNG->getFemaleSocket());
+        _treePane = new TreePane((AbstractFemaleSocket*)conditionalNG->getFemaleSocket());
 #if 0 // TODO:
         _treePane->initComponents(FemaleSocket* femaleSocket/*, JPanel* panel*/)  {
 

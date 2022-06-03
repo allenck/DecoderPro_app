@@ -21,6 +21,7 @@
 #include "jeditorpane.h"
 #include <QScrollArea>
 #include "pushbuttondelegate.h"
+#include "editthreadsdialog.h"
 
 /**
  * Editor for LogixNG
@@ -668,7 +669,7 @@
         if (_inEditConditionalNGMode) {
             // Already editing a ConditionalNG, ask for completion of that edit
             JOptionPane::showMessageDialog(_editConditionalNGFrame,
-                    tr("Edit ConditionalNG(s) %1 in progress. Please complete edit of any ConditionalNGs and try again.").arg(_curConditionalNG->NamedBean::getSystemName()), // NOI18N
+                    tr("Edit ConditionalNG(s) %1 in progress. Please complete edit of any ConditionalNGs and try again.").arg(_curConditionalNG->AbstractNamedBean::getSystemName()), // NOI18N
                     tr("Error"), // NOI18N
                     JOptionPane::ERROR_MESSAGE);
             _editConditionalNGFrame->setVisible(true);
@@ -889,7 +890,7 @@
                     } else if (editor->_nextInOrder == 0) {
                         return tr("First");  // NOI18N
                     } else if (editor->_nextInOrder <= r) {
-                        return tr("ButtonNext");  // NOI18N
+                        return tr("Next");  // NOI18N
                     } else {
                         return /*Integer.toString*/(rx + 1);
                     }
@@ -979,8 +980,8 @@
             QString uName =  value.toString();
             ConditionalNG* cn =  editor->_curLogixNG->getConditionalNGByUserName(uName);
             if (cn == nullptr) {
-                ConditionalNG* cdl =  editor->_curLogixNG->getConditionalNG(row);
-                cdl->NamedBean::setUserName(uName.trimmed()); // N11N
+                DefaultConditionalNG* cdl =  editor->_curLogixNG->getConditionalNG(row);
+                cdl->AbstractNamedBean::setUserName(uName.trimmed()); // N11N
                 fireTableRowsUpdated(row, row);
             } else {
                 // Duplicate user name
@@ -1010,9 +1011,11 @@
                     deleteConditionalNG(row);
                     break;
                 case BUTTON_EDIT_THREADS_COLUMN:
-// TODO:                    EditThreadsDialog* dialog = new EditThreadsDialog(_curLogixNG->getConditionalNG(row));
-//                    dialog.showDialog();
+                {
+                    EditThreadsDialog* dialog = new EditThreadsDialog(editor->_curLogixNG->getConditionalNG(row));
+                    dialog->showDialog();
                     break;
+                }
                 case SNAME_COLUMN:
                     throw new IllegalArgumentException("System name cannot be changed");
                 case UNAME_COLUMN: {
@@ -1022,6 +1025,7 @@
                 default:
                     throw new IllegalArgumentException("Unknown column");
             }
+            return true;
         }
         return false;
     }

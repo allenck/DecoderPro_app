@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QList>
 #include "javaqt_global.h"
+#include "mutabletreenode.h"
 
 class TreeNode;
 class JAVAQTSHARED_EXPORT TreePath : public QObject
@@ -12,7 +13,7 @@ class JAVAQTSHARED_EXPORT TreePath : public QObject
 public:
     //explicit TreePath(QObject *parent = 0);
     /*public*/  TreePath(QVector<QObject*>* path, QObject* parent= 0);
-    /*public*/  TreePath(TreeNode* lastPathComponent, QObject* parent= 0);
+    /*public*/  TreePath(MutableTreeNode* lastPathComponent, QObject* parent= 0);
     /*public*/  QVector<QObject*>* getPath();
     /*public*/  QObject* getLastPathComponent();
     /*public*/  int getPathCount();

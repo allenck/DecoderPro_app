@@ -18,31 +18,31 @@ public:
     explicit DefaultMutableTreeNode(QObject *oparent = 0);
     /*public*/ DefaultMutableTreeNode(QVariant userObject, QObject* oparent = 0);
     /*public*/ DefaultMutableTreeNode(QVariant userObject, bool allowsChildren, QObject* oparent = 0);
-    /*public*/ void insert(MutableTreeNode* newChild, int childIndex);
-    /*public*/ void remove(int childIndex) ;
-    /*public*/ void setParent(MutableTreeNode* newParent);
-    /*public*/ TreeNode* getParent();
-    /*public*/ TreeNode* getChildAt(int index) ;
-    /*public*/ int getChildCount();
-    /*public*/ int getIndex(TreeNode* aChild) ;
-    /*public*/ QVectorIterator<TreeNode*>* children() ;
+    /*public*/ void insert(MutableTreeNode* newChild, int childIndex)override;
+    /*public*/ void remove(int childIndex) override;
+    /*public*/ void setParent(MutableTreeNode* newParent)override;
+    /*public*/ MutableTreeNode* getParent()override;
+    /*public*/ MutableTreeNode* getChildAt(int index) override;
+    /*public*/ int getChildCount()override;
+    /*public*/ int getIndex(MutableTreeNode *aChild) override;
+    /*public*/ QVectorIterator<MutableTreeNode *> *children() override;
     /*public*/ void setAllowsChildren(bool allows) ;
-    /*public*/ bool getAllowsChildren();
-    /*public*/ void setUserObject(QVariant userObject);
+    /*public*/ bool getAllowsChildren()override;
+    /*public*/ void setUserObject(QVariant userObject)override;
     /*public*/ QVariant getUserObject();
-    /*public*/ void removeFromParent();
-    /*public*/ void remove(MutableTreeNode* aChild);
+    /*public*/ void removeFromParent()override;
+    /*public*/ void remove(MutableTreeNode* aChild)override;
     /*public*/ void removeAllChildren();
     /*public*/ void add(MutableTreeNode* newChild);
-    /*public*/ bool isNodeAncestor(TreeNode* anotherNode);
+    /*public*/ bool isNodeAncestor(MutableTreeNode* anotherNode);
     /*public*/ bool isNodeDescendant(DefaultMutableTreeNode* anotherNode);
     /*public*/ TreeNode* getSharedAncestor(DefaultMutableTreeNode* aNode);
     /*public*/ bool isNodeRelated(DefaultMutableTreeNode* aNode);
     /*public*/ int getDepth() ;
     /*public*/ int getLevel() ;
-    /*public*/ QVector<TreeNode*>* getPath();
+    /*public*/ QVector<MutableTreeNode *> *getPath();
     /*public*/ QVector<QVariant>* getUserObjectPath();
-    /*public*/ TreeNode* getRoot();
+    /*public*/ MutableTreeNode* getRoot();
     /*public*/ bool isRoot();
     /*public*/ DefaultMutableTreeNode* getNextNode();
     /*public*/ DefaultMutableTreeNode* getPreviousNode();
@@ -52,15 +52,15 @@ public:
     /*public*/ QVectorIterator<TreeNode*>* depthFirstEnumeration();
     /*public*/ QVectorIterator<TreeNode*>* pathFromAncestorEnumeration(TreeNode* ancestor);
     /*public*/ bool isNodeChild(TreeNode* aNode) ;
-    /*public*/ TreeNode* getFirstChild() ;
-    /*public*/ TreeNode* getLastChild();
-    /*public*/ TreeNode* getChildAfter(TreeNode* aChild);
-    /*public*/ TreeNode* getChildBefore(TreeNode* aChild);
+    /*public*/ MutableTreeNode* getFirstChild() ;
+    /*public*/ MutableTreeNode *getLastChild();
+    /*public*/ MutableTreeNode *getChildAfter(MutableTreeNode *aChild);
+    /*public*/ MutableTreeNode *getChildBefore(MutableTreeNode *aChild);
     /*public*/ bool isNodeSibling(TreeNode* anotherNode);
     /*public*/ int getSiblingCount();
     /*public*/ DefaultMutableTreeNode* getNextSibling();
     /*public*/ DefaultMutableTreeNode* getPreviousSibling();
-    /*public*/ bool isLeaf();
+    /*public*/ bool isLeaf()override;
     /*public*/ DefaultMutableTreeNode* getFirstLeaf();
     /*public*/ DefaultMutableTreeNode* getLastLeaf();
     /*public*/ DefaultMutableTreeNode* getNextLeaf();
@@ -72,29 +72,31 @@ public:
      * An enumeration that is always empty. This is used when an enumeration
      * of a leaf node's children is requested.
      */
-    static /*public*/ /*final*/ QVectorIterator<TreeNode*>* EMPTY_ENUMERATION;// =  QVectorIterator<TreeNode*>(QVector<TreeNode*>());
+    static /*public*/ /*final*/ QVectorIterator<MutableTreeNode*>* EMPTY_ENUMERATION;// =  QVectorIterator<TreeNode*>(QVector<TreeNode*>());
+
+    QObject* tself() override {return (QObject*)this;}
 signals:
 
 public slots:
 private:
     Logger* log;
-    void common();
+    void common(QVariant userObject, bool allowsChildren);
 //    /*private*/ void writeObject(ObjectOutputStream s) /*throw (IOException)*/ ;
 //    /*private*/ void readObject(ObjectInputStream s) /*throw (IOException)*/, (ClassNotFoundException);
 
 protected:
     /** this node's parent, or null if this node has no parent */
-    /*protected*/ MutableTreeNode*   _parent;
+    /*protected*/ MutableTreeNode*   _parent= nullptr;
 
     /** array of children, may be null if this node has no children */
-    /*protected*/ QVector<TreeNode*>* _children;
+    /*protected*/ QVector<MutableTreeNode*>* _children = nullptr;
 
     /** optional user object */
-    /*transient*/ /*protected*/ QVariant  userObject;
+    /*transient*/ /*protected*/ QVariant  userObject = QVariant();
 
     /** true if the node is able to have children */
     /*protected*/ bool           allowsChildren;
-    /*protected*/ QVector<TreeNode*>* getPathToRoot(TreeNode* aNode, int depth);
+    /*protected*/ QVector<MutableTreeNode *> *getPathToRoot(MutableTreeNode *aNode, int depth);
 
 friend class ItemPalette;
 };
@@ -102,11 +104,11 @@ friend class ItemPalette;
 /*private*/ /*final*/ class PreorderEnumeration : public QObject
 {
     Q_OBJECT
-    /*private*/ /*final*/ QStack< QVectorIterator<TreeNode*>* >* stack;// = new Stack<QList<CatalogTreeNode*>*>();
+    /*private*/ /*final*/ QStack< QVectorIterator<MutableTreeNode*>* >* stack;// = new Stack<QList<CatalogTreeNode*>*>();
 public:
-    /*public*/ PreorderEnumeration(TreeNode* rootNode);
+    /*public*/ PreorderEnumeration(MutableTreeNode *rootNode);
     /*public*/ bool hasMoreElements();
-    /*public*/ TreeNode* nextElement();
+    /*public*/ MutableTreeNode* nextElement();
 
 };  // End of class PreorderEnumeration
 
@@ -117,10 +119,10 @@ public:
     Q_OBJECT
 protected:
     /*protected*/ TreeNode* root;
-    /*protected*/ QVectorIterator<TreeNode*>* children;
-    /*protected*/ QVectorIterator<TreeNode*>* subtree;
+    /*protected*/ QVectorIterator<MutableTreeNode*>* children;
+    /*protected*/ QVectorIterator<MutableTreeNode*>* subtree;
 public:
-    /*public*/ PostorderEnumeration(TreeNode* rootNode);
+    /*public*/ PostorderEnumeration(MutableTreeNode *rootNode);
     /*public*/ bool hasMoreElements();
     /*public*/ TreeNode* nextElement();
 };  // End of class PostorderEnumeration
@@ -187,10 +189,10 @@ public:
 //     friend class BreadthFirstEnumeration;
 //    }; // End of class Queue
 
-    /*public*/ BreadthFirstEnumeration(TreeNode* rootNode);
+    /*public*/ BreadthFirstEnumeration(MutableTreeNode *rootNode);
     /*public*/ bool hasMoreElements() ;
-    /*public*/ TreeNode* nextElement();
-protected: QQueue<QVectorIterator<TreeNode*>*>* queue;
+    /*public*/ MutableTreeNode *nextElement();
+protected: QQueue<QVectorIterator<MutableTreeNode*>*>* queue;
 
 };  // End of class BreadthFirstEnumeration
 

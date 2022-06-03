@@ -1700,7 +1700,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
 
             panel0 = new JPanel();
             panel0->setLayout(new QHBoxLayout());//panel0, BoxLayout.X_AXIS));
-            panel = new JPanel();
+            panel = new JPanel(new FlowLayout());
             QPushButton* button = new QPushButton(tr("Open"));
 //            button.addActionListener((ActionEvent event) -> {
             connect(button, &QPushButton::clicked, [=]{
