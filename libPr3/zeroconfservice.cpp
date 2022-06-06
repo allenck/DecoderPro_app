@@ -14,7 +14,7 @@
 #include <qhostinfo.h>
 #include "serviceinfo.h"
 #include "profileutils.h"
-
+#include "../appslib/metatypes.h"
 /**
  * ZeroConfService objects manage a zeroConf network service advertisement.
  * <P>
@@ -105,7 +105,13 @@
  * @return An unpublished ZeroConfService
  */
 /*public*/ /*static*/ ZeroConfService* ZeroConfService::create(QString type, int port, QMap<QString, QVariant> properties) {
-    return create(type, static_cast<WebServerPreferences*>(InstanceManager::getDefault("WebServerPreferences"))->getRailroadName() +
+    WebServerPreferences* p = ((WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences"));
+    if(!p)
+    {
+        p = new WebServerPreferences();
+        InstanceManager::getDefault()->store(p, "WebServerPreferences");
+    }
+    return create(type, p->getRailroadName() +
           + "_" + QHostInfo::localHostName() + "_" + QString::number(port), port, 0, 0, properties);
 }
 
@@ -245,7 +251,7 @@
  * Start advertising the service.
  */
 /*public*/ void ZeroConfService::publish() {
-    if (!isPublished()) {
+    if (zeroConfPrefs && !isPublished()) {
         //get current preference values
         bool useIPv4 = zeroConfPrefs->getBoolean(IPv4, true);
         bool useIPv6 = zeroConfPrefs->getBoolean(IPv6, true);
