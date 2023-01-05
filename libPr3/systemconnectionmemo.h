@@ -27,7 +27,7 @@ class LIBPR3SHARED_EXPORT SystemConnectionMemo : public Bean
 {
  Q_OBJECT
 public:
-  SystemConnectionMemo(QObject * parent = 0) : Bean(parent) {}
+   SystemConnectionMemo(QObject * parent = 0) : Bean(parent) {}
 // explicit SystemConnectionMemo(QString Prefix= "I", QString userName= "Internal", QObject *parent = 0);
     ~SystemConnectionMemo() {}
     SystemConnectionMemo(const SystemConnectionMemo&) : Bean() {}
@@ -81,6 +81,7 @@ public:
 // /*public*/ ConsistManager* getConsistManager();
 // /*public*/ void setConsistManager(ConsistManager* c);
     virtual QObject* self() {return (QObject*)this;}
+
 signals:
  //void propertyChange(PropertyChangeEvent*);
 

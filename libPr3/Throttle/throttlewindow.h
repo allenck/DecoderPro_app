@@ -199,8 +199,7 @@ class TWWindowListener : public WindowAdapter
   //@Override
  /*public*/ void windowClosing(QCloseEvent* e) {
      //ThrottleWindow me = (ThrottleWindow) e.getSource();
-     //((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->requestThrottleWindowDestruction(me);
-     ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(me, nullptr);
+   ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->requestThrottleWindowDestruction(me);
      if (me->throttleToolBar != nullptr) {
 //         Component[] cmps = throttleToolBar.getComponents();
 //         if (cmps != null) {

@@ -16,6 +16,7 @@
 #include "profilemanager.h"
 #include <QAbstractAnimation>
 #include <QCheckBox>
+#include "joptionpane.h"
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
@@ -73,7 +74,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()
  * @see #getURI(java.lang.String)
  * @see #getURL(java.lang.String)
  */
-/*public*/ File* FileUtilSupport::getFile(/*@Nonnull*/ QString path) throw (FileNotFoundException)
+/*public*/ File* FileUtilSupport::getFile(/*@Nonnull*/ QString path)
 {
  return getFile(ProfileManager::getDefault()->getActiveProfile(), path);
 }
@@ -93,7 +94,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()
  */
 //@Nonnull
 //@CheckReturnValue
-/*public*/ File* FileUtilSupport::getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) throw (FileNotFoundException)
+/*public*/ File* FileUtilSupport::getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path)
 {
 // File* file;
 // try
@@ -117,11 +118,11 @@ Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()
 // return file;
  QFileInfo info(this->pathFromPortablePath(profile, path));
  if(!info.exists())
-  throw  FileNotFoundException("Cannot find file at " + info.filePath());
+  throw  new FileNotFoundException("Cannot find file at " + info.filePath());
  try {
      return new File(this->pathFromPortablePath(profile, path));
  } catch (NullPointerException* ex) {
-     throw  FileNotFoundException("Cannot find file at " + path);
+     throw  new FileNotFoundException("Cannot find file at " + path);
  }
 
 }
@@ -152,7 +153,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()
  * @see #getFile(java.lang.String)
  * @see #getURI(java.lang.String)
  */
-/*public*/ QUrl* FileUtilSupport::getURL(QString path) throw (FileNotFoundException)
+/*public*/ QUrl* FileUtilSupport::getURL(QString path) /*throw (FileNotFoundException)*/
 {
 //    try {
 //        return thisgetURI(path).toURL();
@@ -1379,6 +1380,12 @@ public URL getURL(URI uri) {
  QDir start(home);
 
  scanDir(home, paths, 0);
+ if(paths->count() == 0)
+ {
+  JOptionPane::showMessageDialog(nullptr, tr("JMRI not found! A copy of JMRI or JMRI source is required to "
+                                               "provide necessary resources for execution."));
+   abort();
+ }
  return paths;
 }
 

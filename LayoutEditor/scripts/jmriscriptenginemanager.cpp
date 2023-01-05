@@ -216,7 +216,7 @@
  * Evaluate a script using the given ScriptEngine.
  *
  */
-/*public*/ QObject* JmriScriptEngineManager::eval(QString script, ScriptEngine* engine) throw (ScriptException) {
+/*public*/ QObject* JmriScriptEngineManager::eval(QString script, ScriptEngine* engine)  {
     if (PYTHON == (engine->getFactory()->getEngineName()) && this->jython != nullptr) {
         this->jython->exec(script);
         return nullptr;

@@ -17,8 +17,8 @@ namespace Operations
   Q_INVOKABLE explicit LocationManagerXml(QObject *parent = 0);
    ~LocationManagerXml() {}
    LocationManagerXml(const LocationManagerXml&) : OperationsXml() {}
-  /*public*/ void writeFile(QString name) throw (FileNotFoundException, IOException);
-  /*public*/ void readFile(QString name) throw (JDOMException, IOException);
+  /*public*/ void writeFile(QString name) /*throw (FileNotFoundException, IOException)*/;
+  /*public*/ void readFile(QString name) /*throw (JDOMException, IOException)*/;
   /*public*/ void setOperationsFileName(QString name);
   /*public*/ QString getOperationsFileName() ;
   Q_INVOKABLE /*public*/ void initialize();

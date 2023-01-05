@@ -108,7 +108,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  //might need to redo this so that it doesn't recreate everything all the time.
  _comboBoxes =  QMap<QComboBox*, ListItems*>();
  _checkBoxes =  QMap<QCheckBox*, ListItems*>();
-
+#if 0
  QStringList preferenceClassList = p->getPreferencesClasses();
  foreach (QString strClass, preferenceClassList)
  {
@@ -131,7 +131,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
   {
    QString itemName = p->getChoiceName(strClass, j);
    options = p->getChoiceOptions(strClass, itemName);
-   if (!options->isEmpty())
+   if (options != nullptr)
    {
     QComboBox* optionBox = new QComboBox();
     ListItems* li = new ListItems(strClass, itemName);
@@ -186,6 +186,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
     }
    }
   }
+
   if (add)
   {
    classholderLayout->addWidget(classPanel, /*BorderLayout.NORTH*/0, Qt::AlignTop);
@@ -200,6 +201,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
    }
   }
  }
+#endif
  QMap<QString, QList<ListItems*>* > countOfItems = QMap<QString, QList<ListItems*>* >();
  QMap<QString, QList<QCheckBox*>* > countOfItemsCheck = QMap<QString, QList<QCheckBox*>* >();
  QMap<QString, QList<QComboBox*>* > countOfItemsCombo = QMap<QString, QList<QComboBox*>* >();

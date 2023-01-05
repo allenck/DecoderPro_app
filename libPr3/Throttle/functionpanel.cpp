@@ -14,7 +14,7 @@
 #include <QKeyEvent>
 #include "flowlayout.h"
 #include "windowpreferences.h"
-
+#include "instancemanager.h"
 
 /**
  * Constructor
@@ -356,8 +356,8 @@ FunctionPanel::~FunctionPanel()
 
   functionButton.at(i)->setDisplay(true);
   if ((i<3)
-            && ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle()
-            && ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingFunctionIcon())
+            && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
+            && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon())
   switch (i)
   {
    case 0:
@@ -554,8 +554,8 @@ FunctionPanel::~FunctionPanel()
     {
      functionButton.at(i)->setDisplay(true);
      functionButton.at(i)->setButtonLabel(text);
-     if ((ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle() )
-                            && (ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingFunctionIcon()))
+     if ((((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle() )
+                            && (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()))
      {
       functionButton.at(i)->setIconPath(rosterEntry->getFunctionImage(i));
       functionButton.at(i)->setSelectedIconPath(rosterEntry->getFunctionSelectedImage(i));
@@ -571,9 +571,9 @@ FunctionPanel::~FunctionPanel()
       functionButton.at(i)->setVisible(true);
      maxi++; // bump number of buttons shown
     }
-    else if (ThrottleFrameManager::instance()->getThrottlesPreferences()
+    else if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()
                         ->isUsingExThrottle()
-                        && ThrottleFrameManager::instance()->getThrottlesPreferences()
+                        && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()
                         ->isHidingUndefinedFuncButt())
     {
      functionButton.at(i)->setDisplay(false);
@@ -583,10 +583,8 @@ FunctionPanel::~FunctionPanel()
   }
   // hide alt buttons if not required
   if ((rosterEntry!=NULL) && (maxi < NUM_FUNC_BUTTONS_INIT
-                && ThrottleFrameManager::instance()
-                ->getThrottlesPreferences()->isUsingExThrottle()
-                && ThrottleFrameManager::instance()
-                ->getThrottlesPreferences()
+                && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
+                && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()
                 ->isHidingUndefinedFuncButt()))
   {
    alt1Button->setVisible(false);

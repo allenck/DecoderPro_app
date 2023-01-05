@@ -8,10 +8,6 @@
 #include "jmrijframe.h"
 #include <QImageReader>
 
-//PanelPro::PanelPro(QObject *parent) :
-//    Apps(parent)
-//{
-//}
 /**
  * The JMRI program for creating control panels.
  * <P>

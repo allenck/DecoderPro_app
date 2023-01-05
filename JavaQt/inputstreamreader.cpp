@@ -61,7 +61,7 @@
  *             If the named charset is not supported
  */
 /*public*/ InputStreamReader::InputStreamReader(QDataStream* in, QString charsetName, QObject* parent)
-    throw (UnsupportedEncodingException) : Reader((QObject*)in, parent)
+     : Reader((QObject*)in, parent)
 {
     //super(in);
     if (charsetName == NULL)

@@ -142,5 +142,5 @@ QString TabbedPreferencesAction::helpTarget()
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* TabbedPreferencesAction::makePanel()
 {
- throw  IllegalArgumentException("Should not be invoked");
+ throw new IllegalArgumentException("Should not be invoked");
 }

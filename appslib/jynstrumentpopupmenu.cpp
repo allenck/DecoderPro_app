@@ -1,6 +1,7 @@
 #include "jynstrumentpopupmenu.h"
+#ifdef SCRIPTING_ENABLED
 #include "jythonwindow.h"
-
+#endif
 ///*public*/ class JynstrumentPopupMenu extends JPopupMenu {
 
     //private static final ResourceBundle jythonBundle = ResourceBundle.getBundle("jmri/jmrit/jython/JythonBundle");
@@ -72,7 +73,9 @@
      reloadMenuItem.setEnabled(false);
      add(reloadMenuItem);*/
     // Debug option
+#ifdef SCRIPTING_ENABLED
     addAction(new JythonWindow(tr("JynstrumentPopupMenuDebug"),this));
     // A separator to differentiate Jynstrument private menu items
     addSeparator();
+#endif
 }

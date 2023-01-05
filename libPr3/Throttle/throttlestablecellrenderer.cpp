@@ -84,8 +84,8 @@ ThrottlesTableCellRenderer::ThrottlesTableCellRenderer(QObject *parent) :
   //Throttle* thr = tf->getAddressPanel().getThrottle();
   Throttle* thr = tf->getThrottle();
   JLabel* dir = new JLabel();
-  if (ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle()
-                && ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingFunctionIcon())
+  if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
+                && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon())
   {
    if (thr->getIsForward())
    {
@@ -112,8 +112,8 @@ ThrottlesTableCellRenderer::ThrottlesTableCellRenderer(QObject *parent) :
   }
   dir->setAlignment(Qt::AlignVCenter);
   ctrlPanelLayout->addWidget(dir, 0, Qt::AlignLeft);
-  if (ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle()
-        && ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingFunctionIcon())
+  if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
+        && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon())
   {
    if (thr->getSpeedSetting()==-1)
    {

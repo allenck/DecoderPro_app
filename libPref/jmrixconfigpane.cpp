@@ -255,11 +255,11 @@
  connect(modeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(On_modeBox_currentIndexChanged(int)));
  QGroupBox* manufacturerPanel = new QGroupBox(tr("System Manufacturer"));
  QVBoxLayout* manufacturerPanelLayout = new QVBoxLayout(manufacturerPanel);
- manufacturerPanelLayout->addWidget(manuBox, 0, Qt::AlignCenter);
+ manufacturerPanelLayout->addWidget(manuBox, 1, Qt::AlignCenter);
  QGroupBox* connectionPanel = new QGroupBox(tr("System Connection"));
  QVBoxLayout* connectionPanelLayout = new QVBoxLayout(connectionPanel);
  connectionPanel->setMinimumWidth(500);
- connectionPanelLayout->addWidget(modeBox, 0, Qt::AlignCenter);
+ connectionPanelLayout->addWidget(modeBox, 1, Qt::AlignCenter);
  //QWidget* initialPanel = new QWidget();
  QVBoxLayout* initialPanelLayout = new QVBoxLayout;
  initialPanelLayout->setAlignment(Qt::AlignTop);
@@ -268,7 +268,7 @@
 
  //initialPanelLayout->addWidget(new JTitledSeparator(tr("System Connection"))); // NOI18N
  initialPanelLayout->addWidget(connectionPanel);
- layout->addLayout(initialPanelLayout,0); //, Qt::AlignTop);
+ layout->addLayout(initialPanelLayout,1); //, Qt::AlignTop);
  QGroupBox*settingsPanel = new QGroupBox(tr("Settings"));
  settingsPanel->setMinimumSize( 350, 200);
  settingsPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -305,7 +305,7 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)
   }
  }
  selection();
- selection();
+ //selection();
 }
 
 /*public*/ void JmrixConfigPane::updateComboConnection()

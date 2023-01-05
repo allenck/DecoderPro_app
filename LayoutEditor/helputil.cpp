@@ -236,11 +236,18 @@ HelpUtil::HelpUtil(QObject *parent) :
 
  HelpUtilPreferences* preferences = (HelpUtilPreferences*)InstanceManager::getDefault("HelpUtilPreferences");
 
- QString tempFile = "help/" + localeStr + "/" + ref.replace(".", "/");
+ QString tempFile = FileUtil::getProgramPath()+ "help/" + localeStr + "/" + ref.replace(".", "/");
  QStringList fileParts = tempFile.split("_"/*, 2*/);
  QString file = fileParts[0] + ".shtml";
  if (fileParts.length() > 1) {
      file = file + "#" + fileParts[1];
+ }
+
+ QFileInfo info(file);
+ if(info.exists())
+ {
+    if(QDesktopServices::openUrl(QUrl::fromLocalFile(file)))
+     return;
  }
 
  QString url;
@@ -390,7 +397,7 @@ HelpUtil::HelpUtil(QObject *parent) :
           tr("Failed to connect to web page. Exception thrown: %1").arg(e->getMessage()), e);
 }
 #else
- if(!QDesktopServices::openUrl(url))
+ if(!QDesktopServices::openUrl(QUrl::fromLocalFile(url)));
   throw new JmriException(
           tr("Failed to connect to web page %1.").arg(url));
 

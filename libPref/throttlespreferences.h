@@ -12,7 +12,7 @@ class LIBPREFSHARED_EXPORT ThrottlesPreferences : public QObject
 {
     Q_OBJECT
 public:
-    explicit ThrottlesPreferences(QObject *parent = 0);
+    Q_INVOKABLE explicit ThrottlesPreferences(QObject *parent = 0);
     ~ThrottlesPreferences() {}
     ThrottlesPreferences(const ThrottlesPreferences&);
     /*public*/ void load(QDomElement e);
@@ -70,9 +70,10 @@ private:
 protected:
     /*protected*/ bool dirty;// = false;
 };
+
 class ThrottlesPrefsXml : public XmlFile
 {
  Q_OBJECT
 };
-
+Q_DECLARE_METATYPE(ThrottlesPreferences)
 #endif // THROTTLESPREFERENCES_H

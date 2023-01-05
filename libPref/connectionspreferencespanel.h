@@ -7,6 +7,7 @@
 #include <QEvent>
 #include <QToolButton>
 #include "jbutton.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class JButton;
@@ -14,9 +15,11 @@ class QCheckBox;
 class TabbedPreferences;
 class ImageIcon;
 class JmrixConfigPane;
-class LIBPREFSHARED_EXPORT ConnectionsPreferencesPanel : public ManagingPreferencesPanel
+
+class LIBPREFSHARED_EXPORT ConnectionsPreferencesPanel : public ManagingPreferencesPanel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES (PropertyChangeListener)
 public:
     Q_INVOKABLE explicit ConnectionsPreferencesPanel(QWidget *parent = 0);
 //    /*public*/ ConnectionsPreferencesPanel(TabbedPreferences* preference, QWidget* parent=0);
@@ -46,6 +49,7 @@ public:
     /*public*/ QList<PreferencesPanel*>* getPreferencesPanels();
     /*public*/ QString className();
 
+    QObject* pself() {return (QObject*)this;}
 signals:
 
 public slots:

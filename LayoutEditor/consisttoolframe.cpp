@@ -453,7 +453,7 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
     // Create a throttle object with the
     //ThrottleFrame tf
     ThrottleWindow* tf
-            = ThrottleFrameManager::instance()->createThrottleFrame();
+            = ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->createThrottleFrame();
     DccLocoAddress* address = adrSelector->getAddress();
 
     /*

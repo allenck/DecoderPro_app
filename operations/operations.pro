@@ -41,7 +41,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(../scripts_config.prf)
+#include(../scripts_config.prf) // disabled ACK
 
 #PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 #isEmpty( PYTHONQT_PREFIX ) {
@@ -65,12 +65,16 @@ equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
 SOURCES += \
+    trainscriptaction.cpp \
+    trainscriptframe.cpp \
     trainsscriptaction.cpp \
     trainsscriptframe.cpp
 
 HEADERS += \
+    trainscriptaction.h \
+    trainscriptframe.h \
     trainsscriptaction.h \
-    trainscriptframe.h
+    trainsscriptframe.h
 
     message("operations: scripting enabled")
 } else {
@@ -335,8 +339,6 @@ SOURCES += \
         trainmanifestoptionaction.cpp \
         trainroadoptionsframe.cpp \
         trainmanifestoptionframe.cpp \
-        trainscriptaction.cpp \
-        trainscriptframe.cpp \
         exportcarrosteraction.cpp \
         exportcars.cpp \
         printcarrosteraction.cpp \

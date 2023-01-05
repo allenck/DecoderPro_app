@@ -2,7 +2,9 @@
 #include "exceptions.h"
 #include "instancemanager.h"
 #include "sound.h"
+#ifdef SCRIPTING_ENABLED
 #include "jmriscriptenginemanager.h"
+#endif
 #include "fileutil.h"
 #include "jmriexception.h"
 
@@ -1103,8 +1105,10 @@ void OutputTurnout::removeListener()
 #if 1 // TODO:
    // run script defined for start of route set
    if ((r->getOutputScriptName() != nullptr) && (r->getOutputScriptName() != (""))) {
-    JmriScriptEngineManager::getDefault()->runScript(new File(FileUtil::getExternalFilename(r->getOutputScriptName())));
+#ifdef SCRIPTING_ENABLED
 
+    JmriScriptEngineManager::getDefault()->runScript(new File(FileUtil::getExternalFilename(r->getOutputScriptName())));
+#endif
    }
 
    // play sound defined for start of route set

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Resource object code
 **
-** Created by: The Resource Compiler for Qt version 5.11.3
+** Created by: The Resource Compiler for Qt version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -18414,8 +18414,17 @@ namespace QT_NAMESPACE {
 #endif
 
 bool qRegisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
-
 bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
+
+#if defined(__ELF__) || defined(__APPLE__)
+static inline unsigned char qResourceFeatureZlib()
+{
+    extern const unsigned char qt_resourceFeatureZlib;
+    return qt_resourceFeatureZlib;
+}
+#else
+unsigned char qResourceFeatureZlib();
+#endif
 
 #ifdef QT_NAMESPACE
 }
@@ -18424,16 +18433,19 @@ bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, 
 int QT_RCC_MANGLE_NAMESPACE(qInitResources_LayoutEditor)();
 int QT_RCC_MANGLE_NAMESPACE(qInitResources_LayoutEditor)()
 {
+    int version = 3;
     QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)
-        (0x2, qt_resource_struct, qt_resource_name, qt_resource_data);
+        (version, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 
 int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_LayoutEditor)();
 int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_LayoutEditor)()
 {
+    int version = 3;
+    version += QT_RCC_PREPEND_NAMESPACE(qResourceFeatureZlib());
     QT_RCC_PREPEND_NAMESPACE(qUnregisterResourceData)
-       (0x2, qt_resource_struct, qt_resource_name, qt_resource_data);
+       (version, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 

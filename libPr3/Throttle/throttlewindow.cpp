@@ -173,7 +173,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
 
  addWindowListener(new TWWindowListener(this));
 
- ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->addThrottleFrame(this);
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel()->addThrottleFrame(this);
 }
 
 ThrottleWindow::~ThrottleWindow()
@@ -374,8 +374,8 @@ ThrottleWindow::~ThrottleWindow()
 
   this->menuBar()->addMenu(powerMenu);
 
-  if ((!ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle())
-        || (!ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingToolBar()))
+  if ((!((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle())
+        || (!((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingToolBar()))
   {
 //    this->menuBar()->addAction(new SmallPowerManagerButton(this));
   }
@@ -501,7 +501,7 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
  setTitleText(title());
 
  emit throttleWindowupdate(new PropertyChangeEvent(this, "throttleFound", QVariant(), VPtr<Throttle>::asQVariant(throttle)));
- ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->notifyAddressThrottleFound(t);
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel()->notifyAddressThrottleFound(t);
 }
 
 void ThrottleWindow::saveSettings()
@@ -540,7 +540,7 @@ void ThrottleWindow::notifyChangedSlot(LocoNetSlot * s)
 
 void ThrottleWindow::on_listView_clicked()
 {
- ThrottleFrameManager::instance()->showThrottlesList();
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->showThrottlesList();
 }
 
 //void ThrottleWindow::on_menuWindow_aboutToShow()
@@ -557,7 +557,7 @@ Throttle* ThrottleWindow::getThrottle() {return (Throttle*)throttle;}
 
 void ThrottleWindow::on_actionNew_Throttle_triggered()
 {
- ThrottleWindow* newThrottle = ThrottleFrameManager::instance()->createThrottleWindow();
+ ThrottleWindow* newThrottle = ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->createThrottleWindow();
  newThrottle->show();
 }
 QString ThrottleWindow::id()
@@ -893,7 +893,7 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  if(addressPanel == nullptr)
   return;
  addressPanel->removeAddressListener(this);
- ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(this, addressPanel->getCurrentAddress());
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(this, addressPanel->getCurrentAddress());
  // check for any special disposing in InternalFrames
  controlPanel->destroy();
  functionPanel->destroy();
@@ -1066,7 +1066,7 @@ void ThrottleWindow::on_address_released(LocoAddress *)
   foreach (ThrottleWindow* tf, throttleFrames->values() )
   {
    //ThrottleFrame tf = tfi.next();
-   if ((ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle()) && (ThrottleFrameManager::instance()->getThrottlesPreferences()->isSavingThrottleOnLayoutSave()))
+   if ((((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()) && (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isSavingThrottleOnLayoutSave()))
    {
     if(tf != this)
     {

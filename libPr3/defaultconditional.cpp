@@ -34,7 +34,9 @@
 #include "jlist.h"
 #include "sound.h"
 #include "fileutil.h"
+#ifdef SCRIPTING_ENABLED
 #include "scripts/jmriscriptenginemanager.h"
+#endif
 #include "file.h"
 #include "audiosource.h"
 #include "scriptoutput.h"
@@ -1045,12 +1047,15 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     }
     break;
    }
+#ifdef SCRIPTING_ENABLED
+
    case Conditional::ACTION_RUN_SCRIPT:
     if (!(getActionString(action) == (""))) {
         JmriScriptEngineManager::getDefault()->runScript(new File(FileUtil::getExternalFilename(getActionString(action))));
         actionCount++;
        }
        break;
+#endif
 #endif
    case Conditional::ACTION_SET_FAST_CLOCK_TIME:
    {
@@ -1128,6 +1133,8 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
     }
     break;
+#ifdef SCRIPTING_ENABLED
+
    case Conditional::ACTION_JYTHON_COMMAND:
      if (!(getActionString(action).isEmpty()))
      {
@@ -1142,6 +1149,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
          actionCount++;
      }
     break;
+#endif
 #endif
    case Conditional::ACTION_ALLOCATE_WARRANT_ROUTE:
      w = (Warrant*) nb->self();

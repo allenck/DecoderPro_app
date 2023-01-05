@@ -31,7 +31,7 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
-include(../scripts_config.prf)
+#include(../scripts_config.prf) // disabled ACK
 
 #PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 #isEmpty( PYTHONQT_PREFIX ) {
@@ -68,6 +68,8 @@ equals(ENABLE_SCRIPTING, "Y") {
     inputwindow.cpp \
     jythonwindow.cpp \
     pythonwrappers.cpp  \
+    generated_cpp/test/test_init.cpp \
+    generated_cpp/test/test0.cpp \
     scripts/jmriscriptenginemanager.cpp \
     scripts/scriptenginemanager.cpp \
     scripts/simplebindings.cpp \
@@ -85,6 +87,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     inputwindow.h \
     jythonwindow.h \
     pythonwrappers.h \
+    generated_cpp/test/test0.h \
     scripts/jmriscriptenginemanager.h \
     scripts/scriptenginemanager.h \
     scripts/scriptenginefactory.h \
@@ -493,8 +496,6 @@ SOURCES += \
     rpsitempanel.cpp \
     signalheadicondialog.cpp \
     test/testbase.cpp \
-    generated_cpp/test/test_init.cpp \
-    generated_cpp/test/test0.cpp \
     colordialog.cpp \
     linkinglabel.cpp \
     layouteditorchecks.cpp \
@@ -973,7 +974,6 @@ HEADERS += liblayouteditor_global.h \
     rpsitempanel.h \
     signalheadicondialog.h \
     test/testbase.h \
-    generated_cpp/test/test0.h \
     calculator.h \
     colordialog.h \
     linkinglabel.h \
@@ -1146,11 +1146,16 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
+equals(ENABLE_SCRIPTING, "Y") {
+
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
 
 INCLUDEPATH += $$PWD/../../../../../Python27/include
 DEPENDPATH += $$PWD/../../../../../Python27/include
+INCLUDEPATH+=/usr/local/python2.7
+INCLUDEPATH+=/usr/include/python3.10
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables

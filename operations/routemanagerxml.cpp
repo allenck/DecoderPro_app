@@ -71,7 +71,7 @@ namespace Operations
  * does not clear any existing entries.
  */
 //@Override
-/*public*/ void RouteManagerXml::readFile(QString name) throw (JDOMException, IOException)
+/*public*/ void RouteManagerXml::readFile(QString name) /*throw (JDOMException, IOException)*/
 {
     // suppress rootFromName(name) warning message by checking to see if file exists
     if (findFile(name) == NULL) {

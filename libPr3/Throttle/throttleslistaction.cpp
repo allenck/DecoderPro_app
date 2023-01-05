@@ -43,5 +43,5 @@ void ThrottlesListAction::common()
 }
 
 /*public*/ void ThrottlesListAction::actionPerformed(ActionEvent* /*e*/) {
-    ThrottleFrameManager::instance()->showThrottlesList();
+    ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->showThrottlesList();
 }

@@ -26,5 +26,5 @@ ThrottlesPreferencesAction::ThrottlesPreferencesAction(QObject *parent) :
 //}
 
 /*public*/ void ThrottlesPreferencesAction::actionPerformed(ActionEvent* /*e*/) {
-    ThrottleFrameManager::instance()->showThrottlesPreferences();
+    ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->showThrottlesPreferences();
 }

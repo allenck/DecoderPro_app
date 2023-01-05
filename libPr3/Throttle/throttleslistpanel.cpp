@@ -118,7 +118,7 @@
 
 void ThrottlesListPanel::On_jbNewClicked()
 {
- ThrottleWindow* tf = ThrottleFrameManager::instance()->createThrottleFrame();
+ ThrottleWindow* tf = ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->createThrottleFrame();
  tf->toFront();
 
 }

@@ -59,6 +59,8 @@ private:
 
 friend class SelectionButton;
 };
+Q_DECLARE_METATYPE(ManagerDefaultsConfigPane)
+
 /**
  * Captive class to track changes
  */

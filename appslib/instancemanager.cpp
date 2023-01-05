@@ -1020,7 +1020,7 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 }
 
 /*private*/ InitializationState InstanceManager::getInitializationState(QString type) {
-    StateHolder* holder = initState.value(type);
+    StateHolder* holder = initState.value(type, nullptr);
     if (holder == nullptr) {
         return InitializationState::NOTSET;
     }

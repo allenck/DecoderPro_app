@@ -1,11 +1,11 @@
 #ifndef JTITLEDSEPARATOR_H
 #define JTITLEDSEPARATOR_H
 
-#include <QWidget>
+#include "jpanel.h"
 
 class QHBoxLayout;
 class QLabel;
-class JTitledSeparator : public QWidget
+class JTitledSeparator : public JPanel
 {
     Q_OBJECT
 public:
@@ -32,10 +32,11 @@ private:
   /*public*/ void setBounds(int x, int y, int w, int h);
   QHBoxLayout* layout;
  };
- class SeparatorPane : public QWidget
+
+ class SeparatorPane : public JPanel
  {
    JTitledSeparator* parent;
-   QHBoxLayout* layout;
+   //QHBoxLayout* layout;
   public:
    SeparatorPane(JTitledSeparator* parent);
    /*public*/ virtual void setBounds(int x, int y, int w, int h);

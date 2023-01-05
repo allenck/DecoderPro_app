@@ -41,8 +41,8 @@ public:
     /*public*/ static QString getModifier() ;
     static /*public*/ QString name();
     static /*public*/ bool isCanonicalVersion(QString version);
-    static /*public*/ int compareCanonicalVersions(QString version) throw (IllegalArgumentException) ;
-    static /*public*/ int compareCanonicalVersions(QString version1, QString version2) throw (IllegalArgumentException);
+    static /*public*/ int compareCanonicalVersions(QString version) /*throw (IllegalArgumentException)*/ ;
+    static /*public*/ int compareCanonicalVersions(QString version1, QString version2) /*throw (IllegalArgumentException)*/;
     static /*public*/ QString getCanonicalVersion();
     static /*public*/ QString getCopyright();
 

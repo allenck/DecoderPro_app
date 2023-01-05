@@ -5,6 +5,7 @@
 #include <QMap>
 #include "libPr3_global.h"
 #include "jmrijframe.h"
+#include "instancemanagerautodefault.h"
 
 class ThrottlePreferencesFrame;
 class ThrottlesListPanel;
@@ -15,14 +16,14 @@ class JmriJFrame;
 class ThrottleCyclingKeyListener;
 class ThrottlesPreferences;
 class ThrottleWindow;
-class LIBPR3SHARED_EXPORT ThrottleFrameManager : public QObject
+class LIBPR3SHARED_EXPORT ThrottleFrameManager : public QObject, InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
- /*private*/ ThrottleFrameManager(QObject *parent = 0);
+ Q_INVOKABLE /*public*/ ThrottleFrameManager(QObject *parent = 0);
  ~ThrottleFrameManager() {}
  ThrottleFrameManager(const ThrottleFrameManager&) : QObject() {}
- QT_DEPRECATED /*public*/ static ThrottleFrameManager* instance();
 
     /*public*/ ThrottleWindow* createThrottleWindow();
     /*public*/ void requestThrottleWindowDestruction(ThrottleWindow* frame);

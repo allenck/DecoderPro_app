@@ -17,7 +17,9 @@
 #include "traineditframe.h"
 #include <QSignalMapper>
 #include <QMessageBox>
+#ifdef SCRIPTING_ENABLED
 #include "jmriscriptenginemanager.h"
+#endif
 #include "instancemanager.h"
 #include "borderfactory.h"
 
@@ -468,7 +470,10 @@ namespace Operations
          File* file = new File(scriptPathname);
          if (file->exists())
          {
+#ifdef SCRIPTING_ENABLED
+
              JmriScriptEngineManager::getDefault()->runScript(file);
+#endif
          } else {
 //             JOptionPane.showMessageDialog(this, script, tr("ScriptFileNotFound"),
 //                     JOptionPane.ERROR_MESSAGE);

@@ -2,6 +2,7 @@
 #define LOADXMLTHROTTLESLAYOUTACTION_H
 #include "abstractaction.h"
 #include "exceptions.h"
+#include "xmlfile.h"
 
 class File;
 class Logger;
@@ -20,6 +21,10 @@ public slots:
  private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger('LoadXmlThrottlesLayoutAction');
  JFileChooser* fileChooser;
+
+};
+class ThrottlePrefs : public XmlFile
+{
 
 };
 

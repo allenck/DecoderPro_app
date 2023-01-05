@@ -31,7 +31,7 @@ OperationsXml(parent)
 
 }
 
- /*public*/ void LocationManagerXml::writeFile(QString name) throw (FileNotFoundException, IOException)
+ /*public*/ void LocationManagerXml::writeFile(QString name) /*throw (FileNotFoundException, IOException)*/
  {
      if (log->isDebugEnabled()) {
          log->debug(tr("writeFile %1").arg(name));
@@ -76,8 +76,8 @@ OperationsXml(parent)
   * does not clear any existing entries.
   */
  //@Override
- /*public*/ void LocationManagerXml::readFile(QString name) throw (JDOMException, IOException)
-{
+ /*public*/ void LocationManagerXml::readFile(QString name) /*throw (JDOMException, IOException)*/
+ {
      // suppress rootFromName(name) warning message by checking to see if file exists
      if (findFile(name) == nullptr) {
          log->debug(tr("%1 file could not be found").arg(name));

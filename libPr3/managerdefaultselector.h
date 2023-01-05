@@ -15,7 +15,7 @@ class LIBPR3SHARED_EXPORT ManagerDefaultSelector : public AbstractPreferencesMan
 {
     Q_OBJECT
 public:
- explicit ManagerDefaultSelector(QObject *parent = 0);
+ Q_INVOKABLE explicit ManagerDefaultSelector(QObject *parent = 0);
  ~ManagerDefaultSelector() {}
  ManagerDefaultSelector(const ManagerDefaultSelector&) : AbstractPreferencesManager() {}
  /*public*/ /*final*/ QMap<QString, QString> defaults = QMap</*Class<?>*/QString, QString>();

@@ -195,7 +195,7 @@ FileOutputStream::FileOutputStream()
      * @since 1.4
      */
     /*public*/ FileOutputStream::FileOutputStream(File* file, bool append)
-        throw (FileNotFoundException)
+//        throw (FileNotFoundException)
     {
         QString name = (file != nullptr ? file->getPath() : "");
 //        SecurityManager security = System.getSecurityManager();
@@ -255,7 +255,7 @@ FileOutputStream::FileOutputStream()
      * @param append whether the file is to be opened in append mode
      */
     /*private*/ /*native*/ void FileOutputStream::open(QString name, bool append)
-        throw (FileNotFoundException)
+
     {
      qf = new QFile(name);
      setDevice(qf);

@@ -854,7 +854,7 @@
             }
         }
     }
-    return new QMap<int, QString>();
+    return nullptr;
 }
 
 //@Override

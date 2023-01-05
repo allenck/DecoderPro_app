@@ -66,7 +66,7 @@ ThrottleCreationAction::ThrottleCreationAction(QObject *parent) :
 //    if (Beans.hasProperty(wi, "selectedRosterGroup")) {
 //        group = (String) Beans.getProperty(wi, "selectedRosterGroup");
 //    }
- /*ThrottleFrame*/ ThrottleWindow* tf = ThrottleFrameManager::instance()->createThrottleFrame();
+ /*ThrottleFrame*/ ThrottleWindow* tf = ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->createThrottleFrame();
  tf->getAddressPanel()->getRosterEntrySelector()->setSelectedRosterGroup(group);
  tf->toFront();
 }

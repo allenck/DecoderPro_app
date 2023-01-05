@@ -13,7 +13,7 @@ public:
  ~LayoutTrackExpectedState()  override{}
  //LayoutTrackExpectedState(const LayoutTrackExpectedState&)  {}
  /*public*/ int getExpectedState();
- /*public*/ void setExpectedState(int state) throw (UnsupportedOperationException);
+ /*public*/ void setExpectedState(int state) /*throw (UnsupportedOperationException)*/;
  /*public*/ T getObject() ;
  /*public*/ bool canRemove() {return  false;}
  /*public*/ void setObjects(LayoutEditor* le) {}

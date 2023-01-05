@@ -541,7 +541,7 @@
 }
 
 //@Override
-/*public*/ void Transit::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ void Transit::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ {
     if ("CanDelete" == (evt->getPropertyName())) { // NOI18N
         NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
         if (static_cast<Section*>(nb->self())) {

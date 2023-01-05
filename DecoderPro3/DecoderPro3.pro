@@ -31,7 +31,8 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
-include(../scripts_config.prf)
+#include(../scripts_config.prf) // disabled ACK
+
 #PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 #isEmpty( PYTHONQT_PREFIX ) {
 #  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib

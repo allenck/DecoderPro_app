@@ -2,11 +2,11 @@
 #include <QBoxLayout>
 #include "jseparator.h"
 #include <QLabel>
+#include "borderfactory.h"
+#include "flowlayout.h"
+#include "gridbaglayout.h"
+#include "gridbagconstraints.h"
 
-//JTitledSeparator::JTitledSeparator(QWidget *parent) :
-//    QWidget(parent)
-//{
-//}
 /**
  * A separator with a title.
  *
@@ -84,7 +84,7 @@ private final static class SeparatorPane extends JPanel {
  SeparatorPane* separatorPane = new SeparatorPane(this);
  if (isLeftToRight)
  {
-//  separatorPane.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 0));
+  separatorPane->setBorder(BorderFactory::createEmptyBorder(0, 2, 0, 0));
  }
  else
  {
@@ -95,27 +95,32 @@ private final static class SeparatorPane extends JPanel {
  this->setMaximumSize(QSize(/*Integer.MAX_VALUE*/4096, this->sizeHint().height()));
  adjustLook();
 }
+
 JTitledSeparator::WestPanel::WestPanel(JTitledSeparator* parent)
     : QWidget(parent)
 {
- layout = new QHBoxLayout;
+ layout = new QHBoxLayout();
  this->setLayout(layout);
 }
+
 void JTitledSeparator::WestPanel::setBounds(int x, int y, int w, int h)
 {
  parent->setGeometry(x, y, w, h);
 // parent->doLayout();
 }
-JTitledSeparator::SeparatorPane::SeparatorPane(JTitledSeparator* parent) : QWidget(parent)
-{
- layout = new QHBoxLayout;
- this->setLayout(layout);
 
- //add(new JSeparator(), new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
- layout->addWidget(new JSeparator());
+JTitledSeparator::SeparatorPane::SeparatorPane(JTitledSeparator* parent) : JPanel(new GridBagLayout(), parent)
+{
+ //super(new GridBagLayout());
+// setOpaque(false);
+// setDoubleBuffered(false);
+ ((GridBagLayout*)this->layout())->addWidget(new JSeparator(), GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints::CENTER, GridBagConstraints::HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+ //layout->addWidget(new JSeparator());
 }
+
 void JTitledSeparator::SeparatorPane::setBounds(int x, int y, int w, int h)
 {
+ //super.setBounds(x, y, w, h);
  parent->setGeometry(x, y, w, h);
 }
 
@@ -154,17 +159,17 @@ void JTitledSeparator::SeparatorPane::setBounds(int x, int y, int w, int h)
 {
  if (label != NULL)
  {
-#if 0
+#if 0 // TODO:
   QColor titleColor = UIManager.getColor("TitledBorder.titleColor");
   QFont font = UIManager.getFont("TitledBorder.font");
-        if (titleColor == QColor() || font == null)
+  if (titleColor == QColor() || font == null)
   {
-            TitledBorder titledBorder = new TitledBorder("");
-            titleColor = titledBorder.getTitleColor();
-            font = titledBorder.getTitleFont();
+   TitledBorder* titledBorder = new TitledBorder("");
+   titleColor = titledBorder->getTitleColor();
+   font = titledBorder->getTitleFont();
   }
-  label.setForeground(titleColor);
-  label.setFont(font);
+  label->setForeground(titleColor);
+  label->setFont(font);
 #endif
  }
 }

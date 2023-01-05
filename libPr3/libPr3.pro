@@ -91,7 +91,7 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
-include(../scripts_config.prf)
+#include(../scripts_config.prf) // disabled ACK
 
 # NOTE: The PYTHONQT_PREFIX path should be exported in the environment like thi:
 # On Unix, "export PYTHON_VERSION=2.7"
@@ -168,7 +168,7 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
- logixng/editthreadsdialog.cpp \
+    logixng/editthreadsdialog.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \

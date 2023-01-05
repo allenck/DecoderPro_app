@@ -47,15 +47,6 @@ QObject(parent) // can only be created by instance() => /*private*/
 }
 
 /**
- * Get the singleton instance of this class.
- */
-/*public*/ /*static*/ ThrottleFrameManager* ThrottleFrameManager::instance()
-{
- return (ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager");
-}
-
-
-/**
  *  Tell this manager that a new ThrottleWindow was created.
  * @return The newly created ThrottleWindow
  */
@@ -160,7 +151,14 @@ QObject(parent) // can only be created by instance() => /*private*/
 }
 
 /*public*/ ThrottlesPreferences* ThrottleFrameManager::getThrottlesPreferences() {
-    return throttlesPref;
+ // begin hack ACK
+ if(throttlesPref == nullptr)
+ {
+  throttlesPref = new ThrottlesPreferences();
+  InstanceManager::store(throttlesPref,"ThrottlesPreferences");
+ }
+ // end hack
+ return throttlesPref;
 }
 #if 0
 /**

@@ -2227,7 +2227,7 @@ void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
      menuItem->setProperty("action", "throttle");
 //        menuItem.addActionListener((ActionEvent e1) -> {
      connect(menuItem, &QAction::triggered, [=] {
-            ThrottleWindow* tf = ThrottleFrameManager::instance()->createThrottleFrame();
+            ThrottleWindow* tf = ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->createThrottleFrame();
             tf->toFront();
             tf->getAddressPanel()->getRosterEntrySelector()->setSelectedRosterGroup(getSelectedRosterGroup());
             tf->getAddressPanel()->setRosterEntry(re);

@@ -16,7 +16,7 @@ namespace Operations
    ~RouteManagerXml(){}
    RouteManagerXml(const RouteManagerXml&) : OperationsXml() {}
   /*public*/ void writeFile(QString name);
-  /*public*/ void readFile(QString name) throw (JDOMException, IOException) ;
+  /*public*/ void readFile(QString name) /*throw (JDOMException, IOException)*/ ;
   /*public*/ void setOperationsFileName(QString name) ;
   /*public*/ QString getOperationsFileName() ;
   /*public*/ void dispose();

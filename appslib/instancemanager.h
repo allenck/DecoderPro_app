@@ -94,8 +94,8 @@
 
 /*static*/ /*private*/ /*final*/ class StateHolder {
 
-   InitializationState state;
-   Exception* exception;
+   InitializationState state =NOTSET;
+   Exception* exception = nullptr;
 public:
    StateHolder(InitializationState state, Exception* exception) {
        this->state = state;

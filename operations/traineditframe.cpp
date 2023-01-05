@@ -51,7 +51,9 @@
 #include "trainroadoptionsaction.h"
 #include "trainmanifestoptionaction.h"
 #include "trainbycartypeaction.h"
+#ifdef SCRIPTING_ENABLED
 #include "trainscriptaction.h"
+#endif
 #include "instancemanager.h"
 #include "borderfactory.h"
 
@@ -409,7 +411,9 @@ namespace Operations
   if (_train != NULL) {
       toolMenu->addAction(new TrainCopyAction(tr("Copy Train"), _train, this));
   }
+#ifdef SCRIPTING_ENABLED
   toolMenu->addAction(new TrainScriptAction(tr("Scripts"), this));
+#endif
   toolMenu->addAction(new TrainByCarTypeAction(_train, this));
   if (_train != NULL) {
       toolMenu->addAction(new TrainConductorAction(tr("Train Conductor"), _train, this));

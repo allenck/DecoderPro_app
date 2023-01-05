@@ -4,6 +4,8 @@
 #include "preferencespanel.h"
 #include "actionlistener.h"
 #include "libpref_global.h"
+
+class Logger;
 class PropertyChangeEvent;
 class ThrottlesPreferences;
 class JFrame;
@@ -18,7 +20,7 @@ class LIBPREFSHARED_EXPORT ThrottlesPreferencesPane : public QWidget, public Pre
 public:
     Q_INVOKABLE explicit ThrottlesPreferencesPane(QWidget *parent = 0);
     ~ThrottlesPreferencesPane() {}
-    ThrottlesPreferencesPane(const ThrottlesPreferencesPane&);
+  ThrottlesPreferencesPane(const ThrottlesPreferencesPane&) :QWidget() {}
     /*public*/ void setContainer(JFrame* f);
     /*public*/ QString getPreferencesItem();
     /*public*/ QString getPreferencesItemText();
@@ -40,6 +42,7 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 private:
+    static Logger* log;
     /*private*/ QCheckBox* cbUseToolBar;
     /*private*/ QCheckBox* cbUseFunctionIcon;
     /*private*/ QCheckBox* cbResizeWinImg;
@@ -62,7 +65,6 @@ private slots:
     /*private*/ ThrottlesPreferences* getThrottlesPreferences();
     /*private*/ void checkConsistancy(bool);
     /*private*/ void jbCancelActionPerformed(JActionEvent* evt = 0);
-    void common();
 };
 
 #endif // THROTTLESPREFERENCESPANE_H

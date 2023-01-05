@@ -31,7 +31,8 @@
 *                   or for some other reason cannot be opened for
 *                   reading.
 */
-/*public*/ FileReader::FileReader(QString fileName, QObject* parent) throw (FileNotFoundException) : InputStreamReader(new FileInputStream(fileName), parent)
+/*public*/ FileReader::FileReader(QString fileName, QObject* parent) /*throw (FileNotFoundException)*/
+ : InputStreamReader(new FileInputStream(fileName), parent)
 {
     //super(new FileInputStream(fileName));
 }
@@ -46,7 +47,7 @@
 *                   or for some other reason cannot be opened for
 *                   reading.
 */
-/*public*/ FileReader::FileReader(File* file,QObject* parent) throw (FileNotFoundException) : InputStreamReader(new FileInputStream(file), parent)
+/*public*/ FileReader::FileReader(File* file,QObject* parent)  : InputStreamReader(new FileInputStream(file), parent)
 {
     //super(new FileInputStream(file));
 }

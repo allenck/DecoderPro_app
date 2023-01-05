@@ -48,7 +48,7 @@
  *               to the file.
  * @see        java.lang.SecurityManager#checkRead(java.lang.String)
  */
-/*public*/ FileInputStream::FileInputStream(QString name, QObject* parent) throw (FileNotFoundException) {
+/*public*/ FileInputStream::FileInputStream(QString name, QObject* parent) /*throw (FileNotFoundException)*/ {
     //this(name != NULL ? new File(name) : NULL);
  if(name == "")
   common(NULL);
@@ -160,11 +160,11 @@ void FileInputStream::common(File * file)
  * Opens the specified file for reading.
  * @param name the name of the file
  */
-/*private*/ void FileInputStream::open(QString name) throw (FileNotFoundException) {
+/*private*/ void FileInputStream::open(QString name) /*throw (FileNotFoundException)*/ {
    // open0(name);
  QFile f(name);
  if(!f.open(QIODevice::ReadOnly))
-   throw new FileNotFoundException();
+   throw new FileNotFoundException(QString("error opening %1 %2").arg(name).arg(f.errorString()));
 }
 
 /**

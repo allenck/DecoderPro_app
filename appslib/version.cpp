@@ -139,7 +139,7 @@ Version::Version()
  * @throws IllegalArgumentException if version is not a canonical version string
  * @see java.lang.Comparable#compareTo(java.lang.Object)
  */
-/*static*/ /*public*/ int Version::compareCanonicalVersions(QString version) throw (IllegalArgumentException)
+/*static*/ /*public*/ int Version::compareCanonicalVersions(QString version)
 {
  return compareCanonicalVersions(version, getCanonicalVersion());
 }
@@ -154,7 +154,7 @@ Version::Version()
  * @throws IllegalArgumentException if either version string is not a canonical version string
  * @see java.lang.Comparable#compareTo(java.lang.Object)
  */
-/*static*/ /*public*/ int Version::compareCanonicalVersions(QString version1, QString version2) throw (IllegalArgumentException)
+/*static*/ /*public*/ int Version::compareCanonicalVersions(QString version1, QString version2)
 {
     int result = 0;
     if (!isCanonicalVersion(version1)) {

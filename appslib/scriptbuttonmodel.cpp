@@ -1,5 +1,7 @@
 #include "scriptbuttonmodel.h"
+#ifdef SCRIPTING_ENABLED
 #include "jmriscriptenginemanager.h"
+#endif
 #include "loggerfactory.h"
 #include "apps.h"
 #include <QPushButton>
@@ -55,7 +57,10 @@ ScriptButtonModel::ScriptButtonModel()
     //@Override
     /*public*/ void ScriptButtonAction::actionPerformed(ActionEvent* /*e*/) {
         try {
+#ifdef SCRIPTING_ENABLED
+
             JmriScriptEngineManager::getDefault()->eval(model->getScript());
+#endif
         } catch (/*ScriptException | */IOException* ex) {
             model->log->error(tr("Unable to run script %1.").arg(model->getScript()->toString()), ex);
         }

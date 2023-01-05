@@ -6,10 +6,8 @@
 #include "throttlewindow.h"
 #include "throttleframemanager.h"
 #include "joptionpane.h"
-#include "xmlfile.h"
 #include "throttleslistpanel.h"
 #include "file.h"
-
 /**
  * Load throttles from XML
  *
@@ -88,8 +86,8 @@
 //@SuppressWarnings("unchecked")
 /*public*/ bool LoadXmlThrottlesLayoutAction::loadThrottlesLayout(File* f) /*throw (IOException)*/ {
     try {
-        //ThrottlePrefs prefs = new ThrottlePrefs();
-  XmlFile* prefs = new XmlFile();
+        ThrottlePrefs* prefs = new ThrottlePrefs();
+        //XmlFile* prefs = new XmlFile();
         QDomElement root = prefs->rootFromFile(f);
         QDomNodeList throttles = root.elementsByTagName("ThrottleFrame");
         ThrottleFrameManager* tfManager = (ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager");

@@ -18,27 +18,27 @@
  */
 // /*public*/ class Profile {
     /*public*/ /*static final*/ QString Profile::PROFILE = "profile"; // NOI18N
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _ID, ("id"))
+    Q_GLOBAL_STATIC_WITH_ARGS(const char*, _ID, ("id"))
     /*protected*/ /*static final */ QString Profile::ID = "id"; // NOI18N
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _NAME, ("name"))
+    Q_GLOBAL_STATIC_WITH_ARGS(const char*, _NAME, ("name"))
     /*protected*/ /*static final */ QString Profile::NAME = "name"; // NOI18N
     /*protected*/ /*static final */ QString Profile::PATH = "path"; // NOI18N
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _PROPERTIES, ("profile.properties"))
+    Q_GLOBAL_STATIC_WITH_ARGS(const char*, _PROPERTIES, ("profile.properties"))
     /*public*/ /*static final */ QString Profile::PROPERTIES = "profile.properties"; // NOI18N
     /*public*/ /*static final*/ QString Profile::CONFIG = "profile.xml"; // NOI18N
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.properties"))
+    Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.properties"))
     /*public*/ /*static final*/ QString Profile::SHARED_PROPERTIES = Profile::PROFILE + "/" + Profile::PROPERTIES; // NOI18N
     /*public*/ /*static final*/ QString Profile::SHARED_CONFIG = Profile::PROFILE + "/" + Profile::CONFIG; // NOI18N
     /*public*/ /*static final */ QString Profile::CONFIG_FILENAME = "ProfileConfig.xml"; // NOI18N
-/*public*/ /*static final*/ QString Profile::UI_CONFIG = "user-interface.xml"; // NOI18N
-/*public*/ /*static final*/ QString Profile::SHARED_UI_CONFIG = Profile::PROFILE + "/" + Profile::UI_CONFIG; // NOI18N
-/*public*/ /*static final*/ QString Profile::UI_CONFIG_FILENAME = "UserPrefsProfileConfig.xml"; // NOI18N
+    /*public*/ /*static final*/ QString Profile::UI_CONFIG = "user-interface.xml"; // NOI18N
+    /*public*/ /*static final*/ QString Profile::SHARED_UI_CONFIG = Profile::PROFILE + "/" + Profile::UI_CONFIG; // NOI18N
+    /*public*/ /*static final*/ QString Profile::UI_CONFIG_FILENAME = "UserPrefsProfileConfig.xml"; // NOI18N
 /**
  * The filename extension for JMRI profile directories. This is needed for
  * external applications on some operating systems to recognize JMRI
  * profiles.
  */
-/*public*/ /*static*/ /*final*/ QString Profile::EXTENSION = ".jmri"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString Profile::EXTENSION = ".jmri"; // NOI18N
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /**
  * Create a Profile object given just a path to it. The Profile must exist
@@ -57,7 +57,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /*public*/ Profile::Profile(File* path, QObject* parent) /*throw (IOException)*/
  : QObject(parent)
 {
- common(path,  true);
+ common1(path,  true);
 }
 
 /**
@@ -75,17 +75,17 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  * @throws IOException
  * @throws IllegalArgumentException
  */
-/*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) throw (IOException, IllegalArgumentException) :
+/*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) /*throw (IOException, IllegalArgumentException)*/ :
     QObject(parent)
 {
  setObjectName("Profile");
  File* pathWithExt; // path with extension
- if (path->getName().endsWith(EXTENSION)) {
+ if (path->getName().endsWith(*_EXTENSION)) {
      pathWithExt = path;
  } else {
-     pathWithExt = new File(path->getParentFile(), path->getName() + EXTENSION);
+     pathWithExt = new File(path->getParentFile(), path->getName() + *_EXTENSION);
  }
- if (pathWithExt->getName() != (id + EXTENSION)) {
+ if (pathWithExt->getName() != (id + *_EXTENSION)) {
      throw new IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
  if (Profile::isProfile(path) || Profile::isProfile(pathWithExt)) {
@@ -128,7 +128,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /*protected*/ Profile::Profile(File* path, bool isReadable, QObject *parent) :
     QObject(parent)
 {
- common(path,  isReadable);
+ common2(path,  ProfileManager::createUniqueId(), isReadable);
 }
 
 /**
@@ -144,17 +144,58 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  *                   where this is not true.
  * @throws java.io.IOException If the profile's preferences cannot be read.
  */
-void Profile::common(File *path, bool isReadable)
+void Profile::common1(File *path, bool isReadable)
 {
- this->path = path;
- if (isReadable) {
-     this->readProfile();
- }
+ if(path == nullptr) throw new NullPointerException(tr("required File path is null"));
+
+// this->path = path;
+// if (isReadable) {
+//     this->readProfile();
+// }
+ common2(path, ProfileManager::createUniqueId(), isReadable);
 }
 
-/*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) /*throw (IOException)*/ : QObject(parent)
+/**
+ * Create a Profile object given just a path to it. If isReadable is true,
+ * the Profile must exist in storage on the computer.
+ * <p>
+ * This method exists purely to support subclasses.
+ *
+ * @param path       The Profile's directory
+ * @param id         The Profile's id
+ * @param isReadable True if the profile has storage. See
+ *                   {@link jmri.profile.NullProfile} for a Profile subclass
+ *                   where this is not true.
+ * @throws java.io.IOException If the profile's preferences cannot be read.
+ */
+/*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) /*throws IOException*/
+ : QObject(parent)
 {
- common(path, isReadable);
+ common2(path, id, isReadable);
+}
+
+void Profile::common2(File* path, /*@Nonnull*/ QString id, bool isReadable)
+{
+ if(path == nullptr) throw new NullPointerException(tr("required File path is null"));
+ if(id.isEmpty()) throw new IllegalArgumentException(tr("required id is empty"));
+    File* pathWithExt; // path with extension
+    if (path->getName().endsWith(*_EXTENSION)) {
+        pathWithExt = path;
+    } else {
+        pathWithExt = new File(path->getParentFile(), path->getName() + *_EXTENSION);
+    }
+    // if path does not exist, but pathWithExt exists, use pathWithExt
+    // to support a scenario where user adds .jmri extension to profile
+    // directory outside of JMRI application
+    if ((!path->exists() && pathWithExt->exists())) {
+        this->path = pathWithExt;
+    } else {
+        this->path = path;
+    }
+    this->id = id;
+    if (isReadable) {
+        this->readProfile();
+    }
 }
 
 /*protected*/ /*final*/ void Profile::save() /*throw (IOException)*/

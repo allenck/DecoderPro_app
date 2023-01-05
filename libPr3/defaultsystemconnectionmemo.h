@@ -4,11 +4,13 @@
 #include <QMap>
 #include "startupactionfactory.h"
 #include "abstractmanager.h"
+#include "disposable.h"
 
-class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
+class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo, Disposable
 {
   Q_OBJECT
-  //Q_INTERFACES(SystemConnectionMemo)
+  Q_INTERFACES(Disposable
+               )
  public:
   DefaultSystemConnectionMemo(QObject* parent = nullptr) : SystemConnectionMemo(parent){}
   /*public*/ void _register() override;

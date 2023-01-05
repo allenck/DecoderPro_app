@@ -7,20 +7,15 @@
 #include "flowlayout.h"
 #include "QLabel"
 #include "webserverpreferences.h"
-
-//RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) :
-//    QWidget(parent)
-//{
-//}
-///*public*/ class RailroadNamePreferencesPanel extends QWidget* implements PreferencesPanel {
+#include "loggerfactory.h"
 
 /**
  *
  */
 //private static final long serialVersionUID = -2483121076473347952L;
-//static Logger log = LoggerFactory.getLogger(RailroadNamePreferencesPanel.class);
+/*static*/ Logger* RailroadNamePreferencesPanel::log = LoggerFactory::getLogger("RailroadNamePreferencesPanel");
 
-/*public*/ RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) : QWidget(parent)
+/*public*/ RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) : JPanel(parent)
 {
  parentFrame = (JFrame*)parent;
  preferences = WebServerPreferences::getDefault();
@@ -67,14 +62,14 @@
 /*private*/ void RailroadNamePreferencesPanel::setGUI() {
 }
 
-/**
- * Show the save and cancel buttons if displayed in its own frame.
- */
-/*public*/ void RailroadNamePreferencesPanel::enableSave()
-{
- saveB->setVisible(true);
- cancelB->setVisible(true);
-}
+///**
+// * Show the save and cancel buttons if displayed in its own frame.
+// */
+///*public*/ void RailroadNamePreferencesPanel::enableSave()
+//{
+// saveB->setVisible(true);
+// cancelB->setVisible(true);
+//}
 
 /**
  * set the local prefs to match the GUI Local prefs are independent from the
@@ -82,49 +77,49 @@
  *
  * @return true if set, false if values are unacceptable.
  */
-/*private*/ bool RailroadNamePreferencesPanel::setValues() {
-    bool didSet = true;
-    preferences->setRailroadName(railroadName->text());
-    return didSet;
-}
+///*private*/ bool RailroadNamePreferencesPanel::setValues() {
+//    bool didSet = true;
+//    preferences->setRailroadName(railroadName->text());
+//    return didSet;
+//}
 
-/*public*/ void RailroadNamePreferencesPanel::storeValues()
-{
- if (setValues())
- {
-  preferences->save();
+///*public*/ void RailroadNamePreferencesPanel::storeValues()
+//{
+// if (setValues())
+// {
+//  preferences->save();
 
-  if (parentFrame != NULL)
-  {
-   parentFrame->dispose();
-  }
- }
-}
+//  if (parentFrame != NULL)
+//  {
+//   parentFrame->dispose();
+//  }
+// }
+//}
 
 /**
  * Update the singleton instance of prefs, then mark (isDirty) that the
  * values have changed and needs to save to xml file.
  */
-/*protected*/ void RailroadNamePreferencesPanel::applyValues()
-{
- if (setValues())
- {
-  preferences->setIsDirty(true);
- }
-}
+///*protected*/ void RailroadNamePreferencesPanel::applyValues()
+//{
+// if (setValues())
+// {
+//  preferences->setIsDirty(true);
+// }
+//}
 
-/*protected*/ void RailroadNamePreferencesPanel::cancelValues()
-{
- if (getTopLevelAncestor() != NULL)
- {
-  ((JFrame*) getTopLevelAncestor())->setVisible(false);
- }
-}
+///*protected*/ void RailroadNamePreferencesPanel::cancelValues()
+//{
+// if (getTopLevelAncestor() != NULL)
+// {
+//  ((JFrame*) getTopLevelAncestor())->setVisible(false);
+// }
+//}
 
 /*private*/ QWidget* RailroadNamePreferencesPanel::rrNamePanel()
 {
- QWidget* panel = new QWidget();
- FlowLayout* panelLayout = new FlowLayout;
+ JPanel* panel = new JPanel();
+ FlowLayout* panelLayout = new FlowLayout();
  panel->setLayout(panelLayout);
  railroadName = new JTextField(preferences->getRailroadName());
  railroadName->setToolTip(tr("Used by various JMRI network services."));
@@ -171,7 +166,8 @@
 
 //@Override
 /*public*/ void RailroadNamePreferencesPanel::savePreferences() {
-    this->storeValues();
+ this->preferences->setRailroadName(railroadName->text());
+ this->preferences->save();
 }
 
 //@Override
@@ -183,17 +179,17 @@
 /*public*/ bool RailroadNamePreferencesPanel::isRestartRequired() {
     return false;
 }
-/*public*/ QWidget* RailroadNamePreferencesPanel::getTopLevelAncestor()
-{
- for(QObject* p = this; p != NULL; p = p->parent())
- {
-  //if(p instanceof Window || p instanceof Applet)
-     if(qobject_cast<JFrame*>(p)!=NULL)
-  {
-   return (QWidget*)p;
-  }
- }
- return NULL;
-}
+///*public*/ QWidget* RailroadNamePreferencesPanel::getTopLevelAncestor()
+//{
+// for(QObject* p = this; p != NULL; p = p->parent())
+// {
+//  //if(p instanceof Window || p instanceof Applet)
+//     if(qobject_cast<JFrame*>(p)!=NULL)
+//  {
+//   return (QWidget*)p;
+//  }
+// }
+// return NULL;
+//}
 
 /*public*/ QString RailroadNamePreferencesPanel::className() {return "jmri.web.server.RailroadNamePreferencesPanel";}

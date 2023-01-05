@@ -257,7 +257,7 @@ bool Apps::configDeferredLoadOK = false;
  }
  catch (IOException* ex)
  {
-   log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex->getMessage()*/);
+   log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
  }
 
  // install a Preferences Action Factory.
@@ -881,9 +881,10 @@ void Apps::On_handleQuit()
     d->addSeparator();
     d->addAction(new TreeAction(this));
     d->addAction(new UsbViewAction(this));
+#ifdef SCRIPTING_ENABLED
     d->addSeparator();
     d->addAction(new RunJythonScript("RailDriver Throttle", new File("jython/RailDriver.py"),this));
-
+#endif
     // also add some tentative items from webserver
     d->addSeparator();
     d->addAction(new WebServerAction(this));

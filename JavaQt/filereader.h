@@ -7,8 +7,8 @@ class File;
 class FileReader : public InputStreamReader
 {
 public:
- /*public*/ FileReader(QString fileName, QObject* parent = nullptr) throw (FileNotFoundException);
- /*public*/ FileReader(File* file, QObject* parent = nullptr) throw (FileNotFoundException);
+ /*public*/ FileReader(QString fileName, QObject* parent = nullptr) /*throw (FileNotFoundException)*/;
+ /*public*/ FileReader(File* file, QObject* parent = nullptr) /*throw (FileNotFoundException)*/;
 
 };
 

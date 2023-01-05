@@ -214,8 +214,8 @@ AddressPanel::~AddressPanel()
 
  // can we find a roster entry?
  if ((rosterEntry == NULL) &&
-            (ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle()) &&
-            (ThrottleFrameManager::instance()->getThrottlesPreferences()->isEnablingRosterSearch()) &&
+            (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()) &&
+            (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isEnablingRosterSearch()) &&
             addrSelector->getAddress() != NULL )
  {
   QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, QString::number(addrSelector->getAddress()->getNumber()), NULL, NULL, NULL, NULL);

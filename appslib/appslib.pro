@@ -32,7 +32,7 @@ isEmpty( PROJ_DIR ) {
 
 DEFINES += APPSLIB_LIBRARY
 
-include(../scripts_config.prf)
+#include(../scripts_config.prf) // disabled ACK
 
 #LogixNG config:
 include(../logixng_config.prf)

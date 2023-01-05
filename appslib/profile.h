@@ -15,7 +15,7 @@ public:
  /*public*/ static /*final*/ QString EXTENSION;// = ".jmri"; // NOI18N
 
     Profile(File* path, QObject *parent = 0) /*throw (IOException)*/;
-    /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0) throw (IOException, IllegalArgumentException);
+    /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0) ;
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
     /*public*/ QString getId() const;
@@ -52,7 +52,8 @@ signals:
 public slots:
 private:
     /*private*/ static Logger* log;// = new LoggerFactory::getLogger("Profile");
-    void common(File* path, bool isReadable);
+    void common1(File* path, bool isReadable);
+    void common2(File* path, QString id, bool isReadable);
     /*private*/ QString name;
     /*private*/ QString id;
     /*private*/ File* path;

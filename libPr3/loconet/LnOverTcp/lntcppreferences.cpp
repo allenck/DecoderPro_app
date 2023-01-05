@@ -60,6 +60,8 @@
         log->debug(tr("Opening settings file %1").arg(file->toString()));
         try
         {
+         if(!file->exists())
+          return;
          FileInputStream* stream = new FileInputStream(file);
          bool ok;
             settings->load(stream);

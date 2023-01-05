@@ -378,6 +378,8 @@ void InputWindow::storeButtonPressed()
 
 void InputWindow::buttonPressed()
 {
+#ifdef SCRIPTING_ENABLED
+
  //PythonInterp.getPythonInterpreter();
  interp = PythonQt::self()->getMainModule();
 
@@ -435,6 +437,7 @@ void InputWindow::buttonPressed()
  } catch (ScriptException ex) {
      log->error("Error executing script", &ex);
  }
+#endif
 }
 
 Worker::Worker(QString script, InputWindow *parent)

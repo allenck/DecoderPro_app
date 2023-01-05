@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'commentsdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.3
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -52,21 +52,21 @@ public:
     void setupUi(QDialog *CommentsDialog)
     {
         if (CommentsDialog->objectName().isEmpty())
-            CommentsDialog->setObjectName(QLatin1String("CommentsDialog"));
+            CommentsDialog->setObjectName(QString::fromUtf8("CommentsDialog"));
         CommentsDialog->resize(400, 312);
         gridLayout = new QGridLayout(CommentsDialog);
-        gridLayout->setObjectName(QLatin1String("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setObjectName(QLatin1String("horizontalLayout_6"));
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         lblUnitAddress = new QLabel(CommentsDialog);
-        lblUnitAddress->setObjectName(QLatin1String("lblUnitAddress"));
+        lblUnitAddress->setObjectName(QString::fromUtf8("lblUnitAddress"));
 
         horizontalLayout->addWidget(lblUnitAddress);
 
         lblDisplayUnitAddress = new QLabel(CommentsDialog);
-        lblDisplayUnitAddress->setObjectName(QLatin1String("lblDisplayUnitAddress"));
+        lblDisplayUnitAddress->setObjectName(QString::fromUtf8("lblDisplayUnitAddress"));
 
         horizontalLayout->addWidget(lblDisplayUnitAddress);
 
@@ -74,12 +74,12 @@ public:
         horizontalLayout_6->addLayout(horizontalLayout);
 
         lblDisplayType = new QLabel(CommentsDialog);
-        lblDisplayType->setObjectName(QLatin1String("lblDisplayType"));
+        lblDisplayType->setObjectName(QString::fromUtf8("lblDisplayType"));
 
         horizontalLayout_6->addWidget(lblDisplayType);
 
         lblDisplayOutput = new QLabel(CommentsDialog);
-        lblDisplayOutput->setObjectName(QLatin1String("lblDisplayOutput"));
+        lblDisplayOutput->setObjectName(QString::fromUtf8("lblDisplayOutput"));
 
         horizontalLayout_6->addWidget(lblDisplayOutput);
 
@@ -87,15 +87,15 @@ public:
         gridLayout->addLayout(horizontalLayout_6, 0, 0, 1, 1);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         lblPort = new QLabel(CommentsDialog);
-        lblPort->setObjectName(QLatin1String("lblPort"));
+        lblPort->setObjectName(QString::fromUtf8("lblPort"));
         lblPort->setMaximumSize(QSize(55, 16777215));
 
         horizontalLayout_2->addWidget(lblPort);
 
         lblDisplayPort = new QLabel(CommentsDialog);
-        lblDisplayPort->setObjectName(QLatin1String("lblDisplayPort"));
+        lblDisplayPort->setObjectName(QString::fromUtf8("lblDisplayPort"));
 
         horizontalLayout_2->addWidget(lblDisplayPort);
 
@@ -103,15 +103,15 @@ public:
         gridLayout->addLayout(horizontalLayout_2, 1, 0, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         label_2 = new QLabel(CommentsDialog);
-        label_2->setObjectName(QLatin1String("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setMaximumSize(QSize(55, 16777215));
 
         horizontalLayout_3->addWidget(label_2);
 
         lblDisplayMode = new QLabel(CommentsDialog);
-        lblDisplayMode->setObjectName(QLatin1String("lblDisplayMode"));
+        lblDisplayMode->setObjectName(QString::fromUtf8("lblDisplayMode"));
 
         horizontalLayout_3->addWidget(lblDisplayMode);
 
@@ -119,15 +119,15 @@ public:
         gridLayout->addLayout(horizontalLayout_3, 2, 0, 1, 1);
 
         horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
         label_3 = new QLabel(CommentsDialog);
-        label_3->setObjectName(QLatin1String("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setMaximumSize(QSize(55, 16777215));
 
         horizontalLayout_4->addWidget(label_3);
 
         lblDisplayAddress = new QLabel(CommentsDialog);
-        lblDisplayAddress->setObjectName(QLatin1String("lblDisplayAddress"));
+        lblDisplayAddress->setObjectName(QString::fromUtf8("lblDisplayAddress"));
 
         horizontalLayout_4->addWidget(lblDisplayAddress);
 
@@ -135,39 +135,39 @@ public:
         gridLayout->addLayout(horizontalLayout_4, 3, 0, 1, 1);
 
         label_4 = new QLabel(CommentsDialog);
-        label_4->setObjectName(QLatin1String("label_4"));
+        label_4->setObjectName(QString::fromUtf8("label_4"));
 
         gridLayout->addWidget(label_4, 4, 0, 1, 1);
 
         edTitle = new QLineEdit(CommentsDialog);
-        edTitle->setObjectName(QLatin1String("edTitle"));
+        edTitle->setObjectName(QString::fromUtf8("edTitle"));
 
         gridLayout->addWidget(edTitle, 5, 0, 1, 1);
 
         label_5 = new QLabel(CommentsDialog);
-        label_5->setObjectName(QLatin1String("label_5"));
+        label_5->setObjectName(QString::fromUtf8("label_5"));
 
         gridLayout->addWidget(label_5, 6, 0, 1, 1);
 
         edTextEdit = new QTextEdit(CommentsDialog);
-        edTextEdit->setObjectName(QLatin1String("edTextEdit"));
+        edTextEdit->setObjectName(QString::fromUtf8("edTextEdit"));
 
         gridLayout->addWidget(edTextEdit, 7, 0, 1, 1);
 
         horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QLatin1String("horizontalLayout_5"));
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         btnUpdate = new QPushButton(CommentsDialog);
-        btnUpdate->setObjectName(QLatin1String("btnUpdate"));
+        btnUpdate->setObjectName(QString::fromUtf8("btnUpdate"));
 
         horizontalLayout_5->addWidget(btnUpdate);
 
         btnDelete = new QPushButton(CommentsDialog);
-        btnDelete->setObjectName(QLatin1String("btnDelete"));
+        btnDelete->setObjectName(QString::fromUtf8("btnDelete"));
 
         horizontalLayout_5->addWidget(btnDelete);
 
         btnCancel = new QPushButton(CommentsDialog);
-        btnCancel->setObjectName(QLatin1String("btnCancel"));
+        btnCancel->setObjectName(QString::fromUtf8("btnCancel"));
 
         horizontalLayout_5->addWidget(btnCancel);
 
@@ -182,22 +182,22 @@ public:
 
     void retranslateUi(QDialog *CommentsDialog)
     {
-        CommentsDialog->setWindowTitle(QApplication::translate("CommentsDialog", "Update Comments", nullptr));
-        lblUnitAddress->setText(QApplication::translate("CommentsDialog", "unitAddress:", nullptr));
-        lblDisplayUnitAddress->setText(QApplication::translate("CommentsDialog", "0x00/00", nullptr));
-        lblDisplayType->setText(QApplication::translate("CommentsDialog", "LocoServo", nullptr));
-        lblDisplayOutput->setText(QApplication::translate("CommentsDialog", "Output", nullptr));
-        lblPort->setText(QApplication::translate("CommentsDialog", "Port:", nullptr));
-        lblDisplayPort->setText(QApplication::translate("CommentsDialog", "1", nullptr));
-        label_2->setText(QApplication::translate("CommentsDialog", "Mode:", nullptr));
-        lblDisplayMode->setText(QApplication::translate("CommentsDialog", "mode ....", nullptr));
-        label_3->setText(QApplication::translate("CommentsDialog", "Address:", nullptr));
-        lblDisplayAddress->setText(QApplication::translate("CommentsDialog", "0", nullptr));
-        label_4->setText(QApplication::translate("CommentsDialog", "Title", nullptr));
-        label_5->setText(QApplication::translate("CommentsDialog", "Description:", nullptr));
-        btnUpdate->setText(QApplication::translate("CommentsDialog", "Update", nullptr));
-        btnDelete->setText(QApplication::translate("CommentsDialog", "Delete", nullptr));
-        btnCancel->setText(QApplication::translate("CommentsDialog", "Cancel", nullptr));
+        CommentsDialog->setWindowTitle(QCoreApplication::translate("CommentsDialog", "Update Comments", nullptr));
+        lblUnitAddress->setText(QCoreApplication::translate("CommentsDialog", "unitAddress:", nullptr));
+        lblDisplayUnitAddress->setText(QCoreApplication::translate("CommentsDialog", "0x00/00", nullptr));
+        lblDisplayType->setText(QCoreApplication::translate("CommentsDialog", "LocoServo", nullptr));
+        lblDisplayOutput->setText(QCoreApplication::translate("CommentsDialog", "Output", nullptr));
+        lblPort->setText(QCoreApplication::translate("CommentsDialog", "Port:", nullptr));
+        lblDisplayPort->setText(QCoreApplication::translate("CommentsDialog", "1", nullptr));
+        label_2->setText(QCoreApplication::translate("CommentsDialog", "Mode:", nullptr));
+        lblDisplayMode->setText(QCoreApplication::translate("CommentsDialog", "mode ....", nullptr));
+        label_3->setText(QCoreApplication::translate("CommentsDialog", "Address:", nullptr));
+        lblDisplayAddress->setText(QCoreApplication::translate("CommentsDialog", "0", nullptr));
+        label_4->setText(QCoreApplication::translate("CommentsDialog", "Title", nullptr));
+        label_5->setText(QCoreApplication::translate("CommentsDialog", "Description:", nullptr));
+        btnUpdate->setText(QCoreApplication::translate("CommentsDialog", "Update", nullptr));
+        btnDelete->setText(QCoreApplication::translate("CommentsDialog", "Delete", nullptr));
+        btnCancel->setText(QCoreApplication::translate("CommentsDialog", "Cancel", nullptr));
     } // retranslateUi
 
 };

@@ -13,9 +13,9 @@ class FileUtilSupport : public Bean
 {
 public:
  FileUtilSupport();
- /*public*/ File* getFile(QString path) throw (FileNotFoundException);
- /*public*/ File* getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) throw (FileNotFoundException);
- /*public*/ QUrl* getURL(QString path) throw (FileNotFoundException);
+ /*public*/ File* getFile(QString path) /*throw (FileNotFoundException)*/;
+ /*public*/ File* getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) /*throw (FileNotFoundException)*/;
+ /*public*/ QUrl* getURL(QString path) ;
  /*public*/ QSet<File*> findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root)/* throws IllegalArgumentException*/;
  /*public*/ QSet<File*> findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root, /*@Nonnull*/ FileUtil::Location location);
 

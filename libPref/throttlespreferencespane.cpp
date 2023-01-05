@@ -11,11 +11,8 @@
 #include "throttlespreferences.h"
 #include "gridbagconstraints.h"
 #include <QGridLayout>
+#include "loggerfactory.h"
 
-//ThrottlesPreferencesPane::ThrottlesPreferencesPane(QWidget *parent) :
-//    QWidget(parent)
-//{
-//}
 /**
  *
  * @author lionel
@@ -23,30 +20,13 @@
 // /*public*/ class ThrottlesPreferencesPane extends javax.swing.JPanel implements PropertyChangeListener {
 //	/*private*/ static final long serialVersionUID = -5473594799045080011L;
 
-#if 1
-/** Creates new form ThrottlesPreferencesPane */
-/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(QWidget *parent) : QWidget(parent)
+/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(QWidget* parent ): QWidget(parent)
 {
- common();
-}
-/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(const ThrottlesPreferencesPane & ): QWidget()
-{
- //common();
-}
-
-void ThrottlesPreferencesPane::common()
-{
- m_container = NULL;
- if(InstanceManager::getDefault("ThrottlesPreferences")==NULL)
- {
-  InstanceManager::store(new ThrottlesPreferences(), "ThrottlesPreferences");
+ if (InstanceManager::getNullableDefault("ThrottlesPreferences") == nullptr) {
+     log->debug("Creating new ThrottlesPreference Instance");
+     InstanceManager::store(new ThrottlesPreferences(), "ThrottlesPreferences");
  }
- ThrottlesPreferences* tp = (ThrottlesPreferences*)InstanceManager::getDefault("ThrottlesPreferences");
  initComponents();
- setComponents(tp);
- checkConsistancy(true);
- //tp->SwingPropertyChangeSupport::addPropertyChangeListener(this);
- connect(ThrottleFrameManager::instance()->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*private*/ void ThrottlesPreferencesPane::initComponents()
@@ -276,17 +256,17 @@ void ThrottlesPreferencesPane::common()
 
 /*private*/ void ThrottlesPreferencesPane::jbApplyActionPerformed(JActionEvent* evt)
 {
- ThrottleFrameManager::instance()->getThrottlesPreferences()->set(getThrottlesPreferences());
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->set(getThrottlesPreferences());
 }
 
 /*public*/ void ThrottlesPreferencesPane::jbSaveActionPerformed(JActionEvent* evt)
 {
- ThrottleFrameManager::instance()->getThrottlesPreferences()->set(getThrottlesPreferences());
- ThrottleFrameManager::instance()->getThrottlesPreferences()->save();
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->set(getThrottlesPreferences());
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->save();
  if (m_container != NULL)
  {
-  //ThrottleFrameManager::instance()->getThrottlesPreferences()->removePropertyChangeListener(this);
-  disconnect(ThrottleFrameManager::instance()->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->removePropertyChangeListener(this);
+  disconnect(((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   m_container->setVisible(false); // should do with events...
   m_container->dispose();
  }
@@ -294,12 +274,12 @@ void ThrottlesPreferencesPane::common()
 
 /*private*/ void ThrottlesPreferencesPane::jbCancelActionPerformed(JActionEvent* evt)
 {
- setComponents(ThrottleFrameManager::instance()->getThrottlesPreferences());
+ setComponents(((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences());
  checkConsistancy(true);
  if (m_container != NULL)
  {
-  //ThrottleFrameManager::instance()->getThrottlesPreferences()->removePropertyChangeListener(this);
-  disconnect(ThrottleFrameManager::instance()->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->removePropertyChangeListener(this);
+  disconnect(((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   m_container->setVisible(false); // should do with events...
   m_container->dispose();
  }
@@ -377,4 +357,5 @@ void ThrottlesPreferencesPane::common()
 
 /*public*/ QString ThrottlesPreferencesPane::className() {return "jmri.jmrit.throttle.ThrottlesPreferencesPane";}
 //}
-#endif
+
+/*private*/ /*final*/ /*static*/ Logger* ThrottlesPreferencesPane::log = LoggerFactory::getLogger("ThrottlesPreferencesPane");

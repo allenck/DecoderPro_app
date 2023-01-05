@@ -26,7 +26,7 @@ public:
  /*public*/ ScriptEngine* getEngineByExtension(QString extension);
  /*public*/ ScriptEngine* getEngine(QString engineName);
  /*public*/ void initializePython();
- /*public*/ QObject* eval(QString script, ScriptEngine* engine) throw (ScriptException);
+ /*public*/ QObject* eval(QString script, ScriptEngine* engine) /*throw (ScriptException)*/;
  /*public*/ ScriptEngine* getEngineByName(QString shortName);
  /*public*/ ScriptContext* getDefaultContext();
 

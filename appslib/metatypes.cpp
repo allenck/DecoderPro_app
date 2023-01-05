@@ -360,6 +360,8 @@
 #include "mergsd2signalheadxml.h"
 #include "acelasignalheadxml.h"
 #include "rosterconfigmanager.h"
+#include "throttlespreferences.h"
+#include "throttleframemanager.h"
 
 bool Metatypes::done = false;
 
@@ -735,6 +737,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<AcelaSignalHeadXml>("AcelaSignalHeadXml");
  qRegisterMetaType<LocoNetSystemConnectionMemo>("LocoNetSystemConnectionMemo");
  qRegisterMetaType<RosterConfigManager>("RosterConfigManager");
+ qRegisterMetaType<ThrottlesPreferences>("ThrottlesPreferences");
+ qRegisterMetaType<ThrottleFrameManager>("ThrottleFrameManager");
 
  Metatypes::done = true;
 }

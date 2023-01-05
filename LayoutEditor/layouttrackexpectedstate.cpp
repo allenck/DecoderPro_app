@@ -24,7 +24,7 @@ template<class T>
 
     //@Override
 template<class T>
-    /*public*/ void LayoutTrackExpectedState<T>::setExpectedState(int state) throw (UnsupportedOperationException) {
+    /*public*/ void LayoutTrackExpectedState<T>::setExpectedState(int state) /*throw (UnsupportedOperationException)*/ {
         int old = this->state;
         this->state = state;
         this->propertyChangeSupport->firePropertyChange("expectedState", old, state);

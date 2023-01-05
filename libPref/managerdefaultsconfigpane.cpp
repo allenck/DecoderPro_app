@@ -49,6 +49,13 @@
 //        }
 //    });
  ManagerDefaultSelector* mgr =(ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+ // hack begins here! requires more research to determine wy mgr is null
+ if(mgr == nullptr)
+ {
+  mgr =new ManagerDefaultSelector();
+  InstanceManager::store(mgr, "ManagerDefaultSelector");
+ }
+ // end hack!
  connect(mgr->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  update();
 }
