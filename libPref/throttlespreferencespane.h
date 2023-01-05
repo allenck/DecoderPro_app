@@ -57,7 +57,7 @@ private:
     /*private*/ QPushButton* jbApply;
     /*private*/ QPushButton* jbCancel;
     /*private*/ QPushButton* jbSave;
-    /*private*/ JFrame* m_container;// = null;
+    /*private*/ JFrame* m_container = nullptr;
     /*private*/ void initComponents();
     /*private*/ void setComponents(ThrottlesPreferences* tp);
 private slots:

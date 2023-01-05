@@ -2,6 +2,7 @@
 #define WEBSERVERPREFERENCESPANEL_H
 #include "preferencespanel.h"
 #include "itemlistener.h"
+#include "jpanel.h"
 
 class QLabel;
 class QSpinBox;
@@ -9,7 +10,7 @@ class QCheckBox;
 class ItemListener;
 class BindingGroup;
 class WebServerPreferences;
-class WebServerPreferencesPanel : public QWidget, public PreferencesPanel
+class WebServerPreferencesPanel : public JPanel, public PreferencesPanel
 {
  Q_OBJECT
  Q_INTERFACES(PreferencesPanel)
@@ -17,7 +18,7 @@ class WebServerPreferencesPanel : public QWidget, public PreferencesPanel
 public:
  Q_INVOKABLE WebServerPreferencesPanel(QWidget* parent = 0);
  ~WebServerPreferencesPanel(){}
- WebServerPreferencesPanel(const WebServerPreferencesPanel&) : QWidget() {}
+ WebServerPreferencesPanel(const WebServerPreferencesPanel&) : JPanel() {}
  /*public*/ QString getPreferencesItem() ;
  /*public*/ QString getPreferencesItemText();
  /*public*/ QString getTabbedPreferencesTitle();

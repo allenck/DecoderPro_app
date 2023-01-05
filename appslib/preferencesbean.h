@@ -15,9 +15,9 @@ public:
  /*public*/ static /*final*/ QString DIRTY;// = "dirty"; // NOI18N
  /*public*/ static /*final*/ QString RESTART_REQUIRED;// = "restartRequired"; // NOI18N
  /*public*/ PreferencesBean(Profile* profile, QObject* parent = nullptr);
- /*public*/ Profile* getProfile();
- /*public*/ bool isDirty();
- /*public*/ bool isRestartRequired();
+ virtual /*public*/ Profile* getProfile();
+ virtual /*public*/ bool isDirty();
+ virtual /*public*/ bool isRestartRequired();
 
   private:
  /**
@@ -30,8 +30,8 @@ public:
  /*private*/ /*final*/ Profile* profile;
 
 protected:
-    /*protected*/ void setRestartRequired();
-    /*protected*/ void setIsDirty(bool value);
+   virtual  /*protected*/ void setRestartRequired();
+   virtual  /*protected*/ void setIsDirty(bool value);
     /*protected*/ virtual void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
     /*protected*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue) ;
     /*protected*/ void firePropertyChange(QString propertyName, int oldValue, int newValue);

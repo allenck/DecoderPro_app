@@ -12,10 +12,17 @@
 ///*public*/ class WebServerPreferencesPanel extends JPanel implements PreferencesPanel {
 
 
-/*public*/ WebServerPreferencesPanel::WebServerPreferencesPanel(QWidget* parent) : QWidget(parent) {
+/*public*/ WebServerPreferencesPanel::WebServerPreferencesPanel(QWidget* parent) : JPanel(parent) {
  startupActionPosition = -1;
-    preferences = (WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences");
-    initComponents();
+ preferences = (WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences");
+ // begin hack ACK
+ if(preferences == nullptr)
+ {
+  preferences = new WebServerPreferences();
+  InstanceManager::store(preferences, "WebServerPreferences");
+ }
+ // end hack
+ initComponents();
 }
 
 /*private*/ void WebServerPreferencesPanel::initComponents() {
