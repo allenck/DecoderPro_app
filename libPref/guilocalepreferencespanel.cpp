@@ -24,9 +24,9 @@ GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
 /*public*/ void GuiLocalePreferencesPanel::setParent(PreferencesPanel* parent)
 {
  //if (parent instanceof GuiLafConfigPane) {
- if(qobject_cast<GuiLafConfigPane*>(parent->self())!=nullptr)
+ if(qobject_cast<GuiLafConfigPane*>(parent->ppself())!=nullptr)
  {
-  this->parent = (GuiLafConfigPane*) parent->self();
+  this->parent = (GuiLafConfigPane*) parent->ppself();
  }
 }
 
@@ -37,12 +37,18 @@ GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
 
 //@Override
 /*public*/ QString GuiLocalePreferencesPanel::getPreferencesItem() {
+ if(this->getParent())
     return this->getParent()->getPreferencesItem();
+ else
+  return "";
 }
 
 //@Override
 /*public*/ QString GuiLocalePreferencesPanel::getPreferencesItemText() {
+ if(this->getParent())
     return this->getParent()->getPreferencesItemText();
+ else
+  return "";
 }
 
 //@Override
@@ -57,7 +63,10 @@ GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
 
 //@Override
 /*public*/ QWidget* GuiLocalePreferencesPanel::getPreferencesComponent() {
+ if(this->getParent())
     return ((GuiLafConfigPane*) this->getParent())->doLocale();
+ else
+  return nullptr;
 }
 
 //@Override
@@ -89,5 +98,4 @@ GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
 /*public*/ bool GuiLocalePreferencesPanel::isPreferencesValid() {
     return this->getParent()->isPreferencesValid();
 }
-
 /*public*/ QString GuiLocalePreferencesPanel::className() {return "apps.GuiLocalePreferencesPanel";}

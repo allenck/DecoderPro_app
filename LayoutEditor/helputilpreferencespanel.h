@@ -7,10 +7,10 @@
 #include <QRadioButton>
 #include "helputilpreferences.h"
 
-class HelpUtilPreferencesPanel : public JPanel, public PreferencesPanel
+class HelpUtilPreferencesPanel : public JPanel, public PreferencesPanel, public InstanceManagerAutoDefault
 {
   Q_OBJECT
-  Q_INTERFACES(PreferencesPanel)
+  Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
  public:
   Q_INVOKABLE HelpUtilPreferencesPanel(QWidget *parent = nullptr);
   ~HelpUtilPreferencesPanel() {}
@@ -26,8 +26,8 @@ class HelpUtilPreferencesPanel : public JPanel, public PreferencesPanel
   /*public*/ bool isDirty() override;
   /*public*/ bool isRestartRequired() override;
   /*public*/ bool isPreferencesValid() override;
-  QObject* self() override {return (QObject*)this;}
-  QString className() override {return "jmrit.util.HelpUtilPreferencesPanel";}
+  QObject* ppself() override {return (QObject*)this;}
+  QString className()  override {return "jmrit.util.HelpUtilPreferencesPanel";}
  private:
   /*private*/ /*final*/ HelpUtilPreferences* _preferences;
 

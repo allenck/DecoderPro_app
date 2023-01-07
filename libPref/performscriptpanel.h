@@ -9,10 +9,10 @@ class QLabel;
 class PerformScriptModel;
 class QPushButton;
 class JFileChooser;
-class LIBPREFSHARED_EXPORT PerformScriptPanel : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT PerformScriptPanel : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
  Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
  explicit PerformScriptPanel(QWidget *parent = 0);
@@ -30,7 +30,7 @@ public:
  /*public*/ bool isRestartRequired();
  /*public*/virtual bool isPreferencesValid();
  /*public*/ QString className();
- /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QObject* ppself() {return (QObject*)this;}
 
 signals:
 

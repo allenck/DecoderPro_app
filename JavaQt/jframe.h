@@ -93,6 +93,13 @@ public:
     /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
     bool _closed = false;
     virtual bool closedNormally() {return _closed;}
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    void setSize(int, int) {}
+    QString toString() {
+      if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+    }
 
     void setAlwaysOnTop(bool checked);
 #if QT_VERSION >= 0x050000

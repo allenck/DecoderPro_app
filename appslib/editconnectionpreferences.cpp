@@ -93,9 +93,9 @@
 
     save = new QPushButton(
             QIcon(FileUtil::findURL("program:resources/icons/misc/gui3/SaveIcon.png").toLocalFile()), tr("Save"));
-#if 0
-    save.addActionListener((ActionEvent e) -> {
-        dialog.restartProgram = true;
+#if 1
+    connect(save, &QPushButton::clicked, [=] {
+        dialog->restartProgram = true;
         savePressed(invokeSaveOptions());
     });
 #endif
@@ -227,7 +227,7 @@ void EditConnectionPreferences::selection(QString view) {
  if (tabTitle == nullptr) {
      tabTitle = itemText;
  }
- itemBeingAdded->addPreferenceItem(tabTitle, labelKey, item->getPreferencesComponent(), tooltip, sortOrder, "");
+ itemBeingAdded->addPreferenceItem(tabTitle, labelKey, item->getPreferencesComponent(), tooltip, sortOrder);
 }
 
 /* Method allows for the preference to goto a specific list item */

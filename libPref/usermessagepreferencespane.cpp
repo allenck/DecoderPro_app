@@ -404,6 +404,9 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
 /*public*/ bool UserMessagePreferencesPane::isRestartRequired() {
     return false;
 }
+/*public*/ bool UserMessagePreferencesPane::isPreferencesValid() {
+ return true;
+}
 
     UserMessagePreferencesPane::ListItems::ListItems(QString strClass, QString item) {
         this->strClass = strClass;

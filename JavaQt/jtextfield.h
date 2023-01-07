@@ -60,6 +60,13 @@ public:
     /*public*/ void setEditable(bool b) {setEnabled(b);}
     /*public*/ void requestFocus() { QLineEdit::setFocus();};
     /*public*/ void setLabelFor(QWidget* c) {labelFor = c;}
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    void setSize(int, int) {}
+    QString toString() {
+      if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+    }
 
 signals:
  void enterField();

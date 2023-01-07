@@ -354,6 +354,9 @@
 /*public*/ bool ThrottlesPreferencesPane::isRestartRequired() {
     return false;
 }
+/*public*/ bool ThrottlesPreferencesPane::isPreferencesValid() {
+ return true;
+}
 
 /*public*/ QString ThrottlesPreferencesPane::className() {return "jmri.jmrit.throttle.ThrottlesPreferencesPane";}
 //}

@@ -187,6 +187,7 @@ SOURCES += \
     language.cpp \
     dcclocoaddress.cpp \
  shutdownmanagerinitializer.cpp \
+ simpleserverpreferencespanel.cpp \
     slotmanager.cpp \
     abstractprogrammer.cpp \
     loconetslot.cpp \
@@ -1547,6 +1548,7 @@ HEADERS += \
     dcclocoaddress.h \
  shutdownmanagerinitializer.h \
  silenceablepropertychangeprovider.h \
+ simpleserverpreferencespanel.h \
     slotmanager.h \
     abstractprogrammer.h \
     programmer.h \

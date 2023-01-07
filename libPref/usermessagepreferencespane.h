@@ -10,10 +10,10 @@
 class QComboBox;
 class QCheckBox;
 class UserPreferencesManager;
-class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public JmriPanel, public PreferencesPanel
+class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public JmriPanel, public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit UserMessagePreferencesPane(QWidget *parent = 0);
@@ -29,9 +29,11 @@ public:
     /*public*/ void savePreferences();
     /*public*/ bool isDirty() ;
     /*public*/ bool isRestartRequired();
+    /*public*/ bool isPreferencesValid() override;
+
     /*public*/ void updateManager();
     /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QObject* ppself() {return (QObject*)this;}
 
 signals:
 

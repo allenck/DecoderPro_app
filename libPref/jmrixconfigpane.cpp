@@ -132,7 +132,7 @@
 
  _isDirty = false;
  modeBox = new QComboBox();
- modeBox->setMinimumWidth(100);
+ modeBox->setMinimumWidth(300);
  manuBox = new QComboBox();
  details = new JPanel();
  details->setObjectName("details");
@@ -285,7 +285,7 @@
  gbLayout->setObjectName("detailsLayout");
  //scroll.setBorder(BorderFactory.createEmptyBorder());
  //layout->addWidget(scroll, 0, Qt::AlignCenter);
- settingsPanelLayout->addWidget(scroll,1);
+ settingsPanelLayout->addWidget(scroll,4);
  layout->addWidget(settingsPanel,1);
 
  selection();  // first time through, pretend we've selected a value
@@ -305,7 +305,7 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)
   }
  }
  selection();
- //selection();
+ selection();
 }
 
 /*public*/ void JmrixConfigPane::updateComboConnection()

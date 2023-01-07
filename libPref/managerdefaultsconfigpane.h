@@ -4,6 +4,7 @@
 #include <QRadioButton>
 #include "libpref_global.h"
 #include "preferencespanel.h"
+#include "instancemanagerautodefault.h"
 
 class Logger;
 class PropertyChangeEvent;
@@ -11,38 +12,41 @@ class SystemConnectionMemo;
 class QVBoxLayout;
 class QGridLayout;
 class QButtonGroup;
-class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPane : public JmriPanel, public PreferencesPanel
+class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPane : public JmriPanel, public PreferencesPanel,
+  public InstanceManagerAutoDefault
 {
     Q_OBJECT
-    Q_INTERFACES(PreferencesPanel)
+    Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 public:
     Q_INVOKABLE explicit ManagerDefaultsConfigPane(QWidget *parent = 0);
     ~ManagerDefaultsConfigPane();
     ManagerDefaultsConfigPane(const ManagerDefaultsConfigPane&);
     /*public*/ void update();
     void reloadConnections(QObjectList connList);
-    virtual
-    /*public*/ QString getPreferencesItem() ;
-    virtual /*public*/ QString getPreferencesItemText();
-    virtual
-    /*public*/ QString getTabbedPreferencesTitle();
-    virtual
-    /*public*/ QString getLabelKey() ;
-    virtual
-    /*public*/ QWidget* getPreferencesComponent() ;
-    virtual
-    /*public*/ bool isPersistant() ;
-    virtual
-    /*public*/ QString getPreferencesTooltip() ;
-    virtual
-    /*public*/ void savePreferences() ;
-    virtual
-    /*public*/ bool isDirty();
-    virtual
-    /*public*/ bool isRestartRequired();
 
-    /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QString getPreferencesItem() override ;
+     /*public*/ QString getPreferencesItemText() override;
+
+    /*public*/ QString getTabbedPreferencesTitle() override;
+
+    /*public*/ QString getLabelKey()  override;
+
+    /*public*/ QWidget* getPreferencesComponent()  override;
+
+    /*public*/ bool isPersistant()  override;
+
+    /*public*/ QString getPreferencesTooltip() override ;
+
+    /*public*/ void savePreferences() override ;
+
+    /*public*/ bool isDirty() override;
+
+    /*public*/ bool isRestartRequired() override;
+    /*public*/ bool isPreferencesValid() override;
+
+
+    /*public*/ QString className() override;
+    /*public*/ QObject* ppself()  override{return (QObject*)this;}
 
 signals:
 
@@ -77,7 +81,7 @@ public:
     //private static final long serialVersionUID = -2572336492673634333L;
 
     SelectionButton(QString name, QString managerClass, ManagerDefaultsConfigPane* pane);
-    virtual
+
     /*public*/ void setSelected(bool t);
 public slots:
     void On_toggled(bool);

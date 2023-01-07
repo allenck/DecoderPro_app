@@ -7,10 +7,10 @@ class JFrame;
 class QSpinBox;
 class QPushButton;
 class JsonServerPreferences;
-class JsonServerPreferencesPanel : public QWidget, public PreferencesPanel
+class JsonServerPreferencesPanel : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
  Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
  Q_INVOKABLE JsonServerPreferencesPanel(QWidget* parent = 0);
@@ -32,7 +32,7 @@ public:
  /*public*/ bool isRestartRequired();
  /*public*/ bool isPreferencesValid();
  /*public*/ QString className();
- /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QObject* ppself() {return (QObject*)this;}
 
 
 private:

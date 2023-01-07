@@ -179,6 +179,11 @@
 /*public*/ bool RailroadNamePreferencesPanel::isRestartRequired() {
     return false;
 }
+/*public*/ bool RailroadNamePreferencesPanel::isPreferencesValid()
+{
+ return true;
+}
+
 ///*public*/ QWidget* RailroadNamePreferencesPanel::getTopLevelAncestor()
 //{
 // for(QObject* p = this; p != NULL; p = p->parent())

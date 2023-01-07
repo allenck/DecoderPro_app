@@ -10,10 +10,11 @@
 #include "apps.h"
 #include "managingpreferencespanel.h"
 #include "configuremanager.h"
-#include "jtabbedpane.h"
 #include "connectionconfigmanager.h"
 #include "connectionconfig.h"
 #include "joptionpane.h"
+#include "shutdownmanager.h"
+#include "jmriconfigurationmanager.h"
 
 AppConfigBase::AppConfigBase(QWidget *parent) :
     JmriPanel(parent) //JmriPanel(parent)
@@ -155,7 +156,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 /*public*/ void AppConfigBase::saveContents()
 {
  // remove old prefs that are registered in ConfigManager
- ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ ConfigureManager* cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
  if (cm != nullptr)
  {
   cm->removePrefItems();
@@ -165,7 +166,8 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  foreach(PreferencesPanel* panel, this->getPreferencesPanels()->values())
  {
   Q_UNUSED(panel);
-//  this->registerWithConfigureManager(panel);
+     QObject* obj = panel->ppself();
+  this->registerWithConfigureManager(panel);
  }//);
  if (cm != nullptr)
  {
@@ -177,17 +179,17 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 {
  if (panel->isPersistant())
  {
-  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  ConfigureManager* cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
  if (cm != nullptr) {
-     cm->registerPref((QObject*)panel);
+     cm->registerPref(panel->ppself());
  }
 }
  //if (panel instanceof ManagingPreferencesPanel)
- if(dynamic_cast<ManagingPreferencesPanel*>(panel) != nullptr)
+ if(qobject_cast<ManagingPreferencesPanel*>(panel->ppself()) != nullptr)
  {
   log->debug(tr("Iterating over managed panels within %1/%2").arg(panel->getPreferencesItemText()).arg( panel->getTabbedPreferencesTitle()));
 //     ((ManagingPreferencesPanel*) panel).getPreferencesPanels().stream().forEach((managed) -> {
-  foreach (PreferencesPanel* managed, *((ManagingPreferencesPanel*) panel)->getPreferencesPanels())
+  foreach (PreferencesPanel* managed, ((ManagingPreferencesPanel*) panel->ppself())->getPreferencesPanels())
   {
 //   log->debug(tr("Registering %1 with the ConfigureManager").arg(managed->metaObject()->className()));
    this->registerWithConfigureManager(managed);
@@ -212,70 +214,37 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  if (!checkDups())
  {
 //  if (!(JOptionPane.showConfirmDialog(NULL, tr("MessageLongDupsWarning"), tr("MessageShortDupsWarning"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION))
-  if(QMessageBox::warning(nullptr, tr("Duplicates, save anyway?"), tr("You have duplicates in ports or connections. This can cause problems. Do you want to save anyway?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+  if (!(JOptionPane::showConfirmDialog(nullptr, tr("You have duplicates in ports or connections. This can cause problems. Do you want to save anyway?"), tr("Duplicates, save anyway?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION))
   {
    return;
   }
  }
- saveContents();
- /*final*/ UserPreferencesManager* p;
- p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
- p->resetChangeMade();
- if (restartRequired)
- {
-  if (p->getMultipleChoiceOption(getClassName(), "quitAfterSave") == 0)
-  {
-   QWidget* message = new QWidget();
-   QLabel* question = new QLabel(tr("<html><b>You must restart %1.</b><br>Your new settings will not take affect until you restart this application.</html>").arg( QApplication::applicationName()));
-   /*final*/ QCheckBox* remember = new QCheckBox(tr("Remember this setting for next time?"));
-   QFont f = remember->font();
-   f. setPointSizeF(10.0);
-   remember->setFont(f);
-   QVBoxLayout* messageLayout;
-   message->setLayout(messageLayout = new QVBoxLayout);//(message, BoxLayout.Y_AXIS));
-   messageLayout->addWidget(question);
-   messageLayout->addWidget(remember);
-//   Object[] options = {tr("RestartNow"), tr("RestartLater")};
-//    int retVal = JOptionPane.showOptionDialog(this,
-//            message,
-//            MessageFormat.format(tr("MessageShortQuitWarning"), Application.getApplicationName()),
-//            JOptionPane.YES_NO_OPTION,
-//            JOptionPane.QUESTION_MESSAGE,
-//            NULL,
-//            options,
-//            NULL);
-  int retVal = QMessageBox::warning(nullptr, tr("Restart %1?").arg(QApplication::applicationName()), tr("Restart now?"), QMessageBox::Yes | QMessageBox::No);
-  switch (retVal)
-  {
-   case QMessageBox::Yes:
-    if (remember->isChecked())
-    {
-     p->setMultipleChoiceOption(getClassName(), "quitAfterSave", 0x02);
-     saveContents();
-    }
-    dispose();
-    Apps::handleRestart();
-    break;
-   case QMessageBox::No:
-    if (remember->isChecked())
-    {
-     p->setMultipleChoiceOption(getClassName(), "quitAfterSave", 0x01);
-    }
-    break;
-   default:
-    break;
-  }
- }
-  else if (p->getMultipleChoiceOption(getClassName(), "quitAfterSave") == 2)
-  {
-   // restart the program
-   dispose();
-   // do orderly shutdown.  Note this
-   // invokes Apps.handleRestart, even if this
-   // panel hasn't been created by an Apps subclass.
-   Apps::handleRestart();
-  }
- }
+  saveContents();
+  /*final*/ UserPreferencesManager* p;
+     p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+     p->resetChangeMade();
+     if (restartRequired && !((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->isShuttingDown()) {
+             QString question =tr("<html><b>You must restart %1.</b><br>Your new settings will not take effect until you restart this application.</html>").arg(QApplication::applicationName());
+             QVariantList options = {tr("Restart"), tr("Later")};
+             int retVal = JOptionPane::showOptionDialog(this,
+                     question,
+                     tr("Restart %1").arg(QApplication::applicationName()),
+                     JOptionPane::YES_NO_OPTION,
+                     JOptionPane::QUESTION_MESSAGE,
+                     QIcon(),
+                     options,
+                     QVariant());
+             switch (retVal) {
+                 case JOptionPane::YES_OPTION:
+                     dispose();
+                     Apps::handleRestart();
+                     break;
+                 case JOptionPane::NO_OPTION:
+                     break;
+                 default:
+                     break;
+             }
+         }
  // don't restart the program, just close the window
 // if (getTopLevelAncestor() != NULL)
 // {

@@ -3,41 +3,33 @@
 #include "preferencespanel.h"
 #include "libpref_global.h"
 #include "abstractaction.h"
+#include "instancemanagerautodefault.h"
 
 class JFileChooser;
 class JTextField;
-class LIBPREFSHARED_EXPORT FileLocationPane : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT FileLocationPane : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
-    Q_INTERFACES(PreferencesPanel)
+    Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit FileLocationPane(QWidget *parent = 0);
     ~FileLocationPane() {}
     FileLocationPane(const FileLocationPane&);
-    virtual
-    /*public*/ QString getPreferencesItem();
-    virtual
-    /*public*/ QString getPreferencesItemText() ;
-    virtual
-    /*public*/ QString getTabbedPreferencesTitle();
-    virtual
-    /*public*/ QString getLabelKey();
-    virtual
-    /*public*/ QWidget* getPreferencesComponent();
-    virtual
-    /*public*/ bool isPersistant();
-    virtual
-    /*public*/ QString getPreferencesTooltip() ;
-    virtual
-    /*public*/ void savePreferences();
-    virtual
-    /*public*/ bool isDirty();
-    virtual
-    /*public*/ bool isRestartRequired();
+    /*public*/ QString getPreferencesItem() override;
+    /*public*/ QString getPreferencesItemText() override;
+    /*public*/ QString getTabbedPreferencesTitle() override;
+    /*public*/ QString getLabelKey() override;
+    /*public*/ QWidget* getPreferencesComponent() override;
+    /*public*/ bool isPersistant() override;
+    /*public*/ QString getPreferencesTooltip()  override;
+    /*public*/ void savePreferences() override;
+    /*public*/ bool isDirty() override;
+    /*public*/ bool isRestartRequired() override;
+    /*public*/ bool isPreferencesValid() override;
 
-    /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QString className() override;
+    /*public*/ QObject* ppself()  override{return (QObject*)this;}
 
 signals:
 

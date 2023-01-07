@@ -22,7 +22,7 @@ namespace Operations
    /*public*/ QString getPreferencesTooltip() override;
    /*public*/ void savePreferences() override;
    /*public*/ bool isDirty() override;
-   /*public*/ QString className() override {return "jmri.jmrit.operations.OperationsSettingsPanel";}
+   /*public*/ QString className() {return "jmri.jmrit.operations.OperationsSettingsPanel";}
 
   public slots:
    /*public*/ void buttonActionPerformed(QWidget* src) override;

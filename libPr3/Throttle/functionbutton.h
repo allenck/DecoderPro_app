@@ -71,7 +71,13 @@ public:
     /*public*/ void setFont(QFont) override {}
     /*public*/ Border* getBorder() override {return nullptr;}
     /*public*/ void setBorder(Border*) override {}
-
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    void setSize(int, int) {}
+    QString toString() {
+    if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+     }
 signals:
     void notifyFunctionStateChanged(int identity, bool isOn);
     void notifyFunctionLockableChanged(int identity, bool isLockable);

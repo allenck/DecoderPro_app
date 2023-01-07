@@ -343,7 +343,14 @@ public:
     /*public*/ void setLabelFor(QWidget* c);
     /*public*/ void setEnabled(bool b) override {QLabel::setEnabled(b);}
     ///*public*/ void addComponentListener()
-signals:
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    void setSize(int, int) {}
+    QString toString() {
+      if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+    }
+ signals:
     
 public slots:
 private:

@@ -110,6 +110,12 @@ public:
     /*public*/ void setFont(QFont )override;
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() override{return _border;}
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    QString toString() {
+      if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+    }
 
 
 signals:

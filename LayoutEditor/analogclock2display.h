@@ -50,6 +50,13 @@ public:
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder()  override{return _border;}
     /*public*/ void setEnabled(bool b)  override{QWidget::setEnabled(b);}
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    void setSize(int, int) {}
+    QString toString() {
+      if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+     }
     QObject* self() override {return (QObject*)this;}
     QObject* pself() override{return (QObject*)this;}
 

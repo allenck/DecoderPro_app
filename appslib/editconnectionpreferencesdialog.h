@@ -17,6 +17,7 @@ private:
  /*final*/ EditConnectionPreferences* editConnectionPreferences;
  bool restartProgram = false;
 
+ friend class EditConnectionPreferences;
 };
 
 #endif // EDITCONNECTIONPREFERENCESDIALOG_H

@@ -5,6 +5,7 @@
 #include <QWidget>
 #include "actionlistener.h"
 #include "jcolorchooser.h"
+#include <QFont>
 
 class JColorChooser;
 class JmriColorChooser : public QObject
@@ -17,6 +18,7 @@ public:
  static /*public*/ QColor showDialog(QWidget *comp, QString dialogTitle, QColor currentColor);
  static /*public*/ JColorChooser* extendColorChooser(JColorChooser* chooser);
  QColor getForeground();
+
 
 signals:
 

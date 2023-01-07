@@ -5,10 +5,10 @@
 #include "libpref_global.h"
 class QCheckBox;
 class QComboBox;
-class LIBPREFSHARED_EXPORT ProgrammerConfigPane : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT ProgrammerConfigPane : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit ProgrammerConfigPane(QWidget *parent = 0);
@@ -18,18 +18,19 @@ public:
     /*public*/ QWidget* getAdvancedPanel() ;
     /*public*/ bool getShowEmptyTabs() ;
     /*public*/ bool getShowCvNums();
-    /*public*/ virtual QString getPreferencesItem() ;
-    /*public*/ virtual QString getPreferencesItemText();
-    /*public*/ virtual QString getTabbedPreferencesTitle();
-    /*public*/ virtual QString getLabelKey();
-    /*public*/ virtual QWidget* getPreferencesComponent();
-    /*public*/ virtual bool isPersistant();
-    /*public*/ virtual QString getPreferencesTooltip();
-    /*public*/ virtual void savePreferences();
-    /*public*/ virtual bool isDirty();
-    /*public*/ virtual bool isRestartRequired();
+    /*public*/ virtual QString getPreferencesItem()  override;
+    /*public*/ virtual QString getPreferencesItemText() override;
+    /*public*/ virtual QString getTabbedPreferencesTitle() override;
+    /*public*/ virtual QString getLabelKey() override;
+    /*public*/ virtual QWidget* getPreferencesComponent() override;
+    /*public*/ virtual bool isPersistant() override;
+    /*public*/ virtual QString getPreferencesTooltip() override;
+    /*public*/ virtual void savePreferences() override;
+    /*public*/ virtual bool isDirty() override;
+    /*public*/ virtual bool isRestartRequired() override;
+    /*public*/ bool isPreferencesValid() override;
     /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QObject* ppself() override{return (QObject*)this;}
 
 signals:
 

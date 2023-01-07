@@ -21,7 +21,7 @@ namespace Operations
   /*public*/ QString getPreferencesTooltip() override;
   /*public*/ void savePreferences() override;
   /*public*/ bool isDirty() override;
-  /*public*/ QString className() override {return "jmri.jmrit.operations.PrintOptionPanel";}
+  /*public*/ QString className() {return "jmri.jmrit.operations.PrintOptionPanel";}
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae) override;
   /*public*/ void checkBoxActionPerformed(QWidget* ae) override;

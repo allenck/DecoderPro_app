@@ -1,26 +1,17 @@
 #ifndef MANAGINGPREFERENCESPANEL_H
 #define MANAGINGPREFERENCESPANEL_H
 #include "preferencespanel.h"
-#include "libpref_global.h"
-#include "jtabbedpane.h"
 
-class QToolButton;
-class LIBPREFSHARED_EXPORT ManagingPreferencesPanel : public JTabbedPane, public PreferencesPanel
-{
- Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
-public:
- explicit ManagingPreferencesPanel(QWidget *parent = 0);
- ~ManagingPreferencesPanel() {}
- ManagingPreferencesPanel(const ManagingPreferencesPanel&) : JTabbedPane() {}
- /*public*/ /*abstract*/virtual  QList<PreferencesPanel*>* getPreferencesPanels();
- /*public*/ QString className();
- /*public*/ QObject* self() {return (QObject*)this;}
-
-signals:
-
-public slots:
-
+/**
+ * A {@link jmri.swing.PreferencesPanel} that manages other PreferencesPanels
+ * within its own panel.
+ *
+ * @author Randall Wood 2015
+ */
+/*public*/ /*interface*/class  ManagingPreferencesPanel : public PreferencesPanel {
+ public:
+    /*public*/ /*abstract*/virtual QList<PreferencesPanel*> getPreferencesPanels() =0;
 };
-Q_DECLARE_METATYPE(ManagingPreferencesPanel)
+
+Q_DECLARE_INTERFACE(ManagingPreferencesPanel, "ManagingPreferencesPanel")
 #endif // MANAGINGPREFERENCESPANEL_H

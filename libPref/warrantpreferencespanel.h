@@ -18,10 +18,10 @@ class SpeedNameTableModel;
 class QComboBox;
 class JTextField;
 class WarrantPreferences;
-class LIBPREFSHARED_EXPORT WarrantPreferencesPanel : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT WarrantPreferencesPanel : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
  Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
  Q_INVOKABLE explicit WarrantPreferencesPanel(QWidget *parent = 0);
@@ -42,7 +42,7 @@ public:
  /*public*/ QString className();
  QSize sizeHint();
  QSize minimumSizeHint();
- /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QObject* ppself() {return (QObject*)this;}
 
 signals:
 

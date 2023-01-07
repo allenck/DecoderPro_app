@@ -90,6 +90,13 @@ public:
     void setBorder(Border* /*b*/)  override{}
     Border* getBorder()  override{return nullptr;}
     QObject* pself() override {return (QObject*)this;}
+    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+    void setSize(int, int) {}
+    QString toString() {
+      if(!jself()->objectName().isEmpty()) return jself()->objectName();
+      else return jself()->metaObject()->className();
+    }
 
 signals:
  void propertyChange(PropertyChangeEvent*) override;

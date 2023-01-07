@@ -133,6 +133,9 @@
 /*public*/ bool PerformFilePanel::isRestartRequired() {
     return this->isDirty();
 }
+/*public*/ bool PerformFilePanel::isPreferencesValid() {
+ return true;
+}
 
 // /*public*/ class Item extends QWidget* implements ActionListener {
 

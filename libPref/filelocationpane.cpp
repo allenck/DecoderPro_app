@@ -234,6 +234,11 @@ void FileLocationPane::On_fileSelected(QString file)
     return this->restartRequired;
 }
 
+//@Override
+/*public*/ bool FileLocationPane::isPreferencesValid() {
+    return true; // no validity checking performed
+}
+
 ///*private*/ class OpenAction extends AbstractAction {
 //    JFileChooser chooser;
 //    JTextField field;

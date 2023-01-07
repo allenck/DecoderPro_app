@@ -139,10 +139,10 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
      ConfigXmlManager::creationErrorEncountered(
              NULL, "opening connection",
              status,
-             "", "", new Exception()
+             "", "", new Exception(status)
      );
      // now force end to operation
-     log->debug("load failed");
+     log->debug("load failed: "+ status);
      return false;
     }
 

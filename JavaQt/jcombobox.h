@@ -52,6 +52,13 @@ public:
 // /*public*/ void  addItem(QString text) {QComboBox::addItem(text);}
  /*public*/ void addItem(QVariant t);
  /*public*/ bool isSelected();
+ QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+ QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+ void setSize(int, int) {}
+ QString toString() {
+   if(!jself()->objectName().isEmpty()) return jself()->objectName();
+   else return jself()->metaObject()->className();
+ }
 
 signals:
  void itemStateChanged(ItemEvent* e);

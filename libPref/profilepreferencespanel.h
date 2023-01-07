@@ -14,10 +14,10 @@ class QListView;
 class QTabWidget;
 class QCheckBox;
 class QPushButton;
-class LIBPREFSHARED_EXPORT ProfilePreferencesPanel : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT ProfilePreferencesPanel : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit ProfilePreferencesPanel(QWidget *parent = 0);
@@ -37,10 +37,11 @@ public:
     /*public*/ void dispose();
     /*public*/ bool isDirty() ;
     /*public*/ bool isRestartRequired() ;
+    /*public*/ bool isPreferencesValid() override;
      /*public*/ bool accept(File* f);
      /*public*/ QString getDescription() ;
     /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QObject* ppself() {return (QObject*)this;}
 
 signals:
 

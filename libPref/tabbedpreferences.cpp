@@ -9,33 +9,14 @@
 #include <QIcon>
 #include "fileutil.h"
 #include <QMetaObject>
-#include "jseparator.h"
 #include "preferencessubpanel.h"
 #include "propertychangeevent.h"
 #include <QMetaType>
-#include "connectionspreferencespanel.h"
-#include "programmerconfigpane.h"
-#include "createbuttonmodel.h"
-#include "performactionmodel.h"
-#include "managerdefaultsconfigpane.h"
-#include "filelocationpane.h"
-#include "guilafconfigpane.h"
-#include "throttlespreferencespane.h"
-#include "usermessagepreferencespane.h"
 #include <performfilepanel.h>
-#include "rosterconfigpane.h"
-#include "guilocalepreferencespanel.h"
-#include "railroadnamepreferencespanel.h"
-#include "profilepreferencespanel.h"
-#include "signalheadtableaction.h"
-#include "turnouttableaction.h"
 #include "metatypes.h"
 #include "loggerfactory.h"
-#include "class.h"
 #include "instancemanager.h"
-#include "webserverpreferencespanel.h"
 #include <QSplitter>
-#include "helputilpreferencespanel.h"
 
 //TabbedPreferences::TabbedPreferences(QObject *parent) :
 //    AppConfigBase(parent)
@@ -194,37 +175,37 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 //                });
 #if 0
  [ "jmri.jmrix.swing.ConnectionsPreferencesPanel", "apps.ManagerDefaultsConfigPane",
-         "apps.FileLocationPane", "apps.PerformActionPanel", /*"apps.CreateButtonPanel",*/
-         "apps.PerformFilePanel", "apps.PerformScriptPanel", "apps.GuiLafConfigPane",
-         "apps.GuiLocalePreferencesPanel", "apps.SystemConsoleConfigPanel",
-         "jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane",
-         "jmri.jmrit.symbolicprog.ProgrammerConfigPane", "jmri.jmrit.roster.RosterConfigPane",
-         "jmri.jmrit.throttle.ThrottlesPreferencesPane", "jmri.jmrit.withrottle.WiThrottlePrefsPanel",
-         "jmri.profile.ProfilePreferencesPanel", "jmri.jmris.json.JsonServerPreferencesPanel",
-         "jmri.web.server.RailroadNamePreferencesPanel", "jmri.web.server.WebServerPreferencesPanel",
-         "jmri.jmrit.logix.WarrantPreferencesPanel" ]
+   "apps.FileLocationPane",/* "apps.PerformActionPanel",*/ /*"apps.CreateButtonPanel",*/
+   "apps.PerformFilePanel", "apps.PerformScriptPanel", "apps.GuiLafConfigPane",
+   "apps.GuiLocalePreferencesPanel", "apps.SystemConsoleConfigPanel",
+   "jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane",
+   "jmri.jmrit.symbolicprog.ProgrammerConfigPane", "jmri.jmrit.roster.RosterConfigPane",
+   "jmri.jmrit.throttle.ThrottlesPreferencesPane", "jmri.jmrit.withrottle.WiThrottlePrefsPanel",
+   "jmri.profile.ProfilePreferencesPanel", "jmri.jmris.json.JsonServerPreferencesPanel",
+   "jmri.web.server.RailroadNamePreferencesPanel", "jmri.web.server.WebServerPreferencesPanel",
+   "jmri.jmrit.logix.WarrantPreferencesPanel" ]
 #endif
  QStringList classNames = QStringList()
   << QString("jmri.jmrix.swing.ConnectionsPreferencesPanel")
   << QString( "apps.ManagerDefaultsConfigPane")
   << QString( "apps.FileLocationPane" )
-  << QString( "apps.PerformFilePanel")
-  << QString("apps.GuiLafConfigPane")
-  << QString("apps.GuiLocalePreferencesPanel")
-  << QString( "apps.SystemConsoleConfigPanel")
-  << QString("jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane")
-  << QString( "jmri.jmrit.symbolicprog.ProgrammerConfigPane")
-  << QString("jmri.web.server.WebServerPreferencesPanel")
-  << QString("jmri.jmrit.roster.RosterConfigPane")
-  << QString( "jmri.jmrit.throttle.ThrottlesPreferencesPane")
-  << QString("jmri.jmrit.throttle.WiThrottlePrefsPanel")
-  << QString( "jmri.profile.ProfilePreferencesPanel")
-  << QString("apps.startup.StartupActionsPreferencesPanel")
-  << QString("jmri.jmrix.loconet.LnTcpPreferencesPanel")
-  << QString("jmri.server.json.JsonServerPreferencesPanel")
-  << QString( "jmri.web.server.RailroadNamePreferencesPanel")
-  << QString("jmri.jmrit.logix.WarrantPreferencesPanel")
-  << QString("jmri.util.HelpUtilPreferencesPanel")
+//  << QString( "apps.PerformFilePanel")
+//  << QString("apps.GuiLafConfigPane")
+//  << QString("apps.GuiLocalePreferencesPanel")
+//  << QString( "apps.SystemConsoleConfigPanel")
+//  << QString("jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane")
+//  << QString( "jmri.jmrit.symbolicprog.ProgrammerConfigPane")
+//  << QString("jmri.web.server.WebServerPreferencesPanel")
+//  << QString("jmri.jmrit.roster.RosterConfigPane")
+//  << QString( "jmri.jmrit.throttle.ThrottlesPreferencesPane")
+//  << QString("jmri.jmrit.throttle.WiThrottlePrefsPanel")
+//  << QString( "jmri.profile.ProfilePreferencesPanel")
+//  << QString("apps.startup.StartupActionsPreferencesPanel")
+//  << QString("jmri.jmrix.loconet.LnTcpPreferencesPanel")
+//  << QString("jmri.server.json.JsonServerPreferencesPanel")
+//  << QString( "jmri.web.server.RailroadNamePreferencesPanel")
+//  << QString("jmri.jmrit.logix.WarrantPreferencesPanel")
+//  << QString("jmri.util.HelpUtilPreferencesPanel")
   ;
 
  // add preference panels registered with the Instance Manager
@@ -250,6 +231,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 
  foreach (QString className,classNames)
  {
+#if 0
   try
   {
    QObject* panel = NULL;
@@ -270,7 +252,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
     }
    }
    if (!delayed.contains(qobject_cast<PreferencesPanel*>(panel))) {
-       this->addPreferencesPanel(qobject_cast<PreferencesPanel*>(panel));
+       this->addPreferencesPanel((PreferencesPanel*)panel);
    }
   }
   //catch (ClassNotFoundException* | InstantiationException | IllegalAccessException e) {
@@ -282,15 +264,30 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   {
     log->error("Unable to add preferences class (" + className + ")"/*, e*/);
   }
- }
 
+ }
+#else
+  QObject* panel = InstanceManager::getDefault(className.mid(className.lastIndexOf(".")+1));
+  if (qobject_cast<PreferencesSubPanel*>(panel)) {
+      QString parent = (dynamic_cast<PreferencesSubPanel*>(panel))->getParentClassName();
+      if (!this->getPreferencesPanels()->contains(parent)) {
+          delayed.insert(dynamic_cast<PreferencesPanel*>(panel));
+      } else {
+          ((PreferencesSubPanel*) panel)->setParent(this->getPreferencesPanels()->value(parent));
+      }
+  }
+  if (!delayed.contains((PreferencesPanel*)panel)) {
+      this->addPreferencesPanel(dynamic_cast<PreferencesPanel*>(panel));
+  }
+ }
+#endif
  while (!delayed.isEmpty())
  {
   QSet<PreferencesPanel*> iterated = QSet<PreferencesPanel*>(delayed);
   //iterated.stream().filter((panel) -> (panel instanceof PreferencesSubPanel)).forEach((panel) ->
   foreach(PreferencesPanel* panel, iterated)
   {
-      QString parent = qobject_cast<PreferencesSubPanel*>(panel->self())->getParentClassName();
+      QString parent = qobject_cast<PreferencesSubPanel*>(panel->ppself())->getParentClassName();
       if (this->getPreferencesPanels()->contains(parent)) {
           qobject_cast<PreferencesSubPanel*>( (QObject*)panel)->setParent(this->getPreferencesPanels()->value(parent));
           delayed.remove(panel);
@@ -306,19 +303,23 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
  int widgetIndex = 1;
  foreach (PreferencesCatItems* preferences, preferencesArray)
  {
-  splitter->addWidget(preferences->getPanel());
+  if(preferences->getPanel()){
+   splitter->addWidget(preferences->getPanel());
   log->debug(tr("add panel %1 class %2 index %3").arg(preferences->getPrefItem()).arg(preferences->getPanel()->metaObject()->className()).arg(widgetIndex));
+  }
   widgetIndexes.insert(preferences->getPrefItem(), widgetIndex);
   splitter->setStretchFactor(widgetIndex++,2);
-  preferences->getPanel()->hide();
-  preferences->getPanel()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  if(preferences->getPanel()){
+   preferences->getPanel()->hide();
+   preferences->getPanel()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  }
  }
 
 // preferencesArray.sort((PreferencesCatItems o1, PreferencesCatItems o2) -> {
 //     int comparison = Integer.compare(o1.sortOrder, o2.sortOrder);
 //     return (comparison != 0) ? comparison : o1.getPrefItem().compareTo(o2.getPrefItem());
 // });
- qSort(preferencesArray.begin(), preferencesArray.end(), preferencesCompare);
+ std::sort(preferencesArray.begin(), preferencesArray.end(), preferencesCompare);
 
  updateJList();
  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -373,7 +374,7 @@ bool TabbedPreferences::isDirty()
   if (log->isDebugEnabled())
   {
    log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
-           panel->className()).arg(
+           panel->ppself()->metaObject()->className()).arg(
            (panel->getTabbedPreferencesTitle() != "") ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
            (panel->isDirty() ? "dirty" : "clean")));
   }
@@ -392,7 +393,7 @@ bool TabbedPreferences::isDirty()
   if (log->isDebugEnabled())
   {
    log->debug(QString("PreferencesPanel %1 (%2) is %3.").arg(
-                    panel->className()).arg(
+                    panel->ppself()->metaObject()->className()).arg(
                     (panel->getTabbedPreferencesTitle() != "") ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
                     (panel->isDirty())? "dirty" : "clean"));
   }
@@ -400,7 +401,7 @@ bool TabbedPreferences::isDirty()
   if (log->isDebugEnabled())
   {
    log->debug(QString("PreferencesPanel %1 (%2) restart is %3 required.").arg(
-                    panel->className()).arg(
+                    panel->ppself()->metaObject()->className()).arg(
                     (panel->getTabbedPreferencesTitle() != "") ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
                     (panel->isRestartRequired()) ? "" : "not "));
   }
@@ -465,34 +466,22 @@ void TabbedPreferences::selection(QString view)
 
 /*public*/ void TabbedPreferences::addPreferencesPanel(PreferencesPanel* panel)
 {
- this->preferencesPanels->insert(panel->className(), panel);
+ QObject* obj = panel->ppself();
+  this->preferencesPanels->insert(panel->className(), panel);
 
- QString preferenceItem = panel->getPreferencesItem();
- Q_UNUSED(preferenceItem);
- QString preferencesItemText = panel->getPreferencesItemText();
- Q_UNUSED(preferencesItemText);
- QString tabbedPreferencesTitle = panel->getTabbedPreferencesTitle();
- Q_UNUSED(tabbedPreferencesTitle);
- QString labelKey = panel ->getLabelKey();
- Q_UNUSED(labelKey);
- bool bPersistent = panel->isPersistant();
- Q_UNUSED(bPersistent);
- QString toolTip = panel->getPreferencesTooltip();
- Q_UNUSED(toolTip);
+  addItem(panel->getPreferencesItem(),
+          panel->getPreferencesItemText(),
+          panel->getTabbedPreferencesTitle(),
+          panel->getLabelKey(),
+          panel,
+          panel->getPreferencesTooltip(),
+          panel->getSortOrder()
+  );
 
- addItem(panel->getPreferencesItem(),
-            panel->getPreferencesItemText(),
-            panel->getTabbedPreferencesTitle(),
-            panel->getLabelKey(),
-            panel,
-            panel->getPreferencesTooltip(),
-            panel->getSortOrder(),
-            panel->className()
- );
 }
 
 /*private*/ void TabbedPreferences::addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey,
-                                            PreferencesPanel* item, QString tooltip, int sortOrder, QString className)
+                                            PreferencesPanel* item, QString tooltip, int sortOrder)
 {
  PreferencesCatItems* itemBeingAdded = NULL;
  foreach (PreferencesCatItems* preferences, preferencesArray)
@@ -523,7 +512,8 @@ void TabbedPreferences::selection(QString view)
  {
      tabtitle = itemText;
  }
- itemBeingAdded->addPreferenceItem(tabtitle, labelKey, item->getPreferencesComponent(), tooltip, sortOrder,className);
+ itemBeingAdded->addPreferenceItem(tabtitle, labelKey, item->getPreferencesComponent(),
+                                   tooltip, sortOrder);
 }
 
 /* Method allows for the preference to goto a specific list item */
@@ -649,7 +639,8 @@ PreferencesCatItems::PreferencesCatItems(QString pref, QString title, int sortOr
  this->tabbedPreferences = tabbedPreferences;
 }
 
-void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWidget* item, QString tooltip, int sortOrder, QString className)
+void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWidget* item,
+                                            QString tooltip, int sortOrder)
 {
   foreach (TabDetails* tabDetails, tabDetailsArray)
   {
@@ -659,9 +650,9 @@ void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWi
     return;
    }
   }
-  TabDetails* tab = new TabDetails(labelkey, title, item, tooltip, sortOrder, className);
+  TabDetails* tab = new TabDetails(labelkey, title, item, tooltip, sortOrder);
   tabDetailsArray.append(tab);
-  qSort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);
+  std::sort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);
   QScrollArea* scroller = new QScrollArea(/*tab->getPanel()*/);
   scroller->setWidget(tab->getPanel());
   scroller->setWidgetResizable(true);
@@ -780,14 +771,14 @@ void PreferencesCatItems::setSortOrder(int sortOrder) { this->sortOrder = sortOr
 //            //boolean store;
 
 TabDetails::TabDetails(QString labelkey, QString tabTit, QWidget* item,
-        QString tooltip, int sortOrder, QString className)
+        QString tooltip, int sortOrder)
 {
     tabItem = item;
     tabTitle = tabTit;
     tabTooltip = tooltip;
     tabPanel = new QWidget;
     this->sortOrder = sortOrder;
-    this->_className = className;
+//    this->_className = className;
 
     QWidget* p = new QWidget();
     //p.setLayout(new BorderLayout());

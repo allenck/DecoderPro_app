@@ -136,4 +136,9 @@ void /*private*/ ProgrammerConfigPane::common()
     return this->isDirty();
 }
 
+//@Override
+/*public*/ bool ProgrammerConfigPane::isPreferencesValid() {
+    return true; // no validity checking performed
+}
+
 /*public*/ QString ProgrammerConfigPane::className() {return "jmri.jmrit.symbolicprog.ProgrammerConfigPane";}

@@ -34,6 +34,13 @@ public:
 
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* pl);
  /*public*/ QWidget* getComponent(int index);
+ QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+ QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+ void setSize(int, int) {}
+ QString toString() {
+   if(!jself()->objectName().isEmpty()) return jself()->objectName();
+   else return jself()->metaObject()->className();
+ }
 
 private:
  Border* border = nullptr;

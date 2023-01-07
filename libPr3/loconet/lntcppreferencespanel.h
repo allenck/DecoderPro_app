@@ -8,10 +8,10 @@
 #include "itemlistener.h"
 
 
-class LnTcpPreferencesPanel : public QWidget, public PreferencesPanel
+class LnTcpPreferencesPanel : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
  Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
  Q_INVOKABLE LnTcpPreferencesPanel(QWidget* parent = nullptr);
@@ -27,9 +27,9 @@ public:
  /*public*/ void savePreferences();
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired() ;
- /*public*/ virtual bool isPreferencesValid();
+ /*public*/ bool isPreferencesValid();
  /*public*/ QString className();
- /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QObject* ppself() {return (QObject*)this;}
 
 
 public slots:

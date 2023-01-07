@@ -8,10 +8,10 @@ class WiThrottlePreferences;
 class QSpinBox;
 class QRadioButton;
 class QCheckBox;
-class WiThrottlePrefsPanel : public QWidget, public PreferencesPanel
+class WiThrottlePrefsPanel : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
  Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
  Q_INVOKABLE WiThrottlePrefsPanel(QWidget* parent = 0);
@@ -32,7 +32,7 @@ public:
  /*public*/ bool isRestartRequired() ;
  /*public*/ bool isPreferencesValid();
  /*public*/ QString className();
- /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QObject* ppself() {return (QObject*)this;}
 
 
 private:

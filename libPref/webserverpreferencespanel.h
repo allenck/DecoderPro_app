@@ -10,10 +10,10 @@ class QCheckBox;
 class ItemListener;
 class BindingGroup;
 class WebServerPreferences;
-class WebServerPreferencesPanel : public JPanel, public PreferencesPanel
+class WebServerPreferencesPanel : public JPanel, public PreferencesPanel, public InstanceManagerAutoDefault
 {
  Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
  Q_INVOKABLE WebServerPreferencesPanel(QWidget* parent = 0);
@@ -32,7 +32,7 @@ public:
  /*public*/ bool isPreferencesValid();
  /*public*/ int getSortOrder();
  /*public*/ QString className();
- /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QObject* ppself() override {return (QObject*)this;}
 
 
 public slots:

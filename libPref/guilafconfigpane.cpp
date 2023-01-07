@@ -387,5 +387,9 @@ void GuiLafConfigPane::on_toolTipDismissDelaySpinner(int value)
 /*public*/ bool GuiLafConfigPane::isRestartRequired() {
     return this->isDirty(); // all changes require a restart
 }
+//@Override
+/*public*/ bool GuiLafConfigPane::isPreferencesValid() {
+    return true; // no validity checking performed
+}
 
 /*public*/ QString GuiLafConfigPane::className() {return "apps.GuiLafConfigPane";}

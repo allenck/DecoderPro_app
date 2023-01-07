@@ -4,6 +4,8 @@
 #include <QString>
 #include "libpref_global.h"
 #include "limits.h"
+#include "jmriserviceproviderinterface.h"
+#include "instancemanagerautodefault.h"
 
 /**
  * An interface to define methods that the Preferences Window can and should
@@ -16,9 +18,9 @@
  *
  * @author Randall Wood (C) 2012, 2014
  */
-/*public*/ /*interface*/ class LIBPREFSHARED_EXPORT PreferencesPanel
+/*public*/ /*interface*/ class LIBPREFSHARED_EXPORT PreferencesPanel : public JmriServiceProviderInterface
 {
-
+Q_INTERFACES(JmriServiceProviderInterface)
 public:
     /**
      * Get the Preferences Item identifier.
@@ -29,7 +31,7 @@ public:
      *
      * @return the preferences item identifier.
      */
-    virtual /*public abstract*/ QString getPreferencesItem() {return "";}
+    virtual /*public abstract*/ QString getPreferencesItem() =0;
 
     /**
      * Get the text for the Preferences Item in the preferences window list of
@@ -41,14 +43,14 @@ public:
      *
      * @return the text for the preferences item.
      */
-    virtual /*public abstract*/ QString getPreferencesItemText() {return "";}
+    virtual /*public abstract*/ QString getPreferencesItemText() =0;
 
     /**
      * Get the title for the tab containing this preferences item.
      *
      * @return a tab title
      */
-    virtual /*public abstract*/ QString getTabbedPreferencesTitle() {return "";}
+    virtual /*public abstract*/ QString getTabbedPreferencesTitle() =0;
 
     /**
      * Text displayed above the preferences panel
@@ -58,15 +60,13 @@ public:
      *
      * @return label text
      */
-    virtual /*public abstract*/ QString getLabelKey() {return "";}
-
+    virtual /*public abstract*/ QString getLabelKey() =0;
     /**
      * Get the preferences component for display
      *
      * @return the preferences panel
      */
-    virtual /*public abstract*/ QWidget* getPreferencesComponent() {return nullptr;}
-
+    virtual /*public abstract*/ QWidget* getPreferencesComponent() =0;
     /**
      * Indicates that this PrefernecesPanel should be stored across application
      * starts by the PreferencesManager
@@ -77,14 +77,14 @@ public:
      *
      * @return false if the implementing class stores its own preferences
      */
-    virtual /*public abstract*/ bool isPersistant() {return false;}
+    virtual /*public abstract*/ bool isPersistant() =0;
 
     /**
      * The tooltip to display for a tabbed preferences panel
      *
      * @return tooltip text
      */
-    virtual /*public abstract*/ QString getPreferencesTooltip() {return "";}
+    virtual /*public abstract*/ QString getPreferencesTooltip() =0;
 
     /**
      * Save any changes to preferences.
@@ -93,21 +93,21 @@ public:
      * loaded by {@link apps.gui3.TabbedPreferences} if {@link #isPersistant()}
      * is false.
      */
-    virtual /*public abstract*/ void savePreferences() {}
+    virtual /*public abstract*/ void savePreferences() =0;
 
     /**
      * Indicate that preferences need to be saved.
      *
      * @return true if preferences need to be saved, false otherwise
      */
-    virtual /*public abstract*/ bool isDirty() {return true;}
+    virtual /*public abstract*/ bool isDirty() =0;
 
     /**
      * Indicate that the preferences will not take effect until restarted.
      *
      * @return true if the application needs to restart
      */
-    virtual /*public abstract*/ bool isRestartRequired() {return false;}
+    virtual /*public abstract*/ bool isRestartRequired() =0;
  /**
   * Returns the top-level ancestor of this component (either the
   * containing <code>Window</code> or <code>Applet</code>),
@@ -134,7 +134,9 @@ public:
   *
   * @return true if the preferences are valid, false otherwise
   */
- /*public*/ /*abstract*/ virtual bool isPreferencesValid() {return false;}
+ /*public*/ /*abstract*/ virtual bool isPreferencesValid() =0;
+
+  /*public*/ virtual QString className() =0;
 
  /**
   * Indicate the sort order to be used to sort PreferencesPanels in
@@ -144,12 +146,11 @@ public:
   * @return the sort order; default implementation returns
   *         {@link java.lang.Integer#MAX_VALUE}.
   */
- /*public*/ /*default*/ virtual int getSortOrder() {
+ /*public*/ /*default*/ int getSortOrder() {
      return INT_MAX;
  }
- virtual QString className() =0;
 
- virtual QObject* self() =0;
+ virtual QObject* ppself() =0;
 };
 Q_DECLARE_INTERFACE(PreferencesPanel, "PreferencesPanel")
 #endif // PREFERENCESPANEL_H

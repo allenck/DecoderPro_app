@@ -167,6 +167,13 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   /*public*/ void setBorder(Border*) override{}
   /*public*/ Border* getBorder() override{return nullptr;}
   /*public*/ void setEnabled(bool) override{}
+  QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+  QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+  void setSize(int, int) {}
+  QString toString() {
+    if(!jself()->objectName().isEmpty()) return jself()->objectName();
+    else return jself()->metaObject()->className();
+  }
 
  private:
   /*private*/ bool waitingForIplReply;

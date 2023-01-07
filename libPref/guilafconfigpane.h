@@ -11,10 +11,10 @@ class JCheckBox;
 class QButtonGroup;
 class JComboBox;
 class QLocale;
-class LIBPREFSHARED_EXPORT GuiLafConfigPane : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT GuiLafConfigPane : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
-    Q_INTERFACES(PreferencesPanel)
+    Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
     /*public*/ static /*final*/ int MAX_TOOLTIP_TIME;// = 3600;
@@ -26,7 +26,7 @@ public:
     GuiLafConfigPane(const GuiLafConfigPane&) : QWidget() {}
     /*public*/ QWidget* doLocale();
     /*public*/ void setLocale(QString loc);
-    virtual
+
     /*public*/ QLocale* getLocale() ;
     static int fontSize;// = 0;
     /*public*/ static void setFontSize(int size);
@@ -34,33 +34,34 @@ public:
     //static ActionListener* listener;
     /*public*/ void doFontSize(QWidget* panel);
     /*public*/ QString getClassName() ;
-    virtual
-    /*public*/ QString getPreferencesItem();
-    virtual
-    /*public*/ QString getPreferencesItemText();
-    virtual
-    /*public*/ QString getTabbedPreferencesTitle();
-    virtual
-    /*public*/ QString getLabelKey() ;
-    virtual
-    /*public*/ QWidget* getPreferencesComponent();
-    virtual
-    /*public*/ bool isPersistant();
-    virtual
-    /*public*/ QString getPreferencesTooltip();
-    virtual
-    /*public*/ void savePreferences();
-    virtual
-    /*public*/ bool isDirty();
-    virtual
-    /*public*/ bool isRestartRequired();
+
+    /*public*/ QString getPreferencesItem() override;
+
+    /*public*/ QString getPreferencesItemText() override;
+
+    /*public*/ QString getTabbedPreferencesTitle() override;
+
+    /*public*/ QString getLabelKey()  override;
+
+    /*public*/ QWidget* getPreferencesComponent() override;
+
+    /*public*/ bool isPersistant() override;
+
+    /*public*/ QString getPreferencesTooltip() override;
+
+    /*public*/ void savePreferences() override;
+
+    /*public*/ bool isDirty() override;
+
+    /*public*/ bool isRestartRequired() override;
+    /*public*/ bool isPreferencesValid() override;
 
     /*public*/ QString className();
     void doGraphicState(JPanel* panel);
     void doTabbedOblockEditor(JPanel* panel);
     void doEditorUseOldLocSize(JPanel* panel);
     /*public*/ void doToolTipDismissDelay(JPanel* panel);
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QObject* ppself() {return (QObject*)this;}
     /*public*/ JCheckBox* graphicStateDisplay;
     /*public*/ JCheckBox* tabbedOblockEditor;
     /*public*/ JCheckBox* editorUseOldLocSizeDisplay;

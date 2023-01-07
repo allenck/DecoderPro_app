@@ -31,13 +31,6 @@
 /*private*/ /*static*/ /*final*/ Logger* ConnectionsPreferencesPanel::log = LoggerFactory::getLogger("ConnectionsPreferencesPanel");
 
 
-///*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(TabbedPreferences* preferences, QWidget* parent)
-// : ManagingPreferencesPanel(parent)
-//{
-// //super();
-// common(preferences);
-//}
-
 void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
 {
  setObjectName("ConnectionsPreferencesPanel");
@@ -112,7 +105,7 @@ void ConnectionsPreferencesPanel::propertyChange(PropertyChangeEvent* evt)
 }
 
 /*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(QWidget *parent)
-    : ManagingPreferencesPanel(parent)
+    : JTabbedPane(parent)
 {
  common(/*(TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences")*/);
 }
@@ -144,9 +137,11 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  bDeleteFlag = false;
 }
 
-/*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(const ConnectionsPreferencesPanel & other)
+/*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(const ConnectionsPreferencesPanel & other) : JTabbedPane()
 {
- //this->preferences = other.preferences;
+ this->bDeleteFlag = other.bDeleteFlag;
+ this->restartRequired = other.restartRequired;
+ this->configPanes = other.configPanes;
 }
 
 /*private*/ void ConnectionsPreferencesPanel::activeTab()
@@ -350,7 +345,7 @@ void ConnectionsPreferencesPanel::addConnectionTab()
     return;
    }
   }
-  JmrixConfigPane* configPane = this->configPanes.at(i);
+  JmrixConfigPane* configPane = (JmrixConfigPane*)this->configPanes.at(i);
 
   //this->removeChangeListener(addTabListener);
   //this->remove(i); // was x
@@ -395,12 +390,12 @@ void ConnectionsPreferencesPanel::addConnectionTab()
 
 //@Override
 /*public*/ QString ConnectionsPreferencesPanel::getTabbedPreferencesTitle() {
-    return NULL;
+    return "";
 }
 
 //@Override
 /*public*/ QString ConnectionsPreferencesPanel::getLabelKey() {
-    return NULL;
+    return "";
 }
 
 //@Override
@@ -415,7 +410,7 @@ void ConnectionsPreferencesPanel::addConnectionTab()
 
 //@Override
 /*public*/ QString ConnectionsPreferencesPanel::getPreferencesTooltip() {
-    return NULL;
+    return "";
 }
 
 //@Override
@@ -478,9 +473,14 @@ int ConnectionsPreferencesPanel::indexOfTab(QString text)
  return bValid;
 }
 
-/*public*/ QString ConnectionsPreferencesPanel::className() {return "ConnectionsPreferencesPanel";}
+/*public*/ QString ConnectionsPreferencesPanel::className() {return "jmri.jmrix.swing.ConnectionsPreferencesPanel";}
 
 //@Override
-/*public*/ QList<PreferencesPanel*>* ConnectionsPreferencesPanel::getPreferencesPanels() {
-    return (QList<PreferencesPanel*>*)new QList<JmrixConfigPane*>(this->configPanes);
+/*public*/ QList<PreferencesPanel *> ConnectionsPreferencesPanel::getPreferencesPanels() {
+    //return  QList<PreferencesPanel*>(this->configPanes);
+ QList<PreferencesPanel*> list;
+ foreach (JmrixConfigPane* pane, this->configPanes) {
+  list.append((PreferencesPanel*)pane);
+ }
+ return list;
 }

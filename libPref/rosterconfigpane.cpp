@@ -253,6 +253,11 @@ if (window() != NULL) {
             : Roster::getDefault()->getRosterLocation()!=(this->getSelectedItem());
 }
 
+//@Override
+/*public*/ bool RosterConfigPane::isPreferencesValid() {
+    return true; // no validity checking performed
+}
+
 /*public*/ QString RosterConfigPane::className() {return "jmri.jmrit.roster.RosterConfigPane";}
 
 

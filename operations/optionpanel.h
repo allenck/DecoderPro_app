@@ -15,7 +15,7 @@ namespace Operations
   /*public*/ QString getPreferencesTooltip();
   /*public*/ void savePreferences();
   /*public*/ bool isDirty();
-  /*public*/ QString className() override {return "jmri.jmrit.operations.OptionPanel";}
+  /*public*/ QString className() {return "jmri.jmrit.operations.OptionPanel";}
 
  public slots:
   /*public*/ void radioButtonActionPerformed(QWidget* ae);

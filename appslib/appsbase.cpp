@@ -4,14 +4,11 @@
 #include "layoutblockmanager.h"
 #include "defaultcatalogtreemanagerxml.h"
 #include "profilemanager.h"
-#include "configxmlmanager.h"
 #include "filehistory.h"
-#include "jmriuserpreferencesmanager.h"
 #include "createbuttonmodel.h"
 #include "file.h"
 #include "defaultshutdownmanager.h"
 #include "profile.h"
-#include "dialogerrorhandler.h"
 #include "tabbedpreferences.h"
 #include "defaultidtagmanager.h"
 #include "blockvaluefile.h"
@@ -76,7 +73,8 @@ AppsBase::AppsBase(QObject *parent) :
 //    log->info(Log4JUtil.startupInfo(applicationName));
 
     _preInit = true;
-    qsrand(QTime::currentTime().msec());
+    //qsrand(QTime::currentTime().msec());
+    QRandomGenerator::global()->generate();
 }
 
 /**

@@ -4,10 +4,11 @@
 #include "libpref_global.h"
 
 class GuiLafConfigPane;
-class LIBPREFSHARED_EXPORT GuiLocalePreferencesPanel : public QWidget, public PreferencesSubPanel, public PreferencesPanel
+class LIBPREFSHARED_EXPORT GuiLocalePreferencesPanel : public QWidget, public PreferencesSubPanel,
+  public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
-    Q_INTERFACES(PreferencesPanel PreferencesSubPanel)
+    Q_INTERFACES(PreferencesPanel PreferencesSubPanel InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit GuiLocalePreferencesPanel(QWidget *parent = 0);
@@ -28,7 +29,9 @@ public:
     /*public*/ bool isRestartRequired();
     /*public*/ bool isPreferencesValid();
     /*public*/ QString className();
+    /*public*/ QObject* ppself() {return (QObject*)this;}
     /*public*/ QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:

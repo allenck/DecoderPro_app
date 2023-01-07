@@ -62,7 +62,6 @@ SOURCES += libpref.cpp \
     performfilepanelxml.cpp \
     performscriptpanelxml.cpp \
     connectionspreferencespanel.cpp \
-    managingpreferencespanel.cpp \
     warrantpreferences.cpp \
     warrantroute.cpp \
     nxframe.cpp \

@@ -6,30 +6,32 @@
 class QFileDialog;
 class QLabel;
 class JTextField;
-class LIBPREFSHARED_EXPORT RosterConfigPane : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT RosterConfigPane : public QWidget, public PreferencesPanel, public InstanceManagerAutoDefault
 {
     Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
    Q_INVOKABLE  explicit RosterConfigPane(QWidget *parent = 0);
     ~RosterConfigPane() {}
-    RosterConfigPane(const RosterConfigPane&) : PreferencesPanel() {}
+    RosterConfigPane(const RosterConfigPane&) : QWidget() {}
     /*public*/ QString getDefaultOwner();
     /*public*/ void setDefaultOwner(QString defaultOwner);
     /*public*/ QString getSelectedItem() ;
-    /*public*/ QString getPreferencesItem();
-    /*public*/ QString getPreferencesItemText();
-    /*public*/ QString getTabbedPreferencesTitle() ;
-    /*public*/ QString getLabelKey();
-    /*public*/ QWidget* getPreferencesComponent();
-    /*public*/ bool isPersistant() ;
-    /*public*/ QString getPreferencesTooltip();
-    /*public*/ void savePreferences();
-    /*public*/ bool isDirty() ;
-    /*public*/ bool isRestartRequired();
-    /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QString getPreferencesItem() override;
+    /*public*/ QString getPreferencesItemText() override;
+    /*public*/ QString getTabbedPreferencesTitle()  override;
+    /*public*/ QString getLabelKey() override;
+    /*public*/ QWidget* getPreferencesComponent() override;
+    /*public*/ bool isPersistant()  override;
+    /*public*/ QString getPreferencesTooltip() override;
+    /*public*/ void savePreferences() override;
+    /*public*/ bool isDirty() override ;
+    /*public*/ bool isRestartRequired() override;
+    /*public*/ bool isPreferencesValid() override;
+    /*public*/ QString className() override;
+
+    /*public*/ QObject* ppself() override {return (QObject*)this;}
 
 
 signals:

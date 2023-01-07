@@ -118,7 +118,7 @@ private:
     /*private*/ void setInitalisationState(int state);
     /*private*/ bool invokeSaveOptions();
     void selection(QString view);
-    /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder, QString className);
+    /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder);
     int getCategoryIndexFromString(QString category);
     void updateJList();
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("TabbedPreferences");
@@ -157,7 +157,7 @@ public:
 
     PreferencesCatItems(QString pref, QString title, int sortOrder, TabbedPreferences* tabbedPreferences);
     void addPreferenceItem(QString title, QString labelkey, QWidget* item,
-            QString tooltip, int sortOrder, QString className) ;
+            QString tooltip, int sortOrder) ;
     QString getPrefItem();
     QString getItemString();
     QList<QString> getSubCategoriesList();
@@ -187,7 +187,7 @@ Q_OBJECT
     QString _className;
 public:
     TabDetails(QString labelkey, QString tabTit, QWidget* item,
-            QString tooltip, int sortOrder, QString className) ;
+            QString tooltip, int sortOrder) ;
     QString getToolTip();
     QString getTitle();
     QWidget* getPanel();

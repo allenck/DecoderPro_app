@@ -763,6 +763,10 @@
             && ProfileManager::getDefault()->getActiveProfile()!=(ProfileManager::getDefault()->getNextActiveProfile()
             );
 }
+/*public*/ bool ProfilePreferencesPanel::isPreferencesValid() {
+ return true;
+}
+
 /* Comment out until I get around to utilizing this, so Jenkins does not throw warnin
  private static class ZipFileFilter extends FileFilter {
 

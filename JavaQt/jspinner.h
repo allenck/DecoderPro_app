@@ -45,6 +45,13 @@ public:
  void setTickPosition(int i);
  void setEditor(NumberEditor* editor) {this->editor = editor;}
  void commitEdit() {}
+ QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+ QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
+ void setSize(int, int) {}
+ QString toString() {
+   if(!jself()->objectName().isEmpty()) return jself()->objectName();
+   else return jself()->metaObject()->className();
+ }
 
 public slots:
  void onValueChanged(int);

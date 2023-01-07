@@ -9,10 +9,11 @@ class WebServerPreferences;
 class JFrame;
 class QPushButton;
 class JTextField;
-class LIBPREFSHARED_EXPORT RailroadNamePreferencesPanel : public JPanel, public PreferencesPanel
+class LIBPREFSHARED_EXPORT RailroadNamePreferencesPanel : public JPanel, public PreferencesPanel,
+  public InstanceManagerAutoDefault
 {
     Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+ Q_INTERFACES(PreferencesPanel InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit RailroadNamePreferencesPanel(QWidget *parent = 0);
@@ -30,9 +31,11 @@ public:
     /*public*/ void savePreferences();
     /*public*/ bool isDirty();
     /*public*/ bool isRestartRequired();
+    /*public*/ bool isPreferencesValid() override;
+
 //    /*public*/ QWidget* getTopLevelAncestor();
     /*public*/ QString className();
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QObject* ppself() {return (QObject*)this;}
 
 signals:
 

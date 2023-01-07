@@ -18,7 +18,7 @@ namespace Operations
   /*public*/ bool isPersistant() override;
   /*public*/ bool isRestartRequired()override;
   /*public*/ bool isPreferencesValid()override;
-   QObject* self() override{return (QObject*)this;}
+   QObject* ppself() override{return (QObject*)this;}
 
  signals:
 

@@ -10,6 +10,7 @@
 #include "instancemanager.h"
 #include "loggerfactory.h"
 #include "loconetsystemconnectionmemo.h"
+#include "profilemanager.h"
 
 //ManagerDefaultsPane::ManagerDefaultsPane(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -216,7 +217,10 @@ void ManagerDefaultsConfigPane::reloadConnections(QObjectList connList)
 /*public*/ bool ManagerDefaultsConfigPane::isRestartRequired() {
     return this->isDirty();
 }
-
+//@Override
+    /*public*/ bool ManagerDefaultsConfigPane::isPreferencesValid() {
+        return ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"))->isPreferencesValid(ProfileManager::getDefault()->getActiveProfile());
+    }
 /**
  * Captive class to track changes
  */
@@ -227,17 +231,17 @@ void ManagerDefaultsConfigPane::reloadConnections(QObjectList connList)
 //     */
 //    private static final long serialVersionUID = -2572336492673634333L;
 
-    SelectionButton::SelectionButton(QString name, QString managerClass, ManagerDefaultsConfigPane* pane)
-    {
-     //super();
-     this->managerClass = managerClass;
-     this->name = name;
-     this->pane = pane;
+SelectionButton::SelectionButton(QString name, QString managerClass, ManagerDefaultsConfigPane* pane)
+{
+ //super();
+ this->managerClass = managerClass;
+ this->name = name;
+ this->pane = pane;
 ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
-     if (name == ( manager->getDefault(managerClass)))
-     {
-      QRadioButton::setChecked(true);
-     }
+ if (name == ( manager->getDefault(managerClass)))
+ {
+  QRadioButton::setChecked(true);
+ }
 
 //        addActionListener((ActionEvent e) -> {
 //            if (isSelected()) {
@@ -245,27 +249,26 @@ ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::get
 //                pane.dirty = true;
 //            }
 //        });
-     connect(this, SIGNAL(toggled(bool)), this, SLOT(On_toggled(bool)));
-    }
+ connect(this, SIGNAL(toggled(bool)), this, SLOT(On_toggled(bool)));
+}
 
-    //@Override
-    /*public*/ void SelectionButton::setSelected(bool t) {
-        QRadioButton::setChecked(t);
-        ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
-        if (t) {
-             manager->setDefault(this->managerClass, this->name);
-        }
+//@Override
+/*public*/ void SelectionButton::setSelected(bool t) {
+    QRadioButton::setChecked(t);
+    ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+    if (t) {
+         manager->setDefault(this->managerClass, this->name);
     }
-    void SelectionButton::On_toggled(bool t)
-    {
-     if (t)
-     {
-      ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
-       manager->setDefault(this->managerClass, this->name);
-      pane->dirty = true;
-     }
-    }
-//};
+}
+void SelectionButton::On_toggled(bool t)
+{
+ if (t)
+ {
+  ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+   manager->setDefault(this->managerClass, this->name);
+  pane->dirty = true;
+ }
+}
 
 /*public*/ QString ManagerDefaultsConfigPane::className() {return "apps.ManagerDefaultsConfigPane";}
 
