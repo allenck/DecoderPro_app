@@ -45,6 +45,7 @@ private:
  /*private*/ /*synchronized*/ void savePreferences(Profile* profile, bool shared);
  /*private*/ void setPortNamePattern();
  /*private*/ ConnectionTypeManager* getDefaultConnectionTypeManager();
+ void commonException(Exception* ex, QString className, QDomElement shared, Profile *profile, QString userName, QString systemName);
 
 };
 Q_DECLARE_METATYPE(ConnectionConfigManager)

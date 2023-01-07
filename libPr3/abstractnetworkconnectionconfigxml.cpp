@@ -221,7 +221,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
      ConfigXmlManager::creationErrorEncountered(
              NULL, "opening connection",
              ex->getMessage(),
-             NULL, NULL, NULL
+             NULL, NULL, ex
      );
      return false;
  }

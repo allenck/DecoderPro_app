@@ -148,24 +148,10 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
       this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
      }
     }
-
-    catch (ClassNotFoundException* /*| InstantiationException | IllegalAccessException*/ ex)
-    {
-     log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
-     QString english = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
-     QString localized = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
-     this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
-    }
-    catch (Exception* ex)
-    {
-     log-> error(tr("Unable to load %1 into %2").arg(shared.tagName()).arg(className)/*, ex*/);
-//              QString english = Bundle.getMessage(Locale.ENGLISH, "ErrorSingleConnection", userName, systemName); // NOI18N
-//              QString localized = Bundle.getMessage("ErrorSingleConnection", userName, systemName); // NOI18N
-     QString english = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
-     QString localized = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
-     Exception* ex1 = new Exception(ex);
-     this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, ex1));
-    }
+    catch(ClassNotFoundException* ex) {commonException(ex, className, shared, profile, userName, systemName);}
+    catch(InstantiationException* ex) {commonException(ex, className, shared, profile, userName, systemName);}
+    catch(IllegalAccessException* ex) {commonException(ex, className, shared, profile, userName, systemName);}
+    catch(IOException* ex){commonException(ex, className, shared, profile, userName, systemName);}
    }
   }
   setInitialized(profile, true);
@@ -190,6 +176,15 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 
   log-> debug("Initialized...");
  }
+}
+
+void ConnectionConfigManager::commonException(Exception* ex, QString className, QDomElement shared, Profile* profile,QString userName, QString systemName)
+{
+ log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
+ QString english = tr( "Unable to create connection \"%1\" (%2)-(%3).").arg(userName).arg(systemName).arg(ex->getMessage()); // NOI18N
+ QString localized = tr( "Unable to create connection \"%1\" (%2)-(%3).").arg(userName).arg(systemName).arg(ex->getLocalizedMessage()); // NOI18N
+ this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
+
 }
 
 //@Override

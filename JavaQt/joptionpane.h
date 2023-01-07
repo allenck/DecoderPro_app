@@ -207,12 +207,12 @@ private:
  /*private*/ void initDialog(/*final*/ JDialog* dialog, int style, QWidget* parentComponent);
  SwingPropertyChangeSupport* changeSupport;
  QWidget* layoutPane(JDialog* dialog);
- JTextField* f;
- QPushButton* btnOk;
- QPushButton* btnCancel;
- JDialog* _dialog;
- QPushButton* btnYes;
- QPushButton* btnNo;
+ JTextField* f = nullptr;
+ QPushButton* btnOk = nullptr;
+ QPushButton* btnCancel = nullptr;
+ JDialog* _dialog = nullptr;
+ QPushButton* btnYes=nullptr;
+ QPushButton* btnNo=nullptr;
 
 private slots:
 

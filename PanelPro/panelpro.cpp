@@ -7,6 +7,7 @@
 #include <QMenuBar>
 #include "jmrijframe.h"
 #include <QImageReader>
+#include "connectionstatus.h"
 
 /**
  * The JMRI program for creating control panels.
@@ -104,6 +105,9 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
  //q1->setAlignment(Qt::AlignHCenter);
  p3Layout->addWidget(q1);
  jLayout->addWidget(p3);
+ connect(ConnectionStatus::instance()->pcs, &SwingPropertyChangeSupport::propertyChange, [=] (PropertyChangeEvent* evt){
+  qDebug() << evt->getNewValue().toString();
+ });
 
  return j;
 }

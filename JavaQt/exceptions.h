@@ -65,7 +65,12 @@ public:
     QString localMsg;
     QString name;
     virtual QString getMessage() {return msg;}
-    virtual QString getLocalizedMessage() {return localMsg;}
+    virtual QString getLocalizedMessage() {
+     if(localMsg.isEmpty())
+      return msg;
+     else
+      return localMsg;
+    }
     virtual QString toString() {
      QString str = QString("exception %1: %2").arg(this->name).arg(msg);
      return str;
@@ -80,11 +85,11 @@ class Exception : public Throwable
 // Q_INTERFACES(Throwable)
 public:
  Exception() : Throwable() {name = "Exception";}
- Exception(QString msg) : Throwable(msg) {name = "Exception";}
- Exception(QString msg, Throwable* throwable) : Throwable(msg, throwable) {name = "Exception";}
- Exception(QString msg, QString localMsg) : Throwable(msg, localMsg) {name = "Exception";}
+ Exception(QString msg) : Throwable(msg) {name = "Exception"; this->msg =msg; this->localMsg = msg;}
+ Exception(QString msg, Throwable* throwable) : Throwable(msg, throwable) {name = "Exception";this->msg =msg; this->localMsg = msg;}
+ Exception(QString msg, QString localMsg) : Throwable(msg, localMsg) {name = "Exception";this->msg =msg; this->localMsg =localMsg;}
  Exception(QString msg, QString localMsg, Exception* exception) : Throwable(msg, localMsg, exception)
- {name = "Exception";}
+ {name = "Exception";this->msg =msg;this->localMsg =localMsg;}
  Exception(Exception* exception) : Throwable(exception) {name = "Exception";}
  Exception(Throwable* exception) : Throwable(exception) {name = "Exception";}
 

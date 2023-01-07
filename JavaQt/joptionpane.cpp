@@ -766,7 +766,7 @@
 {
  JOptionPane* pane = new JOptionPane(message, messageType,
                                      optionType, icon,
-                                     options, initialValue,parentComponent);
+                                     options, initialValue, parentComponent);
 
  pane->setInitialValue(initialValue);
 //    pane->setComponentOrientation(((parentComponent == NULL) ?
@@ -2382,7 +2382,12 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   QList<QVariant> list = message.toList();
   QVBoxLayout* vl = new QVBoxLayout();
   foreach(QVariant v, list)
+  {
+   if(VPtr<QWidget>::asPtr(v))
+    vl->addWidget(VPtr<QWidget>::asPtr(v));
+   else
    vl->addWidget(new QLabel(v.toString()));
+  }
   ll->addLayout(vl);
  }
  if(VPtr<QWidget>::asPtr(message) != NULL)

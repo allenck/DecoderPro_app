@@ -351,15 +351,15 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 
 /*protected*/ void JmriConfigurationManager::displayErrorListDialog(QVariant list) {
     JOptionPane::showMessageDialog(nullptr,
-            QVariantList {
-                /*(list instanceof JList)*/VPtr<JList*>::asPtr(list) ? tr("The following errors occurred in the order listed:") : "",
-                list,
-                "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
-                tr("Please check the logs for more details."), // NOI18N
-                tr("The Preferences window will open so this can be fixed."), // NOI18N
-            },
-            tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
-            JOptionPane::ERROR_MESSAGE);
+       QVariantList {
+           /*(list instanceof JList)*/VPtr<JList*>::asPtr(list) ? tr("The following errors occurred in the order listed:") : "",
+           list,
+           "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+           tr("Please check the logs for more details."), // NOI18N
+           tr("The Preferences window will open so this can be fixed."), // NOI18N
+       },
+       tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
+       JOptionPane::ERROR_MESSAGE);
 #if 1
         ((JmriPreferencesActionFactory*)InstanceManager::getDefault("JmriPreferencesActionFactory"))
                 ->getDefaultAction()->actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,""));
@@ -376,7 +376,7 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 
     errorList.append(" "); // blank line below errors
     errorList.append(tr("Please check the logs for more details."));
-#if 1 // TODO:
+
     QVariantList options = QVariantList {
         tr("Quit %1").arg(QApplication::applicationName()),
         tr("Continue"),
@@ -384,7 +384,7 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
     };
 
  JList* jlist = nullptr;
- if (jlist = VPtr<JList>::asPtr(list))
+ if ((jlist = VPtr<JList>::asPtr(list)))
  {
      QMenu* popupMenu = new QMenu();
      QAction* copyMenuItem = new QAction(tr("Copy"),this);
@@ -442,28 +442,29 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
  }
 
  JOptionPane* pane = new JOptionPane(
-          QVariantList() = {
-              (VPtr<QWidget>::asPtr(list)) ? tr("The following errors occurred in the order listed:") : nullptr,
-              list,
-              "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
-              tr("Please check the logs for more details."), // NOI18N
-              tr("If you need to plug in or turn on anything, do so before restarting"), // NOI18N
-          },
-          JOptionPane::ERROR_MESSAGE,
-          JOptionPane::DEFAULT_OPTION,
-          QIcon(),
-          options
+     QVariantList() = {
+         (VPtr<QWidget>::asPtr(list)) ? tr("The following errors occurred in the order listed:") : nullptr,
+         list,
+         "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+         tr("Please check the logs for more details."), // NOI18N
+         tr("If you need to plug in or turn on anything, do so before restarting"), // NOI18N
+     },
+     JOptionPane::ERROR_MESSAGE,
+     JOptionPane::DEFAULT_OPTION,
+     QIcon(),
+     options
   );
 
 
  JDialog* dialog = pane->createDialog(nullptr, tr("Error initializing %1").arg(QApplication::applicationName())); // NOI18N
  dialog->setModal(false);
  dialog->setVisible(true);
- dialog->exec();
+ int i = dialog->exec();
+ pane->setValue(pane->getOptions().at(i));
  QVariant selectedValue = pane->getValue();
 
  handleRestartSelection(selectedValue);
-#endif
+
 }
 
 /*private*/ void JmriConfigurationManager::handleRestartSelection(QVariant selectedValue) {

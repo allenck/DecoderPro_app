@@ -189,23 +189,23 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   << QString("jmri.jmrix.swing.ConnectionsPreferencesPanel")
   << QString( "apps.ManagerDefaultsConfigPane")
   << QString( "apps.FileLocationPane" )
-//  << QString( "apps.PerformFilePanel")
-//  << QString("apps.GuiLafConfigPane")
+  << QString( "apps.PerformFilePanel")
+  << QString("apps.GuiLafConfigPane")
 //  << QString("apps.GuiLocalePreferencesPanel")
-//  << QString( "apps.SystemConsoleConfigPanel")
-//  << QString("jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane")
-//  << QString( "jmri.jmrit.symbolicprog.ProgrammerConfigPane")
-//  << QString("jmri.web.server.WebServerPreferencesPanel")
-//  << QString("jmri.jmrit.roster.RosterConfigPane")
-//  << QString( "jmri.jmrit.throttle.ThrottlesPreferencesPane")
-//  << QString("jmri.jmrit.throttle.WiThrottlePrefsPanel")
-//  << QString( "jmri.profile.ProfilePreferencesPanel")
-//  << QString("apps.startup.StartupActionsPreferencesPanel")
-//  << QString("jmri.jmrix.loconet.LnTcpPreferencesPanel")
-//  << QString("jmri.server.json.JsonServerPreferencesPanel")
-//  << QString( "jmri.web.server.RailroadNamePreferencesPanel")
-//  << QString("jmri.jmrit.logix.WarrantPreferencesPanel")
-//  << QString("jmri.util.HelpUtilPreferencesPanel")
+  << QString( "apps.SystemConsoleConfigPanel")
+  << QString("jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane")
+  << QString( "jmri.jmrit.symbolicprog.ProgrammerConfigPane")
+  << QString("jmri.web.server.WebServerPreferencesPanel")
+  << QString("jmri.jmrit.roster.RosterConfigPane")
+  << QString( "jmri.jmrit.throttle.ThrottlesPreferencesPane")
+  << QString("jmri.jmrit.throttle.WiThrottlePrefsPanel")
+  << QString( "jmri.profile.ProfilePreferencesPanel")
+  << QString("apps.startup.StartupActionsPreferencesPanel")
+  << QString("jmri.jmrix.loconet.LnTcpPreferencesPanel")
+  << QString("jmri.server.json.JsonServerPreferencesPanel")
+  << QString( "jmri.web.server.RailroadNamePreferencesPanel")
+  << QString("jmri.jmrit.logix.WarrantPreferencesPanel")
+  << QString("jmri.util.HelpUtilPreferencesPanel")
   ;
 
  // add preference panels registered with the Instance Manager
@@ -307,6 +307,8 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
    splitter->addWidget(preferences->getPanel());
   log->debug(tr("add panel %1 class %2 index %3").arg(preferences->getPrefItem()).arg(preferences->getPanel()->metaObject()->className()).arg(widgetIndex));
   }
+  if(preferences->getPrefItem().isEmpty())
+   log->debug(tr("item is blank! ")+ preferences->getPanel()->metaObject()->className());
   widgetIndexes.insert(preferences->getPrefItem(), widgetIndex);
   splitter->setStretchFactor(widgetIndex++,2);
   if(preferences->getPanel()){
@@ -652,7 +654,7 @@ void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWi
   }
   TabDetails* tab = new TabDetails(labelkey, title, item, tooltip, sortOrder);
   tabDetailsArray.append(tab);
-  std::sort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);
+  //std::sort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);
   QScrollArea* scroller = new QScrollArea(/*tab->getPanel()*/);
   scroller->setWidget(tab->getPanel());
   scroller->setWidgetResizable(true);

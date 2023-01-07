@@ -354,7 +354,7 @@ bool Apps::configDeferredLoadOK = false;
 
   // populate GUI
   log->debug("Start UI");
- #if 0
+ #if 1
   setLayout(new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
   // Create a WindowInterface object based on the passed-in Frame
   JFrameInterface* wi = new JFrameInterface(frame);

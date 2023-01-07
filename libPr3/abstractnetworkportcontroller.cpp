@@ -63,20 +63,21 @@
 //@Override
 /*public*/ void AbstractNetworkPortController::_connect() //throws Exception
 {
+ log->debug(tr("connect() starts to %1:%2").arg(getHostName()).arg(getPort()));
  opened = false;
  if (getHostAddress() == "" || m_port == 0)
  {
-  log->error("No host name or port set: " + m_HostName + ":" + QString::number(m_port));
-  return;
+  QString msg;
+  log->error((msg ="No host name or port set: " + m_HostName + ":" + QString::number(m_port)));
+  throw new IllegalArgumentException(msg);
  }
- log->debug(tr("Attempting to connect to host: %1 on port %2").arg(m_HostName).arg(m_port));
  try
  {
   if(socketConn == NULL)
   {
    socketConn = new QTcpSocket(/*getHostAddress(), m_port*/);
    connect(socketConn, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(on_socketConn_error(QAbstractSocket::SocketError)));
-   connect(socketConn,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(st_stateChange(QAbstractSocket::SocketState)));
+   connect(socketConn, SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(st_stateChange(QAbstractSocket::SocketState)));
    connect(socketConn, SIGNAL(hostFound()), this, SLOT(on_socketConn_hostFound()));
    connect(socketConn, SIGNAL(connected()), this, SLOT(on_socketConn_connected()));
    connect(socketConn, SIGNAL(disconnected()), this, SLOT(on_socketConn_disconnected()));
@@ -149,16 +150,20 @@ void AbstractNetworkPortController::on_socketConn_connected()
 
 void AbstractNetworkPortController::on_socketConn_error(QAbstractSocket::SocketError e)
 {
+ QString msg;
  if(e == QAbstractSocket::ConnectionRefusedError)
  {
-  log->error(m_HostName + ":" + QString::number(m_port) + " error: " + socketConn->errorString() );
+  msg = m_HostName + ":" + QString::number(m_port) + " error: " + socketConn->errorString();
+  log->error(msg );
   //QMessageBox::critical(NULL, tr("Error"), m_HostName + ":" + QString::number(m_port) + " error: " + socketConn->errorString());
-  displayMsg();
+//  displayMsg();
  }
  else if(e != QAbstractSocket::SocketTimeoutError)
  {
-  log->error(m_HostName + ":" + QString::number(m_port) + " error: " + socketConn->errorString() );
+  msg = m_HostName + ":" + QString::number(m_port) + " error: " + socketConn->errorString();
+  log->error(msg);
  }
+ throw new IOException(msg);
 }
 
 void AbstractNetworkPortController::displayMsg()

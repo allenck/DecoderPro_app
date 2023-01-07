@@ -8,11 +8,11 @@ class  PropertyChangeEvent;
 /*public*/ class LIBPREFSHARED_EXPORT PreferencesSubPanel {
 public:
 //    PreferencesSubPanel(const PreferencesSubPanel&) {}
-    /*public*/ /*abstract*/ virtual QString getParentClassName() {return "";}
+    /*public*/ /*abstract*/ virtual QString getParentClassName() =0;
 
-    /*public*/ /*abstract*/ virtual void setParent(PreferencesPanel* /*parent*/) {}
+    /*public*/ /*abstract*/ virtual void setParent(PreferencesPanel* /*parent*/) =0;
 
-    /*public*/ /*abstract*/ virtual PreferencesPanel* getParent() {return NULL;}
+    /*public*/ /*abstract*/ virtual PreferencesPanel* getParent() =0;
 
     /*public*/ virtual QObject* self() =0;
 };

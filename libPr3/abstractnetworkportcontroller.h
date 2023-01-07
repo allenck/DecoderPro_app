@@ -27,7 +27,7 @@ public:
  /*public*/  void setAdvertisementName(QString AdName) override;
  /*public*/  QString getAdvertisementName() override;
  /*public*/  void setServiceType(QString ServiceType) override;
- /*public*/  QString getServiceType();
+ /*public*/  QString getServiceType() override;
  /*public*/ QDataStream* getInputStream() override;
  /*public*/ QDataStream* getOutputStream() override;
  /*public*/ void dispose() override;
