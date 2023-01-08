@@ -6,6 +6,7 @@
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
 #include "classmigration.h"
+#include "jmriserviceproviderinterface.h"
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of

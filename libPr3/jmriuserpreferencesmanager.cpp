@@ -1608,13 +1608,9 @@
 //    QList<PreferenceList*>* preferenceList = new ArrayList<>();
 //public:
     ClassPreferences::ClassPreferences() {
-     multipleChoiceList = new QList<MultipleChoice*>();
-     preferenceList = new QList<PreferenceList*>();
     }
 
     ClassPreferences::ClassPreferences(QString classDescription) {
-     multipleChoiceList = new QList<MultipleChoice*>();
-     preferenceList = new QList<PreferenceList*>();
         this->classDescription = classDescription;
     }
 
@@ -1659,7 +1655,7 @@
     /*public*/ QString ClassPreferences::getChoiceName(int n) {
         try {
             return multipleChoiceList->value(n)->getItem();
-        } catch (IndexOutOfBoundsException ioob) {
+        } catch (IndexOutOfBoundsException* ioob) {
             return QString();
         }
     }

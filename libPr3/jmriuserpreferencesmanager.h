@@ -173,8 +173,8 @@ protected:
 private:
     QString classDescription;
 
-    QList<MultipleChoice*>* multipleChoiceList;// = new ArrayList<>();
-    QList<PreferenceList*>* preferenceList;// = new ArrayList<>();
+    QList<MultipleChoice*>* multipleChoiceList = new QList<MultipleChoice*>();
+    QList<PreferenceList*>* preferenceList = new QList<PreferenceList*>();
 public:
     ClassPreferences();
     ClassPreferences(QString classDescription);
@@ -193,11 +193,11 @@ public:
 /*protected*/ /*final*/ /*static*/ class MultipleChoice
 {
 private:
-    QMap<int, QString>* options;
+    QMap<int, QString>* options = nullptr;
     QString optionDescription;
     QString item;
-    int value;// = -1;
-    int defaultOption;// = -1;
+    int value = -1;
+    int defaultOption = -1;
 public:
     MultipleChoice(QString description, QString item, QMap<int, QString>* options, int defaultOption);
     MultipleChoice(QString item, int value);

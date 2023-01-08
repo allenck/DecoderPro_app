@@ -258,11 +258,12 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 #if 1
 /*public*/ void AppConfigBase::setMessagePreferencesDetails()
 {
- QMap<int, QString> options = QMap<int, QString>(); // 3
- options.insert(0x00, tr("Always Ask"));
- options.insert(0x01, tr("Never Quit"));
- options.insert(0x02, tr("Always Quit"));
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(), "quitAfterSave", tr("Quit after saving preferences"), &options, 0x00);
+ QMap<int, QString>* options = new QMap<int, QString>(); // 3
+ options->insert(0x00, tr("Always Ask"));
+ options->insert(0x01, tr("Never Quit"));
+ options->insert(0x02, tr("Always Quit"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(),
+                                            "quitAfterSave", tr("Quit after saving preferences"), options, 0x00);
 }
 #endif
 /*public*/ QString AppConfigBase::getClassName() {

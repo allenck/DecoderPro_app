@@ -30,7 +30,7 @@ public:
  /*public*/ void moveAction(int start, int end);
  /*public*/ QMap</*Class<? extends StartupModel>*/QString, StartupModelFactory*>* getFactories();
  /*public*/ StartupModelFactory* getFactories(/*Class<? extends StartupModel>*/QString model);
- /*public*/ void initialize(Profile* profile) /*throw (InitializationException)*/;
+ /*public*/ void initialize(Profile* profile) override /*throw (InitializationException)*/;
 
  QObject* self() override {return (QObject*)this;}
 

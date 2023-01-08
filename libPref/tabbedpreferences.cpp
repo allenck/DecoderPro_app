@@ -468,7 +468,7 @@ void TabbedPreferences::selection(QString view)
 
 /*public*/ void TabbedPreferences::addPreferencesPanel(PreferencesPanel* panel)
 {
- QObject* obj = panel->ppself();
+ //QObject* obj = panel->ppself();
   this->preferencesPanels->insert(panel->className(), panel);
 
   addItem(panel->getPreferencesItem(),

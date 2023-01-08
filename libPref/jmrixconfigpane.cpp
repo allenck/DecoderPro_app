@@ -1,20 +1,20 @@
-#include "jmrixconfigpane.h"
+﻿#include "jmrixconfigpane.h"
 #include "connectionconfig.h"
 #include "instancemanager.h"
 #include <QBoxLayout>
 #include <QComboBox>
 #include "dccmanufacturerlist.h"
 #include <QVector>
-#include "jmriuserpreferencesmanager.h"
 #include <QScrollArea>
-#include "jtitledseparator.h"
 #include <QGroupBox>
-#include "flowlayout.h"
 #include "connectionconfigmanager.h"
 #include "loggerfactory.h"
 #include "configuremanager.h"
 #include "class.h"
 #include "gridbaglayout.h"
+#include "userpreferencesmanager.h"
+#include "jtitledseparator.h"
+#include "borderfactory.h"
 
 //JmrixConfigPane::JmrixConfigPane(QWidget *parent) :
 //    QWidget(parent)
@@ -126,7 +126,8 @@
  * permitted to call this with a NULL argument, e.g. for when first
  * configuring the system.
  */
-/*protected*/ JmrixConfigPane::JmrixConfigPane(ConnectionConfig* original, QWidget* parent) : QWidget(parent)
+/*protected*/ JmrixConfigPane::JmrixConfigPane(ConnectionConfig* original, QWidget* parent)
+ : JPanel(parent)
 {
  setObjectName("JmrixConfigPane");
 
@@ -136,6 +137,7 @@
  manuBox = new QComboBox();
  details = new JPanel();
  details->setObjectName("details");
+
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
  ConnectionConfigManager* manager = (ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager");
@@ -150,7 +152,7 @@
  manuBox->addItem(NONE_SELECTED);
 
  manufactureNameList = DCCManufacturerList::getSystemNames();
- //manufactureNameList = manager->getConnectionManagers();
+// manufactureNameList = manager->getConnectionManagers();
  foreach (QString manuName, *manufactureNameList)
  {
   if (original != NULL && original->getManufacturer() != NULL
@@ -253,44 +255,47 @@
 //        selection();
 //    });
  connect(modeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(On_modeBox_currentIndexChanged(int)));
- QGroupBox* manufacturerPanel = new QGroupBox(tr("System Manufacturer"));
+ JPanel* manufacturerPanel = new JPanel();
  QVBoxLayout* manufacturerPanelLayout = new QVBoxLayout(manufacturerPanel);
- manufacturerPanelLayout->addWidget(manuBox, 1, Qt::AlignCenter);
- QGroupBox* connectionPanel = new QGroupBox(tr("System Connection"));
+ manufacturerPanelLayout->addWidget(manuBox, 0, Qt::AlignCenter);
+ JPanel* connectionPanel = new JPanel();
  QVBoxLayout* connectionPanelLayout = new QVBoxLayout(connectionPanel);
  connectionPanel->setMinimumWidth(500);
- connectionPanelLayout->addWidget(modeBox, 1, Qt::AlignCenter);
- //QWidget* initialPanel = new QWidget();
+ connectionPanelLayout->addWidget(modeBox, 0, Qt::AlignCenter);
+ JPanel* initialPanel = new JPanel();
  QVBoxLayout* initialPanelLayout = new QVBoxLayout;
  initialPanelLayout->setAlignment(Qt::AlignTop);
- //initialPanel->setLayout(initialPanelLayout = new QVBoxLayout); //(initialPanel, BoxLayout.Y_AXIS));
+ initialPanel->setLayout(initialPanelLayout = new QVBoxLayout); //(initialPanel, BoxLayout.Y_AXIS));
+ initialPanelLayout->addWidget(new JTitledSeparator(tr("System Manufacturer"))); // NOI18N
  initialPanelLayout->addWidget(manufacturerPanel);
-
- //initialPanelLayout->addWidget(new JTitledSeparator(tr("System Connection"))); // NOI18N
+ initialPanelLayout->addWidget(new JTitledSeparator(tr("System Connection"))); // NOI18N
  initialPanelLayout->addWidget(connectionPanel);
- layout->addLayout(initialPanelLayout,1); //, Qt::AlignTop);
- QGroupBox*settingsPanel = new QGroupBox(tr("Settings"));
- settingsPanel->setMinimumSize( 350, 200);
- settingsPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+ layout->addWidget(initialPanel,1); //, Qt::AlignTop);
+// QGroupBox*settingsPanel = new QGroupBox(tr("Settings"));
+// settingsPanel->setMinimumSize( 350, 200);
+// settingsPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+ JPanel* settingsPanel = new JPanel();
  QVBoxLayout* settingsPanelLayout =new QVBoxLayout(settingsPanel);
 
- //initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
+ initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
  QScrollArea* scroll = new QScrollArea(/*details*/);
- scroll->setWidgetResizable(true);
+ scroll->setWidgetResizable(false);
  //scroll->setMinimumSize( 300, 200);
  GridBagLayout* gbLayout;
  details->setLayout(gbLayout = new GridBagLayout());
  scroll->setWidget(details);
  scroll->setWidgetResizable(true);
+ //scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
  gbLayout->setObjectName("detailsLayout");
  //scroll.setBorder(BorderFactory.createEmptyBorder());
+ settingsPanel->setBorder(BorderFactory::createEmptyBorder());
  //layout->addWidget(scroll, 0, Qt::AlignCenter);
  settingsPanelLayout->addWidget(scroll,4);
  layout->addWidget(settingsPanel,1);
 
  selection();  // first time through, pretend we've selected a value
  // to load the rest of the GUI
- adjustSize();
+ //adjustSize();
 }
 
 void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)
@@ -304,7 +309,6 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)
    p->setComboBoxLastSelection( manuBox->currentText(), modeBox->currentText());
   }
  }
- selection();
  selection();
 }
 
@@ -380,9 +384,11 @@ void JmrixConfigPane::selection()
  ConnectionConfig* old = this->ccCurrent;
  int current = modeBox->currentIndex();
  details->removeAll();
+ if(details->layout()==nullptr)
+  details->setLayout(new GridBagLayout);
  // first choice is -no- protocol chosen
  log->debug("new selection is  "+ QString::number(current)+ " " + modeBox->currentText());
- if ((current != 0) && (current != -1))
+ if ((ccCurrent != nullptr) && (current != -1))
  {
   if ((ccCurrent != NULL) && (ccCurrent != classConnectionList[current]))
   {
@@ -396,7 +402,6 @@ void JmrixConfigPane::selection()
  {
   if (ccCurrent != NULL)
   {
-
    ccCurrent->dispose();
   }
  }
@@ -405,7 +410,6 @@ void JmrixConfigPane::selection()
   this->ccCurrent->_register();
  }
  //validate();
-
  //repaint();
  update();
 }

@@ -17,6 +17,7 @@
 #include "sensortableaction.h"
 #include "signalheadtableaction.h"
 #include "turnouttableaction.h"
+#include "borderfactory.h"
 
 #if 1
 /**
@@ -108,7 +109,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  //might need to redo this so that it doesn't recreate everything all the time.
  _comboBoxes =  QMap<QComboBox*, ListItems*>();
  _checkBoxes =  QMap<QCheckBox*, ListItems*>();
-#if 0
+#if 1
  QStringList preferenceClassList = p->getPreferencesClasses();
  foreach (QString strClass, preferenceClassList)
  {
@@ -123,10 +124,10 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
   {
    addtoindependant = true;
   }
-  QWidget* classPanel = new QWidget();
+  JPanel* classPanel = new JPanel();
   QVBoxLayout* classPanelLayout;
   classPanel->setLayout(classPanelLayout = new QVBoxLayout); //(classPanel, BoxLayout.Y_AXIS));
-  //classPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+  classPanel->setBorder(BorderFactory::createEmptyBorder(10, 10, 10, 10));
   for (int j = 0; j < p->getMultipleChoiceSize(strClass); j++)
   {
    QString itemName = p->getChoiceName(strClass, j);
@@ -246,10 +247,10 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  QVBoxLayout* miscPanelLayout;
  miscPanel->setLayout(miscPanelLayout = new QVBoxLayout); //(miscPanel, BoxLayout.Y_AXIS));
 
- QWidget* mischolder = new QWidget();
+ JPanel* mischolder = new JPanel();
  QHBoxLayout* mischolderLayout;
  mischolder->setLayout(mischolderLayout = new /*BorderLayout()*/QHBoxLayout);
-//    mischolder.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+ mischolder->setBorder(BorderFactory::createEmptyBorder(10, 10, 10, 10));
  foreach (QString item, countOfItems.keys())
  {
   QList<ListItems*>* a = countOfItems.value(item);

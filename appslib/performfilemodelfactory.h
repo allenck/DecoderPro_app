@@ -8,7 +8,7 @@ class PerformFileModelFactory : public AbstractFileModelFactory
 {
  Q_OBJECT
 public:
- PerformFileModelFactory();
+ Q_INVOKABLE PerformFileModelFactory();
  ~PerformFileModelFactory() {}
  PerformFileModelFactory(const PerformFileModelFactory&) : AbstractFileModelFactory() {}
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass();

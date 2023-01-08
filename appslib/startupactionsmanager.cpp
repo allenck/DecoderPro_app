@@ -135,7 +135,7 @@
     if (override != "")
     {
      action.setAttribute("name", override);
-     log->info(tr("Overridding startup action class %1 with %2").arg(name).arg(override));
+     log->info(tr("Overriding startup action class %1 with %2").arg(name).arg(override));
      this->addInitializationException(profile, new InitializationException(tr(/*QLocale::English,*/ "<html>Startup action class %1 has been updated to %2.<br>Please save preferences to make this permanent.</html>").arg(name).arg(override),
              tr(/*Locale.ENGLISH,*/ "<html>Startup action class %1 has been updated to %2.<br>Please save preferences to make this permanent.</html>").arg(name).arg(override), NULL));
      name = override; // after logging difference and creating error message
@@ -206,7 +206,8 @@
 
  foreach (QString clazz, factoryList)
  {
-  StartupModelFactory* factory = (AbstractActionModelFactory*)InstanceManager::getDefault(clazz);
+  //StartupModelFactory* factory = (AbstractActionModelFactory*)InstanceManager::getDefault(clazz);
+  StartupModelFactory* factory = (AbstractActionModelFactory*)Class::forName(clazz)->newInstance();
   if(factory != NULL )
   {
    factory->initialize();

@@ -8,7 +8,7 @@ class TriggerRouteModelFactory : public QObject, public StartupModelFactory
  Q_OBJECT
   Q_INTERFACES(StartupModelFactory)
 public:
- TriggerRouteModelFactory();
+ Q_INVOKABLE TriggerRouteModelFactory();
  ~TriggerRouteModelFactory() {}
  TriggerRouteModelFactory(const TriggerRouteModelFactory&) : StartupModelFactory() {}
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass()override;

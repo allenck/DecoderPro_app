@@ -2,6 +2,8 @@
 #include "borderlayout.h"
 #include "borderfactory.h"
 #include "limits.h"
+#include <QBoxLayout>
+
 /**
  * A separator with a title.
  *
@@ -21,9 +23,11 @@
      *
      * @param title the title to set.
      */
-    /*public*/  JTitledSeparator::JTitledSeparator(QString title, QWidget* parent) : JPanel(new BorderLayout()) {
+#if 0
+    /*public*/  JTitledSeparator::JTitledSeparator(QString title, QWidget* parent)
+    : JPanel(new BorderLayout(), nullptr) {
         //super(new BorderLayout());
-        JPanel* westPanel = new JPanel(new BorderLayout());
+        JPanel* westPanel = new JPanel(new BorderLayout(), nullptr);
 //        {
 
 //            //@Override
@@ -53,7 +57,16 @@
         this->setMaximumSize(QSize(INT_MAX, this->sizeHint().height()));
         adjustLook();
     }
+#else
+/*public*/  JTitledSeparator::JTitledSeparator::JTitledSeparator(QString title, QWidget* parent)
+ :JPanel(new QHBoxLayout)
+{
+ QHBoxLayout* thisLayout = (QHBoxLayout*)layout();
+ thisLayout->addWidget(new QLabel("<B>"+title+"</B>"),0, Qt::AlignLeft);
+ thisLayout->addWidget(label, 1, Qt::AlignCenter);
+}
 
+#endif
     /**
      * Get the title of this separator.
      *

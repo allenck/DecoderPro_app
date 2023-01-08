@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets xml gui
+QT       += widgets xml gui network
 
 TARGET = Pref
 TEMPLATE = lib
@@ -45,7 +45,6 @@ SOURCES += libpref.cpp \
     throttlespreferencespane.cpp \
     throttlespreferences.cpp \
     throttlespreferencesaction.cpp \
-    jtitledseparator.cpp \
     filelocationpanexml.cpp \
     programmerconfigpanexml.cpp \
     guilafconfigpanexml.cpp \
@@ -98,7 +97,6 @@ HEADERS += libpref.h\
     throttlespreferencespane.h \
     throttlespreferences.h \
     throttlespreferencesaction.h \
-    jtitledseparator.h \
     rosterconfigpane.h \
     filelocationpanexml.h \
 #    appsbase.h \

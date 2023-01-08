@@ -9,15 +9,15 @@ class ScriptButtonModelFactory : QObject, public StartupModelFactory
  Q_OBJECT
   Q_INTERFACES(StartupModelFactory)
 public:
- ScriptButtonModelFactory();
+ Q_INVOKABLE ScriptButtonModelFactory();
  ~ScriptButtonModelFactory() {}
  ScriptButtonModelFactory(const ScriptButtonModelFactory&) : StartupModelFactory() {}
- /*public*/ /*Class<? extends StartupModel>*/QString getModelClass();
- /*public*/ StartupModel* newModel();
- /*public*/ QString getDescription();
- /*public*/ QString getActionText();
- /*public*/ void editModel(StartupModel* model, QWidget* parent);
- /*public*/ void initialize();
+ /*public*/ /*Class<? extends StartupModel>*/QString getModelClass() override ;
+ /*public*/ StartupModel* newModel() override ;
+ /*public*/ QString getDescription() override ;
+ /*public*/ QString getActionText() override ;
+ /*public*/ void editModel(StartupModel* model, QWidget* parent) override ;
+ /*public*/ void initialize() override ;
  QObject* self() override {return (QObject*)this;}
 
 private:

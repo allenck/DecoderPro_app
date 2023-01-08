@@ -5,7 +5,8 @@
 #include "libpref_global.h"
 
 class  PropertyChangeEvent;
-/*public*/ class LIBPREFSHARED_EXPORT PreferencesSubPanel {
+/*public*/ class LIBPREFSHARED_EXPORT PreferencesSubPanel : public PreferencesPanel {
+  Q_INTERFACES(PreferencesPanel)
 public:
 //    PreferencesSubPanel(const PreferencesSubPanel&) {}
     /*public*/ /*abstract*/ virtual QString getParentClassName() =0;

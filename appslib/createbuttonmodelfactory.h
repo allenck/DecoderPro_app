@@ -7,7 +7,7 @@ class CreateButtonModelFactory : public AbstractActionModelFactory
 {
  Q_OBJECT
 public:
- CreateButtonModelFactory();
+ Q_INVOKABLE CreateButtonModelFactory();
  ~CreateButtonModelFactory() {}
  CreateButtonModelFactory(const CreateButtonModelFactory&) : AbstractActionModelFactory() {}
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass()override;

@@ -362,7 +362,7 @@
 #include "rosterconfigmanager.h"
 #include "throttlespreferences.h"
 #include "throttleframemanager.h"
-
+#include "startuppausefactory.h"
 bool Metatypes::done = false;
 
 Metatypes::Metatypes(QObject *parent) :
@@ -739,6 +739,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<RosterConfigManager>("RosterConfigManager");
  qRegisterMetaType<ThrottlesPreferences>("ThrottlesPreferences");
  qRegisterMetaType<ThrottleFrameManager>("ThrottleFrameManager");
+ qRegisterMetaType<StartupPauseFactory>("StartupPauseFactory");
 
  Metatypes::done = true;
 }

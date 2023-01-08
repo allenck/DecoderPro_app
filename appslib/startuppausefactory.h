@@ -9,6 +9,8 @@ class StartupPauseFactory : public QObject, public StartupModelFactory
   Q_INTERFACES(StartupModelFactory)
 public:
  Q_INVOKABLE StartupPauseFactory();
+  ~StartupPauseFactory() {}
+  StartupPauseFactory(const StartupPauseFactory&) {}
  /*public*/ QString /*Class<? extends StartupModel>*/ getModelClass() override;
  /*public*/ StartupModel* newModel()override;
  /*public*/ QString getDescription()override;
@@ -21,5 +23,5 @@ private:
  /*private*/ QWidget* getDialogMessage(QSpinBox* spinner);
 
 };
-
+Q_DECLARE_METATYPE(StartupPauseFactory)
 #endif // STARTUPPAUSEFACTORY_H

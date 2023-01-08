@@ -5,10 +5,10 @@
 
 class GuiLafConfigPane;
 class LIBPREFSHARED_EXPORT GuiLocalePreferencesPanel : public QWidget, public PreferencesSubPanel,
-  public PreferencesPanel, public InstanceManagerAutoDefault
+  public InstanceManagerAutoDefault
 {
     Q_OBJECT
-    Q_INTERFACES(PreferencesPanel PreferencesSubPanel InstanceManagerAutoDefault)
+    Q_INTERFACES(PreferencesPanel  InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit GuiLocalePreferencesPanel(QWidget *parent = 0);

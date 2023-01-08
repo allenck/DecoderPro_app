@@ -49,7 +49,7 @@ void AbstractNetworkConnectionConfig::common()
  log = new Logger("AbstractNetworkConnectionConfig");
  init = false;
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
- hostNameField = new JTextField(15);
+ hostNameField = new JTextField(16);
  connect(hostNameField, SIGNAL(textChanged(QString)),this, SLOT(on_hostNameField_leave()));
  portField = new JTextField(10);
 
@@ -661,6 +661,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   gbLayout->addWidget(showAutoConfig,*cR);
 //     _details.add(showAutoConfig);
 //     gbLayout->setConstraints(showAutoConfig, cR);
+  gbLayout->addWidget(showAutoConfig,*cR);
 
   i++;
   showAutoConfig->setVisible(true);

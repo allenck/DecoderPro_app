@@ -16,7 +16,7 @@ class JTitledSeparator : public JPanel
  private:
   /*private*/ /*final*/ /*static*/ class SeparatorPane : JPanel {
 
-      /*private*/ SeparatorPane() : JPanel(new GridBagLayout) {
+      /*private*/ SeparatorPane() : JPanel(new GridBagLayout, nullptr) {
           //super(new GridBagLayout());
           setOpaque(false);
 //          setDoubleBuffered(false);
