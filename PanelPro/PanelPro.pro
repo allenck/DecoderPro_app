@@ -132,23 +132,23 @@ DEPENDPATH += $$PWD/../LocoIO
 #}
 
 CONFIG += scripts
-equals(ENABLE_SCRIPTING, "Y") {
-    DEFINES += SCRIPTING_ENABLED
+#equals(ENABLE_SCRIPTING, "Y") {
+#    DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
+#    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+#    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
 
-    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
-    DEPENDPATH += $$PYTHONQT_PREFIXe/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
-#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
+#    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    DEPENDPATH += $$PYTHONQT_PREFIXe/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+##    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
 
- #include(../python.prf)
- message(PanelPro: python scripts are enabled)
+# #include(../python.prf)
+# message(PanelPro: python scripts are enabled)
 
-}
-else {
- message(PanelPro::Python scripts will be disabled)
-}
+#}
+#else {
+# message(PanelPro::Python scripts will be disabled)
+#}
 
 TRANSLATIONS += \
     languages/panelpro_de.ts \

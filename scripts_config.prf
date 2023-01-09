@@ -1,7 +1,13 @@
 # This file contains all the neceesary defines and linkages for scripts and Python usage.
 # It should be included in each .pro file that has scripting code modules.
-# If the two environment variables, PYTHON_VERSION and PYTHONQT_PREFIX need to defined in the environment. (in Unix in .bashrc or .profile)
+# The two environment variables, PYTHON_VERSION and PYTHONQT_PREFIX need to defined 
+# in the environment. (in Unix in .bashrc or .profile)
 
+# Set ENABLE_PYTHON_SCRIPTING = "N" to disable a references to python and eliminate script modules!
+ENABLE_PYTHON_SCRIPTING = "Y"
+
+
+equals( ENABLE_PYTHON_SCRIPTING, "Y") {
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {
   win32:PROJ_DIR=C:/Projects
@@ -15,7 +21,7 @@ isEmpty( PROJ_DIR ) {
 PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 isEmpty( PYTHONQT_PREFIX ) {
   win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/pythonqt-master
 }
 
 include($$PYTHONQT_PREFIX/build/python.prf)
@@ -23,21 +29,24 @@ include($$PYTHONQT_PREFIX/build/python.prf)
 win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
 ENABLE_SCRIPTING = "Y"
 }
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}.so) {
 ENABLE_SCRIPTING = "Y"
 }
 
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}.so){
  ENABLE_SCRIPTING = "Y"
- message($$TARGET: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
+ message($$TARGET: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}.so + "found OK")
 } else:unix: {
- message($$TARGET: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
+ message($$TARGET: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}.so + "not found")
 }
 
 win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
-else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
+else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION} -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}
 
 INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 
 #ENABLE_SCRIPTING = "N"
+} else {
+message ($$TARGET: global ENABLE_PYTHON_SCRIPTING not enabled ($$ENABLE_PYTHON_SCRIPTING))
+}

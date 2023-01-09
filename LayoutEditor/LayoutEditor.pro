@@ -1146,16 +1146,16 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
-equals(ENABLE_SCRIPTING, "Y") {
+#equals(ENABLE_SCRIPTING, "Y") {
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
 
-INCLUDEPATH += $$PWD/../../../../../Python27/include
-DEPENDPATH += $$PWD/../../../../../Python27/include
-INCLUDEPATH+=/usr/local/python2.7
-INCLUDEPATH+=/usr/include/python3.10
-}
+#INCLUDEPATH += $$PWD/../../../../../Python27/include
+#DEPENDPATH += $$PWD/../../../../../Python27/include
+#INCLUDEPATH+=/usr/local/python2.7
+#INCLUDEPATH+=/usr/include/python3.10
+#}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
