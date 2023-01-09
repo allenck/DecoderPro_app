@@ -141,13 +141,12 @@
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
  ConnectionConfigManager* manager = (ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager");
-
  ccCurrent = original;
  QVBoxLayout* layout;
  setLayout(layout = new QVBoxLayout());
- //this->setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+ this->setBorder(BorderFactory::createEmptyBorder(0, 8, 0, 8));
 
- resize(300,200);
+ //resize(300,200);
 
  manuBox->addItem(NONE_SELECTED);
 
@@ -167,10 +166,9 @@
    manuBox->addItem(manuName);
   }
  }
-//  manuBox.addActionListener((ActionEvent evt) -> {
-//        updateComboConnection();
-//    });
- connect(manuBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateComboConnection()));
+  connect(manuBox, &QComboBox::currentTextChanged, [=] (QString){
+        updateComboConnection();
+    });
 
   // get the list of ConnectionConfig items into a selection box
   classConnectionNameList = DCCManufacturerList::getConnectionList( manuBox->currentText());
@@ -295,7 +293,7 @@
 
  selection();  // first time through, pretend we've selected a value
  // to load the rest of the GUI
- //adjustSize();
+ adjustSize();
 }
 
 void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)

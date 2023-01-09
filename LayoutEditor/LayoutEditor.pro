@@ -31,7 +31,7 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
-#include(../scripts_config.prf) // disabled ACK
+include(../scripts_config.prf)
 
 #PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 #isEmpty( PYTHONQT_PREFIX ) {

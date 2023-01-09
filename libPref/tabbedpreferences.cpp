@@ -17,6 +17,7 @@
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include <QSplitter>
+#include "class.h"
 
 //TabbedPreferences::TabbedPreferences(QObject *parent) :
 //    AppConfigBase(parent)
@@ -191,7 +192,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   << QString( "apps.FileLocationPane" )
   << QString( "apps.PerformFilePanel")
   << QString("apps.GuiLafConfigPane")
-//  << QString("apps.GuiLocalePreferencesPanel")
+//  << QString("apps.GuiLocalePreferencesPanel") // gets corrupted!
   << QString( "apps.SystemConsoleConfigPanel")
   << QString("jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane")
   << QString( "jmri.jmrit.symbolicprog.ProgrammerConfigPane")
@@ -267,7 +268,8 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 
  }
 #else
-  QObject* panel = InstanceManager::getDefault(className.mid(className.lastIndexOf(".")+1));
+  //QObject* panel = InstanceManager::getDefault(className.mid(className.lastIndexOf(".")+1));
+  QObject* panel = (QWidget*)Class::forName(className.mid(className.lastIndexOf(".")+1))->newInstance();
   if (qobject_cast<PreferencesSubPanel*>(panel)) {
       QString parent = (dynamic_cast<PreferencesSubPanel*>(panel))->getParentClassName();
       if (!this->getPreferencesPanels()->contains(parent)) {
@@ -308,7 +310,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   log->debug(tr("add panel %1 class %2 index %3").arg(preferences->getPrefItem()).arg(preferences->getPanel()->metaObject()->className()).arg(widgetIndex));
   }
   if(preferences->getPrefItem().isEmpty())
-   log->debug(tr("item is blank! ")+ preferences->getPanel()->metaObject()->className());
+   log->debug(tr("item is blank! ")+ ((PreferencesPanel*)preferences->getPanel())->className());
   widgetIndexes.insert(preferences->getPrefItem(), widgetIndex);
   splitter->setStretchFactor(widgetIndex++,2);
   if(preferences->getPanel()){

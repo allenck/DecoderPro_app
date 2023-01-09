@@ -8,29 +8,30 @@ class LIBPREFSHARED_EXPORT GuiLocalePreferencesPanel : public QWidget, public Pr
   public InstanceManagerAutoDefault
 {
     Q_OBJECT
-    Q_INTERFACES(PreferencesPanel  InstanceManagerAutoDefault)
+    Q_INTERFACES(PreferencesSubPanel  InstanceManagerAutoDefault)
 
 public:
     Q_INVOKABLE explicit GuiLocalePreferencesPanel(QWidget *parent = 0);
     ~GuiLocalePreferencesPanel() {}
     GuiLocalePreferencesPanel(const GuiLocalePreferencesPanel&) : QWidget() {}
-    /*public*/ QString getParentClassName() ;
-    /*public*/ void setParent(PreferencesPanel* parent);
-    /*public*/ PreferencesPanel* getParent();
-    /*public*/ QString getPreferencesItem();
-    /*public*/ QString getPreferencesItemText();
-    /*public*/ QString getTabbedPreferencesTitle();
-    /*public*/ QString getLabelKey() ;
-    /*public*/ QWidget* getPreferencesComponent();
-    /*public*/ bool isPersistant();
-    /*public*/ QString getPreferencesTooltip();
-    /*public*/ void savePreferences();
-    /*public*/ bool isDirty();
-    /*public*/ bool isRestartRequired();
-    /*public*/ bool isPreferencesValid();
-    /*public*/ QString className();
-    /*public*/ QObject* ppself() {return (QObject*)this;}
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QString getParentClassName()  override ;
+    /*public*/ void setParent(PreferencesPanel* parent) override ;
+    /*public*/ PreferencesPanel* getParent() override ;
+    /*public*/ QString getPreferencesItem() override ;
+    /*public*/ QString getPreferencesItemText() override ;
+    /*public*/ QString getTabbedPreferencesTitle() override ;
+    /*public*/ QString getLabelKey() override  ;
+    /*public*/ QWidget* getPreferencesComponent() override ;
+    /*public*/ bool isPersistant() override ;
+    /*public*/ QString getPreferencesTooltip() override ;
+    /*public*/ void savePreferences() override ;
+    /*public*/ bool isDirty() override ;
+    /*public*/ bool isRestartRequired() override ;
+    /*public*/ bool isPreferencesValid() override ;
+    /*public*/ QString className() override ;
+
+    /*public*/ QObject* ppself() override  {return this;}
+    /*public*/ QObject* self() override {return this;}
 
 signals:
 
@@ -38,5 +39,5 @@ public slots:
 private:
     GuiLafConfigPane* parent = nullptr;
 };
-
+Q_DECLARE_METATYPE(GuiLocalePreferencesPanel)
 #endif // GUILOCALEPREFERENCESPANEL_H

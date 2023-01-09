@@ -4,8 +4,7 @@
 GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
     QWidget(parent)
 {
- parent = nullptr;
- setObjectName("GuiLocalePreferencesPanel");
+  setObjectName("GuiLocalePreferencesPanel");
 }
 /**
  * Provide PreferencesPanel information for the JPanel provided by
