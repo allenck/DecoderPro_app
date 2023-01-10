@@ -30,7 +30,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ /*final*/ QString getShortDescription(QLocale locale) override;
   /*public*/ /*final*/ QString getLongDescription(QLocale locale) override;
   /*public*/ /*final*/ QString getUserName() const override;
-  /*public*/ /*final*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)override;
+    /*public*/ /*final*/ void setUserName(QString s)override; /*throw (NamedBean::BadUserNameException)*/;
   /*public*/ /*final*/ QString getSystemName() const override;
   /*public*/ /*final*/ void addPropertyChangeListener(PropertyChangeListener* l, QString name, QString listenerRef)override;
   /*public*/ /*final*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* l, QString name, QString listenerRef) override;
@@ -39,7 +39,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ /*final*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
   /*public*/ /*final*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* l)override;
   /*public*/ /*final*/ void updateListenerRef(PropertyChangeListener* l, QString newName)override;
-  /*public*/ /*final*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)override;
+  /*public*/ /*final*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/override;
   /*public*/ /*final*/ QString getListenerRef(PropertyChangeListener* l)override;
   /*public*/ /*final*/ QList<QString> getListenerRefs()override;
   /*public*/ /*final*/ int getNumPropertyChangeListeners()override;

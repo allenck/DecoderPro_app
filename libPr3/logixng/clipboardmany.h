@@ -68,7 +68,7 @@ public:
   /*public*/ QString getBeanType()override;
   /*public*/ Base* getParent() const override;
   /*public*/ void setParent(Base* parent)override;
-  /*public*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) throw  (JmriException)override;
+  /*public*/ Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw  (JmriException)*/override;
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throw (JmriException)*/override;
   /*public*/ void registerListenersForThisClass() override;
   /*public*/ void unregisterListenersForThisClass()override;

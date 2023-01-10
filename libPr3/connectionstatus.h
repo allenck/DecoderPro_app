@@ -20,7 +20,7 @@ public:
     /*public*/ static const QString CONNECTION_DOWN;// = "Not Connected";
     // simple database of port names and their status
     //static QStringList* portNames;// = new QStringList();
-    QHash<ConnectionKey*, QString> portStatus;// = new QStringList();
+    QMap<QString, QString> portStatus;// = new QStringList();
     /*public*/ static /*synchronized*/ ConnectionStatus* instance();
     /*public*/ /*synchronized*/ void addConnection (QString systemName, QString portName);
     /*public*/ /*synchronized*/ void setConnectionState(QString systemName, QString portName, QString state);
@@ -40,7 +40,7 @@ private:
  static QMutex* mutex;
  /** record the single instance **/
  /*private*/ static ConnectionStatus* _instance;// = NULL;
- Logger* log;
+ static Logger* log;
 protected:
  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 
@@ -60,7 +60,9 @@ protected:
 Q_OBJECT
     QString portName = "";
     QString systemName = "";  // human-readable name for system
+    QString _key;
 public:
+    /*public*/ ConnectionKey() {}
     /**
      * constructor
      *
@@ -69,20 +71,25 @@ public:
      * @param port   port name
      * @throws IllegalArgumentException if both system and port are null;
      */
-    /*public*/ ConnectionKey(QString system, /*@Nonnull*/ QString port) {
+    /*public*/ ConnectionKey(const QString system, /*@Nonnull*/ const QString port) {
         if (system == "" && port == "") {
-            throw  IllegalArgumentException("At least the port name must be provided");
+            throw  new IllegalArgumentException("At least the port name must be provided");
         }
         systemName = system;
         portName = port;
+        _key = system+port;
     }
 
     /*public*/ QString getSystemName() const {
         return systemName;
     }
 
-    /*public*/ QString getPortName() {
+    /*public*/ QString getPortName() const{
         return portName;
+    }
+
+    /*public*/ QString key() const{
+     return _key;
     }
 
     //@Override
@@ -95,17 +102,37 @@ public:
         return (systemName == "" ? other->getSystemName() == "" : systemName == (other->getSystemName()))
                 && (portName == "" ? other->getPortName() == "" : portName ==(other->getPortName()));
     }
+
+    inline /*public*/ bool operator==(const ConnectionKey& other)
+    {
+     return (systemName == "" ? other.getSystemName() == "" : systemName == (other.getSystemName()))
+             && (portName == "" ? other.getPortName() == "" : portName ==(other.getPortName()));
+
+    }
 #if 0
     //@Override
-    /*public*/ int hashCode() {
-        if (systemName == nullptr) {
-            return portName.hashCode();
-        } else if (portName == "") {
-            return systemName.hashCode();
+//    /*public*/ int hashCode() {
+//        if (systemName == nullptr) {
+//            return qHash(portName);//portName.hashCode();
+//        } else if (portName == "") {
+//            return qHash(systemName);//systemName.hashCode();
+//        } else {
+//            return (qHash(systemName) + qHash(portName));
+//        }
+//    }
+
+    // despite being structured identically as documented for the QHash class, this won't compile!
+    inline /*public*/ uint qHash(const ConnectionKey& key, uint seed) {
+     QString portName = key.getPortName();
+        if (key.systemName == nullptr) {
+            return qHash(portName, seed);//portName.hashCode();
+        } else if (key.portName == "") {
+            return qHash(key.systemName, seed);//systemName.hashCode();
         } else {
-            return (systemName.hashCode() + portName.hashCode());
+            return (qHash(key.systemName, seed) + qHash(key.portName, seed));
         }
     }
+
 #endif
 };
 #endif // CONNECTIONSTATUS_H

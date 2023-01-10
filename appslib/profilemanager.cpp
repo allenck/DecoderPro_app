@@ -524,7 +524,7 @@ void ProfileManager::common(File* catalog)
  }
 }
 
-/*private*/ void ProfileManager::readProfiles() throw (JDOMException, IOException)
+/*private*/ void ProfileManager::readProfiles()
 {
  try
  {

@@ -1090,7 +1090,7 @@ File userPrefsFile;*/
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) /*throw (JmriConfigureXmlException)*/
 {
  bool result = true;
  // Now process the load-later list

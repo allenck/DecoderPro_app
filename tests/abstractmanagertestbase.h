@@ -38,7 +38,7 @@ class VetoableChangeListenerO1 : public QObject, public VetoableChangeListener
  Q_OBJECT
 Q_INTERFACES(VetoableChangeListener)public:
       //@Override
-      /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException);
-QObject* self() {return (QObject*)this;}
+    /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/); /*throw (PropertyVetoException)*/;
+//QObject* self() {return (QObject*)this;}
 };
 #endif // ABSTRACTMANAGERTESTBASE_H

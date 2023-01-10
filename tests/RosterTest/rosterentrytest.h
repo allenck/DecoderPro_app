@@ -17,7 +17,7 @@ public slots:
     /*public*/ void testPartialLoad();
     /*public*/ void testEmptyLoad();
     /*public*/ void testFullLoad();
-    /*public*/ void testFromSchemaFile() throw (JDOMException, IOException);
+    /*public*/ void testFromSchemaFile() /*throw (JDOMException, IOException)*/;
     /*public*/ void testFromDtdFile() throw (JDOMException, IOException);
     /*public*/ void testStoreFunctionLabel();
     /*public*/ void testModifyDateUnparseable();

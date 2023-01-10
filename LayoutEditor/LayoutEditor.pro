@@ -605,7 +605,7 @@ HEADERS += liblayouteditor_global.h \
     layouteditorviewcontext.h \
     layoutlhturnoutviewxml.h \
     layoutlhxoverviewxml.h \
-    layoutmodels.h \
+    #layoutmodels.h \
     layoutrhturnoutviewxml.h \
     layoutrhxoverviewxml.h \
     layoutsingleslipviewxml.h \

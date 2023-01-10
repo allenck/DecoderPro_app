@@ -127,7 +127,7 @@
 }
 
 //@Override
-/*public*/ /*final*/ void AbstractMaleSocket::setUserName(QString s) throw (NamedBean::BadUserNameException) {
+/*public*/ /*final*/ void AbstractMaleSocket::setUserName(QString s) /*throw (NamedBean::BadUserNameException)*/ {
     ((AbstractBase*)_object->bself())->AbstractNamedBean::setUserName(s);
 }
 
@@ -176,7 +176,7 @@
 }
 
 //@Override
-/*public*/ /*final*/ void AbstractMaleSocket::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ /*final*/ void AbstractMaleSocket::vetoableChange(PropertyChangeEvent* evt)  {
     _object->vetoableChange(evt);
 }
 

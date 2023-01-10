@@ -131,7 +131,7 @@ QDomDocument doc;
 }
 
 //@Test
-/*public*/ void RosterEntryTest::testFromSchemaFile() throw (JDOMException, IOException) {
+/*public*/ void RosterEntryTest::testFromSchemaFile()  {
 
     // Create a RosterEntry from a test xml file
     // This one references the Schema version

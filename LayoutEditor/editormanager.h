@@ -61,7 +61,7 @@ class EMShutdownTask : public AbstractShutDownTask
  public:
   EMShutdownTask(QString name, EditorManager* em) : AbstractShutDownTask(name){this->em =em;}
   //@Override
-  /*public*/ bool call() throw (Exception) override {
+  /*public*/ bool call() /*throw (Exception)*/ override {
       if (em->panelSetChanged) {
           em->notifyStoreNeeded();
       }

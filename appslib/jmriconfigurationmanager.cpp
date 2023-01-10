@@ -236,7 +236,7 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load( QUrl file)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::load( QUrl file)
 {
     return this->load(file, false);
 }

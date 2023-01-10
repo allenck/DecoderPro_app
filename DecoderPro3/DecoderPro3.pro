@@ -124,22 +124,22 @@ win32:exists($$PREFIX/lib/PythonQt.dll){
 #}
 
 #CONFIG += scripts
-equals(ENABLE_SCRIPTING, "Y") {
-    DEFINES += SCRIPTING_ENABLED
+#equals(ENABLE_SCRIPTING, "Y") {
+#    DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
+#    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+#    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
 
-    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
-    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 
- include(../python.prf)
- message(DecoderPro3: python scripts are enabled)
+# include(../python.prf)
+# message(DecoderPro3: python scripts are enabled)
 
-}
-else {
- message(DecoderPro3: Python scripts will be disabled)
-}
+#}
+#else {
+# message(DecoderPro3: Python scripts will be disabled)
+#}
 
 TRANSLATIONS += \
     languages/decoderpro3_de.ts \

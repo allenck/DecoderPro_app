@@ -187,7 +187,7 @@
     }
 
     //@Override
-    /*public*/ Base* ClipboardMany::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) throw  (JmriException){
+    /*public*/ Base* ClipboardMany::getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)/* throw  (JmriException)*/{
         throw  UnsupportedOperationException("Not supported");
     }
 

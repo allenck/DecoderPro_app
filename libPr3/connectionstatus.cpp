@@ -1,63 +1,71 @@
 #include "connectionstatus.h"
 #include "exceptions.h"
+#include "loggerfactory.h"
+
+/**
+ * Interface for classes that wish to get notification when the connection to
+ * the layout changes.
+ * <p>
+ * Maintains a single instance, as there is only one set of connections for the
+ * running program.
+ * <p>
+ * The "system name" referred to here is the human-readable name like "LocoNet 2"
+ * which can be obtained from i.e.
+ * {@link jmri.SystemConnectionMemo#getUserName}.
+ * Not clear whether {@link ConnectionConfig#getConnectionName} is correct.
+ * It's not intended to be the prefix from i.e. {@link PortAdapter#getSystemPrefix}.
+ * Maybe the right thing is to pass in the SystemConnectionMemo?
+ *
+ * @author Daniel Boudreau Copyright (C) 2007
+ * @author Paul Bender Copyright (C) 2016
+ */
 
 /*public*/ /*static*/ const QString ConnectionStatus::CONNECTION_UNKNOWN = "Unknown";
 /*public*/ /*static*/ const QString ConnectionStatus::CONNECTION_UP = "Connected";
 /*public*/ /*static*/ const QString ConnectionStatus::CONNECTION_DOWN = "Not Connected";
 QMutex* ConnectionStatus::mutex = new QMutex();
-ConnectionStatus* ConnectionStatus::_instance = NULL;
-//QStringList* ConnectionStatus::portNames= new QStringList();
 
+/**
+ * Record the single instance *
+ */ConnectionStatus* ConnectionStatus::_instance = NULL;
 
 ConnectionStatus::ConnectionStatus(QObject *parent) :
     QObject(parent)
 {
- log = new Logger("ConnectionStatus");
  pcs = new SwingPropertyChangeSupport(this, nullptr);
  setObjectName("ConnectionStatus");
- portStatus = QHash<ConnectionKey*, QString>();
-
+ portStatus = QMap<QString, QString>(); // NOTE: key is concatenation of systemname and port
 }
-/**
- * Interface for classes that wish to get notification when the
- * connection to the layout changes.
- *
- * @author     Daniel Boudreau   Copyright (C) 2007
- * @version    $Revision: 17977 $
- */
-///*public*/ class ConnectionStatus {
-
-
-
 
 /*public*/ /*static*/ /*synchronized*/ ConnectionStatus* ConnectionStatus::instance()
 {
  //QMutexLocker locker(mutex);
- Logger log("ConnectionStatus");
  if (_instance == NULL)
  {
-  if (log.isDebugEnabled()) log.debug("ConnectionStatus creating instance");
+  if (log->isDebugEnabled()) log->debug("ConnectionStatus creating instance");
   // create and load
   _instance = new ConnectionStatus();
  }
- if (log.isDebugEnabled()) log.debug("ConnectionStatus returns instance "+ _instance->objectName());
+ if (log->isDebugEnabled()) log->debug("ConnectionStatus returns instance "+ _instance->objectName());
  return _instance;
 }
 
+/**
+ * Add a connection with a given name and port name to the portStatus set
+ * if not yet present in the set.
+ *
+ * @param systemName human-readable name for system like "LocoNet 2"
+ *                   which can be obtained from i.e. {@link SystemConnectionMemo#getUserName}.
+ * @param portName   the port name
+ */
 /*public*/ /*synchronized*/ void ConnectionStatus::addConnection (QString systemName, QString portName)
 {
+ QMutexLocker locker(mutex);
  log->debug(tr("addConnection systemName %1 portName %2").arg(systemName, portName));
- ConnectionKey* newKey = new ConnectionKey(systemName, portName);
- //if (!portStatus.contains(newKey))
- QList<ConnectionKey*> list = portStatus.keys();
- for(ConnectionKey* key : list)
- {
-  if(newKey->equals(key))
-  {
-     portStatus.insert(newKey, CONNECTION_UNKNOWN);
+ ConnectionKey newKey (systemName, portName);
+ if (!portStatus.contains(newKey.key())) {
+     portStatus.insert(newKey.key(), CONNECTION_UNKNOWN);
      firePropertyChange("add", QVariant(), portName);
-     break;
-  }
  }
 }
 
@@ -71,47 +79,54 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  */
 /*public*/ /*synchronized*/ void ConnectionStatus::setConnectionState(QString systemName, QString portName, QString state)
 {
+ QMutexLocker locker(mutex);
  log->debug(tr("setConnectionState systemName: %1 portName: %2 state: %3").arg(systemName, portName, state));
- ConnectionKey* newKey= new ConnectionKey(systemName, portName);
+ ConnectionKey newKey (systemName, portName);
  //QPair<QString, QString> newKey(systemName, portName);
  //if (!portStatus.contains(newKey))
- QList<ConnectionKey*> list = portStatus.keys();
- for(ConnectionKey* key : list)
- {
-  if(newKey->equals(key))
-  {
-     portStatus.insert(newKey, state);
-     firePropertyChange("add", QVariant(), portName);
-     return;
-  }
+// QList<ConnectionKey*> list = portStatus.keys();
+// for(ConnectionKey* key : list)
+// {
+//  if(newKey->equals(key))
+//  {
+//     portStatus.insert(newKey, state);
+//     firePropertyChange("add", QVariant(), portName);
+//     return;
+//  }
+// }
+//  portStatus.insert(newKey, state); // will overlay existing entry
+//  firePropertyChange("change", state, portName);
+ if (!portStatus.contains(newKey.key())) {
+      portStatus.insert(newKey.key(), state);
+      firePropertyChange("add", QVariant(), portName);
+      log->debug(tr("New Connection added: %1 ").arg(newKey.getPortName()));
+  } else {
+//      firePropertyChange("change", portStatus.insert(newKey, state), portName);
+       portStatus.insert(newKey.key(), state);
+       firePropertyChange("add", QVariant(), portName);
  }
-  portStatus.insert(newKey, state); // will overlay existing entry
-  firePropertyChange("change", state, portName);
 }
 
 /**
- * get the status of a communication port
- * @param portName
- * @return status string
+ * Get the status of a communication port with a given name.
+ *
+ * @param systemName human-readable name for system like "LocoNet 2"
+ *                      which can be obtained from i.e. {@link SystemConnectionMemo#getUserName}.
+ * @param portName   the port name
+ * @return the status
  */
 /*public*/ /*synchronized*/ QString ConnectionStatus::getConnectionState(QString systemName, /*@Nonnull*/ QString portName)
 {
+ //QMutexLocker locker(mutex);
  log->debug(tr("getConnectionState systemName: %1 portName: %2").arg(systemName, portName));
  QString stateText = CONNECTION_UNKNOWN;
- ConnectionKey* newKey = new ConnectionKey(systemName, portName);
- //if (portStatus.contains(newKey))
- QList<ConnectionKey*> list = portStatus.keys();
- for(ConnectionKey* key : list)
- {
-  if(newKey->equals(key))
-  {
-      stateText = portStatus.value(key);
-      log->debug(tr("connection found : %1").arg(stateText));
-      return stateText;
-  }
+ ConnectionKey newKey (systemName, portName);
+ if (portStatus.contains(newKey.key())) {
+     stateText = portStatus.value(newKey.key());
+     log->debug(tr("connection found : %1").arg(stateText));
+ } else {
+     log->debug(tr("connection systemName %1 portName %2 not found, %3").arg(systemName, portName, stateText));
  }
- log->debug(tr("connection systemName %1 portName %2 not found, %3").arg(systemName, portName, stateText));
-
  return stateText;
 }
 
@@ -122,14 +137,16 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  * @return the status
  */
 /*public*/ /*synchronized*/ QString ConnectionStatus::getSystemState(/*@Nonnull*/ QString systemName) {
+ QMutexLocker locker(mutex);
  log->debug(tr("getSystemState systemName: %1 ").arg(systemName));
  // see if there is a key that has systemName as the port value.
  //for (Map.Entry<ConnectionKey, String> entry : portStatus.entrySet())
- QHashIterator<ConnectionKey*, QString> iter(portStatus);
+ QMapIterator<QString, QString> iter(portStatus);
  while(iter.hasNext())
  {
   iter.next();
-     if ((iter.key()->getSystemName() != "") && (iter.key()->getSystemName() == (systemName))) {
+     //if ((iter.key().getSystemName() != "") && (iter.key().getSystemName() == (systemName))) {
+  if(iter.key().contains(systemName)){
          // if we find a match, return it
          return iter.value();
      }
@@ -148,8 +165,8 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  */
 /*public*/ /*synchronized*/ bool ConnectionStatus::isConnectionOk(QString systemName, /*@Nonnull*/ QString portName)
 {
- QString stateText = getConnectionState(systemName, portName);
  //QMutexLocker locker(mutex);
+ QString stateText = getConnectionState(systemName, portName);
  if (stateText!=(CONNECTION_UP))
   return false;
  else
@@ -169,6 +186,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
 
 /*public*/ /*synchronized*/ void ConnectionStatus::removePropertyChangeListener(PropertyChangeListener* l)
 {
+ QMutexLocker locker(mutex);
  pcs->removePropertyChangeListener(l);
 }
 
@@ -177,4 +195,5 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
   log->debug(tr("property change: %1").arg(e->getPropertyName()));
 }
 
+/*private*/ /*final*/ /*static*/ Logger* ConnectionStatus::log = LoggerFactory::getLogger("ConnectionStatus");
 

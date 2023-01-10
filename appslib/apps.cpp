@@ -1007,6 +1007,11 @@ void Apps::On_handleQuit()
   cs->setText(" ");
   return;
  }
+
+ log->debug(tr("conn.name() is %1 ").arg(conn->name())); // eg CAN via MERG Network Interface
+ log->debug(tr("conn.getConnectionName() is %1 ").arg(conn->getConnectionName())); // eg MERG2
+ log->debug(tr("conn.getManufacturer() is %1 ").arg(conn->getManufacturer())); // eg MERG
+
  ConnectionStatus::instance()->addConnection(conn->name(), conn->getInfo());
  cs->setFont(pane->font());
  updateLine(conn, cs);
@@ -1523,10 +1528,7 @@ static /*protected*/ void loadFile(String name) {
 //@Override
 /*public*/ void Apps::propertyChange(PropertyChangeEvent* /*ev*/)
 {
- if (log->isDebugEnabled())
- {
-  log->debug("property change: comm port status update");
- }
+ log->debug("property change: comm port status update");
  if (connection[0] != NULL)
  {
   updateLine(connection[0], cs4);

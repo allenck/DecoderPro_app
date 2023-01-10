@@ -110,7 +110,7 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
         Assert::assertEquals(base, ((AbstractManager*)_manager->mself())->VetoableChangeSupport::getVetoableChangeListeners()->length(), __FILE__, __LINE__);
     }
 
-    /*public*/ void VetoableChangeListenerO1::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+    /*public*/ void VetoableChangeListenerO1::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ {
             // do nothing
     }
 

@@ -82,7 +82,7 @@ private:
     /*private*/ static /*final*/ QString PROFILECONFIG;// = "profileConfig"; // NOI18N
     Logger* log;
     void profileNameChange(Profile* profile, QString oldName);
-    /*private*/ void readProfiles() throw (JDOMException, IOException);
+    /*private*/ void readProfiles() /*throw (JDOMException, IOException)*/;
     /*private*/ void writeProfiles() /*throw (IOException)*/;
     /*private*/ void findProfiles();
     /*private*/ void findProfiles(File* searchPath);

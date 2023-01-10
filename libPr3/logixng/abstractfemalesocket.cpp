@@ -434,7 +434,7 @@
 }
 
 //@Override
-/*public*/ void AbstractFemaleSocket::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ void AbstractFemaleSocket::vetoableChange(PropertyChangeEvent* evt)  {
     throw new UnsupportedOperationException("Not supported");
 }
 

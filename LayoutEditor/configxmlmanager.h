@@ -56,7 +56,7 @@ public:
     /*public*/ void setValidate(XmlFile::Validate v)override;
     /*public*/ XmlFile::Validate getValidate()override;
     /*public*/ bool loadDeferred(File* fi) /*throw (JmriException)*/ override;
-    /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException) override;
+    /*public*/ bool loadDeferred(QUrl url) /*throw (JmriConfigureXmlException) */override;
     /*public*/ QUrl find(QString f) override;
     virtual void locateFileFailed(QString f) ;
     static /*public*/ void creationErrorEncountered(XmlAdapter* adapter,
