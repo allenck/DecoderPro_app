@@ -81,22 +81,22 @@ AbstractActionModelFactory::AbstractActionModelFactory()
    if (name != (model->getName()))
    {
     model->setName(name);
-#if 0
+#if 1
     //manager->ifPresent(sam ->
-    if(manager->ifPresent(sam))
+    if(manager)
     {
-        sam->setRestartRequired();
+        ((StartupActionsManager*)manager)->setRestartRequired();
     }//);
 #endif
    }
    if (((userName.isEmpty() && connections->currentText() != NULL))
            || userName!=(connections->currentText())) {
        ((AbstractActionModel*) model)->setSystemPrefix(ConnectionNameFromSystemName::getPrefixFromName((QString) connections->currentText()));
-#if 0
+#if 1
        //manager->ifPresent(sam ->
-       if(manager->ifPresent(sam))
+       if(manager)
        {
-           sam->setRestartRequired();
+           ((StartupActionsManager*)manager)->setRestartRequired();
        }//);
 #endif
    }

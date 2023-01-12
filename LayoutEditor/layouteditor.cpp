@@ -112,6 +112,7 @@
 #include "layoutsingleslipview.h"
 #include "tracksegmentview.h"
 #include "layoutturntableview.h"
+#include <QScreen>
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -265,8 +266,7 @@ LayoutEditor::~LayoutEditor()
     }
 
     //QSize screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-    QDesktopWidget* desktop = QApplication::desktop();
-    QSize screenDim = desktop->screen()->size();
+    QSize screenDim = QGuiApplication::screens().at(0)->size();
     bool toolBarIsVertical = ((toolBarSide->getType() == eRIGHT) || (toolBarSide->getType() == eLEFT));
     if (toolBarIsVertical)
     {

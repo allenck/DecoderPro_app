@@ -14,11 +14,13 @@ class AbstractActionModelFactory : public QObject, public StartupModelFactory
   Q_INTERFACES(StartupModelFactory)
 public:
  AbstractActionModelFactory();
- /*public*/ QString getDescription();
- /*public*/ QString getActionText();
+ /*public*/ QString getDescription() override ;
+ /*public*/ QString getActionText() override ;
  /*public*/ /*abstract*/ virtual QString getEditModelMessage();
- /*public*/ void editModel(StartupModel* model, QWidget* parent);
- Q_INVOKABLE/*public*/ void initialize();
+ /*public*/ void editModel(StartupModel* model, QWidget* parent) override ;
+ Q_INVOKABLE/*public*/ void initialize() override ;
+
+ QObject* self() override {return this;}
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("AbstractActionModelFactory");

@@ -4,9 +4,10 @@
 # in the environment. (in Unix in .bashrc or .profile)
 
 # Set ENABLE_PYTHON_SCRIPTING = "N" to disable a references to python and eliminate script modules!
-ENABLE_PYTHON_SCRIPTING = "Y"
-
-
+ ENABLE_PYTHON_SCRIPTING = "Y"
+exists(local_config.prf) {
+include (local_config.prf)
+}
 equals( ENABLE_PYTHON_SCRIPTING, "Y") {
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {

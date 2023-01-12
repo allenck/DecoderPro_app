@@ -9,7 +9,6 @@
 #include <QVector>
 #include "quietshutdowntask.h"
 #include "exceptions.h"
-//#include "indexoutofboundsexception.h"
 #include <QSet>
 #include "libPr3_global.h"
 
@@ -187,7 +186,7 @@ public:
      {
       return preferenceList->value(n)->getItem();
      }
-     catch (IndexOutOfBoundsException ioob)
+     catch (IndexOutOfBoundsException* ioob)
      {
       return NULL;
      }
@@ -199,7 +198,7 @@ public:
     {
         try{
             return multipleChoiceList->value(n)->getItem();
-        } catch (IndexOutOfBoundsException ioob) {
+        } catch (IndexOutOfBoundsException* ioob) {
             return NULL;
         }
     }

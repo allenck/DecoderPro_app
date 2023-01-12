@@ -1,4 +1,5 @@
 #include "listedtableframe.h"
+#include "jmriuserpreferencesmanager.h"
 #include "userpreferencesmanager.h"
 #include "instancemanager.h"
 #include <QLabel>

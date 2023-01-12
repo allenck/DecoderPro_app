@@ -35,7 +35,7 @@
 /*static*/ int TabbedPreferencesFrame::lastdivider;
 
 /*public*/ TabbedPreferencesFrame::TabbedPreferencesFrame(QWidget *parent)
-    : JmriJFrame(parent)
+    : JmriJFrame(true, true, parent)
 {
  QWidget* centralWidget = new QWidget;
  setCentralWidget(centralWidget);
@@ -46,7 +46,7 @@
 
  layout->addWidget(getTabbedPreferences());
  addHelpMenu("package.apps.TabbedPreferences", true);
- resize(800,800);
+ //resize(800,800);
  setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 }
 

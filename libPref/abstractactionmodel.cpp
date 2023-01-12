@@ -15,6 +15,7 @@
 #include "loconetmenustartupaction.h"
 #include <QTimer>
 #include "jmriexception.h"
+#include "systemconnectionmemomanager.h"
 
 //AbstractActionModel::AbstractActionModel(QObject *parent) :
 //    QObject(parent)
@@ -41,7 +42,7 @@
 {
  className="";
  systemPrefix = "";
- exceptions = new QList<Exception>();
+ exceptions = QList<Exception*>();
 }
 
 /*public*/ QString AbstractActionModel::getClassName() {
@@ -59,11 +60,12 @@
 
 /*public*/ void AbstractActionModel::setName(QString n)
 {
- // can set className to NULL if no class found for n
+ log->debug(tr("setName(\"%1\")").arg(n));// can set className to NULL if no class found for n
  this->className = StartupActionModelUtil::getDefault()->getClassName(n);
 }
 
 /*public*/ void AbstractActionModel::setClassName(QString n) {
+ log->debug(tr("setClassName(\"%1\")").arg(n));
  //Objects.requireNonNull(n, "Class name cannot be NULL");
  className = n;
 }
@@ -98,7 +100,10 @@
   {
    // don't need return value, just want to know if exception is triggered
    Class::forName(className);
-   return true;
+   if (isSystemConnectionAction()) {
+     return SystemConnectionMemoManager::getDefault()->getSystemConnectionMemoForSystemPrefix(systemPrefix) != nullptr;
+   }
+   return true;return true;
   }
   catch (ClassNotFoundException* ex)
   {
@@ -116,7 +121,7 @@
  {
   if (!this->systemPrefix.isEmpty())
   {
-      return tr("<html>%1<br>on connection %2</html>").arg(name).arg( ConnectionNameFromSystemName::getConnectionName(this->systemPrefix)); // NOI18N
+    return tr("<html>%1<br>on connection %2</html>").arg(name).arg( ConnectionNameFromSystemName::getConnectionName(this->systemPrefix)); // NOI18N
   }
   return name;
  }
@@ -172,13 +177,13 @@
 }
 
 //@Override
-/*public*/ QList<Exception>* AbstractActionModel::getExceptions() {
-    return new QList<Exception>(*this->exceptions);
+/*public*/ QList<Exception*> AbstractActionModel::getExceptions() {
+    return QList<Exception*>(this->exceptions);
 }
 
 //@Override
-/*public*/ void AbstractActionModel::addException(Exception exception) {
-    this->exceptions->append(exception);
+/*public*/ void AbstractActionModel::addException(Exception* exception) {
+    this->exceptions.append(exception);
 }
 
 /*protected*/ /*abstract*/ void AbstractActionModel::performAction(Action* action) /*throw (JmriException)*/ {}

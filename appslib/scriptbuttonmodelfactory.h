@@ -4,7 +4,7 @@
 
 class ScriptButtonModel;
 class ScriptFileChooser;
-class ScriptButtonModelFactory : QObject, public StartupModelFactory
+class ScriptButtonModelFactory : public QObject, public StartupModelFactory
 {
  Q_OBJECT
   Q_INTERFACES(StartupModelFactory)

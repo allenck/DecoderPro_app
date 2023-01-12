@@ -52,7 +52,7 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : QWidget()
  userLocation = new JTextField();
  userLocation->setToolTip(tr("Specify directory path where user files are stored. If not present, the Profile path will be used!"));
  _programLocation = new JTextField();
- _programLocation->setToolTip(tr("Select location of Java program resources to be used by this program. Requires either a Java version of JMRO or the JMRI source."));
+ _programLocation->setToolTip(tr("Select location of Java program resources to be used by this program. Requires either a Java version of JMRI or the JMRI source."));
  QVBoxLayout* thisLayout;
  setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
 
@@ -96,6 +96,7 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : QWidget()
     QComboBox* cbProgram = new QComboBox();
     cbProgram->addItems(*FileUtil::findProgramPath());
     cbProgram->findText(FileUtil::getProgramPath());
+    cbProgram->setToolTip(tr("Select which JMRI resources to use runnint this program."));
     _programLocation->setText(cbProgram->currentText());
     connect(cbProgram, SIGNAL(currentIndexChanged(QString)), this, SLOT(programLocationChange(QString)));
 //    QVBoxLayout* thisLayout;

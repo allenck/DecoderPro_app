@@ -160,7 +160,20 @@ bool Apps::configDeferredLoadOK = false;
  _frame = frame;
 
  if(FileUtilSupport::getDefault()->getPaths() != nullptr && FileUtilSupport::getDefault()->getPaths()->count() > 1)
-  FileUtilSupport::getDefault()->selectProgramPath(FileUtilSupport::getDefault()->getPaths());
+ {
+  UserPreferencesManager* mgr = (JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+  QString programPath = mgr->getPreferenceItemDescription("apps.Apps", "defaultProgramPath");
+  bool bNoShowDlg = mgr->getPreferenceState("FileUtilSupport", "showDialog");
+  QString path = FileUtilSupport::getDefault()->getProgramPath();
+  if(!programPath.isEmpty() && !bNoShowDlg)
+   FileUtilSupport::getDefault()->selectProgramPath(FileUtilSupport::getDefault()->getPaths());
+  if(path.isEmpty() && !programPath.isEmpty())
+  {
+   FileUtilSupport::getDefault()->setProgramPath(programPath);
+  }
+  mgr->setPreferenceItemDetails("apps.Apps", "defaultProgramPath", FileUtilSupport::getDefault()->getProgramPath());
+
+ }
 
 
  splash(false);

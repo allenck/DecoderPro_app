@@ -168,7 +168,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
-    logixng/editthreadsdialog.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1141,6 +1140,7 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/editthreadsdialog.cpp \
     logixng/expressionreference.cpp \
     logixng/expressionreferenceswing.cpp \
     logixng/expressionreferencexml.cpp \
@@ -1522,8 +1522,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- logixng/clipboardeventlistener.h \
- logixng/editthreadsdialog.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2609,7 +2607,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
- logixng/analogexpressionbean.h \
+    logixng/clipboardeventlistener.h \
+    logixng/editthreadsdialog.h \
+    logixng/analogexpressionbean.h \
     logixng/expressionreference.h \
     logixng/expressionreferenceswing.h \
     logixng/expressionreferencexml.h \

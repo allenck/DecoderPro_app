@@ -10,7 +10,7 @@
 
 /*protected*/ AbstractStartupModel::AbstractStartupModel(QObject* parent)  : StartupModel(parent)
 {
- exceptions = new QList<Exception>();
+ exceptions =  QList<Exception*>();
  this->name = "";
 }
 
@@ -49,11 +49,11 @@
 }
 
 //@Override
-/*public*/ QList<Exception>* AbstractStartupModel::getExceptions() {
-    return new QList<Exception>(*this->exceptions);
+/*public*/ QList<Exception*> AbstractStartupModel::getExceptions() {
+    return  QList<Exception*>(this->exceptions);
 }
 
 //@Override
-/*public*/ void AbstractStartupModel::addException(/*@NonNULL*/ Exception exception) {
-    this->exceptions->append(exception);
+/*public*/ void AbstractStartupModel::addException(/*@NonNULL*/ Exception* exception) {
+    this->exceptions.append(exception);
 }

@@ -1,7 +1,12 @@
 #include this file in projects to set LogixNG options
 # changing any of these options may require that the affected projects or files may need to be rebuilt!
 
-ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
+ENABLE_LOGIXNG = "Y"
+
+# create local_config.prf to override ENABLE_LOGIXNG for this computer only!
+exists(local_config.prf) {
+include (local_config.prf)
+}
 
 equals(ENABLE_LOGIXNG, "Y") {
 #Enable the following line to initialize LogixNG in apps.cpp
@@ -11,3 +16,6 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES -= HAVE_LOGIXNG
  ENABLE_LOGIXNG_INIT = "N" #do not change!
 }
+
+DISTFILES += \
+    local_config.pri

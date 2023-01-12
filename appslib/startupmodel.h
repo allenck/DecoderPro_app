@@ -55,7 +55,7 @@ public:
   *         list if no exceptions were thrown
   */
  //@Override
- /*public*/ virtual QList<Exception>* getExceptions() { return NULL;}
+ /*public*/ virtual QList<Exception*> getExceptions() =0;
 
  /**
   * Add an exception to the list of exceptions thrown when loading the model
@@ -63,7 +63,7 @@ public:
   *
   * @param exception the exception to retain with the model
   */
- /*public*/ virtual void addException(/*@Override*/ Exception /*exception*/) {}
+ /*public*/ virtual void addException(/*@Override*/ Exception* /*exception*/) {}
 
  /*public*/ virtual QString toString() {return QString(this->metaObject()->className());}
 

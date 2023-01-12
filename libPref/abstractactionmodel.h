@@ -25,9 +25,9 @@ public:
     /*public*/ bool isSystemConnectionAction();
     /*public*/ bool isValid();
     /*public*/ QString toString();
- /*public*/ void performAction() /*throw (JmriException)*/;
- /*public*/ QList<Exception>* getExceptions();
- /*public*/ void addException(Exception exception);
+    /*public*/ void performAction() /*throw (JmriException)*/;
+    /*public*/ QList<Exception *> getExceptions();
+    /*public*/ void addException(Exception* exception);
 
 
 signals:
@@ -37,7 +37,7 @@ private:
     //TODO At some point this class might need to consider which system connection memo is being against certain system specific items
     /*private*/ QString systemPrefix;// = ""; // NOI18N
     /*private*/ QString className;// = ""; // NOI18N
-    /*private*/ /*final*/ QList<Exception>* exceptions;// = new ArrayList<>();
+    /*private*/ /*final*/ QList<Exception*> exceptions;// = new ArrayList<>();
 
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(AbstractActionModel.class);
  QString title;

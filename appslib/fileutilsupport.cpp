@@ -17,6 +17,9 @@
 #include <QAbstractAnimation>
 #include <QCheckBox>
 #include "joptionpane.h"
+#include "userpreferencesmanager.h"
+#include "jmriuserpreferencesmanager.h"
+#include "instancemanager.h"
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
@@ -926,8 +929,9 @@ public URL getURL(URI uri) {
  */
 /*public*/ QString FileUtilSupport::getProgramPath()
 {
-    if (programPath == "")
-    {
+
+ if (programPath == "")
+ {
     //        this->setProgramPath("."); // NOI18N
      QByteArray env0 = qgetenv("JMRIPROJECT");
 //     log->debug(tr("env JMRIPROJECT = %1").arg(env0.data()));
@@ -981,6 +985,8 @@ public URL getURL(URI uri) {
    qputenv("JMRIPROJECT", items.at(0)->text().toLocal8Bit());
    return items.at(0)->text();
   }
+  UserPreferencesManager* mgr = (JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+  mgr->setPreferenceState("FileUtilSupport", "showDialog", !cb->isChecked() );
  }
 }
 

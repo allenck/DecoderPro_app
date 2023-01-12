@@ -12,6 +12,11 @@
 #include "listselectionmodel.h"
 #include "vptr.h"
 #include <QHeaderView>
+#include "abstractactionmodelfactory.h"
+#include "scriptbuttonmodelfactory.h"
+#include "performfilemodelfactory.h"
+#include "startuppausefactory.h"
+#include "triggerroutemodelfactory.h"
 
 /**
  * Preferences panel to configure optional actions taken at startup.
@@ -62,7 +67,7 @@ bool compareItems(QObject* o1, QObject* o2)
  }//);
   connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(on_getAction(QObject*)));
 //    items.sort((JMenuItem o1, JMenuItem o2) -> o1.getText().compareTo(o2.getText()));
-  qSort(items.begin(), items.end(), compareItems);
+  std::sort(items.begin(), items.end(), compareItems);
 //    items.stream().forEach((item) ->
  foreach(QAction* item, items)
  {
@@ -80,8 +85,48 @@ void StartupActionsPreferencesPanel::on_listSelected(QModelIndex index)
 }
 void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 {
- StartupModel* model = ((StartupModelFactory*)factory)->newModel();
- ((StartupModelFactory*)factory)->editModel(model, this->window());
+ if(qobject_cast<ScriptButtonModelFactory*>(factory))
+ {
+  StartupModel* model = ((ScriptButtonModelFactory*)factory)->newModel();
+   ((ScriptButtonModelFactory*)factory)->editModel(model, this->window());
+  if (model->isValid()) {
+      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
+  }
+  return;
+ }
+ if(qobject_cast<PerformFileModelFactory*>(factory))
+ {
+  StartupModel* model = ((PerformFileModelFactory*)factory)->newModel();
+   ((PerformFileModelFactory*)factory)->editModel(model, this->window());
+  if (model->isValid()) {
+      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
+  }
+  return;
+ }
+
+ if(qobject_cast<StartupPauseFactory*>(factory))
+ {
+  StartupModel* model = ((StartupPauseFactory*)factory)->newModel();
+   ((StartupPauseFactory*)factory)->editModel(model, this->window());
+  if (model->isValid()) {
+      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
+  }
+  return;
+ }
+
+ if(qobject_cast<TriggerRouteModelFactory*>(factory))
+ {
+  StartupModel* model = ((TriggerRouteModelFactory*)factory)->newModel();
+   ((TriggerRouteModelFactory*)factory)->editModel(model, this->window());
+  if (model->isValid()) {
+      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
+  }
+  return;
+ }
+
+
+ StartupModel* model = ((AbstractActionModelFactory*)factory)->newModel();
+  ((AbstractActionModelFactory*)factory)->editModel(model, this->window());
  if (model->isValid()) {
      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
  }
@@ -363,7 +408,8 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
    case 1:
   {
    QString className = QString(model->metaObject()->className());
-   StartupModelFactory* factory = this->manager->getFactories(className);
+   QObject* obj =this->manager->getFactories(className)->self();
+   StartupModelFactory* factory = (AbstractActionModelFactory*)this->manager->getFactories(className)->self();
    if(factory == nullptr)
     return QVariant();
    QString descr = factory->getDescription();
