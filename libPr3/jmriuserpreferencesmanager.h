@@ -140,6 +140,13 @@ private:
  /*private*/ /*final*/ static QString SETTINGS_ELEMENT; // = "settings"; // NOI18N
  /*private*/ /*final*/ static QString WINDOWS_NAMESPACE; // = "http://jmri.org/xml/schema/auxiliary-configuration/window-details-4-3-5.xsd"; // NOI18N
  /*private*/ /*final*/ static QString WINDOWS_ELEMENT; // = "windowDetails"; // NOI18N
+ /*private*/ static /*final*/ QString REMINDER;// = "reminder";
+ /*private*/ static /*final*/ QString JMRI_UTIL_JMRI_JFRAME;// = "jmri.util.JmriJFrame";
+ /*private*/ static /*final*/ QString CLASS;// = "class";
+ /*private*/ static /*final*/ QString VALUE;// = "value";
+ /*private*/ static /*final*/ QString WIDTH;// = "width";
+ /*private*/ static /*final*/ QString HEIGHT;// = "height";
+ /*private*/ static /*final*/ QString PROPERTIES;// = "properties";
  /*private*/ bool dirty = false;
  /*private*/ bool loading = false;
  /*private*/ bool allowSave = true;
@@ -150,7 +157,7 @@ private:
  /*private*/ QHash<QString, ClassPreferences*>* classPreferenceList;// = new QHash<QString, ClassPreferences*>();
  /*private*/ File* file;
  QDomDocument doc;
- Logger* log;
+ static Logger* log;
 
 private slots:
  void /*private*/ initAfter() override;

@@ -35,8 +35,9 @@
 /*static*/ int TabbedPreferencesFrame::lastdivider;
 
 /*public*/ TabbedPreferencesFrame::TabbedPreferencesFrame(QWidget *parent)
-    : JmriJFrame(true, true, parent)
+    : JmriJFrame(parent)
 {
+ setFrameRef(this->getClassName());
  QWidget* centralWidget = new QWidget;
  setCentralWidget(centralWidget);
  QVBoxLayout* layout = new QVBoxLayout;
@@ -46,7 +47,8 @@
 
  layout->addWidget(getTabbedPreferences());
  addHelpMenu("package.apps.TabbedPreferences", true);
- //resize(800,800);
+ //resize(720,600);
+ setMinimumSize(QSize(720,600));
  setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 }
 
@@ -104,5 +106,5 @@
 
 /*public*/ QString TabbedPreferencesFrame::getClassName()
 {
- return "apps.gui.tabbedpreferences.TabbedPreferencesFrame";
+ return "apps.gui3.tabbedpreferences.TabbedPreferencesFrame";
 }

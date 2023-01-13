@@ -367,21 +367,21 @@ File* JmriPreferencesProvider::getPreferencesFile()
 }
 
 //@Override
-/*protected*/ void JmriPreferences::removeNodeSpi() throw (BackingStoreException)
+/*protected*/ void JmriPreferences::removeNodeSpi()
 {
  _isRemoved = true;
  flush();
 }
 
 //@Override
-/*protected*/ QStringList JmriPreferences::keysSpi() throw (BackingStoreException)
+/*protected*/ QStringList JmriPreferences::keysSpi()
 {
     //return root->keys().toVector(root->keys().size());
 return QStringList(root->keys());
 }
 
 //@Override
-/*protected*/ QStringList JmriPreferences::childrenNamesSpi() throw (BackingStoreException)
+/*protected*/ QStringList JmriPreferences::childrenNamesSpi()
 {
     //return children.keySet().toArray(new String[children.keySet().size()]);
 return QStringList(children->keys());
@@ -400,7 +400,7 @@ return QStringList(children->keys());
 }
 
 //@Override
-/*protected*/ void JmriPreferences::syncSpi() throw (BackingStoreException)
+/*protected*/ void JmriPreferences::syncSpi() /*throw (BackingStoreException)*/
 {
  if (_isRemoved) {
      return;
@@ -425,7 +425,7 @@ return QStringList(children->keys());
    QTextStream* fis = new QTextStream(f);
    p->load(fis);
   }
-  else throw new IOException();
+  else throw new IOException(f->errorString());
 
   QString* sb = new QString();
   getPath(sb);
@@ -469,7 +469,7 @@ return QStringList(children->keys());
 }
 
 //@Override
-/*protected*/ void JmriPreferences::flushSpi() throw (BackingStoreException)
+/*protected*/ void JmriPreferences::flushSpi()
 {
  /*final*/ File* file = jpp->getPreferencesFile();
 

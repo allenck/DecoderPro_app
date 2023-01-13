@@ -13,6 +13,7 @@
 #include "addnewdevicepanel.h"
 #include "rfid/proxyidtagmanager.h"
 #include "idtagtabledatamodel.h"
+#include "loggerfactory.h"
 
 //IdTagTableAction::IdTagTableAction()
 //{
@@ -40,17 +41,12 @@
     AbstractTableAction(actionName, parent)
 {
  //super(actionName);
- log = new Logger("IdTagTableAction");
- addFrame = NULL;
- sysName = new JTextField(12);
- userName = new JTextField(15);
- isStateStored = new QCheckBox(tr("Store State"));
- isFastClockUsed = new QCheckBox(tr("Use Fast Clock"));
 
-    // disable ourself if there is no primary IdTag manager available
-    if (((IdTagManager*)InstanceManager::getDefault("IdTagManager")) == NULL) {
-        setEnabled(false);
-    }
+ // disable ourself if there is no primary IdTag manager available
+ if (((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager")) == NULL) {
+     setEnabled(false);
+ }
+
  init();
 }
 
@@ -91,7 +87,7 @@
 }
 //@Override
 /*protected*/ void IdTagTableAction::setTitle() {
-    f->setTitle(tr("TitleIdTagTable"));
+    f->setTitle(tr("IdTag Table"));
 }
 
 //@Override
@@ -248,3 +244,5 @@ void IdTagTableAction::handleCreateException(QString sysName, IllegalArgumentExc
 /*protected*/ QString IdTagTableAction::getClassName() {
     return "jmri.jmrit.beantable.IdTagTableAction";
 }
+
+/*private*/ /*static*/ /*final*/ Logger* IdTagTableAction::log = LoggerFactory::getLogger("IdTagTableAction");

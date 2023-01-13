@@ -195,7 +195,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
 //     generateWindowRef();
 //     setFrameLocation();
 // }
- QTimer::singleShot(100, this, SLOT(setupWindowRef()));
+// QTimer::singleShot(100, this, SLOT(setupWindowRef()));
 }
 
 // process after sub-class's ctor has completed.
@@ -267,7 +267,7 @@ void JmriJFrame::setupWindowRef()
 #endif
 /*public*/ void JmriJFrame::setFrameLocation()
 {
- UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+ UserPreferencesManager* prefsMgr = (JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
  if ((prefsMgr != nullptr) && (prefsMgr->hasProperties(windowFrameRef)))
  {
   // Track the computed size and position of this window
@@ -276,13 +276,14 @@ void JmriJFrame::setupWindowRef()
   log->debug(tr("Initial window location & size: x=%1,y=%2, w-%3, h=%4").arg(window.x()).arg(window.y()).arg(window.width()).arg(window.height()));
 
   //QSize screen = getToolkit().getScreenSize();
-  QDesktopWidget* desktop = QApplication::desktop();
-  QSize screen = desktop->screen()->size();
-  log->debug(tr("Detected %1 screens.").arg(desktop->screenCount()));
+//  QDesktopWidget* desktop = QApplication::desktop();
+//  QSize screen = desktop->screen()->size();
+  QList<QScreen*> screens = QApplication::screens();
+  log->debug(tr("Detected %1 screens.").arg(screens.count()));
   log->debug(windowFrameRef);
   if (reuseFrameSavedPosition)
   {
-   log->debug(tr("setFrameLocation 1st clause sets \"%1\" location to %2,%3").arg(getTitle()).arg(prefsMgr->getWindowLocation(windowFrameRef).x()).arg(prefsMgr->getWindowLocation(windowFrameRef).y()));
+   log->debug(tr("setFrameLocation 1st clause sets \"%1\" location to %2,%3").arg(windowFrameRef).arg(prefsMgr->getWindowLocation(windowFrameRef).x()).arg(prefsMgr->getWindowLocation(windowFrameRef).y()));
    window.setTopLeft(prefsMgr->getWindowLocation(windowFrameRef));
   }
 
@@ -1147,7 +1148,7 @@ JPanel *JmriJFrame::getContentPane(bool addLayout)
  {
   JPanel* centralWidget = new JPanel();
   centralWidget->setObjectName("JmriJFrameCentralWidget");
-  centralWidget->resize(300,300);
+  //centralWidget->resize(300,300);
   if(addLayout)
    centralWidget->setLayout(new QVBoxLayout);
   setCentralWidget(centralWidget);
@@ -1348,3 +1349,5 @@ void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
 /*public*/ void JmriJFrame::setGlassPane(QWidget* glassPane) {
        this->glassPane = glassPane;
    }
+
+/*private*/ /*final*/ /*static*/ Logger* JmriJFrame::log = LoggerFactory::getLogger("JmriJFrame");

@@ -3,7 +3,7 @@
 
 #include "jframe.h"
 #include <QList>
-#include "logger.h"
+#include "loggerfactory.h"
 #include "abstractshutdowntask.h"
 #include <QMutex>
 #include "exceptions.h"
@@ -91,7 +91,7 @@ private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
     void offSetFrameOnScreen(JmriJFrame* f);
     /*private*/ AbstractShutDownTask* task = nullptr;
-    Logger* log;
+    static Logger* log;
     /*private*/ bool modifiedFlag = false;
     QString name;
     //QMutex mutex;

@@ -1,6 +1,6 @@
 #include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QApplication>
 #include <QBoxLayout>
 #include <QLabel>
@@ -12,7 +12,7 @@
 #include "profile.h"
 #include "fileutil.h"
 #include "nodeidentity.h"
-#include "logger.h"
+#include "loggerfactory.h"
 #include "profileutils.h"
 #include "auxiliaryconfiguration.h"
 #include "jmrijtablepersistencemanager.h"
@@ -49,8 +49,14 @@
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::SETTINGS_ELEMENT = "settings"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::WINDOWS_NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/window-details-4-3-5.xsd"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::WINDOWS_ELEMENT = "windowDetails"; // NOI18N
-// /*private*/ /*final*/ static Logger log = LoggerFactory.getLogger(JmriUserPreferencesManager.class);
-
+/*private*/ /*final*/ /*static*/ Logger* JmriUserPreferencesManager::log = LoggerFactory::getLogger("JmriUserPreferencesManager");
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::REMINDER = "reminder";
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::JMRI_UTIL_JMRI_JFRAME = "jmri.util.JmriJFrame";
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::CLASS = "class";
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::VALUE = "value";
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::WIDTH = "width";
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::HEIGHT = "height";
+/*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::PROPERTIES = "properties";
 ///*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getInstance() {
 //    return JmriUserPreferencesManager::getDefault();
 //}
@@ -68,7 +74,7 @@
 
 /*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager(QObject* parent) : UserPreferencesManager(parent)
 {
- log = new Logger("JmriUserPreferencesManager");
+ log->setDebugEnabled(true);
   dirty = false;
  loading = false;
  simplePreferenceList = new QStringList();
@@ -79,7 +85,16 @@
  classPreferenceList = new QHash<QString, ClassPreferences*>();
 
  // prevent attempts to write during construction
- //this->allowSave = false;
+ this->allowSave = false;
+ //I18N in ManagersBundle.properties (this is a checkbox on prefs tab Messages|Misc items)
+ this->setPreferenceItemDetails(getClassName(), REMINDER, tr("Hide Reminder Location Message")); // NOI18N
+ //I18N in ManagersBundle.properties (this is the title of prefs tab Messages|Misc items)
+ this->classPreferenceList->value(getClassName())->setDescription(tr("User Preferences")); // NOI18N
+
+ // allow attempts to write
+ this->allowSave = true;
+ this->dirty = false;
+
  QMetaObject::invokeMethod((JmriUserPreferencesManager*)this, "initAfter", Qt::QueuedConnection);
  QObject::setProperty("InstanceManagerAutoInitialize", "true");
 }
@@ -115,8 +130,9 @@
 //@Override
 /*public*/ QSize JmriUserPreferencesManager::getScreen() {
     //return Toolkit.getDefaultToolkit().getScreenSize();
- QDesktopWidget* desktop = QApplication::desktop();
- return desktop->screen()->size();
+// QDesktopWidget* desktop = QApplication::desktop();
+// return desktop->screen()->size();
+ return QApplication::screens().at(0)->size();
 }
 
 /**
@@ -505,7 +521,7 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setSaveWindowSize(QString strClass, bool b) {
-    if ((strClass == "") || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == "") || (strClass == (JMRI_UTIL_JMRI_JFRAME))) {
         return;
     }
     if (!windowDetails->contains(strClass)) {
@@ -517,9 +533,11 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setSaveWindowLocation(QString strClass, bool b) {
-    if ((strClass == "") || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == "") || (strClass == (JMRI_UTIL_JMRI_JFRAME))) {
         return;
     }
+    if(strClass.endsWith(":Preferences"))
+     qDebug() << "halt";
     if (!windowDetails->contains(strClass)) {
         windowDetails->insert(strClass, new WindowLocations());
     }
@@ -529,9 +547,11 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setWindowLocation(QString strClass, QPoint location) {
-    if ((strClass == "") || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == "") || (strClass == (JMRI_UTIL_JMRI_JFRAME))) {
         return;
     }
+    if(strClass.endsWith(":Preferences"))
+     qDebug() << "halt";
     if (!windowDetails->contains(strClass)) {
         windowDetails->insert(strClass, new WindowLocations());
     }
@@ -541,8 +561,13 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setWindowSize(QString strClass, QSize dim) {
-    if ((strClass == nullptr) || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == nullptr) || (strClass == (JMRI_UTIL_JMRI_JFRAME))) {
         return;
+    }
+    if(strClass.endsWith(":Preferences"))
+    {
+     //qDebug() << "halt";
+     strClass = strClass.replace(":Preferences", "");
     }
     if (!windowDetails->contains(strClass)) {
         windowDetails->insert(strClass, new WindowLocations());
@@ -561,6 +586,8 @@
     if (strClass == ("JmriJFrame")) {
         return;
     }
+    if(strClass.endsWith(":Preferences"))
+     qDebug() << "halt";
     if (!windowDetails->contains(strClass)) {
         windowDetails->insert(strClass, new WindowLocations());
     }
@@ -586,7 +613,8 @@
 
 //@Override
 /*public*/ bool JmriUserPreferencesManager::hasProperties(QString strClass) {
-    return windowDetails->contains(strClass);
+ bool b = windowDetails->contains(strClass);
+ return b;
 }
 
 //@Override
@@ -1375,7 +1403,7 @@
 {
  // TODO: COMPLETE!
  QDomElement element = this->readElement(WINDOWS_ELEMENT, WINDOWS_NAMESPACE);
- if (element != QDomElement())
+ if (!element.isNull())
  {
   //element.getChildren("window").stream().forEach((window) -> {
   QDomNodeList nl = element.elementsByTagName("window");
@@ -1408,19 +1436,19 @@
    {
     log->error(tr("Unable to read dimensions of window \"%1\"").arg(reference));
    }
-   if (window.firstChildElement("properties") != QDomElement())
+   if (window.firstChildElement(PROPERTIES) != QDomElement())
    {
 //          window.getChild("properties").getChildren().stream().forEach((property) -> {
-    QDomNodeList nl = window.firstChildElement("properties").childNodes();
+    QDomNodeList nl = window.firstChildElement(PROPERTIES).childNodes();
     for(int i = 0;  i < nl.size(); i++)
     {
      QDomElement property = nl.at(i).toElement();
      QString key = property.firstChildElement("key").text();
      if(key == "") continue; // added ACK
-     QString _class = property.firstChildElement("value").attribute("class");
-     QString value = property.firstChildElement("value").text();
+     QString _class = property.firstChildElement(VALUE).attribute("class");
+     QString value = property.firstChildElement(VALUE).text();
      this->setProperty(reference, key, value);
-#if 0
+#if 1
      try
      {
       //Class<?> cl = Class.forName(property.getChild("value").attribute("class"));
@@ -1558,7 +1586,7 @@
 /*private*/ QDomElement JmriUserPreferencesManager::readElement(/*@Nonnull*/ QString elementName, /*@Nonnull*/ QString _namespace)
 {
     QDomElement element = ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())->getConfigurationFragment(elementName, _namespace, false);
- if (element != QDomElement())
+ if (!element.isNull())
  {
      //return JDOMUtil.toJDOMElement(element);
   return element;
@@ -1593,7 +1621,7 @@
 }
 
 //@Override
-    /*public*/ void JmriUserPreferencesManager::initialize() {
+/*public*/ void JmriUserPreferencesManager::initialize() {
         this->readUserPreferences();
 }
 /**

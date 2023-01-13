@@ -14,7 +14,7 @@ LocoMonPane::LocoMonPane(QWidget *parent) :
  log = new Logger("LocoMonPane");
  log->setDebugEnabled(true);
  memo = nullptr;
- setFrameRef("LocoMonPane");
+ setFrameRef(getClassName());
 
  move(10, 30);
  setMinimumHeight(400);

@@ -5,6 +5,8 @@
 #include "actionlistener.h"
 #include "instancemanager.h"
 #include "rfid/proxyidtagmanager.h"
+#include <QCheckBox>
+#include "jtextfield.h"
 
 class AddNewDevicePanel;
 class JTextField;
@@ -26,12 +28,12 @@ public:
 
 private:
     JmriJFrame* addFrame = nullptr;
-    JTextField* sysName;// = new JTextField(12);
-    JTextField* userName;// = new JTextField(15);
-    QCheckBox* isStateStored;// = new JCheckBox(tr("IdStoreState"));
-    QCheckBox* isFastClockUsed;// = new JCheckBox(tr("IdUseFastClock"));
+    JTextField* sysName = new JTextField(12);
+    JTextField* userName = new JTextField(15);
+    QCheckBox* isStateStored = new QCheckBox(tr("Store State"));
+    QCheckBox* isFastClockUsed = new QCheckBox(tr("Use Fast Clock"));
     void handleCreateException(QString sysName, IllegalArgumentException* ex);
-    Logger* log;
+    static Logger* log;
     /*final*/ void init();
 
 private slots:

@@ -63,12 +63,12 @@ protected:
     /*protected*/ void putSpi(QString key, QString value) ;
     /*protected*/ QString getSpi(QString key);
     /*protected*/ void removeSpi(QString key);
-    /*protected*/ void removeNodeSpi() throw (BackingStoreException);
-    /*protected*/ QStringList keysSpi() throw (BackingStoreException);
-    /*protected*/ QStringList childrenNamesSpi() throw (BackingStoreException);
+    /*protected*/ void removeNodeSpi() /*throw (BackingStoreException)*/;
+    /*protected*/ QStringList keysSpi() /*throw (BackingStoreException)*/;
+    /*protected*/ QStringList childrenNamesSpi() /*throw (BackingStoreException)*/;
     /*protected*/ JmriPreferences* childSpi(QString name);
-    /*protected*/ void syncSpi() throw (BackingStoreException);
-    /*protected*/ void flushSpi() throw (BackingStoreException);
+    /*protected*/ void syncSpi() /*throw (BackingStoreException)*/;
+    /*protected*/ void flushSpi() /*throw (BackingStoreException)*/;
 
 private:
     /*private*/ void getPath(QString* sb);

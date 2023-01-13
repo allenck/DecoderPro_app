@@ -552,8 +552,8 @@ void InstanceManager::deregister(QObject* item, QString type)
        log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
        l->append(obj);
        // obj has been added, now initialize it if needed
-       if (qobject_cast<InstanceManagerAutoInitialize*>(obj)) {
-           ((InstanceManagerAutoInitialize*) obj)->initialize();
+       if (dynamic_cast<InstanceManagerAutoInitialize*>(obj)) {
+           (dynamic_cast<InstanceManagerAutoInitialize*>( obj)->initialize());
        }
        setInitializationState(type, InitializationState::DONE);
        if (traceFileActive) {

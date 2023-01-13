@@ -59,7 +59,7 @@
      *                 profile, false if the fragment is for just the current
      *                 computer.
      */
-    virtual void putConfigurationFragment(/*@Nonnull*/ QDomElement /*fragment*/, /*@Nonnull*/ bool /*shared*/) {}
+    virtual void putConfigurationFragment(/*@Nonnull*/ QDomElement /*fragment*/, /*@Nonnull*/ bool /*shared*/) =0;
 
     /**
      * Remove a configuration fragment from the configuration.
