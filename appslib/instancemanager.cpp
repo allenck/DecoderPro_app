@@ -1011,7 +1011,9 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 /*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = new InstanceManager();
 
 /*private*/ void InstanceManager::setInitializationState(QString type, InitializationState state) {
-//    log->trace(tr("set state %1 for %2").arg(type).arg(state));
+    log->trace(tr("set state %1 for %2").arg(type).arg(state));
+    if(type == "ManagerDefaultSelector")
+     qDebug() <<"halt";
     if (state == InitializationState::STARTED) {
         initState.insert(type, new StateHolder(state, new Exception("Thread " + QThread::currentThread()->objectName())));
     } else {

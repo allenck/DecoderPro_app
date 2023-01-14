@@ -21,7 +21,7 @@ class JmriJTablePersistenceManager : public AbstractPreferencesManager, public J
 Q_INTERFACES(JTablePersistenceManager PropertyChangeListener)
 public:
 #include "sortorder.h"
- JmriJTablePersistenceManager(QObject* parent = nullptr);
+ Q_INVOKABLE JmriJTablePersistenceManager(QObject* parent = nullptr);
  ~JmriJTablePersistenceManager() {}
  JmriJTablePersistenceManager(const JmriJTablePersistenceManager&)  : AbstractPreferencesManager() {}
  /*public*/ /*final*/ QString PAUSED;// = "paused";
@@ -35,7 +35,7 @@ public:
  QT_DEPRECATED /*public*/ void setTableColumnPreferences(QString table, QString column, int order, int width, SortOrder sort, bool hidden);
  /*public*/ void stopPersisting(JTable* table) override;
  /*public*/ void clearState(JTable* table) override;
- /*public*/ void initialize(Profile* profile)throw (InitializationException) override;
+ Q_INVOKABLE /*public*/ void initialize(Profile* profile)throw (InitializationException) override;
  /*public*/ /*synchronized*/ void savePreferences(Profile* profile) override;
  /*public*/ QSet<QString> getProvides() override;
  /*public*/ void resetState(JTable* table) override;

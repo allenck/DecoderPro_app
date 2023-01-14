@@ -307,7 +307,7 @@ template<typename S>
     /*private*/ ServiceLoader<S>::LazyIterator::LazyIterator(QString service, ClassLoader* loader, ServiceLoader* sl) {
      configs = NULL;
      pending = NULL;
-     nextName = NULL;
+     nextName = "";
         this->service = service;
         this->loader = loader;
      this->sl = sl;

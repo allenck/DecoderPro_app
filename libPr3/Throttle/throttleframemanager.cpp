@@ -29,12 +29,10 @@
 /**
  *  Constructor for the ThrottleFrameManager object
  */
-/*private*/ ThrottleFrameManager::ThrottleFrameManager(QObject *parent) :
-QObject(parent) // can only be created by instance() => /*private*/
+/*public*/ ThrottleFrameManager::ThrottleFrameManager(QObject *parent) :
+QObject(parent)
 {
 //    throttleCycler = new ThrottleCyclingKeyListener();
- throttlesListPanel = NULL;
- throttlesListFrame = NULL;
  throttleWindows = new QList<ThrottleWindow*>(/*0*/);
  InstanceManager::store(this, "ThrottleFrameManager");  // added ACK
 
@@ -199,11 +197,14 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
 }
 
 /*private*/ void ThrottleFrameManager::buildThrottleListFrame() {
- throttlesListFrame = new ThrottlesListFrame(tr("Local JMRI throttles"));
- throttlesListPanel = new ThrottlesListPanel();
- throttlesListFrame->setContentPane(throttlesListPanel);
- throttlesListFrame->adjustSize();
+ if(throttlesListFrame == nullptr)
+ {
+  throttlesListFrame = new ThrottlesListFrame(tr("Local JMRI throttles"));
+  throttlesListPanel = new ThrottlesListPanel();
+  throttlesListFrame->setContentPane(throttlesListPanel);
+  throttlesListFrame->adjustSize();
  //QTimer::singleShot(10000, this, SLOT(initFrame()));
+ }
 }
 
 /*private*/ void ThrottleFrameManager::initFrame()

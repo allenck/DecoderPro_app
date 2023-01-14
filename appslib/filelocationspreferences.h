@@ -7,13 +7,13 @@ class FileLocationsPreferences : public AbstractPreferencesManager
 {
  Q_OBJECT
 public:
- FileLocationsPreferences();
+ Q_INVOKABLE FileLocationsPreferences();
  ~FileLocationsPreferences() {}
  FileLocationsPreferences(const FileLocationsPreferences&) :AbstractPreferencesManager() {}
  /*public*/ static /*final*/ QString USER_FILES;// = "user-files"; // NOI18N
  /*public*/ static /*final*/ QString SCRIPTS;// = "scripts"; // NOI18N
  /*public*/ static /*final*/ QString JMRIPROGRAM;// = "scripts"; // NOI18N
- /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/override;
+ Q_INVOKABLE /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/override;
  /*public*/ QSet<QString/* extends PreferencesManager*/> getRequires()override;
  /*public*/ void savePreferences(Profile* profile)override;
 

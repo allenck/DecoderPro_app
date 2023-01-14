@@ -363,6 +363,8 @@
 #include "throttlespreferences.h"
 #include "throttleframemanager.h"
 #include "startuppausefactory.h"
+#include "filelocationspreferences.h"
+
 bool Metatypes::done = false;
 
 Metatypes::Metatypes(QObject *parent) :
@@ -740,6 +742,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<ThrottlesPreferences>("ThrottlesPreferences");
  qRegisterMetaType<ThrottleFrameManager>("ThrottleFrameManager");
  qRegisterMetaType<StartupPauseFactory>("StartupPauseFactory");
+ qRegisterMetaType<FileLocationsPreferences>("FileLocationsPreferences");
 
  Metatypes::done = true;
 }

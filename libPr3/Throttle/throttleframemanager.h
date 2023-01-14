@@ -18,7 +18,7 @@ class ThrottlesPreferences;
 class ThrottleWindow;
 class LIBPR3SHARED_EXPORT ThrottleFrameManager : public QObject, InstanceManagerAutoDefault
 {
-    Q_OBJECT
+  Q_OBJECT
   Q_INTERFACES(InstanceManagerAutoDefault)
 public:
  Q_INVOKABLE /*public*/ ThrottleFrameManager(QObject *parent = 0);

@@ -15,7 +15,7 @@
 
 //@Override
 /*public*/ QString JMRIClientMonPane::getTitle() {
-    return tr("Jmri Client CommandMonitor");
+    return tr("JmriClient Command Monitor");
 }
 
 //@Override

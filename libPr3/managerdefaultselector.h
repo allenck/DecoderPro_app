@@ -45,7 +45,7 @@ public:
    Item("<html>Consists</html>", "ConsistManager")
 };
 
- ManagerDefaultSelector* self() {return this;}
+ ManagerDefaultSelector* self() override {return this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent *);
 

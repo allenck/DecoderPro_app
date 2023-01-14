@@ -25,9 +25,9 @@ ManagerDefaultsConfigPaneXml::ManagerDefaultsConfigPaneXml(QObject *parent) :
  */
 /*public*/ QDomElement ManagerDefaultsConfigPaneXml::store(QObject* /*o*/) {
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
-         if (cm != NULL) {
-             cm->registerPref(InstanceManager::getDefault("ManagerDefaultSelector"));
-         }
+    if (cm != NULL) {
+        cm->registerPref(InstanceManager::getDefault("ManagerDefaultSelector"));
+    }
     return QDomElement();
 }
 

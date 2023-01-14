@@ -37,6 +37,7 @@
 #include "atomic"
 #include "guilafpreferencesmanager.h"
 #include "systemconsolepreferencesmanager.h"
+#include "class.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -74,7 +75,8 @@
 
  foreach (QString name, lst)
  {
-  PreferencesManager* pp = (PreferencesManager*)InstanceManager::getNullableDefault(name);
+  //PreferencesManager* pp = (PreferencesManager*)InstanceManager::getNullableDefault(name);
+  PreferencesManager* pp = (PreferencesManager*)Class::forName(name)->newInstance();
 //  QList<PreferencesManager*> l = pp->getProvides();
 //  foreach (PreferencesManager* provided, *pp->getProvides())
 //  {
