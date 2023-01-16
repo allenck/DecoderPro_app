@@ -13,7 +13,7 @@ class MemoListener;
 class Class;
 class LIBPR3SHARED_EXPORT ManagerDefaultSelector : public AbstractPreferencesManager
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
  Q_INVOKABLE explicit ManagerDefaultSelector(QObject *parent = 0);
  ~ManagerDefaultSelector() {}

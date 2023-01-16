@@ -58,12 +58,12 @@
  ConnectionConfig* c = NULL;
  try
  {
-    ConnectionConfigManager*  ccm = static_cast<ConnectionConfigManager*>(InstanceManager::getDefault("ConnectionConfigManager"));
+    ConnectionConfigManager*  ccm = dynamic_cast<ConnectionConfigManager*>(InstanceManager::getDefault("ConnectionConfigManager"));
     if(ccm->getConnections(index) == 0)
         throw new IndexOutOfBoundsException();
      c = ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections(index);
      log->debug(tr("connection %1 is %2").arg(index).arg(c->metaObject()->className()));
- } catch (IndexOutOfBoundsException ex) {
+ } catch (IndexOutOfBoundsException* ex) {
      log->debug(tr("connection %1 is null, creating new one").arg(index));
  }
  return createPanel(c);

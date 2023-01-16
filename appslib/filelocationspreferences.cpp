@@ -79,6 +79,11 @@ FileLocationsPreferences::FileLocationsPreferences()
         throw new FileNotFoundException(jmriprogram);
        throw new InitializationException(tr("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram), QString("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram),NULL);
    }
+   QFileInfo info(jmriprogram + QDir::separator() + "xml");
+   if(!info.exists())
+   {
+    throw new IllegalArgumentException(tr("the path '%1' is not valid! It should have an 'xml' directory.").arg(jmriprogram));
+   }
   }
   catch (FileNotFoundException* ex)
   {

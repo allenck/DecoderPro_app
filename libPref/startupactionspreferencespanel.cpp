@@ -378,8 +378,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 //@Override
 /*public*/ int SATableModel::rowCount(const QModelIndex &/*parent*/) const
 {
-
-    return this->manager->getActions()->length();
+ return this->manager->getActions()->length();
 }
 
 //@Override

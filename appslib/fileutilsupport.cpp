@@ -1014,6 +1014,8 @@ public URL getURL(URI uri) {
  */
 /*public*/ void FileUtilSupport::setProgramPath(File* path)
 {
+    if(!this->programPath.isEmpty())
+        return;
  QString old = this->programPath;
  try {
      this->programPath = (path)->getCanonicalPath() + File::separator;

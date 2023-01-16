@@ -18,8 +18,8 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  setObjectName("ConnectionConfigManager");
  connections = QList<ConnectionConfig*>();
  NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
-
 }
+
 /**
  * Manager for ConnectionConfig objects.
  *

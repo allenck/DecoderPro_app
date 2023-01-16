@@ -75,15 +75,24 @@
 
  foreach (QString name, lst)
  {
-  //PreferencesManager* pp = (PreferencesManager*)InstanceManager::getNullableDefault(name);
-  PreferencesManager* pp = (PreferencesManager*)Class::forName(name)->newInstance();
+  PreferencesManager* pp;
+  if(name != "ManagerDefaultSelector")
+   pp = (PreferencesManager*)InstanceManager::getNullableDefault(name);
+  else
+   pp = (PreferencesManager*)Class::forName(name)->newInstance();
 //  QList<PreferencesManager*> l = pp->getProvides();
 //  foreach (PreferencesManager* provided, *pp->getProvides())
 //  {
 //   InstanceManager::store(provided, name);
 //  }
   if(pp == NULL)
-   continue;
+  {
+//   // begin hack ACK
+//   pp = (PreferencesManager*)Class::forName(name)->newInstance();
+//   // end hack
+//   if(pp == nullptr)
+     continue;
+  }
   InstanceManager::store((QObject*)pp->self(), "PreferencesManager");
   QSet<QString> provides;
   QObject* pobj;

@@ -12,10 +12,10 @@ class ConnectionConfig;
 class LIBPREFSHARED_EXPORT JmrixConfigPane : public JPanel, public PreferencesPanel
 {
     Q_OBJECT
-  Q_INTERFACES(PreferencesPanel)
+    Q_INTERFACES(PreferencesPanel)
 public:
     //explicit JmrixConfigPane(QWidget *parent = 0);
- ~JmrixConfigPane() {}
+    ~JmrixConfigPane() {}
     /*public*/ static /*synchronized*/ JmrixConfigPane* createPanel(ConnectionConfig* c);
     /*public*/ static JmrixConfigPane* createNewPanel();
     /*public*/ static void dispose(JmrixConfigPane* confPane);

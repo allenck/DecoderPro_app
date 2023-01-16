@@ -15,7 +15,8 @@
 class WarrantPreferencesListener;
 class QDomElement;
 class SignalSystem;
-class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize, public PropertyChangeListener
+class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean, public InstanceManagerAutoDefault,
+  public InstanceManagerAutoInitialize, public PropertyChangeListener
 {
   Q_OBJECT
   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
@@ -31,7 +32,7 @@ public:
   SPEED_KMPH = 4
  };
     //static /*public*/ SignalSpeedMap* getMap();
- Q_INVOKABLE /*public*/ void initialize();
+ Q_INVOKABLE /*public*/ void initialize() override;
     void loadMap();
     /*public*/ bool checkSpeed(QString name);
     /*public*/ QString getAspectSpeed(QString aspect, SignalSystem* system);
@@ -63,7 +64,7 @@ public:
     signals:
 
     public slots:
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
 
     private:
     static /*private*/ QMap<QString, float>* _table;// =  QMap<String, float>();
