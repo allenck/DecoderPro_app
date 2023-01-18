@@ -42,8 +42,8 @@
    */
   pcs = new SwingPropertyChangeSupport(this, nullptr);
 
-    buildGUI(menubarFile, toolbarFile);
-    pack();
+//    buildGUI(menubarFile, toolbarFile);
+//    pack();
 }
 
 

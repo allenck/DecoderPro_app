@@ -97,7 +97,7 @@ RosterFrame::RosterFrame( QWidget *parent) :
 {
  common();
  //this->name = name;
- //buildGUI(menubarFile,toolbarFile );
+ buildGUI(menubarFile,toolbarFile );
  //systemsMenu();
 // addHelpMenu("package.apps.gui3.dp3.DecoderPro3", true);
 }

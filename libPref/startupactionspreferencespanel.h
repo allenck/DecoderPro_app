@@ -6,6 +6,7 @@
 #include "jtable.h"
 #include <QPushButton>
 #include <QLabel>
+#include "propertychangelistener.h"
 
 class JActionEvent;
 class ListSelectionEvent;
@@ -62,20 +63,23 @@ private slots:
 };
 Q_DECLARE_METATYPE(StartupActionsPreferencesPanel)
 
-/*private*/ /*static*/ class SATableModel : public AbstractTableModel //implements PropertyChangeListener
+/*private*/ /*static*/ class SATableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     /*private*/ /*final*/ StartupActionsManager* manager;
 public:
     /*public*/ SATableModel(StartupActionsManager* manager) ;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+
+    QObject* pself() override {return this;}
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* evt) ;
+    /*public*/ void propertyChange(PropertyChangeEvent* evt)  override;
 
 };
 #endif // STARTUPACTIONSPREFERENCESPANEL_H

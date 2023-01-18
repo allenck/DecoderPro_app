@@ -20,6 +20,12 @@
 #include "jmriuserpreferencesmanager.h"
 #include "appspreferencesactionfactory.h"
 #include "appsconfigurationmanager.h"
+#include "defaultlogixmanager.h"
+
+#ifdef HAVE_LOGIXNG
+#include "defaultlogixngmanager.h"
+#include "defaultlogixngpreferences.h"
+#endif
 
 AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
@@ -150,10 +156,18 @@ void AppsBase::init()
     }
 #endif
  // all loaded, initialize objects as necessary
- ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
+ ((DefaultLogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
  ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
- (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
+// (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
 
+#ifdef HAVE_LOGIXNG
+    LogixNG_Manager* logixNG_Manager = (DefaultLogixNGManager*)
+            InstanceManager::getDefault("LogixNG_Manager");
+    logixNG_Manager->setupAllLogixNGs();
+    if (((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getStartLogixNGOnStartup()) {
+        logixNG_Manager->activateAllLogixNGs();
+    }
+#endif
 }
 
 //void AppsBase::init()
@@ -360,7 +374,7 @@ void AppsBase::init()
     }
     try
     {
-     ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+     ConfigureManager* cm = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
      if (cm != NULL) {
          result = cm->loadDeferred(file);
      } else {

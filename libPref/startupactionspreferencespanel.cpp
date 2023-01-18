@@ -372,7 +372,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 /*public*/ SATableModel::SATableModel(StartupActionsManager* manager) {
     this->manager = manager;
     //this->manager.addPropertyChangeListener(this);
- connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(manager->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //@Override

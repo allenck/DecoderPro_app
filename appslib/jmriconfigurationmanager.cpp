@@ -87,10 +87,6 @@
 //  }
   if(pp == NULL)
   {
-//   // begin hack ACK
-//   pp = (PreferencesManager*)Class::forName(name)->newInstance();
-//   // end hack
-//   if(pp == nullptr)
      continue;
   }
   InstanceManager::store((QObject*)pp->self(), "PreferencesManager");
@@ -584,10 +580,10 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
   }
   try {
       //provider->initialize(profile);
-   if(provider->self()->metaObject()->className() == "GuiLafPreferencesManager")
+   if(QString(provider->self()->metaObject()->className()) == "GuiLafPreferencesManager")
     ((GuiLafPreferencesManager*)provider->self())->initialize(profile);
    else
-    if(provider->self()->metaObject()->className() == "SystemConsolePreferencesManager")
+    if(QString(provider->self()->metaObject()->className()) == "SystemConsolePreferencesManager")
      ((SystemConsolePreferencesManager*)provider->self())->initialize(profile);
    else
     ((AbstractPreferencesManager*)provider->self())->initialize(profile);
