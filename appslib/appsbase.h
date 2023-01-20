@@ -39,8 +39,8 @@ protected:
     /*protected*/ void installConfigurationManager();
     /*protected*/ void installManagers();
     /*protected*/ void setAndLoadPreferenceFile() ;
-    /*protected*/ void installShutDownManager();
-    /*protected*/ void addDefaultShutDownTasks();
+    QT_DEPRECATED /*protected*/ void installShutDownManager();
+    QT_DEPRECATED /*protected*/ void addDefaultShutDownTasks();
     /*protected*/ void start() ;
     static /*protected*/ void setConfigFilename(QString def, QStringList args);
     static /*protected*/ void setJmriSystemProperty(QString key, QString value);

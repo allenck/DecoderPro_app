@@ -107,9 +107,9 @@ void AppsBase::init()
 
  installConfigurationManager();
 
- installShutDownManager();
+// installShutDownManager();
 
- addDefaultShutDownTasks();
+// addDefaultShutDownTasks();
 
  installManagers();
 
@@ -327,7 +327,7 @@ void AppsBase::init()
 
  try
  {
-  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  ConfigureManager* cm = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
   if (cm != NULL)
   {
    configOK = cm->load(file);
