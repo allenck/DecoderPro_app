@@ -102,7 +102,7 @@
  }
  if (opened && m_port != 0) {
      ConnectionStatus::instance()->setConnectionState(
-             getUserName(), m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_UP);
+             getUserName(), m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_UP);
  } else if (opened) {
      ConnectionStatus::instance()->setConnectionState(
              getUserName(), m_HostName, ConnectionStatus::CONNECTION_UP);

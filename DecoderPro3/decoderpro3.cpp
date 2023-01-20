@@ -165,15 +165,16 @@
 //    };
 //    Thread thr = new Thread(r, "initialize decoder index");
 //    thr.start();
- LoadDecoders* worker = new LoadDecoders(this);
-// QThread* thread = new QThread;
-// worker->moveToThread(thread);
-// //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
-// connect(thread, SIGNAL(started()), worker, SLOT(process()));
-// connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
-// connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
-// connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
- Thread* thread = new Thread(worker, "initialize decoder index");
+ LoadDecoders* worker = new LoadDecoders(/*this*/);
+ QThread* thread = new QThread();
+ thread->setObjectName("LoadDecoders");
+ worker->moveToThread(thread);
+ //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+ connect(thread, SIGNAL(started()), worker, SLOT(process()));
+ connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+ connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+ connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+ //Thread* thread = new Thread(worker, "initialize decoder index");
  thread->start();
 }
 
@@ -185,5 +186,5 @@ void LoadDecoders::process()
     } catch (Exception* ex) {
         ((DecoderPro3*)parent())->log->error(tr("Error in trying to initialize decoder index file %1").arg(ex->toString()));
     }
-
+    emit finished();
 }

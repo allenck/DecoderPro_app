@@ -9,10 +9,17 @@
 #include <QStringList>
 #include "jcombobox.h"
 #include "fileutil.h"
+#include "loggerfactory.h"
 
-//QString DecoderIndexFile::decoderIndexFileName = "decoderIndex.xml";
 /*static*/ /*final*/ /*protected*/ QString DecoderIndexFile::DECODER_INDEX_FILE_NAME = "decoderIndex.xml";
-QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/JMRI/xml/decoderIndex.xml";
+/*private*/ /*static*/ /*final*/ Logger* DecoderIndexFile::log = LoggerFactory::getLogger("DecoderIndexFile");
+
+/*public*/ /*static*/ /*final*/ QString DecoderIndexFile::MANUFACTURER = "manufacturer";
+/*public*/ /*static*/ /*final*/ QString DecoderIndexFile::MFG_ID = "mfgID";
+/*public*/ /*static*/ /*final*/ QString DecoderIndexFile::DECODER_INDEX = "decoderIndex";
+/*public*/ /*static*/ /*final*/ QString DecoderIndexFile::VERSION = "version";
+/*public*/ /*static*/ /*final*/ QString DecoderIndexFile::LOW_VERSION_ID = "lowVersionID";
+/*public*/ /*static*/ /*final*/ QString DecoderIndexFile::HIGH_VERSION_ID = "highVersionID";
 
 DecoderIndexFile::DecoderIndexFile(QObject *parent) :
     XmlFile(parent)
@@ -25,7 +32,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
 
   mMfgNameList = new QStringList();
 
-  readFile(defaultDecoderIndexFilename());
+  //readFile(defaultDecoderIndexFilename());
 }
 
 /**
@@ -240,10 +247,12 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  */
 /*static*/ bool DecoderIndexFile::updateIndexIfNeeded() /*throw (JDOMException, IOException)*/
 {
- Logger log = Logger("DecoderIndexFile");
- switch (FileUtil::findFiles(defaultDecoderIndexFilename(), ".").size()) {
+ QSet<File*> files = FileUtil::findFiles(defaultDecoderIndexFilename(), ".");
+ if(files.isEmpty())
+  files.insert(new File("program:xml/decoderIndex.xml"));
+ switch (files.size()) {
      case 0:
-         log.debug("creating decoder index");
+         log->debug("creating decoder index");
          forceCreationOfNewIndex();
          return true; // no index exists, so create one
      case 1:
@@ -255,14 +264,14 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  // get version from master index; if not found, give up
  QString masterVersion = NULL;
  DecoderIndexFile* masterXmlFile = new DecoderIndexFile();
- QFile* masterFile = new QFile("xml"+QString(QDir::separator())+defaultDecoderIndexFilename());
+ QFile* masterFile = new QFile(FileUtil::getProgramPath()+ QDir::separator() + "xml"+QString(QDir::separator())+defaultDecoderIndexFilename());
  if (! masterFile->exists()) return false;
  QDomElement masterRoot = masterXmlFile->rootFromFile(masterFile);
- if (!masterRoot.firstChildElement("decoderIndex").isNull() )
+ if (!masterRoot.firstChildElement(DECODER_INDEX).isNull() )
  {
-  if (masterRoot.firstChildElement("decoderIndex").attribute("version")!="")
-   masterVersion = masterRoot.firstChildElement("decoderIndex").attribute("version");
-  log.debug("master version found, is "+masterVersion);
+  if (masterRoot.firstChildElement(DECODER_INDEX).attribute(VERSION)!="")
+   masterVersion = masterRoot.firstChildElement(DECODER_INDEX).attribute(VERSION);
+  log->debug("master version found, is "+masterVersion);
  }
  else
  {
@@ -275,16 +284,16 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  QString userVersion = "";
  DecoderIndexFile* userXmlFile = new DecoderIndexFile();
  QDomElement userRoot = userXmlFile->rootFromName(defaultDecoderIndexFilename());
- if (!userRoot.firstChildElement("decoderIndex").isNull() )
+ if (!userRoot.firstChildElement(DECODER_INDEX).isNull() )
  {
-  if (userRoot.firstChildElement("decoderIndex").attribute("version")!=NULL)
-   userVersion = userRoot.firstChildElement("decoderIndex").attribute("version");
-  log.debug("user version found, is "+userVersion);
+  if (userRoot.firstChildElement(DECODER_INDEX).attribute(VERSION)!=NULL)
+   userVersion = userRoot.firstChildElement(DECODER_INDEX).attribute(VERSION);
+  log->debug("user version found, is "+userVersion);
  }
  if (masterVersion!=NULL && masterVersion==(userVersion)) return false;
 
  // force the update, with the version number located earlier is available
- log.debug(tr("forcing update of decoder index due to %1 and %2").arg(masterVersion).arg(userVersion));
+ log->debug(tr("forcing update of decoder index due to %1 and %2").arg(masterVersion).arg(userVersion));
  forceCreationOfNewIndex();
  // and force it to be used
  return true;
@@ -381,19 +390,19 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  */
 void DecoderIndexFile::readFile(QString name) /*throw (JDOMException, IOException)*/
 {
- if (log->isDebugEnabled()) log->debug("readFile "+name);
+ if (log->isDebugEnabled()) log->debug("readFile "+ name);
 
  // read file, find root
  QDomElement root = rootFromName(name);
 
  // decode type, invoke proper processing routine if a decoder file
- if (!root.firstChildElement("decoderIndex").isNull())
+ if (!root.firstChildElement(DECODER_INDEX).isNull())
  {
-  if (root.firstChildElement("decoderIndex").attribute("version")!="")
-   fileVersion = (root.firstChildElement("decoderIndex").attribute("version").toInt());
+  if (root.firstChildElement(DECODER_INDEX).attribute(VERSION)!="")
+   fileVersion = (root.firstChildElement(DECODER_INDEX).attribute(VERSION).toInt());
   log->debug("found fileVersion of "+QString::number(fileVersion));
-  readMfgSection(root.firstChildElement("decoderIndex"));
-  readFamilySection(root.firstChildElement("decoderIndex"));
+  readMfgSection(root.firstChildElement(DECODER_INDEX));
+  readFamilySection(root.firstChildElement(DECODER_INDEX));
  }
  else
  {
@@ -416,7 +425,7 @@ void DecoderIndexFile::readMfgSection(QDomElement decoderIndex)
   a = mfgList.attribute("lastadd");
   if (a!=NULL) lastAdd = a;
 
-  QDomNodeList l = mfgList.elementsByTagName("manufacturer");
+  QDomNodeList l = mfgList.elementsByTagName(MANUFACTURER);
   if (log->isDebugEnabled()) log->debug("readMfgSection sees "+QString::number(l.size())+" children");
   for (int i=0; i<l.size(); i++)
   {
@@ -424,7 +433,7 @@ void DecoderIndexFile::readMfgSection(QDomElement decoderIndex)
    QDomElement el = l.at(i).toElement();
    QString mfg = el.attribute("mfg");
    mMfgNameList->append(mfg);
-   QString attr = el.attribute("mfgID");
+   QString attr = el.attribute(MFG_ID);
    if (attr != NULL)
    {
     _mfgIdFromNameHash->insert(mfg, attr);
@@ -459,8 +468,8 @@ void DecoderIndexFile::readFamily(QDomElement family)
 {
  QString attr;
  QString filename = family.attribute("file");
- QString parentLowVersID = ((attr = family.attribute("lowVersionID"))     != "" ? attr : "" );
- QString parentHighVersID = ((attr = family.attribute("highVersionID"))     != "" ? attr : "" );
+ QString parentLowVersID = ((attr = family.attribute(LOW_VERSION_ID))     != "" ? attr : "" );
+ QString parentHighVersID = ((attr = family.attribute(HIGH_VERSION_ID))     != "" ? attr : "" );
  QString familyName   = ((attr = family.attribute("name"))     != "" ? attr : "" );
  QString mfg   = ((attr = family.attribute("mfg"))     != "" ? attr : "" );
  QString mfgID = "";
@@ -502,8 +511,8 @@ void DecoderIndexFile::readFamily(QDomElement family)
  {
   // handle each entry by creating a DecoderFile object containing all it knows
   QDomElement decoder = l.at(i).toElement();
-  QString loVersID = ( (attr = decoder.attribute("lowVersionID"))     != "" ? attr : parentLowVersID);
-  QString hiVersID = ( (attr = decoder.attribute("highVersionID"))     != "" ? attr : parentHighVersID);
+  QString loVersID = ( (attr = decoder.attribute(LOW_VERSION_ID))     != "" ? attr : parentLowVersID);
+  QString hiVersID = ( (attr = decoder.attribute(HIGH_VERSION_ID))     != "" ? attr : parentHighVersID);
   int numFns   = ((attr = decoder.attribute("numFns"))     != "" ? (attr).toInt() : -1 );
   int numOuts   = ((attr = decoder.attribute("numOuts"))     != "" ? (attr).toInt() : -1 );
   DecoderFile* df = new DecoderFile( mfg, mfgID,
@@ -517,8 +526,8 @@ void DecoderIndexFile::readFamily(QDomElement family)
   {
    // for each versionCV element
    QDomElement vcv = vcodes.at(j).toElement();
-   QString vLoVersID = ( (attr = vcv.attribute("lowVersionID")) != "" ? attr : loVersID);
-   QString vHiVersID = ( (attr = vcv.attribute("highVersionID"))!= "" ? attr : hiVersID);
+   QString vLoVersID = ( (attr = vcv.attribute(LOW_VERSION_ID)) != "" ? attr : loVersID);
+   QString vHiVersID = ( (attr = vcv.attribute(HIGH_VERSION_ID))!= "" ? attr : hiVersID);
    df->setVersionRange(vLoVersID, vHiVersID);
   }
  }
@@ -549,8 +558,8 @@ void DecoderIndexFile::readFamily(QDomElement family)
 
  // add top-level elements
  QDomElement index;
- root.appendChild(index = doc.createElement("decoderIndex"));
- index.setAttribute("version", QString::number(fileVersion));
+ root.appendChild(index = doc.createElement(DECODER_INDEX));
+ index.setAttribute(VERSION, QString::number(fileVersion));
  log->debug("version written to file as "+QString::number(fileVersion));
 
  // add mfg list from existing DecoderIndexFile item
@@ -564,9 +573,9 @@ void DecoderIndexFile::readFamily(QDomElement family)
   mfgList.setAttribute("lastadd", oldIndex->lastAdd);
 
  // We treat "NMRA" spencial...
- QDomElement mfg = doc.createElement("manufacturer");
+ QDomElement mfg = doc.createElement(MANUFACTURER);
  mfg.setAttribute("mfg","NMRA");
- mfg.setAttribute("mfgID","999");
+ mfg.setAttribute(MFG_ID,"999");
  mfgList.appendChild(mfg);
  // start working on the rest of the entries
  QStringListIterator keys(oldIndex->_mfgIdFromNameHash->keys());
@@ -584,9 +593,9 @@ void DecoderIndexFile::readFamily(QDomElement family)
   QString mfgName = (QString)s.at(i);
   if (mfgName!=("NMRA"))
   {
-   mfg = doc.createElement("manufacturer");
+   mfg = doc.createElement(MANUFACTURER);
    mfg.setAttribute("mfg",mfgName);
-   mfg.setAttribute("mfgID", oldIndex->_mfgIdFromNameHash->value(mfgName));
+   mfg.setAttribute(MFG_ID, oldIndex->_mfgIdFromNameHash->value(mfgName));
    mfgList.appendChild(mfg);
   }
  }
@@ -626,4 +635,3 @@ void DecoderIndexFile::readFamily(QDomElement family)
 /*protected*/ /*static*/ QString DecoderIndexFile::defaultDecoderIndexFilename()
 { return DECODER_INDEX_FILE_NAME;}
 
-/*private*/ /*static*/ /*final*/ Logger* DecoderIndexFile::log = LoggerFactory::getLogger("DecoderIndexFile");

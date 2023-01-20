@@ -250,28 +250,28 @@ public URL getURL(URI uri) {
         throw new IllegalArgumentException("name is invalid");
     }
     QSet<File*> files = QSet<File*>();
-#if 0 // TODO:
+#if 1 // TODO:
     if (location == FileUtil::Location::INSTALLED || location == FileUtil::Location::ALL) {
-        files.addAll(this.findFiles(name, new File(this.findURI(PROGRAM + root, Location.NONE))));
+        files.unite(this->findFiles(name, new File(this->findURI(FileUtil::PROGRAM + root, FileUtil::Location::NONE))));
     }
     if (location == FileUtil::Location::USER || location == FileUtil::Location::ALL) {
         try {
-            files.addAll(this.findFiles(name, new File(this.findURI(PREFERENCES + root, Location.NONE))));
-        } catch (NullPointerException ex) {
+            files.unite(this->findFiles(name, new File(this->findURI(FileUtil::PREFERENCES + root, FileUtil::Location::NONE))));
+        } catch (NullPointerException* ex) {
             // expected if path PREFERENCES + root does not exist
-            log.trace("{} does not exist in {}", root, PREFERENCES);
+            log->trace(tr("%1 does not exist in %2").arg(root, FileUtil::PREFERENCES));
         }
         try {
-            files.addAll(this.findFiles(name, new File(this.findURI(PROFILE + root, Location.NONE))));
-        } catch (NullPointerException ex) {
+            files.unite(this->findFiles(name, new File(this->findURI(FileUtil::PROFILE + root, FileUtil::Location::NONE))));
+        } catch (NullPointerException* ex) {
             // expected if path PROFILE + root does not exist
-            log.trace("{} does not exist in {}", root, PROFILE);
+            log->trace(tr("%1 does not exist in %2").arg(root, FileUtil::PROFILE));
         }
         try {
-            files.addAll(this.findFiles(name, new File(this.findURI(SETTINGS + root, Location.NONE))));
-        } catch (NullPointerException ex) {
+            files.unite(this->findFiles(name, new File(this->findURI(FileUtil::SETTINGS + root, FileUtil::Location::NONE))));
+        } catch (NullPointerException* ex) {
             // expected if path SETTINGS + root does not exist
-            log.trace("{} does not exist in {}", root, SETTINGS);
+            log->trace(tr("%1 does not exist in %2").arg(root, FileUtil::SETTINGS));
         }
     }
 #endif
@@ -280,8 +280,9 @@ public URL getURL(URI uri) {
 
 /*private*/ QSet<File*> FileUtilSupport::findFiles(QString name, File* root) {
     QSet<File*> files = QSet<File*>();
-#if 0 // TODO:
-    if (root.isDirectory()) {
+#if 1 // TODO:
+    if (root->isDirectory()) {
+#if 0
         try {
             Files.walkFileTree(root.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
@@ -306,9 +307,23 @@ public URL getURL(URI uri) {
                     return FileVisitResult.CONTINUE;
                 }
             });
-        } catch (IOException ex) {
-            log.warn("Exception while finding file {} in {}", name, root, ex);
+        } catch (IOException* ex) {
+            log->warn(tr("Exception while finding file %1 in %2").arg(name, root->toString(), ex->getMessage()));
         }
+#else
+     QDir dir(root->absoluteFilePath());
+     QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+     for(QFileInfo info : list)
+     {
+      if(info.isDir())
+      {
+       findFiles(name, new File(info.absoluteFilePath()));
+      }
+      if(info.fileName() == name)
+       files.insert(new File(info.absoluteFilePath()));
+     }
+     return files;
+#endif
     }
 #endif
     return files;

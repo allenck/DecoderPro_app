@@ -20,14 +20,20 @@ public:
     Q_INVOKABLE explicit DecoderIndexFile(QObject *parent = 0);
     ~DecoderIndexFile() {}
     DecoderIndexFile(const DecoderIndexFile&) : XmlFile() {}
+    /*public*/ static /*final*/ QString MANUFACTURER;// = "manufacturer";
+    /*public*/ static /*final*/ QString MFG_ID;// = "mfgID";
+    /*public*/ static /*final*/ QString DECODER_INDEX;// = "decoderIndex";
+    /*public*/ static /*final*/ QString VERSION;// = "version";
+    /*public*/ static /*final*/ QString LOW_VERSION_ID;// = "lowVersionID";
+    /*public*/ static /*final*/ QString HIGH_VERSION_ID;// = "highVersionID";
     /*public*/ int numDecoders();
     /*public*/ QStringList* getMfgNameList();
     /*public*/ QString mfgIdFromName(QString name);
     /*public*/ QString mfgNameFromId(QString name);
     /*public*/ QList<DecoderFile *> matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
     /*public*/ QList<DecoderFile*> matchingDecoderList(QString mfg, QString family,
-          QString decoderMfgID, QString decoderVersionID,
-          QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
+    QString decoderMfgID, QString decoderVersionID,
+    QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
     /*public*/ QComboBox* matchingComboBox(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
     static /*public*/ JComboBox* jComboBoxFromList(QList<DecoderFile*> l);
     static /*public*/ ComboBoxModel* jComboBoxModelFromList(QList<DecoderFile *> l);

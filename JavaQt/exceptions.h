@@ -107,10 +107,8 @@ class JAVAQTSHARED_EXPORT IOException : public Exception
 {
 public:
     IOException(QString msg = "");
-    ~IOException() throw()
-    {
-     name="IOException";
-    }
+    ~IOException() throw() {}
+
 QString getMessage();
     QString msg;
 };

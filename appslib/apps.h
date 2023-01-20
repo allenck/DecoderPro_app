@@ -166,4 +166,20 @@ public:
  AppsFileDrop(Component* _jynstrumentSpace, FileDrop::Listener* listener, Apps* apps);
  /*public*/ void filesDropped(QList<File*> files);
 };
+
+class LoadDecoders1 : public QObject
+{
+ Q_OBJECT
+public:
+  LoadDecoders1(QObject* parent = 0) {}
+ ~LoadDecoders1() {}
+public slots:
+ void process();
+ //void run();
+signals:
+ void finished();
+ void error(QString err);
+
+};
+
 #endif // APPS_H

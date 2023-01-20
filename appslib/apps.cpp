@@ -507,10 +507,24 @@ bool Apps::configDeferredLoadOK = false;
 //            }
 //        }
 //    };
+#if 0
  Run2* run2 = new Run2();
  QThread* thr2 = new QThread(run2);
  thr2->setObjectName("initialize decoder index");
  thr2->start();
+#else
+ LoadDecoders1* worker = new LoadDecoders1(/*this*/);
+ QThread* thread = new QThread();
+ thread->setObjectName("LoadDecoders");
+ worker->moveToThread(thread);
+ //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+ connect(thread, SIGNAL(started()), worker, SLOT(process()));
+ connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+ connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+ connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+ //Thread* thread = new Thread(worker, "initialize decoder index");
+ thread->start();
+#endif
 #if 0  // done in main!
     if (bool.getbool("org.jmri.python.preload")) {
         r = new Runnable() {
@@ -624,6 +638,19 @@ void Apps::initGui() // must be called after Constructor is complete!
   Logger::error("Error in trying to initialize decoder index file "+ ex->getMessage());
  }
 }
+
+/*public*/ void LoadDecoders1::process()
+{
+ try
+ {
+  (DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile");
+ }
+ catch (Exception* ex)
+ {
+  Logger::error("Error in trying to initialize decoder index file "+ ex->getMessage());
+ }
+}
+
 
 /*private*/ bool Apps::doDeferredLoad(File* file)
 {

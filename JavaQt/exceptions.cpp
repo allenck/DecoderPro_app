@@ -27,7 +27,8 @@ this->msg = msg;
 
 IOException::IOException(QString msg)
 {
-this->msg = msg;
+ this->msg = msg;
+ name = "IOException";
 }
 QString IOException::getMessage() {return msg;}
 
