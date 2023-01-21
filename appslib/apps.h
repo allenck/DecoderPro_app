@@ -9,6 +9,7 @@
 #include "propertychangelistener.h"
 #include "jlabel.h"
 
+
 class QMenuBar;
 class JFrame;
 class PropertyChangeEvent;
@@ -25,7 +26,7 @@ class APPSLIBSHARED_EXPORT Apps : public QWidget, public PropertyChangeListener
     Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit Apps(QWidget *parent = 0);
-    /*public*/ Apps(JFrame* frame, QWidget *parent = 0);
+    /*public*/ Apps(JFrame* frame, QWidget *parent = nullptr);
 static QString profileFilename;
 static QString configFilename;// = "jmriconfig2.xml";  // usually overridden, this is default
 static /*public*/ QWidget* buttonSpace();
@@ -110,7 +111,7 @@ protected:
     static /*protected*/ void setConfigFilename(QString def, char *args[]);
 //    static QString nameString = "JMRI program";
     /*protected*/ static void setStartupInfo(QString name);
-    /*protected*/ virtual QWidget* statusPanel();
+    /*protected*/ virtual JPanel *statusPanel();
     /*protected*/ virtual QString line1();
     /*protected*/ virtual QString line2();
     /*protected*/ virtual QString line3();
@@ -123,7 +124,9 @@ protected:
     /*protected*/ QString line8() ;
     /*protected*/ QString line9() ;
     /*protected*/ virtual QString logo();
-    /*static*/ /*protected*/ void createFrame(Apps* containedPane, JFrame* frame);
+    /*static*/ /*protected*/ void createFrame(Apps* containedPane, JmriJFrame *frame);
+    static /*protected*/ void loadFile(QString name);
+    /*protected*/ /*static*/ void setApplication(QString name);
     /*protected*/ void createMenus(QMenuBar* menuBar, WindowInterface* wi);
     /*protected*/ void fileMenu(QMenuBar* menuBar, WindowInterface* wi);
     /*protected*/ void setPrefsFrameHelp(JmriJFrame* frame, QString location);

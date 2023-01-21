@@ -333,13 +333,13 @@ void AddSignalMastPanel::loadMastDefinitions()
   // gather all the appearance files
   // Look for the default system defined ones first
   QList<File*> programDirArray = QList<File*>();
-  QUrl pathProgramDir = FileUtil::findURL("xml/signals/" + sigsysname, FileUtil::Location::INSTALLED); // NOI18N
-  if (!pathProgramDir.isEmpty()) programDirArray =  File(pathProgramDir.toString(QUrl::RemoveScheme)).listFiles();
+  QUrl* pathProgramDir = FileUtil::findURL("xml/signals/" + sigsysname, FileUtil::Location::INSTALLED); // NOI18N
+  if (!pathProgramDir->isEmpty()) programDirArray =  File(pathProgramDir->toString(QUrl::RemoveScheme)).listFiles();
   if (programDirArray.isEmpty()) programDirArray = QList<File*>();
 
   QList<File*> profileDirArray = QList<File*>();
-  QUrl pathProfileDir = FileUtil::findURL("resources/signals/" + sigsysname, FileUtil::Location::USER); // NOI18N
-  if (!pathProfileDir.isEmpty()) profileDirArray =  File(pathProfileDir.toString(QUrl::RemoveScheme)).listFiles();
+  QUrl* pathProfileDir = FileUtil::findURL("resources/signals/" + sigsysname, FileUtil::Location::USER); // NOI18N
+  if (!pathProfileDir->isEmpty()) profileDirArray =  File(pathProfileDir->toString(QUrl::RemoveScheme)).listFiles();
   if (profileDirArray.isEmpty()) profileDirArray = QList<File*>();
 
   // create a composite list of files
@@ -389,10 +389,10 @@ void AddSignalMastPanel::loadMastDefinitions()
  try
  {
   QStringList paths = QStringList() << "xml"<< "resources";
-  QUrl path = FileUtil::findURL(QString("signals/") + sigsysname, FileUtil::Location::USER, paths ); // NOI18N
-  if (!path.isEmpty())
+  QUrl* path = FileUtil::findURL(QString("signals/") + sigsysname, FileUtil::Location::USER, paths ); // NOI18N
+  if (!path->isEmpty())
   {
-   QList<File*> apps =  File(path.toString(QUrl::RemoveScheme)).listFiles();
+   QList<File*> apps =  File(path->toString(QUrl::RemoveScheme)).listFiles();
     if(!apps.isEmpty())
     {
      for (File* app : apps)

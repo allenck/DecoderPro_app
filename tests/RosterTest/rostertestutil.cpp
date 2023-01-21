@@ -149,15 +149,15 @@ RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
      XInclude* xinclude = new XInclude();
      File* f;
      QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
-     QUrl url = QUrl(FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist));
+     QUrl* url = FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist);
      if(ret == JOptionPane::YES_OPTION)
      {
-      xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), nullptr);
+      xinclude->copyXml(url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), nullptr);
      }
       else
      {
       QTemporaryDir dir;
-      xinclude->copyXml(&url, f = new File(dir.path()+df->getFileName()),nullptr);
+      xinclude->copyXml(url, f = new File(dir.path()+df->getFileName()),nullptr);
      }
      decoderRoot = df->rootFromFile(f);
     }

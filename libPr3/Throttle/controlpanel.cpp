@@ -857,7 +857,7 @@
 //     forwardButton.setBorderPainted(false);
 //     forwardButton.setContentAreaFilled(false);
      forwardButton->setText("");
-     forwardButton->setIcon( QIcon(FileUtil::findURL("resources/icons/throttles/up-red.png").path()));
+     forwardButton->setIcon( QIcon(FileUtil::findURL("resources/icons/throttles/up-red.png")->path()));
 //     forwardButton.setSelectedIcon(new ImageIcon(FileUtil.findURL("resources/icons/throttles/up-green.png")));
      forwardButton->resize(QSize(BUTTON_SIZE, BUTTON_SIZE));
      forwardButton->setToolTip(tr("Forward"));
@@ -871,7 +871,7 @@
 //     reverseButton.setBorderPainted(false);
 //     reverseButton.setContentAreaFilled(false);
      reverseButton->setText("");
-     reverseButton->setIcon(QIcon(FileUtil::findURL("resources/icons/throttles/down-red.png").path()));
+     reverseButton->setIcon(QIcon(FileUtil::findURL("resources/icons/throttles/down-red.png")->path()));
 //     reverseButton.setSelectedIcon(new ImageIcon(FileUtil.findURL("resources/icons/throttles/down-green.png")));
      reverseButton->resize(QSize(BUTTON_SIZE, BUTTON_SIZE));
      reverseButton->setToolTip(tr("Reverse"));

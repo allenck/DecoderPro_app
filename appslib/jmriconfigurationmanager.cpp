@@ -243,7 +243,7 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load( QUrl file)
+/*public*/ bool JmriConfigurationManager::load( QUrl* file)
 {
     return this->load(file, false);
 }
@@ -256,13 +256,13 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)
+/*public*/ bool JmriConfigurationManager::load(QUrl* file, bool registerDeferred)
 {
- log->debug(tr("loading %1 ...").arg(file.path()));
+ log->debug(tr("loading %1 ...").arg(file->path()));
  try {
-  if (file.isEmpty()
-          || (File(file.toDisplayString()).getName() == ("ProfileConfig.xml")) //NOI18N
-          || (File(file.toDisplayString()).getName() == (/*Profile::CONFIG*/"profile.xml")))
+  if (file->isEmpty()
+          || (File(file->toDisplayString()).getName() == ("ProfileConfig.xml")) //NOI18N
+          || (File(file->toDisplayString()).getName() == (/*Profile::CONFIG*/"profile.xml")))
   {
    Profile* profile = ProfileManager::getDefault()->getActiveProfile();
    QObjectList* providers =  InstanceManager::getList("PreferencesManager");
@@ -270,10 +270,10 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
    foreach(QObject* provider, *providers)
    {
     //this->initializeProvider((PreferencesManager*)provider, profile);
-    if(provider->metaObject()->className() == "GuiLafPreferencesManager")
+    if(QString(provider->metaObject()->className()) == "GuiLafPreferencesManager")
        this->initializeProvider((GuiLafPreferencesManager*)provider, profile);
     else
-     if(provider->metaObject()->className() == "SystemConsolePreferencesManager")
+     if(QString(provider->metaObject()->className()) == "SystemConsolePreferencesManager")
         this->initializeProvider((SystemConsolePreferencesManager*)provider, profile);
      else
       this->initializeProvider((AbstractPreferencesManager*)provider, profile);
@@ -283,7 +283,7 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
    {
     handleInitializationExceptions(profile);
    }
-   if (!file.isEmpty() && (File(file.toDisplayString())).getName() == ("ProfileConfig.xml"))
+   if (!file->isEmpty() && (File(file->toDisplayString())).getName() == ("ProfileConfig.xml"))
    { // NOI18N
     log->debug("Loading legacy configuration...");
     return this->legacy->load(file, registerDeferred);
@@ -293,12 +293,12 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
  }
  catch (/*URISyntax*/Exception* ex)
  {
-     log->error(tr("Unable to get File* for %1").arg(file.toDisplayString()));
+     log->error(tr("Unable to get File* for %1").arg(file->toDisplayString()));
      throw new JmriException(ex->getMessage()+ex->getLocalizedMessage());
  }
  // make this url the default "Store Panels..." file
  JFileChooser* ufc = StoreXmlUserAction::getUserFileChooser();
- ufc->setSelectedFile(new File(/*FileUtil::urlToURI(url)*/file.path()));
+ ufc->setSelectedFile(new File(/*FileUtil::urlToURI(url)*/file->path()));
 
  return this->legacy->load(file, registerDeferred);
  // return true; // always return true once legacy support is dropped
@@ -539,13 +539,13 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)
+/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl* file)
 {
     return this->legacy->loadDeferred(file);
 }
 
 //@Override
-/*public*/  QUrl JmriConfigurationManager::find(QString filename) {
+/*public*/  QUrl *JmriConfigurationManager::find(QString filename) {
     return this->legacy->find(filename);
 }
 

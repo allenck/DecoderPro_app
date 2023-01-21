@@ -712,7 +712,7 @@ File userPrefsFile;*/
 {
     return load(fi, false);
 }
-/*public*/ bool ConfigXmlManager::load(QUrl url)
+/*public*/ bool ConfigXmlManager::load(QUrl* url)
 {
     return load(url, false);
 }
@@ -747,11 +747,11 @@ File userPrefsFile;*/
  */
 //@SuppressWarnings("unchecked")
 //@Override
-/*public*/ bool ConfigXmlManager::load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::load(QUrl* url, bool registerDeferred)
 {
  bool result = true;
- if(log->isDebugEnabled()) log->debug("opening "+url.path());
- QFile file(url.path());
+ if(log->isDebugEnabled()) log->debug("opening "+url->path());
+ QFile file(url->path());
  if(!file.open(QFile::ReadOnly | QFile::Text)) return false;
  if(!doc.setContent(&file))
  {
@@ -989,13 +989,13 @@ File userPrefsFile;*/
     }
     catch (Exception* e)
     {
-     creationErrorEncountered(adapter, "load(" + url.toString() + ")",
+     creationErrorEncountered(adapter, "load(" + url->toString() + ")",
                  "Unexpected error (Exception)", nullptr, nullptr, e);
 
          result = false;  // keep going, but return false to signal problem
     }
     catch (Throwable et) {
-         creationErrorEncountered(adapter, "in load(" + url.toString() + ")",
+         creationErrorEncountered(adapter, "in load(" + url->toString() + ")",
                  "Unexpected error (Throwable)", nullptr, nullptr, &et);
 
          result = false;  // keep going, but return false to signal problem
@@ -1004,7 +1004,7 @@ File userPrefsFile;*/
   }
   catch (IllegalArgumentException e)
   {
-    creationErrorEncountered(adapter, "load(" + url.path() + ")",
+    creationErrorEncountered(adapter, "load(" + url->path() + ")",
                         "Unexpected error (IllegalArgumentException)", nullptr, nullptr, &e);
        result = false;  // keep going, but return false to signal problem
   }
@@ -1012,32 +1012,32 @@ File userPrefsFile;*/
   {
         // this returns false to indicate un-success, but not enough
         // of an error to require a message
-        creationErrorEncountered(nullptr, "opening file " + url.path(),
+        creationErrorEncountered(nullptr, "opening file " + url->path(),
                 "File not found", nullptr, nullptr, e1);
         result = false;
   }
   catch (JDOMException* e)
   {
-        creationErrorEncountered(nullptr, "parsing file " + url.path(),
+        creationErrorEncountered(nullptr, "parsing file " + url->path(),
                 "Parse error", nullptr, nullptr, e);
         result = false;
   }
   catch (Exception* e)
   {
-        creationErrorEncountered(nullptr, "loading from file " + url.path(),
+        creationErrorEncountered(nullptr, "loading from file " + url->path(),
                 "Unknown error (Exception)", "", "", e);
         result = false;
   }
   catch (Throwable* et)
   {
-   creationErrorEncountered(adapter, "in load(" + url.path() + ")",
+   creationErrorEncountered(adapter, "in load(" + url->path() + ")",
                        "Unexpected error (Throwable)", nullptr, nullptr, et);
 
    result = false;  // keep going, but return false to signal problem
   }
   catch (CTCException* e)
   {
-        creationErrorEncountered(nullptr, "loading from file " + url.path(),
+        creationErrorEncountered(nullptr, "loading from file " + url->path(),
                 "Unknown error (Exception)", nullptr, nullptr, e);
         result = false;
   }
@@ -1059,13 +1059,13 @@ File userPrefsFile;*/
   FileHistory* included = nullptr;
   if (!root.isNull())
   {
-   qDebug() << "root = " << root.tagName() << " file = " << url.path() << " " << root.firstChild().toElement().tagName();
+   qDebug() << "root = " << root.tagName() << " file = " << url->path() << " " << root.firstChild().toElement().tagName();
    QDomElement filehistory = root.firstChildElement("filehistory");
    if (!filehistory.isNull()) {
        included = FileHistoryXml::loadFileHistory(filehistory);
    }
   }
-  r->addOperation((result ? "Load OK":"Load with errors"), url.toString(), included);
+  r->addOperation((result ? "Load OK":"Load with errors"), url->toString(), included);
  } else {
      log->info("Not recording file history");
  }
@@ -1090,7 +1090,7 @@ File userPrefsFile;*/
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) /*throw (JmriConfigureXmlException)*/
+/*public*/ bool ConfigXmlManager::loadDeferred(QUrl* url/*url*/) /*throw (JmriConfigureXmlException)*/
 {
  bool result = true;
  // Now process the load-later list
@@ -1119,7 +1119,7 @@ File userPrefsFile;*/
     }
     else
     {
-//     creationErrorEncountered(adapter, "deferred load(" + url.path() + ")", Level::_ERROR,
+//     creationErrorEncountered(adapter, "deferred load(" + url->path() + ")", Level::_ERROR,
 //                                             "Unexpected error (Exception)", NULL, NULL,(Throwable*) e);
      log->error("Unable to load " + adapterName);
      loadStatus = false;
@@ -1130,13 +1130,13 @@ File userPrefsFile;*/
    }
    catch (Exception* e)
    {
-    creationErrorEncountered(adapter, "deferred load(" + url.path() + ")",
+    creationErrorEncountered(adapter, "deferred load(" + url->path() + ")",
                                          "Unexpected error (Exception)", NULL, NULL, e);
     result = false;  // keep going, but return false to signal problem
    }
    catch (Throwable* et)
    {
-    creationErrorEncountered(adapter, "in deferred load(" + url.path() + ")",
+    creationErrorEncountered(adapter, "in deferred load(" + url->path() + ")",
                         "Unexpected error (Throwable)", NULL, NULL, et);
     result = false;  // keep going, but return false to signal problem
    }
@@ -1161,11 +1161,11 @@ File userPrefsFile;*/
  * @return Corresponding File object
  */
 //@Override
-/*public*/ QUrl ConfigXmlManager::find(QString f) {
+/*public*/ QUrl* ConfigXmlManager::find(QString f) {
     QStringList sList;
     sList << "xml/layout"<< "xml";
-    QUrl u = FileUtil::findURL(f, sList); // NOI18N
-    if (u.isEmpty()) {
+    QUrl* u = FileUtil::findURL(f, sList); // NOI18N
+    if (u->isEmpty()) {
         this->locateFileFailed(f);
     }
     return u;

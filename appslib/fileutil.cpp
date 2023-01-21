@@ -482,8 +482,8 @@ FileUtil::FileUtil(QObject *parent) :
  */
 //static /*public*/ InputStream findInputStream(QString path, @NonNull QString... searchPaths) {
 /*static*/ /*public*/ QTextStream* FileUtil::findInputStream(QString path, /*@NonNull*/ QStringList searchPaths) {
-    QUrl file = FileUtil::findURL(path, searchPaths);
-    if (file.isValid()) {
+    QUrl* file = FileUtil::findURL(path, searchPaths);
+    if (file->isValid()) {
 //        try {
 //            return file.openStream();
      QFile* f = new QFile(/*file.fileName()*/path);
@@ -536,7 +536,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #findInputStream(java.lang.QString, java.lang.QString[])
  * @see #findURL(java.lang.QString, java.lang.QString[])
  */
-/*static*/ /*public*/ QUrl FileUtil::findURL(QString path) {
+/*static*/ /*public*/ QUrl* FileUtil::findURL(QString path) {
     return FileUtil::findURL(path, QStringList());
 }
 
@@ -559,7 +559,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #findInputStream(java.lang.QString, java.lang.QString[])
  * @see #findURL(java.lang.QString)
  */
-/*static*/ /*public*/ QUrl FileUtil::findURL(QString path, /*@NonNull*/ QStringList searchPaths)
+/*static*/ /*public*/ QUrl* FileUtil::findURL(QString path, /*@NonNull*/ QStringList searchPaths)
 {
  return FileUtilSupport::getDefault()->findURL(path, searchPaths);
 }
@@ -577,7 +577,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #findURL(java.lang.String, jmri.util.FileUtil.Location,
  * java.lang.String...)
  */
-/*static*/ /*public*/ QUrl FileUtil::findURL(QString path, Location locations) {
+/*static*/ /*public*/ QUrl* FileUtil::findURL(QString path, Location locations) {
     return FileUtil::findURL(path, locations, QStringList());
 }
 
@@ -614,7 +614,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #findURL(java.lang.String, jmri.util.FileUtil.Location)
  * @see #findURL(java.lang.String, java.lang.String...)
  */
-/*static*/ /*public*/ QUrl FileUtil::findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths)
+/*static*/ /*public*/ QUrl* FileUtil::findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths)
 {
  return FileUtilSupport::getDefault()->findURL(path, searchPaths);
 }
@@ -646,18 +646,18 @@ FileUtil::FileUtil(QObject *parent) :
  * @return a URL or NULL if the conversion would have caused a
  * MalformedURLException
  */
-/*static*/ /*public*/ QUrl FileUtil::fileToURL(QFile* file) {
+/*static*/ /*public*/ QUrl* FileUtil::fileToURL(QFile* file) {
 //    try {
 //        return file.toURI().toURL();
 //    } catch (MalformedURLException ex) {
 //        log.error("Unable to get URL from file", ex);
 //        return NULL;
 //    }
- return QUrl(file->fileName());
+ return new QUrl(file->fileName());
 }
-/*static*/ /*public*/ QUrl FileUtil::fileToURL(File* file)
+/*static*/ /*public*/ QUrl* FileUtil::fileToURL(File* file)
 {
-    return QUrl(file->path) ;
+    return new QUrl(file->path) ;
 }
 
 #if 0
@@ -743,7 +743,7 @@ FileUtil::FileUtil(QObject *parent) :
   * @return The contents of the file.
   * @throws java.io.IOException if the URL cannot be read
   */
- /*public*/ /*static*/ QString FileUtil::readURL(QUrl url) ///*throw (IOException)*/
+ /*public*/ /*static*/ QString FileUtil::readURL(QUrl* url) ///*throw (IOException)*/
     {
      return FileUtilSupport::getDefault()->readURL(url);
  }

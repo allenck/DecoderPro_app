@@ -124,9 +124,9 @@ ConfigXmlManagerTest::ConfigXmlManagerTest(QObject *parent) : QObject(parent)
 //                // suppress warning during testing
 //            }
 //        };
-        QUrl result;
+        QUrl* result;
         result = configxmlmanager->find("foo.biff");
-        Assert::assertTrue("dont find foo.biff", result.isEmpty(), __FILE__, __LINE__);
+        Assert::assertTrue("dont find foo.biff", result->isEmpty(), __FILE__, __LINE__);
 
         // make sure no test file exists in "layout"
         FileUtil::createDirectory(FileUtil::getUserFilesPath() + "layout");
@@ -145,7 +145,7 @@ ConfigXmlManagerTest::ConfigXmlManagerTest(QObject *parent) : QObject(parent)
 
         // check for not found if doesn't exist
         result = configxmlmanager->find("testConfigXmlManagerTest.xml");
-        Assert::assertTrue("should not find testConfigXmlManagerTest.xml", result.isEmpty(), __FILE__, __LINE__);
+        Assert::assertTrue("should not find testConfigXmlManagerTest.xml", result->isEmpty(), __FILE__, __LINE__);
 
         // put file back and find
         QFile* qf = new QFile(f->getPath());
@@ -154,7 +154,7 @@ ConfigXmlManagerTest::ConfigXmlManagerTest(QObject *parent) : QObject(parent)
         qf->close();
 
         result = configxmlmanager->find("testConfigXmlManagerTest.xml");
-        Assert::assertTrue("should find testConfigXmlManagerTest.xml", !result.isEmpty(), __FILE__, __LINE__);
+        Assert::assertTrue("should find testConfigXmlManagerTest.xml", !result->isEmpty(), __FILE__, __LINE__);
         f->_delete();  // make sure it's gone again
 
         // check file in the current app dir
@@ -166,7 +166,7 @@ ConfigXmlManagerTest::ConfigXmlManagerTest(QObject *parent) : QObject(parent)
         p->device()->close();
 
         result = configxmlmanager->find("testConfigXmlManagerTest.xml");
-        Assert::assertTrue("should find testConfigXmlManagerTest.xml in app dir", result.isValid(), __FILE__, __LINE__);
+        Assert::assertTrue("should find testConfigXmlManagerTest.xml in app dir", result->isValid(), __FILE__, __LINE__);
         f->_delete();  // make sure it's gone again
     }
 

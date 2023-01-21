@@ -81,7 +81,7 @@ public:
  /*public*/ void rotate(/*@NonNULL*/ File* file, int max, QString extension);// //throws IOException
  /*public*/ static FileUtilSupport* getDefault();
  /*public*/ QStringList* findProgramPath();
- /*public*/ QString readURL(QUrl url) /*throw (IOException)*/;
+ /*public*/ QString readURL(QUrl *url) /*throw (IOException)*/;
  /*public*/ QString sanitizeFilename(QString name);
  /*public*/ void createDirectory(QString path);
  /*public*/ void createDirectory(File* dir);
@@ -92,13 +92,13 @@ public:
  /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString urlToURI(/*@Nonnull*/ QUrl url);
- /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QUrl *findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString findURI(/*@Nonnull*/ QString path);
  /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations);
  /*public*/ QString findExternalFilename(/*@Nonnull*/ QString path);
- /*public*/ QUrl findURL(/*@Nonnull*/ QString path, FileUtil::Location locations);
- /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QUrl* findURL(/*@Nonnull*/ QString path, FileUtil::Location locations);
+ /*public*/ QUrl* findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString locateFile(QDir start, QString fileName);
  /*public*/ QString pathFromPortablePath(Profile *profile, /*@Nonnull*/ QString path);
  /*public*/ QString selectProgramPath(QStringList *stringList);

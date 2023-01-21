@@ -11,19 +11,11 @@
 #include <namedbean.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
-#include <qbytearray.h>
-#include <qcoreevent.h>
 #include <qdatastream.h>
-#include <qdatetime.h>
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlocale.h>
-#include <qmetaobject.h>
-#include <qobject.h>
-#include <qstringlist.h>
 #include <qurl.h>
-#include <qvector.h>
 #include <qwidget.h>
 #include <roster.h>
 #include <rosterentry.h>
@@ -45,106 +37,6 @@
 #include <windowinterface.h>
 #include <windowlistener.h>
 #include <xmlfile.h>
-
-
-
-class PythonQtShell_Roster : public Roster
-{
-public:
-    PythonQtShell_Roster(QObject*  parent = 0):Roster(parent),_wrapper(NULL) {}
-    PythonQtShell_Roster(QString  rosterFilename):Roster(rosterFilename),_wrapper(NULL) {}
-
-   ~PythonQtShell_Roster();
-
-virtual void propertyChange(PropertyChangeEvent*  evt);
-virtual QObject*  pself();
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_Roster : public Roster
-{ public:
-inline void py_q_propertyChange(PropertyChangeEvent*  evt) { Roster::propertyChange(evt); }
-inline QObject*  py_q_pself() { return Roster::pself(); }
-};
-
-class PythonQtWrapper_Roster : public QObject
-{ Q_OBJECT
-public:
-public slots:
-Roster* new_Roster(QObject*  parent = 0);
-Roster* new_Roster(QString  rosterFilename);
-void delete_Roster(Roster* obj) { delete obj; } 
-   QString  static_Roster_AllEntries(QLocale  arg__1);
-   QString  static_Roster__AllEntries(QLocale  locale);
-   void addEntry(Roster* theWrappedObject, RosterEntry*  e);
-   void addPropertyChangeListener(Roster* theWrappedObject, PropertyChangeListener*  l);
-   void addPropertyChangeListener(Roster* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
-   void addRosterGroup(Roster* theWrappedObject, QString  str);
-   void addRosterGroup(Roster* theWrappedObject, RosterGroup*  rg);
-   void addRosterGroups(Roster* theWrappedObject, QList<RosterGroup* >  groups);
-   bool  checkEntry(Roster* theWrappedObject, QList<RosterEntry* >  list, int  i, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group);
-   bool  checkEntry(Roster* theWrappedObject, RosterEntry*  r, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group, QString  developerID, QString  manufacturerID, QString  productID);
-   bool  checkEntry(Roster* theWrappedObject, int  i, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group);
-   void copyRosterGroupList(Roster* theWrappedObject, QString  oldName, QString  newName);
-   void delRosterGroupList(Roster* theWrappedObject, QString  str);
-   void dispose(Roster* theWrappedObject);
-   RosterEntry*  entryFromTitle(Roster* theWrappedObject, QString  title);
-   void entryIdChanged(Roster* theWrappedObject, RosterEntry*  r);
-   QString  fileFromTitle(Roster* theWrappedObject, QString  title);
-   void firePropertyChange(Roster* theWrappedObject, QString  p, QVariant  old, QVariant  n);
-   QSet<QString >  getAllAttributeKeys(Roster* theWrappedObject);
-   QList<RosterEntry* >  getAllEntries(Roster* theWrappedObject);
-   Roster*  static_Roster_getDefault();
-   QString  getDefaultRosterGroup(Roster* theWrappedObject);
-   QList<RosterEntry* >  getEntriesByDccAddress(Roster* theWrappedObject, QString  a);
-   QList<RosterEntry* >  getEntriesInGroup(Roster* theWrappedObject, QString  group);
-   QList<RosterEntry* >  getEntriesMatchingCriteria(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id, QString  group);
-   QList<RosterEntry* >  getEntriesMatchingCriteria(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group, QString  developerID, QString  manufacturerID, QString  productID);
-   QList<RosterEntry* >  getEntriesWithAttributeKey(Roster* theWrappedObject, QString  key);
-   QList<RosterEntry* >  getEntriesWithAttributeKeyValue(Roster* theWrappedObject, QString  key, QString  value);
-   RosterEntry*  getEntry(Roster* theWrappedObject, int  i);
-   RosterEntry*  getEntryForId(Roster* theWrappedObject, QString  id);
-   RosterEntry*  getGroupEntry(Roster* theWrappedObject, QString  group, int  i);
-   int  getGroupIndex(Roster* theWrappedObject, QString  group, RosterEntry*  re);
-   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Roster* theWrappedObject);
-   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Roster* theWrappedObject, QString  propertyName);
-   QString  getRosterFilesLocation(Roster* theWrappedObject);
-   QVector<QString >  getRosterGroupList(Roster* theWrappedObject);
-   QString  static_Roster_getRosterGroupName(QString  rosterGroup);
-   QString  static_Roster_getRosterGroupProperty(QString  name);
-   QMap<QString , RosterGroup* >  getRosterGroups(Roster* theWrappedObject);
-   QString  getRosterIndexFileName(Roster* theWrappedObject);
-   QString  getRosterIndexPath(Roster* theWrappedObject);
-   QString  getRosterLocation(Roster* theWrappedObject);
-   QString  getSelectedRosterGroup(Roster* theWrappedObject);
-   Roster*  static_Roster_instance();
-   QString  static_Roster_makeValidFilename(QString  entry);
-   QList<RosterEntry* >  matchingList(Roster* theWrappedObject, QString  dccAddress, QString  productID);
-   QList<RosterEntry* >  matchingList(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id);
-   int  numEntries(Roster* theWrappedObject);
-   int  numGroupEntries(Roster* theWrappedObject, QString  group);
-   void py_q_propertyChange(Roster* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_propertyChange(evt));}
-   QObject*  pself(Roster* theWrappedObject);
-   QObject*  py_q_pself(Roster* theWrappedObject){  return (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_pself());}
-   void reindex(Roster* theWrappedObject);
-   void removeEntry(Roster* theWrappedObject, RosterEntry*  e);
-   void removePropertyChangeListener(Roster* theWrappedObject, PropertyChangeListener*  l);
-   void removePropertyChangeListener(Roster* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
-   void removeRosterGroup(Roster* theWrappedObject, RosterGroup*  rg);
-   void renameRosterGroupList(Roster* theWrappedObject, QString  oldName, QString  newName);
-   void rosterGroupRenamed(Roster* theWrappedObject, QString  oldName, QString  newName);
-   void setDefaultRosterGroup(Roster* theWrappedObject, QString  defaultRosterGroup);
-   void setRosterIndexFileName(Roster* theWrappedObject, QString  fileName);
-   void setRosterLocation(Roster* theWrappedObject, QString  f);
-   void writeFile(Roster* theWrappedObject, QFile*  file);
-   void writeFile(Roster* theWrappedObject, QString  name);
-   void writeRoster(Roster* theWrappedObject);
-};
-
-
 
 
 
@@ -469,7 +361,6 @@ public:
 
 virtual void _connect(QString  arg__1, int  arg__2);
 virtual void autoConfigure();
-virtual void childEvent(QChildEvent*  event);
 virtual QString  className();
 virtual void configure();
 virtual void configureBaudRate(QString  arg__1);
@@ -477,10 +368,7 @@ virtual void configureOption1(QString  value);
 virtual void configureOption2(QString  value);
 virtual void configureOption3(QString  value);
 virtual void configureOption4(QString  value);
-virtual void customEvent(QEvent*  event);
 virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getAdvertisementName();
 virtual QString  getCurrentBaudRate();
 virtual QString  getCurrentPortName();
@@ -521,7 +409,6 @@ virtual void setSystemConnectionMemo(SystemConnectionMemo*  connectionMemo);
 virtual void setSystemPrefix(QString  systemPrefix);
 virtual void setUserName(QString  userName);
 virtual bool  status();
-virtual void timerEvent(QTimerEvent*  event);
 virtual QStringList  validBaudRates();
 
   const QMetaObject* metaObject() const;
@@ -574,17 +461,12 @@ public:
    ~PythonQtShell_ShutDownTask();
 
 virtual bool  call();
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual bool  execute();
 virtual QString  getName();
 virtual bool  isComplete();
 virtual bool  isParallel();
 virtual bool  isShutdownAllowed();
 virtual void run();
-virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -914,11 +796,6 @@ public:
 
    ~PythonQtShell_TableColumn();
 
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -1746,6 +1623,7 @@ inline bool  py_q_isFollowingCommandedState() { return this->isFollowingCommande
 inline void py_q_provideFirstFeedbackSensor(QString  arg__1) { Turnout::provideFirstFeedbackSensor(arg__1); }
 inline void py_q_provideSecondFeedbackSensor(QString  arg__1) { Turnout::provideSecondFeedbackSensor(arg__1); }
 inline void py_q_requestUpdateFromLayout() { Turnout::requestUpdateFromLayout(); }
+inline QObject*  py_q_self() { return Turnout::self(); }
 inline void py_q_setBinaryOutput(bool  arg__1) { Turnout::setBinaryOutput(arg__1); }
 inline void py_q_setCommandedState(int  arg__1) { Turnout::setCommandedState(arg__1); }
 inline void py_q_setCommandedStateAtInterval(int  s) { this->setCommandedStateAtInterval(s); }
@@ -1840,6 +1718,7 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    void py_q_provideSecondFeedbackSensor(Turnout* theWrappedObject, QString  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_provideSecondFeedbackSensor(arg__1));}
    void requestUpdateFromLayout(Turnout* theWrappedObject);
    void py_q_requestUpdateFromLayout(Turnout* theWrappedObject){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_requestUpdateFromLayout());}
+   QObject*  py_q_self(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_self());}
    void setBinaryOutput(Turnout* theWrappedObject, bool  arg__1);
    void py_q_setBinaryOutput(Turnout* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setBinaryOutput(arg__1));}
    void setCommandedState(Turnout* theWrappedObject, int  arg__1);
@@ -1949,10 +1828,6 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  listener);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual void firePropertyChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) const;
 virtual void fireVetoableChange(PropertyChangeEvent*  event);
 virtual void fireVetoableChange(QString  propertyName, QVariant  oldValue, QVariant  newValue);
@@ -1962,7 +1837,6 @@ virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void timerEvent(QTimerEvent*  event);
 virtual QObject*  vself();
 
   const QMetaObject* metaObject() const;
@@ -2008,14 +1882,9 @@ public:
 
    ~PythonQtShell_WindowInterface();
 
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
 virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual JFrame*  getFrame();
 virtual bool  multipleInstances();
-virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2054,11 +1923,6 @@ public:
 
    ~PythonQtShell_WindowListener();
 
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual void timerEvent(QTimerEvent*  event);
 virtual void windowClosed(QCloseEvent*  arg__1);
 virtual void windowClosing(QCloseEvent*  arg__1);
 virtual void windowDeiconified(QResizeEvent*  arg__1);
@@ -2105,13 +1969,8 @@ public:
    ~PythonQtShell_XmlFile();
 
 virtual QString  backupFileName(QString  name) const;
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual XmlFile::Validate  getValidate();
 virtual void setValidate(XmlFile::Validate  v);
-virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);

@@ -139,18 +139,18 @@ void ImageIcon::init()
  * @param description a brief textual description of the image
  * @see #ImageIcon(QString)
  */
-/*public*/ ImageIcon::ImageIcon(QUrl location, QString description, QObject* parent) : QObject(parent) {
+/*public*/ ImageIcon::ImageIcon(QUrl *location, QString description, QObject* parent) : QObject(parent) {
  if(description == "") description = filename;
 
     init();
     //image = Toolkit.getDefaultToolkit().getImage(location);
-    image = QImage(location.toString());
+    image = QImage(location->toString());
     if (image.isNull())
     {
-     image = QImage(location.toString(), "GIF");
+     image = QImage(location->toString(), "GIF");
      if(image.isNull())
      {
-      image = QImage(location.toString(), "PNG");
+      image = QImage(location->toString(), "PNG");
       if(image.isNull())
        return;
      }
@@ -161,7 +161,7 @@ void ImageIcon::init()
     this->_description = description;
     //loadImage(image);
 }
-QString ImageIcon::location() { return _location.toString();}
+QString ImageIcon::location() { return _location->toString();}
 QString ImageIcon::description() { return _description;}
 ///**
 // * Creates an ImageIcon from the specified URL. The image will

@@ -2,12 +2,13 @@
 #include "version.h"
 #include <QBoxLayout>
 #include "flowlayout.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "helputil.h"
 #include <QMenuBar>
 #include "jmrijframe.h"
 #include <QImageReader>
 #include "connectionstatus.h"
+#include "loggerfactory.h"
 
 /**
  * The JMRI program for creating control panels.
@@ -41,9 +42,6 @@
 PanelPro::PanelPro(JFrame* p, QWidget *parent) :
     Apps(p, parent)
 {
- //super(p);
-// init();
- //initGui();
 
  JmriJFrame* frame = new JmriJFrameX("PanelPro");
  createFrame(this, frame);
@@ -75,31 +73,25 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
     return "http://jmri.org/PanelPro ";
 }
 
-/*protected*/ QWidget* PanelPro::statusPanel()
+/*protected*/ JPanel* PanelPro::statusPanel()
 {
- QWidget* j = new QWidget();
+ JPanel* j = new JPanel();
  QVBoxLayout* jLayout;
  j->setLayout(jLayout = new QVBoxLayout); //(j, BoxLayout.Y_AXIS));
  jLayout->addWidget(Apps::statusPanel());
 
  // Buttons
- QAction* quit = new QAction("Quit", this);//
-//    {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            Apps.handleQuit();
-//        }
-//    };
-
+ QAction* quit = new QAction("Quit", this);
  connect(quit, SIGNAL(triggered()), this, SLOT(handleQuit()));
 
- QWidget* p3 = new QWidget();
+ JPanel* p3 = new JPanel();
  FlowLayout* p3Layout;
  p3->setLayout(p3Layout = new FlowLayout());
- QPushButton* h1 = new QPushButton(tr("Help"));
- HelpUtil::addHelpToComponent(h1, "html.apps.PanelPro.PanelPro");
+ h1 = new JButton(tr("Help"));
+ //HelpUtil::addHelpToComponent(h1, "html.apps.PanelPro.PanelPro");
  //h1->setAlignment(Qt::AlignHCenter);
  p3Layout->addWidget(h1);
- QPushButton* q1 = new QPushButton(tr("Quit"));
+ JButton* q1 = new JButton(tr("Quit"));
  //q1.addActionListener(quit);
  connect(q1, SIGNAL(clicked()), this, SLOT(handleQuit()));
  //q1->setAlignment(Qt::AlignHCenter);
@@ -113,29 +105,33 @@ void PanelPro::handleQuit()
  Apps::handleQuit();
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void PanelPro::attachHelp() {
+ if (h1 != nullptr) {
+     HelpUtil::addHelpToComponent((QWidget*)h1, "html.apps.PanelPro.index");
+ }
+}
+
 // Main entry point // moved to main.cpp ACK
 /*public*/ /*static*/ void PanelPro::main(char *args[])
 {
- Logger log("PanelPro");
  // show splash screen early
  splash(true);
 
  Apps::setStartupInfo("PanelPro");
 
  setConfigFilename("PanelProConfig2.xml", args);
- JmriJFrame* f = nullptr; //new JmriJFrame("PanelPro");
- //f->setVisible(false);
- //createFrame(new PanelPro(f), f);
+ //PanelPro* p = new PanelPro();
+ JmriJFrame* f = nullptr;
+ //Apps::createFrame(p, f);
  new PanelPro(f);
 
- log.debug("main initialization done");
+ log->debug("main initialization done");
  splash(false);
 }
-
-///*protected*/ void PanelPro::windowClosing(QCloseEvent * e)
-//{
-// Apps::windowClosing(e);
-//}
 
 PPWindowListener::PPWindowListener(JFrame *p, PanelPro* pp)
 {
@@ -146,3 +142,5 @@ void PPWindowListener::windowClosing(QCloseEvent *)
 {
  pp->handleQuit();
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PanelPro::log = LoggerFactory::getLogger("PanelPro");

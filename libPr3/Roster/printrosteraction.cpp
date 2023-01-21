@@ -104,7 +104,7 @@ void PrintRosterAction::common()
 
  // add the image
  //ImageIcon* icon = new ImageIcon(FileUtil::findURL("resources/decoderpro.gif", FileUtil::INSTALLED));
- NamedIcon* icon = new NamedIcon(FileUtil::findURL("resources/decoderpro.gif", FileUtil::INSTALLED).toString(),QString());
+ NamedIcon* icon = new NamedIcon(FileUtil::findURL("resources/decoderpro.gif", FileUtil::INSTALLED)->toString(),QString());
  // we use an ImageIcon because it's guaranteed to have been loaded when ctor is complete
  writer->write(icon->getImage(), new JLabel(icon));
  //Add a number of blank lines, so that the roster entry starts below the decoderpro logo

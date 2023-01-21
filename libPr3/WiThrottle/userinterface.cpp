@@ -160,12 +160,12 @@ UserInterface::UserInterface(QWidget* parent) : JmriJFrame(false, false, parent)
      panelLayout->addWidget(vLabel, con);
      */
     QLabel* icon;
-    QUrl imageURL = FileUtil::findURL(":resources/IconForWiThrottle.gif");
+    QUrl* imageURL = FileUtil::findURL(":resources/IconForWiThrottle.gif");
 
-    if (!imageURL.isEmpty()) {
+    if (!imageURL->isEmpty()) {
 //        ImageIcon* image = new ImageIcon(imageURL);
         icon = new QLabel(/*image*/);
-        QImageReader* imageReader = new QImageReader(imageURL.path());
+        QImageReader* imageReader = new QImageReader(imageURL->path());
         icon->setPixmap(QPixmap::fromImageReader(imageReader));
         con.weightx = 0.5;
         con.gridx = 2;

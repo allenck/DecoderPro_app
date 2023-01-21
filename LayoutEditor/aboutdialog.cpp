@@ -46,7 +46,7 @@
         JPanel* pane = new JPanel();
         pane->setLayout(new QVBoxLayout());//pane, BoxLayout.Y_AXIS));
         if (log->isDebugEnabled()) {
-            log->debug(tr("Fetch main logo: %1 (%2)").arg(logo, FileUtil::findURL(logo, FileUtil::Location::INSTALLED).toString()));
+            log->debug(tr("Fetch main logo: %1 (%2)").arg(logo, FileUtil::findURL(logo, FileUtil::Location::INSTALLED)->toString()));
         }
         //addCenteredComponent(new JLabel(new ImageIcon(getToolkit().getImage(FileUtil::findURL(logo, FileUtil::Location::INSTALLED)), "JMRI logo"), JLabel::CENTER), pane);
         addCenteredComponent(new JLabel("JMRI logo", new ImageIcon(logo, "JMRI logo"),JLabel::LEFT),pane);

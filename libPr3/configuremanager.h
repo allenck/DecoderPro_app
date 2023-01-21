@@ -147,7 +147,7 @@ public:
          * @param file Input URL
          * @return true if succeeded
          */
-        virtual bool load(QUrl /*file*/) /*throw (JmriException)*/ {return false;}
+        virtual bool load(QUrl* /*file*/) /*throw (JmriException)*/ {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -158,8 +158,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-         virtual bool load(File* /*file*/, bool /*registerDeferred*/)  /*throw (JmriException)*/ { return false;}
-
+         virtual bool load(File* /*file*/, bool /*registerDeferred*/)  /*throw (JmriException)*/ {return false;}
         /**
          * Create the objects defined in a particular configuration
          * file
@@ -169,7 +168,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/) /*throw (JmriException)*/ { return false;}
+  virtual bool load(QUrl* /*file*/, bool /*registerDeferred*/) /*throw (JmriException)*/ {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -181,7 +180,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-         virtual bool loadDeferred(File* /*file*/)  /*throw (JmriException)*/ { return false;}
+         virtual bool loadDeferred(File* /*file*/)  /*throw (JmriException)*/ =0;
 
         /**
          * Create the objects defined in a particular configuration
@@ -193,7 +192,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(QUrl /*file*/) /*throw (JmriException)*/ { return false;}
+        virtual bool loadDeferred(QUrl* /*file*/) /*throw (JmriException)*/ =0;
 
         /**
          * Provide a method-specific way of locating a file to be
@@ -201,7 +200,7 @@ public:
          * @param filename Local filename, perhaps without path information
          * @return Corresponding {@link java.net.URL}
          */
-        virtual QUrl find(QString /*filename*/) {return QUrl();}
+        virtual QUrl* find(QString /*filename*/) =0;
 
         /**
          * Make a backup file.
@@ -231,5 +230,4 @@ public slots:
     
 };
 Q_DECLARE_INTERFACE(ConfigureManager, "ConfigureManager")
-//Q_DECLARE_METATYPE(ConfigureManager)
 #endif // CONFIGUREMANAGER_H

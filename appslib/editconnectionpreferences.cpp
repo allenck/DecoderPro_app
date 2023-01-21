@@ -92,7 +92,7 @@
     //detailpanel.setBorder(BorderFactory.createEmptyBorder(6, 3, 6, 6));
 
     save = new QPushButton(
-            QIcon(FileUtil::findURL("program:resources/icons/misc/gui3/SaveIcon.png").toLocalFile()), tr("Save"));
+            QIcon(FileUtil::findURL("program:resources/icons/misc/gui3/SaveIcon.png")->toLocalFile()), tr("Save"));
 #if 1
     connect(save, &QPushButton::clicked, [=] {
         dialog->restartProgram = true;

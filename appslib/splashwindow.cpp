@@ -46,7 +46,7 @@
  // get the splash image
     //MediaTracker mt = new MediaTracker(this);
     //splashIm = Toolkit.getDefaultToolkit().getImage(FileUtil.findURL("resources/logo.gif", FileUtil.Location.INSTALLED));
- splashIm = QImage(FileUtil::findURL("resources/logo.gif", FileUtil::INSTALLED).toString());
+ splashIm = QImage(FileUtil::findURL("resources/logo.gif", FileUtil::INSTALLED)->toString());
 //    mt.addImage(splashIm, 0);
 //    try {
 //        mt.waitForID(0);
@@ -57,7 +57,7 @@
 
 
     //JLabel* l = new JLabel((NamedIcon*)new ImageIcon(splashIm, "JMRI splash screen"));
-    JLabel* l = new JLabel(new ImageIcon(FileUtil::findURL("resources/logo.gif", FileUtil::INSTALLED).toString(),"JMRI splash screen"));
+    JLabel* l = new JLabel(new ImageIcon(FileUtil::findURL("resources/logo.gif", FileUtil::INSTALLED)->toString(),"JMRI splash screen"));
 //    l.setOpaque(true);
 
  if (splashMsg != NULL)

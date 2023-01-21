@@ -367,7 +367,7 @@ PaneProgFrame::~PaneProgFrame()
   {
    QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
    //decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
-   decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFileName(),slist).path());
+   decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFileName(),slist)->path());
    }
  }
  catch (Exception* e)
@@ -382,15 +382,15 @@ PaneProgFrame::~PaneProgFrame()
   XInclude* xinclude = new XInclude();
   File* f;
   QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
-  QUrl url = QUrl(FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist));
+  QUrl* url = FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist);
   if(ret == JOptionPane::YES_OPTION)
   {
-   xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), this);
+   xinclude->copyXml(url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), this);
   }
    else
   {
    QTemporaryDir dir;
-   xinclude->copyXml(&url, f = new File(dir.path()+df->getFileName()),this);
+   xinclude->copyXml(url, f = new File(dir.path()+df->getFileName()),this);
   }
   decoderRoot = df->rootFromFile(f);
  }
@@ -472,7 +472,7 @@ PaneProgFrame::~PaneProgFrame()
   {
 //   programmerRoot = pf->rootFromName(FileUtil::getUserFilesPath()+filename);
    QStringList slist = QStringList() << FileUtil::getUserFilesPath();
-   programmerRoot = pf->rootFromName(FileUtil::findURL(filename, slist).path());
+   programmerRoot = pf->rootFromName(FileUtil::findURL(filename, slist)->path());
 
    statusBar()->showMessage(tr("reading programmer %1").arg(pf->getPathname()));
    log->info(tr("reading programmer %1").arg(pf->getPathname()));
@@ -484,18 +484,18 @@ PaneProgFrame::~PaneProgFrame()
     if(ret == JOptionPane::CANCEL_OPTION)
      return;
     XInclude* xinclude = new XInclude();
-    QUrl url = FileUtil::findURL(filename);
+    QUrl* url = FileUtil::findURL(filename);
     File* f;
     QFileInfo info(filename);
     if(ret == JOptionPane::YES_OPTION)
     {
-     xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
+     xinclude->copyXml(url, f =new File(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
                                          info.fileName()), this);
     }
      else
     {
      QTemporaryDir dir;
-     xinclude->copyXml(&url, f = new File(dir.path()+filename),this);
+     xinclude->copyXml(url, f = new File(dir.path()+filename),this);
     }
     programmerRoot = pf->rootFromFile(f);
    }

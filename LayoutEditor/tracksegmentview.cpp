@@ -760,7 +760,7 @@
  });
  jcbmi->setChecked(arrowStyle == 0);
 
- QIcon imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle1.png").toString());
+ QIcon imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle1.png")->toString());
  jcbmi = new QAction(imageIcon, "1",this);
  jcbmi->setData(1);
  jcbmi->setCheckable(true);
@@ -776,7 +776,7 @@
  });
  jcbmi->setChecked(arrowStyle == 1);
 
- imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle2.png").toString());
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle2.png")->toString());
  jcbmi = new QAction(imageIcon, "2", this);
  jcbmi->setData(2);
  jcbmi->setCheckable(true);
@@ -792,7 +792,7 @@
  });
  jcbmi->setChecked(arrowStyle == 2);
 
- imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle3.png").toString());
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle3.png")->toString());
  jcbmi = new QAction(imageIcon, "3", this);
  jcbmi->setData(3);
  jcbmi->setCheckable(true);
@@ -808,7 +808,7 @@
  });
  jcbmi->setChecked(arrowStyle == 3);
 
- imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle4.png").toString());
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle4.png")->toString());
  jcbmi = new QAction(imageIcon, "4", this);
  jcbmi->setData(4);
  jcbmi->setCheckable(true);
@@ -824,7 +824,7 @@
  });
  jcbmi->setChecked(arrowStyle == 4);
 
- imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle5.png").toString());
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle5.png")->toString());
  jcbmi = new QAction(imageIcon, "5", this);
  jcbmi->setData(5);
  jcbmi->setCheckable(true);

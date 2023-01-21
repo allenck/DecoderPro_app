@@ -55,7 +55,7 @@
 //    }
 
     // add the image
-        NamedIcon* icon = new NamedIcon(FileUtil::findURL("resources/decoderpro.gif", FileUtil::INSTALLED).path(), "");
+        NamedIcon* icon = new NamedIcon(FileUtil::findURL("resources/decoderpro.gif", FileUtil::INSTALLED)->path(), "");
     // we use an ImageIcon because it's guaranteed to have been loaded when ctor is complete
     writer->write(icon->getImage(), new JLabel(icon));
 

@@ -85,12 +85,12 @@ public:
      */
     static /*public*/ /*final*/ const QChar SEPARATOR;// = '/'; // NOI18N
     static /*public*/ QString getUserResourcePath();
-    static /*public*/ QUrl findURL(QString path);
-    static /*public*/ QUrl findURL(QString path, /*@NonNull*/ QStringList searchPaths);
-    static /*public*/ QUrl findURL(QString path, Location locations);
-    static /*public*/ QUrl findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths);
-    static /*public*/ QUrl fileToURL(QFile* file);
-    static /*public*/ QUrl fileToURL(File* file);
+    static /*public*/ QUrl* findURL(QString path);
+    static /*public*/ QUrl* findURL(QString path, /*@NonNull*/ QStringList searchPaths);
+    static /*public*/ QUrl* findURL(QString path, Location locations);
+    static /*public*/ QUrl* findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths);
+    static /*public*/ QUrl* fileToURL(QFile* file);
+    static /*public*/ QUrl* fileToURL(File* file);
     static /*public*/ QString getUserFilesPath();
     static /*public*/ QString getUserFilesPath(Profile* profile);
     /**
@@ -122,7 +122,7 @@ public:
     /*public*/ static void setScriptsPath(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString path);
     /*public*/ static QString readFile(File* file); // /*throw (IOException)*/;
     static /*public*/ QString getAbsoluteFilename(QString path);
-    /*public*/ static QString readURL(QUrl url); // /*throw (IOException)*/;
+    /*public*/ static QString readURL(QUrl *url); // /*throw (IOException)*/;
     /* path to the current profile */
 
     /*public*/ static bool _delete(File* path);

@@ -835,6 +835,7 @@ protected:
  Q_OBJECT
     QPointer<IconAdder> _editor = nullptr;
 public:
+    JFrameItem () {}
     JFrameItem (QString name, IconAdder* editor, QWidget* parent = 0);
     /*public*/ IconAdder* getEditor();
     /*public*/ QString toString();

@@ -1,14 +1,17 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2015-08-17T16:58:43
-#
-#-------------------------------------------------
-APPNAME = "PanelPro"
+APPNAME = "DispatcherPro"
 APPVERSION = 0.1
 
-QT += widgets
+QT       += core gui
 
-TARGET = PanelPro
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++11
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+TARGET = DispatcherPro
 TEMPLATE = app
 
 MOC_DIR = moc_obj
@@ -31,18 +34,16 @@ isEmpty( PROJ_DIR ) {
 }
 include(../scripts_config.prf)
 
-#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-#isEmpty( PYTHONQT_PREFIX ) {
-#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-#}
-
-#include($$PYTHONQT_PREFIX/build/python.prf)
-
-
 SOURCES += \
     main.cpp \
-    panelpro.cpp
+    dispatcherpro.cpp
+
+HEADERS += \
+    dispatcherpro.h
+
+TRANSLATIONS += \
+    DispatcherPro_en_US.ts
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -187,3 +188,4 @@ else:unix: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
 
 INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
 DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp
+

@@ -254,13 +254,13 @@ void ItemPalette::changeEvent(QEvent * e)
     return familyMap;
 }
 /*static*/ QDomNodeList ItemPalette::getDefaultIconItemTypes() throw (JDOMException, IOException) {
-    QUrl file = FileUtil::findURL("xml/defaultPanelIcons.xml");
-    if (!file.isValid()) {
+    QUrl* file = FileUtil::findURL("xml/defaultPanelIcons.xml");
+    if (!file->isValid()) {
         log->error("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
         throw new IllegalArgumentException("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
     }
      XmlFile* xf = new XmlFile();
-    QDomElement root = xf->rootFromURL(&file);
+    QDomElement root = xf->rootFromURL(file);
     QDomNodeList typeList = root.firstChildElement("ItemTypes").childNodes();
     return typeList;
 }

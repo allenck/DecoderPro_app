@@ -67,7 +67,7 @@ QWidget* FirstTimeStartUpWizard::createTopBanner() {
 
 QWidget* FirstTimeStartUpWizard::createHelpPanel() {
     //splashIm = Toolkit.getDefaultToolkit().getImage(FileUtil::findURL("resources/logo.gif", FileUtil::Location::INSTALLED));
-    splashIm = QImage(FileUtil::findURL("resources/logo.gif", FileUtil::Location::INSTALLED).toString());
+    splashIm = QImage(FileUtil::findURL("resources/logo.gif", FileUtil::Location::INSTALLED)->toString());
     ImageIcon* img = new ImageIcon(splashIm, "JMRI splash screen");
     int imageWidth = img->getIconWidth();
     minHelpFieldDim = QSize(imageWidth, 20);

@@ -30,7 +30,7 @@ namespace Operations
  this->locale = locale;
  this->train = train;
  //FileInputStream is = NULL;
- QFile f(FileUtil::findURL("web/servlet/operations/ManifestStrings.properties").path());
+ QFile f(FileUtil::findURL("web/servlet/operations/ManifestStrings.properties")->path());
  try
  {
   if(!f.open(QIODevice::ReadOnly))

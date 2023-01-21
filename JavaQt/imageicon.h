@@ -11,7 +11,7 @@ class JAVAQTSHARED_EXPORT ImageIcon : public QObject
 public:
     explicit ImageIcon(QObject *parent = nullptr);
     /*public*/ ImageIcon(QString filename, QString description ="", QObject *parent = nullptr);
-    /*public*/ ImageIcon(QUrl location, QString description="",QObject *parent = nullptr);
+    /*public*/ ImageIcon(QUrl* location, QString description="",QObject *parent = nullptr);
     /*public*/ ImageIcon(QImage image, QString description, QObject *parent = nullptr);
     /*public*/ ImageIcon(QImage image, QObject *parent = nullptr);
     /*public*/ QString toString();
@@ -29,7 +29,7 @@ signals:
 public slots:
 private:
     QString filename;
-    QUrl _location;
+    QUrl* _location;
 
     QImage image;
     int loadStatus;

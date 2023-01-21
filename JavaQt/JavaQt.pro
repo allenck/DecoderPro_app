@@ -52,6 +52,7 @@ SOURCES += javaqt.cpp \
     jinputvalidatorpreferences.cpp \
     jmriconfigurexmlexception.cpp \
     jmriexception.cpp \
+    jmriplugin.cpp \
     jscrollpane.cpp \
     jtextpane.cpp \
     jtitledseparator.cpp \
@@ -321,6 +322,7 @@ HEADERS += javaqt.h\
  jinputvalidatorpreferences.h \
  jmriconfigurexmlexception.h \
  jmriexception.h \
+ jmriplugin.h \
  jscrollpane.h \
     jtextarea.h \
     jseparator.h \

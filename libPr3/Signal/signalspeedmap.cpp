@@ -108,21 +108,21 @@ wp->addPropertyChangeListener(warrantPreferencesListener);
 void SignalSpeedMap::loadMap()
 {
  QStringList list = QStringList() << FileUtil::getProgramPath() + "" <<FileUtil::getProgramPath() + "xml/signals";
-    QUrl path = FileUtil::findURL("signalSpeeds.xml", list);
+    QUrl* path = FileUtil::findURL("signalSpeeds.xml", list);
     XmlFile* xf = new XmlFile();
     try {
-        loadRoot(xf->rootFromURL(&path));
+        loadRoot(xf->rootFromURL(path));
     }
     catch (FileNotFoundException* e)
     {
-     log->warn(tr("signalSpeeds file (%1) doesn't exist in XmlFile search path.").arg(path.toString()));
-        throw  IllegalArgumentException("signalSpeeds file (" + path.toDisplayString() + ") doesn't exist in XmlFile search path.");
+     log->warn(tr("signalSpeeds file (%1) doesn't exist in XmlFile search path.").arg(path->toString()));
+        throw new IllegalArgumentException("signalSpeeds file (" + path->toDisplayString() + ") doesn't exist in XmlFile search path.");
     }
     catch (JDOMException*  e) {
-     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e->getMessage())));
+     log->error(tr("error reading file \"%1\" due to: %2").arg(path->toDisplayString().arg(e->getMessage())));
     }
     catch (IOException* e) {
-     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e->getMessage())));
+     log->error(tr("error reading file \"%1\" due to: %2").arg(path->toDisplayString().arg(e->getMessage())));
     }
 
 }

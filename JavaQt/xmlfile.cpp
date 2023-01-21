@@ -75,9 +75,9 @@ XmlFile::XmlFile(QObject *parent) :
   return rootFromFile(fp);
  }
 
- QUrl resource = FileUtil::findURL(name);
- if (resource.isValid()) {
-     return this->rootFromURL(&resource);
+ QUrl* resource = FileUtil::findURL(name);
+ if (resource->isValid()) {
+     return this->rootFromURL(resource);
  } else {
      if (!name.startsWith("xml")) {
          return this->rootFromName("xml" + File::separator + name);

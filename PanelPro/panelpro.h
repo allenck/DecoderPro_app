@@ -3,12 +3,12 @@
 #include "apps.h"
 #include "windowlistener.h"
 
+class JButton;
 class PanelPro : public Apps
 {
     Q_OBJECT
 public:
-    //explicit PanelPro(QObject *parent = 0);
-    PanelPro(JFrame* p, QWidget *parent = 0);
+    PanelPro(JFrame* p, QWidget *parent = nullptr);
     /*public*/ static void main(char *argv[]);
     QObject* pself() override {return (QObject*)this;}
 signals:
@@ -16,15 +16,16 @@ signals:
 public slots:
     void handleQuit();
 private:
-    Logger* log;
+    static Logger* log;
+    JButton* h1;
 
 protected:
     /*protected*/ QString logo() override;
     /*protected*/ QString mainWindowHelpID();
     /*protected*/ QString line1() override;
     /*protected*/ QString line2() override;
-    /*protected*/ QWidget* statusPanel() override;
-//    /*protected*/ void windowClosing(QCloseEvent *);
+    /*protected*/ JPanel *statusPanel() override;
+    /*protected*/ void attachHelp();
 
 };
 

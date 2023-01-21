@@ -106,6 +106,7 @@
 #include "defaultlogixngmanager.h"
 #include "defaultlogixngpreferences.h"
 #include "../libPr3/logixng/logixng_metatypes.h"
+#include "jmriplugin.h"
 
 #endif // HAVE_LOGIXNG
 //Apps::Apps(QWidget *parent) :
@@ -134,6 +135,12 @@ bool Apps::configOK = false;
 bool Apps::configDeferredLoadOK = false;
 /*static*/ QString Apps::nameString = "JMRI program";
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "SC_START_IN_CTOR"})//"only one application at a time. The thread is only called to help improve user experiance when opening the preferences, it is not critical for it to be run at this stage"
+
+// NOTE! !!!!!!!!!!!!!!!!!!!!!!!
+// While the Java code has no parameters for the Apps constructor, the JFrame parameter is
+// needed because CreateFrame calls the virtual method 'statusPanel()' which is overloaded
+// by the several classes subclassing Apps (PanelPro, SoundPro, DispatcherPro). So,
+// createFrame cannot be static!
 
 /*public*/ Apps::Apps(JFrame* frame, QWidget *parent) :
     QWidget(parent)
@@ -367,8 +374,9 @@ bool Apps::configDeferredLoadOK = false;
 
   // populate GUI
   log->debug("Start UI");
- #if 1
+
   setLayout(new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
+#if 1
   // Create a WindowInterface object based on the passed-in Frame
   JFrameInterface* wi = new JFrameInterface(frame);
   // Create a menu bar
@@ -385,7 +393,7 @@ bool Apps::configDeferredLoadOK = false;
 
  qint64 elapsedTime = (end - start) /*/ 1000000*/;
  /*
-   his ensures that the message is displayed on the screen for a minimum of 2.5seconds, if the time taken
+  This ensures that the message is displayed on the screen for a minimum of 2.5seconds, if the time taken
   to get to this point in the code is longer that 2.5seconds then the wait is not invoked.
   */
  long _sleep = 2500 - elapsedTime;
@@ -544,11 +552,41 @@ bool Apps::configDeferredLoadOK = false;
  log->debug(QString("Config go OK? ")+ QString((configOK || configDeferredLoadOK)?"Yes":"No"));
  if ((!configOK) || (!configDeferredLoadOK))
  {
-        HelpUtil::displayHelpRef("package.apps.AppConfigPanelErrorPage");
-        doPreferences();
+   HelpUtil::displayHelpRef("package.apps.AppConfigPanelErrorPage");
+   doPreferences();
  }
  log->debug("Done with doPreferences, start statusPanel");
 
+ this->layout()->addWidget(statusPanel());
+ log->debug("Done with statusPanel, start buttonSpace");
+ this->layout()->addWidget(buttonSpace());
+ this->layout()->addWidget(_jynstrumentSpace);
+#if 0
+ long eventMask = AWTEvent::MOUSE_EVENT_MASK;
+ Toolkit.getDefaultToolkit().addAWTEventListener((AWTEvent e) -> {
+             if (e instanceof MouseEvent) {
+                 MouseEvent me = (MouseEvent) e;
+                 if (me.isPopupTrigger() && me.getComponent() instanceof JTextComponent) {
+                     final JTextComponent component1 = (JTextComponent) me.getComponent();
+                     final JPopupMenu menu = new JPopupMenu();
+                     JMenuItem item;
+                     item = new JMenuItem(new DefaultEditorKit.CopyAction());
+                     item.setText("Copy");
+                     item.setEnabled(component1.getSelectionStart() != component1.getSelectionEnd());
+                     menu.add(item);
+                     item = new JMenuItem(new DefaultEditorKit.CutAction());
+                     item.setText("Cut");
+                     item.setEnabled(component1.isEditable() && component1.getSelectionStart() != component1.getSelectionEnd());
+                     menu.add(item);
+                     item = new JMenuItem(new DefaultEditorKit.PasteAction());
+                     item.setText("Paste");
+                     item.setEnabled(component1.isEditable());
+                     menu.add(item);
+                     menu.show(me.getComponent(), me.getX(), me.getY());
+                 }
+             }
+         }, eventMask);
+#endif
  // Before starting to load preferences, make sure some managers are created.
  // This is needed because these aren't particularly well-behaved during
  // creation.
@@ -1116,9 +1154,9 @@ void Apps::On_handleQuit()
  *
  * @return Properly-filled out JPanel
  */
-/*protected*/ QWidget* Apps::statusPanel()
+/*protected*/ JPanel* Apps::statusPanel()
 {
- QWidget* pane1 = new QWidget();
+ JPanel* pane1 = new JPanel();
  QHBoxLayout* pane1Layout;
  pane1->setLayout(pane1Layout = new QHBoxLayout); //(pane1, BoxLayout.X_AXIS));
  log->debug(tr("Fetch main logo: %1").arg(logo()));
@@ -1438,12 +1476,19 @@ void Apps::keyPressEvent(QKeyEvent *e)
     return configFilename;
 }
 
-/*static*/ /*protected*/ void Apps::createFrame(Apps* containedPane, JFrame* frame)
+/*static*/ /*protected*/ void Apps::createFrame(Apps* containedPane, JmriJFrame* frame)
 {
  // create the main frame and menus
+ // Create a WindowInterface object based on the passed-in Frame
+ JFrameInterface* wi = new JFrameInterface(frame);
+ // Create a menu bar
+ containedPane->menuBar = new QMenuBar();
+ containedPane->menuBar->setObjectName("AppsMenuBar");
+ if(frame != nullptr)
+  frame->setMenuBar(containedPane->menuBar);
 
  // invoke plugin, if any
-//    JmriPlugin.start(frame, containedPane.menuBar);
+ JmriPlugin::start(frame, containedPane->menuBar);
 
 // frame->setMenuBar(((JFrame*)containedPane)->menuBar());
  //frame.getContentPane().add(containedPane);
@@ -1454,22 +1499,16 @@ void Apps::keyPressEvent(QKeyEvent *e)
   centralWidget->setLayout(centralWidgetLayout);
   frame->setCentralWidget(centralWidget);
  }
+ //frame->centralWidget()->layout()->addWidget(containedPane);
+
  //((QVBoxLayout*)frame->centralWidget()->layout())->addWidget(containedPane);
  frame->centralWidget()->layout()->addWidget(statusPanel());
  log->debug("Done with statusPanel, start buttonSpace");
 
  frame->centralWidget()->layout()->addWidget(buttonSpace());
 
- // Create a WindowInterface object based on the passed-in Frame
- JFrameInterface* wi = new JFrameInterface(frame);
- // Create a menu bar
- menuBar = new QMenuBar();
- menuBar->setObjectName("AppsMenuBar");
- if(frame != NULL)
-  frame->setMenuBar(menuBar);
-
 // Create menu categories and add to the menu bar, add actions to menus
-createMenus(menuBar, wi);
+ containedPane->createMenus(containedPane->menuBar, wi);
 
  // handle window close
  frame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
@@ -1483,56 +1522,44 @@ createMenus(menuBar, wi);
  frame->setLocation((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2);
  frame->setVisible(true);
 }
-#if 0
-static /*protected*/ void loadFile(String name) {
-    URL pFile = InstanceManager::configureManagerInstance().find(name);
-    if (pFile != NULL) {
+
+/*static*/ /*protected*/ void Apps::loadFile(QString name) {
+ ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if(cmOD != nullptr)
+ {
+    QUrl* pFile = cmOD->find(name);
+    if (pFile != nullptr) {
         try {
-            InstanceManager::configureManagerInstance().load(pFile);
+            cmOD->load(pFile);
         } catch (JmriException* e) {
             log->error("Unhandled problem in loadFile", e);
         }
     } else {
-        log->warn("Could not find {} config file", name);
+        log->warn(tr("Could not find %1 config file").arg(name));
     }
-
+ }
 }
 // The following MUST be /*protected*/ for 3rd party applications
 // (such as CATS) which are derived from this class.
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "MS_PKGPROTECT",
-        justification = "The following MUST be /*protected*/ for 3rd party applications (such as CATS) which are derived from this class.")
+//        justification = "The following MUST be /*protected*/ for 3rd party applications (such as CATS) which are derived from this class.")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "MS_PKGPROTECT",
-        justification = "The following MUST be /*protected*/ for 3rd party applications (such as CATS) which are derived from this class.")
+//        justification = "The following MUST be /*protected*/ for 3rd party applications (such as CATS) which are derived from this class.")
 /*protected*/ static bool configDeferredLoadOK;
 // GUI members
-/*private*/ JMenuBar menuBar;
+///*private*/ JMenuBar menuBar;
 
 
-/*protected*/ static void setApplication(String name) {
+/*protected*/ /*static*/ void Apps::setApplication(QString name) {
     try {
-        jmri.Application.setApplicationName(name);
+        QApplication::setApplicationName(name);
     } catch (IllegalArgumentException* ex) {
         log->warn("Unable to set application name", ex);
-    } catch (IllegalAccessException ex) {
+    } catch (IllegalAccessException* ex) {
         log->warn("Unable to set application name", ex);
     }
 }
 
-/**
- * Set, log and return some startup information.
- * <p>
- * This method needs to be refactored, but it's in use (2/2014) by CATS so
- * can't easily be changed right away.
- *
- * @deprecated Since 3.7.1, use {@link #setStartupInfo(java.lang.String) }
- * plus {@link Log4JUtil#startupInfo(java.lang.String) }
- */
-@Deprecated
-/*protected*/ static String startupInfo(String name) {
-    setStartupInfo(name);
-    return Log4JUtil.startupInfo(name);
-}
-#endif
 /**
  * Set and log some startup information. This is intended to be the central
  * connection point for common startup and logging.

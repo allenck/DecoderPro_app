@@ -1136,7 +1136,8 @@ INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib
 
 DISTFILES += \
-    generated_cpp/test/test.pri
+    generated_cpp/test/test.pri \
+    resources/SoundPro.gif
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
