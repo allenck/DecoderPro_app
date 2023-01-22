@@ -5,6 +5,7 @@
 #include "beantabledatamodel.h"
 #include <QThread>
 #include "libtables_global.h"
+#include "audiotableframe.h"
 
 class AudioManager;
 class Audio;
@@ -14,7 +15,6 @@ class AudioTableDataModel;
 class AudioSourceFrame;
 class AudioBufferFrame;
 class AudioListenerFrame;
-class AudioTableFrame;
 class AudioTablePanel;
 class LIBTABLESSHARED_EXPORT AudioTableAction : public AbstractTableAction
 {
@@ -192,5 +192,17 @@ class AudioTableSourceThread : public QThread
 
 };
 
+class ATA_AudioTableFrame : public AudioTableFrame
+{
+  Q_OBJECT
+  AudioTableAction* act;
+ public:
+  ATA_AudioTableFrame(AudioTablePanel* panel,
+                      QString helpTarget, AudioTableAction* act) : AudioTableFrame(panel, helpTarget) {this->act = act;}
+  void extras()
+  {
+   act->addToFrame(this);
+  }
+};
 
 #endif // AUDIOTABLEACTION_H

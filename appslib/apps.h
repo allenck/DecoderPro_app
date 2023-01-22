@@ -60,7 +60,6 @@ private:
     {
      public:
         /*public*/ bool execute();
-
     };
 
     class Run1 : public Runnable

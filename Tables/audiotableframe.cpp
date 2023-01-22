@@ -46,7 +46,7 @@ BeanTableFrame(parent)
  // general GUI config
  //getContentPane()->setLayout(new QVBoxLayout);//(getContentPane(), BoxLayout.Y_AXIS));
  QVBoxLayout* centralWidgetLayout;
- if(getContentPane() == NULL)
+ if(getContentPane(true) == NULL)
  {
   QWidget* centralWidget = new QWidget;
   centralWidget->setLayout(centralWidgetLayout = new QVBoxLayout);

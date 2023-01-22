@@ -82,11 +82,8 @@
 #endif // HAVE_LOGIXNG
 #include "jmriplugin.h"
 #include "imageicon.h"
+#include "throttlewindow.h"
 
-//Apps::Apps(QWidget *parent) :
-//    JmriJFrame(parent)
-//{
-//}
 /**
  * Base class for Jmri applications.
  * <P>

@@ -10,7 +10,6 @@
 #include "audiosourceframe.h"
 #include "audiolistenerframe.h"
 #include "audiotablepanel.h"
-#include "audiotableframe.h"
 #include "audiobufferframe.h"
 #include <QMenuBar>
 #include <QMenu>
@@ -121,7 +120,7 @@ void AudioTableAction::common()
  createModel();
 
  // create the frame
-// atf = new AudioTableFrame(atp, helpTarget());
+ atf = new ATA_AudioTableFrame(atp, helpTarget(), this);
 // {
 //        /**
 //         *
@@ -136,9 +135,9 @@ void AudioTableAction::common()
 //            addToFrame(NULL);
 //        }
 //    };
-// setTitle();
-// atf->pack();
-// atf->setVisible(true);
+ setTitle();
+ atf->pack();
+ atf->setVisible(true);
 }
 
 /**
@@ -168,7 +167,7 @@ void AudioTableAction::common()
 
 //@Override
 /*protected*/ void AudioTableAction::setTitle() {
-    atf->setTitle(tr("TitleAudioTable"));
+    atf->setTitle(tr("Audio Table"));
 }
 
 //@Override
