@@ -78,11 +78,11 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
     if (key == NULL) {
         return (NULL);
     }
-    Audio* rv = (Audio*) _tuser->value(key)->self();
+    NamedBean* rv =  _tuser->value(key);
     if (rv == NULL) {
         rv = this->getBySystemName(key);
     }
-    return (rv);
+    return (Audio*)rv->self();
 }
 
 //@Override

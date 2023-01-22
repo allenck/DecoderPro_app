@@ -17,6 +17,7 @@
 #include <QAction>
 #include "systemnamecomparator.h"
 #include "abstractaudiosource.h"
+#include "loggerfactory.h"
 
 //AudioTableAction::AudioTableAction(QObject *parent) :
 //  QAction(parent)
@@ -82,7 +83,6 @@
 }
 void AudioTableAction::common()
 {
- log = new Logger("AudioTableAction");
  bufferFrame = nullptr;
  sourceFrame = nullptr;
  listenerFrame = nullptr;
@@ -354,7 +354,7 @@ void AudioTableSourceThread::run()
  frame->setVisible(true);
 }
 
-//private static final Logger log = LoggerFactory.getLogger(AudioTableAction.class.getName());
+/*private*/ /*static*/ /*final*/ Logger* AudioTableAction::log = LoggerFactory::getLogger("AudioTableAction");
 
 /**
  * Define abstract AudioTableDataModel

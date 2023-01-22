@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class Logger;
 class FlowLayout;
 class AudioTableDataModel;
 class JTable;
@@ -26,6 +27,7 @@ public slots:
  void On_printItemTriggered();
 
 private:
+ static Logger* log;
  /*private*/ AudioTableDataModel* listenerDataModel;
  /*private*/ AudioTableDataModel* bufferDataModel;
  /*private*/ AudioTableDataModel* sourceDataModel;

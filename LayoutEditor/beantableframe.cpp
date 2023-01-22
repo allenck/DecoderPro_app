@@ -170,7 +170,9 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 /**
  * Hook to allow sub-types to install more items in GUI
  */
-void BeanTableFrame::extras() {}
+void BeanTableFrame::extras() {
+ log->warn(tr("If subclassed, 'extras' must be called by subclass!"));
+}
 
 /*protected*/ QWidget* BeanTableFrame::getBottomBox() { return bottomBox; }
 /**

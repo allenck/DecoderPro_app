@@ -65,8 +65,8 @@ AbstractAudioFrame(title, model, parent)
 {
  AbstractAudioFrame::layoutFrame();
  JPanel* p;
- scrollLayout->addWidget(position);
- scrollLayout->addWidget(velocity);
+ scrollLayout->addWidget(position, 0, Qt::AlignVCenter);
+ scrollLayout->addWidget(velocity, 0, Qt::AlignVCenter);
 
  p = new JPanel();
  QVBoxLayout* pLayout;
@@ -74,13 +74,13 @@ AbstractAudioFrame(title, model, parent)
    p->setBorder(BorderFactory::createCompoundBorder(
            BorderFactory::createTitledBorder(tr("Orientation")),
            BorderFactory::createEmptyBorder(5, 5, 5, 5)));
- pLayout->addWidget(oriAtLabel);
- pLayout->addWidget(oriAt);
- pLayout->addWidget(oriUpLabel);
- pLayout->addWidget(oriUp);
+ pLayout->addWidget(oriAtLabel, 0, Qt::AlignVCenter);
+ pLayout->addWidget(oriAt, 0, Qt::AlignVCenter);
+ pLayout->addWidget(oriUpLabel, 0, Qt::AlignVCenter);
+ pLayout->addWidget(oriUp, 0, Qt::AlignVCenter);
  scrollLayout->addWidget(p);
 
- scrollLayout->addWidget(gain);
+ scrollLayout->addWidget(gain, 0, Qt::AlignVCenter);
 
  p = new JPanel();
  FlowLayout* pFlowLayout;
@@ -94,7 +94,7 @@ AbstractAudioFrame(title, model, parent)
  //metersPerUnit->setEditor(new JSpinner.NumberEditor(metersPerUnit, "0.0000"));
  pFlowLayout->addWidget(metersPerUnit);
  pFlowLayout->addWidget(metersPerUnitLabel);
- scrollLayout->addWidget(p);
+ scrollLayout->addWidget(p, 0, Qt::AlignVCenter);
 
  JButton* apply;
  p->layout()->addWidget(apply = new JButton(tr("Apply")));

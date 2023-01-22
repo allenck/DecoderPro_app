@@ -46,7 +46,7 @@ private:
 
  AudioTableFrame* atf;
  AudioTablePanel* atp;
- Logger * log;
+ static Logger * log;
 private slots:
  void addSourcePressed(ActionEvent* /*e*/ = 0);
  void addBufferPressed(ActionEvent* /*e*/ = 0);
@@ -94,6 +94,7 @@ AudioTableAction* act;
 /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 /*public*/ int getPreferredWidth(int col) override;
 /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+
 private:
  Logger* log;
 protected:
@@ -197,9 +198,12 @@ class ATA_AudioTableFrame : public AudioTableFrame
   Q_OBJECT
   AudioTableAction* act;
  public:
-  ATA_AudioTableFrame(AudioTablePanel* panel,
-                      QString helpTarget, AudioTableAction* act) : AudioTableFrame(panel, helpTarget) {this->act = act;}
-  void extras()
+  ATA_AudioTableFrame(AudioTablePanel* panel, QString helpTarget, AudioTableAction* act)
+   : AudioTableFrame(panel, helpTarget) {
+   this->act = act;
+   extras();
+  }
+  void extras() override
   {
    act->addToFrame(this);
   }

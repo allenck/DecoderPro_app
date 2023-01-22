@@ -11,6 +11,7 @@
 #include "tablerowsorter.h"
 #include "rowsorterutil.h"
 #include "systemnamecomparator.h"
+#include "loggerfactory.h"
 
 //AudioTablePanel::AudioTablePanel(QWidget *parent) :
 //  QWidget(parent)
@@ -167,6 +168,7 @@
  */
 void AudioTablePanel::extras()
 {
+ log->warn(tr("If subclassed, 'extras' must be called by subclass!"));
 }
 
 /*protected*/ QGroupBox* AudioTablePanel::getBottomBox()
@@ -195,6 +197,7 @@ void AudioTablePanel::extras()
  connect(printItem, SIGNAL(triggered()), this, SLOT(On_printItemTriggered()));
     return printItem;
 }
+
 void AudioTablePanel::On_printItemTriggered()
 {
 #if 0
@@ -249,3 +252,5 @@ void AudioTablePanel::On_printItemTriggered()
  sourceDataTable = NULL;
 //    sourceDataScroll = NULL;
 }
+
+/*private*/ /*static*/ /*final*/ Logger* AudioTablePanel::log = LoggerFactory::getLogger("AudioTablePanel");
