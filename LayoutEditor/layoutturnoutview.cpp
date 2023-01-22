@@ -1,6 +1,7 @@
 #include "layoutturnoutview.h"
 #include "layouteditor.h"
 #include <QtMath>
+#include "layouteditorauxtools.h"
 #include "mathutil.h"
 #include <QGraphicsSceneMouseEvent>
 #include "loggerfactory.h"

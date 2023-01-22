@@ -2,44 +2,27 @@
 #include "apps.h"
 #include <QDateTime>
 #include "instancemanager.h"
-#include "defaultshutdownmanager.h"
 #include "fileutil.h"
 #include "file.h"
 #include <QFileInfo>
 #include "profilemanager.h"
-#include "configxmlmanager.h"
 #include "jmriuserpreferencesmanager.h"
 #include "entryexitpairs.h"
 #include "createbuttonmodel.h"
-#include "resourcebundle.h"
-#include "defaultshutdownmanager.h"
-#include "defaultidtagmanager.h"
+#include <QScreen>
 #include "tabbedpreferences.h"
 #include <QBoxLayout>
 #include "logixmanager.h"
 #include "decoderindexfile.h"
 #include "helputil.h"
-#include "layoutblockmanager.h"
 #include "defaultcatalogtreemanagerxml.h"
 #include "sleeperthread.h"
 #include "splashwindow.h"
 #include <QMetaType>
 #include <QMessageBox>
-#include "dialogerrorhandler.h"
 #include "appsbase.h"
 #include "profilemanagerdialog.h"
 #include "profile.h"
-#include "defaultusermessagepreferencesxml.h"
-#include "../libPr3/loconet/Pr3/pr3connectionconfigxml.h"
-#include "../libPr3/loconet/HexFile/hexfileconnectionconfigxml.h"
-#include "programmerconfigpanexml.h"
-#include "filelocationpanexml.h"
-#include "guilafconfigpanexml.h"
-#include "managerdefaultselectorxml.h"
-#include "../libPr3/loconet/Pr3/pr3connectionconfig.h"
-#include "../libPr3/loconet/Locobuffer/locobufferconnectionconfig.h"
-#include "../libPr3/loconet/LocobufferUsb/locobufferusbconnectionconfig.h"
-#include "../libPr3/loconet/HexFile/hexfileconnectionconfig.h"
 #include "blockvaluefile.h"
 #include "filehistory.h"
 #include <QMenu>
@@ -51,19 +34,12 @@
 #include "jynstrument.h"
 #include "jynstrumentfactory.h"
 #endif
-#include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfig.h"
-#include "audiotableaction.h"
 //#include "blocktableaction.h"
 //#include "lighttableaction.h"
 //#include "memorytableaction.h"
 //#include "reportertableaction.h"
 //#include "signalmasttableaction.h"
 //#include "transitableaction.h"
-#include "../libPr3/loconet/HexFile/hexfileconnectionconfig.h"
-#include "../libPr3/loconet/HexFile/hexfileconnectionconfigxml.h"
-#include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfig.h"
-#include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfigxml.h"
-#include <QDesktopWidget>
 #include "connectionstatus.h"
 #include "jmrixconfigpane.h"
 #include "version.h"
@@ -74,7 +50,6 @@
 #include "rostermenu.h"
 #include "panelmenu.h"
 #include "toolsmenu.h"
-#include "lnturnoutmanagerxml.h"
 #include "metatypes.h"
 #include "activesystemsmenu.h"
 #include "operationsmenu.h"
@@ -92,11 +67,9 @@
 #include "webserveraction.h"
 #include <QImageReader>
 #include "startupactionsmanager.h"
-#include "throttlewindow.h"
 #include "application.h"
 #include "fileutilsupport.h"
 #include "testsmenu.h"
-#include "appsconfigurationmanager.h"
 #include "appspreferencesactionfactory.h"
 #include "guilafpreferencesmanager.h"
 #include "../operations/metatypes.h"
@@ -106,9 +79,10 @@
 #include "defaultlogixngmanager.h"
 #include "defaultlogixngpreferences.h"
 #include "../libPr3/logixng/logixng_metatypes.h"
-#include "jmriplugin.h"
-
 #endif // HAVE_LOGIXNG
+#include "jmriplugin.h"
+#include "imageicon.h"
+
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
 //{
@@ -560,7 +534,9 @@ bool Apps::configDeferredLoadOK = false;
  this->layout()->addWidget(statusPanel());
  log->debug("Done with statusPanel, start buttonSpace");
  this->layout()->addWidget(buttonSpace());
+#ifdef SCRIPTING_ENABLED
  this->layout()->addWidget(_jynstrumentSpace);
+#endif
 #if 0
  long eventMask = AWTEvent::MOUSE_EVENT_MASK;
  Toolkit.getDefaultToolkit().addAWTEventListener((AWTEvent e) -> {
@@ -1517,9 +1493,10 @@ void Apps::keyPressEvent(QKeyEvent *e)
  // pack and center this frame
  frame->adjustSize();
  //QSize screen = frame.getToolkit().getScreenSize();
- QDesktopWidget* desktop = QApplication::desktop();
- QSize screen = desktop->screen()->size();QSize size = frame->size();
- frame->setLocation((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2);
+// QDesktopWidget* desktop = QApplication::desktop();
+// QSize screen = desktop->screen()->size();QSize size = frame->size();
+ QList<QScreen*> screens = QApplication::screens();
+ frame->setLocation((screens.at(0)->size().width() - size().width()) / 2, (screens.at(0)->size().height() - size().height()) / 2);
  frame->setVisible(true);
 }
 

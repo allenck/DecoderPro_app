@@ -11,6 +11,7 @@
 #include "leblockcontentsicon.h"
 #include "layoutturnoutview.h"
 #include "layoutturntableview.h"
+#include "colorutil.h"
 
 //LayoutEditorComponent::LayoutEditorComponent(QWidget *parent) : QWidget(parent)
 //{

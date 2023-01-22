@@ -1,6 +1,7 @@
 ﻿#include "layouteditortools.h"
 #include "jtextfield.h"
 #include <QMessageBox>
+#include "multiiconeditor.h"
 #include "signalheadmanager.h"
 #include "signalheadmanager.h"
 #include "signalheadicon.h"

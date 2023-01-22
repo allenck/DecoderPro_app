@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "mathutil.h"
 #include "layouteditor.h"
-#include "layouttrack.h"
+#include "colorutil.h"
 #include "quickpromptutil.h"
 #include <QGraphicsItemGroup>
 #include "jmricolorchooser.h"

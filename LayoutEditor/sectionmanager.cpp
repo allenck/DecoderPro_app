@@ -1,4 +1,5 @@
 #include "sectionmanager.h"
+#include "abstractsensormanager.h"
 #include "layouteditor.h"
 #include "abstractsignalheadmanager.h"
 #include "connectivityutil.h"

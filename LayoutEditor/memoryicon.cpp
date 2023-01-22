@@ -9,6 +9,7 @@
 #include "lnthrottlemanager.h"
 #include "picklistmodel.h"
 #include "iconadder.h"
+#include "positionablepopuputil.h"
 
 //MemoryIcon::MemoryIcon(QObject *parent) //:
 //    //PositionalbleLabel(parent)

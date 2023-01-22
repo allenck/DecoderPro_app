@@ -1,5 +1,6 @@
 #include "layoutblockmanagerxml.h"
 #include "layoutblockmanager.h"
+#include "colorutil.h"
 
 LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
     AbstractNamedBeanManagerConfigXML(parent)

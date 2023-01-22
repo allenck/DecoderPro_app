@@ -1,4 +1,5 @@
 #include "layoutslipeditor.h"
+#include "layouteditorauxtools.h"
 #include "loggerfactory.h"
 #include <QGridLayout>
 #include "joptionpane.h"

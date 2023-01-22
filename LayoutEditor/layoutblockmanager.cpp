@@ -1,6 +1,8 @@
 #include "layoutblockmanager.h"
 //#include "runnable.h"
 #include <QMessageBox>
+#include "abstractsensormanager.h"
+#include "layouteditorauxtools.h"
 #include "signalmast.h"
 #include "layouteditor.h"
 #include "signalheadmanager.h"

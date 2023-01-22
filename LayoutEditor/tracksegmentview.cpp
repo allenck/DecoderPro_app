@@ -1,4 +1,5 @@
 #include "tracksegmentview.h"
+#include "layouteditorauxtools.h"
 #include "mathutil.h"
 #include "loggerfactory.h"
 #include <QtMath>
@@ -10,6 +11,9 @@
 #include <QToolTip>
 #include "quickpromptutil.h"
 #include "layouteditorcomponent.h"
+#include "fileutil.h"
+#include "colorutil.h"
+
 /**
  * MVC View component for the TrackSegment class.
  *

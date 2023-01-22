@@ -12,6 +12,7 @@
 #include <QGraphicsItem>
 #include "jtextfield.h"
 #include "layoutblockroutetableaction.h"
+#include "layouteditorauxtools.h"
 #include "signalmastmanager.h"
 #include "signalmastlogicmanager.h"
 #include "signallingguitools.h"

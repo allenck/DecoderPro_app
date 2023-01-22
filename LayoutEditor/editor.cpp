@@ -1,8 +1,9 @@
 #include "editor.h"
 #include <QMessageBox>
+#include "coordinateedit.h"
 #include "positionablelabel.h"
-#include "lememoryicon.h"
-#include "memoryiconcoordinateedit.h"
+#include "positionableshape.h"
+#include "reportericon.h"
 #include "rosterentry.h"
 #include "locoicon.h"
 #include "sensoricon.h"
@@ -10,20 +11,11 @@
 #include "rosterentryselectorpanel.h"
 #include "analogclock2display.h"
 #include "lighticon.h"
-#include "abstractsensor.h"
 #include "light.h"
 #include "inputdialog.h"
 #include "panelmenu.h"
-#include "configxmlmanager.h"
-#include "lcdclockframe.h"
-#include "nixieclockframe.h"
 #include "signalheadicon.h"
 #include "signalmasticon.h"
-#include "signalmast.h"
-#include "abstractsignalhead.h"
-#include "abstractlight.h"
-#include "abstractsignalmast.h"
-#include "layouteditor.h"
 #include "multisensoricon.h"
 #include "locoicon.h"
 #include "positionablepopuputil.h"
@@ -32,9 +24,7 @@
 #include "memoryinputicon.h"
 #include <QGraphicsProxyWidget>
 #include "memoryspinnericon.h"
-#include "memorycomboicon.h"
 #include "jtextfield.h"
-#include "borderlayout.h"
 #include <QMenuBar>
 #include "directorysearcher.h"
 #include "imageindexeditor.h"
@@ -44,19 +34,10 @@
 #include "slipiconadder.h"
 #include "slipturnouticon.h"
 #include "iconadder.h"
-//#include "rpspositionicon.h"
-#include "indicatortrackicon.h"
-#include "indicatorturnouticon.h"
-#include "positionablerectangle.h"
-#include "positionableroundrect.h"
-#include "positionablecircle.h"
-#include "positionableellipse.h"
 #include "trainicon.h"
-#include "metatypes.h"
 #include <QStatusBar>
 #include "positionable.h"
 #include "class.h"
-#include "layouteditor.h"
 #include "controlpaneleditor.h"
 #include "paneleditor.h"
 #include "rpspositionicon.h"
@@ -71,14 +52,11 @@
 #include "joptionpane.h"
 #include "loggerfactory.h"
 #include "positionable.h"
-#include "textitempanel.h" // for DragDecoratorLabel
 #include <QPointer>
 #include <QScrollBar>
 #include "editormanager.h"
-#include "placewindow.h"
 #include "abstractsignalheadmanager.h"
 #include "defaultsignalmastmanager.h"
-#include "jcheckboxmenuitem.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)

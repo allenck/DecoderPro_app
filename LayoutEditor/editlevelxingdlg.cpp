@@ -1,4 +1,5 @@
 #include "editlevelxingdlg.h"
+#include "layouteditorauxtools.h"
 #include "ui_editlevelxingdlg.h"
 #include "createeditblock.h"
 #include <QMessageBox>

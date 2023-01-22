@@ -3,12 +3,12 @@
 #include "signalmast.h"
 #include "abstractsignalmast.h"
 #include "signalmastlogic.h"
+#include "signalmastlogicmanager.h"
 #include "signalmastmanager.h"
 #include "defaultsignalmastlogic.h"
 #include "defaultsignalmastmanager.h"
 #include "signalspeedmap.h"
 #include <QVBoxLayout>
-#include "defaultsignalmastlogicmanager.h"
 #include "proxyturnoutmanager.h"
 #include "block.h"
 #include "QHeaderView"
@@ -1963,9 +1963,9 @@ void SignallingPanel::editDetails(){
     SensorModel::SensorModel(SignallingPanel* self) : SPTableModel(self)
     {
         log = new Logger("SensorModel");
-     //InstanceManager.sensorManagerInstance().addPropertyChangeListener(this);
-        AbstractSensorManager* mgr = (AbstractSensorManager*)InstanceManager::sensorManagerInstance();
-        connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     InstanceManager::sensorManagerInstance()->addPropertyChangeListener(this);
+//        AbstractSensorManager* mgr = (AbstractSensorManager*)InstanceManager::sensorManagerInstance();
+//        connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 
     /*public*/ int SensorModel::rowCount(const QModelIndex &/*parent*/) const

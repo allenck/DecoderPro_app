@@ -5,15 +5,10 @@
 #include "layouteditor.h"
 #include <QMessageBox>
 #include "imageicon.h"
-#include "abstractmemory.h"
 #include <QSignalMapper>
-#include "rostericonfactory.h"
-#include "path.h"
-#include "dispatcherframe.h"
-#include "activetrain.h"
-#include "activatetrainframe.h"
 #include "layouteditor.h"
 #include "joptionpane.h"
+#include "colorutil.h"
 
 //MemoryIcon::MemoryIcon(QObject *parent) :
 //    DisplayMemoryIcon(parent)

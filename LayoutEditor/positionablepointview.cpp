@@ -1,4 +1,5 @@
 #include "positionablepointview.h"
+#include "layouteditorauxtools.h"
 #include "mathutil.h"
 #include "signalmastmanager.h"
 #include "namedbeanhandlemanager.h"

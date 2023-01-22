@@ -13,7 +13,7 @@ class DispatcherPro : public Apps
 
 public:
     DispatcherPro(JFrame* p, QWidget *parent = nullptr);
-    ~DispatcherPro();
+    ~DispatcherPro() {}
     /*public*/ static void main(char * args[]);
 
 private:

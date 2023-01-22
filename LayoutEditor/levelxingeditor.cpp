@@ -1,5 +1,6 @@
 #include "levelxingeditor.h"
 #include "joptionpane.h"
+#include "layouteditorauxtools.h"
 #include "levelxing.h"
 
 

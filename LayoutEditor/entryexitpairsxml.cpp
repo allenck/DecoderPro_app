@@ -4,8 +4,8 @@
 #include "signalhead.h"
 #include "signalmast.h"
 #include "sensor.h"
-#include "defaultsignalmastmanager.h"
-#include "abstractsignalheadmanager.h"
+#include "colorutil.h"
+#include "signalmastmanager.h"
 
 EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -236,7 +236,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     QString sourceItem = sourceList.at(i).toElement().attribute("item");
     NamedBean* source = NULL;
     if(sourceType==("signalMast")){
-        source = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sourceItem);
+        source = dynamic_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sourceItem);
     } else if (sourceType==("sensor")){
         source = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sourceItem);
     } else if (sourceType==("signalHead")){

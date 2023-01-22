@@ -1,4 +1,5 @@
 #include "defaultsignalmastlogic.h"
+#include "abstractsensormanager.h"
 #include "signalmastlogic.h"
 #include "signalmast.h"
 #include "../LayoutEditor/layouteditor.h"

@@ -3,7 +3,6 @@
 #include "sensormanager.h"
 //#include "sensor.h"
 #include <QRegExp>
-#include "exceptions.h"
 #include "logger.h"
 #include "abstractmanager.h"
 

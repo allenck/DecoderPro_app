@@ -1,17 +1,14 @@
 #include "layouteditor.h"
 #include <QGraphicsRectItem>
+#include "configuremanager.h"
 #include "instancemanager.h"
 #include "QMessageBox"
 #include "positionablepopuputil.h"
-#include "coordinateedit.h"
-#include "inputdialog.h"
-#include "settrackwidthdlg.h"
+#include "reportericon.h"
 #include "enterreporterdialog.h"
 #include <QFileDialog>
 #include <QColor>
-#include "memoryiconcoordinateedit.h"
 #include "QFormLayout"
-#include "abstractsensor.h"
 #include "panelmenu.h"
 #include "signalmasticon.h"
 #include "signalheadicon.h"
@@ -19,8 +16,6 @@
 #include "signalheadmanager.h"
 #include "signalmastmanager.h"
 #include "multiiconeditor.h"
-#include "defaultsignalmastmanager.h"
-#include "layoutblockconnectivitytools.h"
 #include "jmrijframe.h"
 #include "layoutslip.h"
 #include <QVector>
@@ -28,16 +23,12 @@
 #include "abstractsignalheadmanager.h"
 #include "multisensoricon.h"
 #include "multisensoriconframe.h"
-#include "rfid/rfidsensormanager.h"
-#include "helputil.h"
 #include <QCloseEvent>
 #include "layoutturntable.h"
 #include "storexmluseraction.h"
-#include "configxmlmanager.h"
 #include "borderlayout.h"
 #include "addentryexitpairaction.h"
 #include "layouteditorfinditems.h"
-#include "jmriconfigurationmanager.h"
 #include "userpreferencesmanager.h"
 #include "positionablejcomponent.h"
 #include "colorutil.h"
@@ -113,6 +104,7 @@
 #include "tracksegmentview.h"
 #include "layoutturntableview.h"
 #include <QScreen>
+#include "fileutil.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE

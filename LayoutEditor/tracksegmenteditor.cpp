@@ -1,4 +1,5 @@
 #include "tracksegmenteditor.h"
+#include "layouteditorauxtools.h"
 #include "loggerfactory.h"
 #include "joptionpane.h"
 #include "tracksegment.h"

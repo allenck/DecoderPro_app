@@ -1,4 +1,5 @@
 #include "positionablepoint.h"
+#include "layouteditorauxtools.h"
 #include "tracksegment.h"
 #include "instancemanager.h"
 #include "panelmenu.h"

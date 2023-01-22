@@ -4,17 +4,13 @@
 #include "coordinateedit.h"
 #include <QDir>
 #include "layouteditor.h"
-#include "paneleditor.h"
-#include "lighticon.h"
-#include "turnouticon.h"
-#include "panelmenu.h"
 //#include "itempalette.h"
-#include "slipturnouticon.h"
 #include "itempalette.h"
 #include "iconadder.h"
 #include "loggerfactory.h"
 #include "displayframe.h"
 #include "itempanel.h"
+#include "fileutil.h"
 
 PositionableLabel::PositionableLabel(Positionable *parent) :
     JLabel((QWidget*)parent)
