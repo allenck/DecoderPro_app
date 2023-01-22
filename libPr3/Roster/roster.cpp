@@ -689,10 +689,7 @@ void Roster::writeFile(QString name) //throw new (FileNotFoundException, IOExcep
 {
     if (log->isDebugEnabled()) log->debug("writeFile "+name);
     // This is taken in large part from "Java and XML" page 368
-    QFile* file = findFile(name)->toQfile();
-    if (file == NULL) {
-        file = new QFile(name);
-    }
+    QFile* file = new QFile(name);
 
     writeFile (file);
 }
