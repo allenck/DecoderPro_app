@@ -22,9 +22,12 @@
 /*protected*/ DefaultSystemConnectionMemo::DefaultSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString userName, QObject *parent)
     : SystemConnectionMemo(parent)
 {
-if(!log)
- log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
+ initNames(prefix, userName);
+}
 
+// NOTE! each subclass should call call initNames after it's constructor is complete!
+/*public*/ void DefaultSystemConnectionMemo::initNames(QString prefix, QString userName)
+{
     classObjectMap = QMap</*Class<?>*/QString, AbstractManager*>();
     if (qobject_cast<ConflictingSystemConnectionMemo*>(this)) {
         this->prefix = prefix;

@@ -17,6 +17,9 @@
 #include "jmrixconfigpane.h"
 #include <QSignalMapper>
 #include "gridbaglayout.h"
+#include "loggerfactory.h"
+#include "joptionpane.h"
+
 
 //AbstractSerialConnectionConfig::AbstractSerialConnectionConfig(QObject *parent) :
 //    AbstractConnectionConfig(parent)
@@ -73,7 +76,6 @@ void AbstractSerialConnectionConfig::common()
 {
  init = false;
  adapter = NULL;
- log = new Logger("AbstractSerialConnectionConfig");
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  portBox = new QComboBox();
  baudBox = new QComboBox();
@@ -97,6 +99,9 @@ void AbstractSerialConnectionConfig::common()
 //    });
  connect(baudBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_baudBox_currentIndexChanged(QString)));
 
+ addNameEntryCheckers(adapter);
+
+#if 0
  if(adapter->getSystemConnectionMemo()!=NULL)
  {
 //  systemPrefixField.addActionListener(new ActionListener() {
@@ -145,7 +150,7 @@ void AbstractSerialConnectionConfig::common()
 //            /*public*/ void focusGained(FocusEvent e){ }
 //        });
     }
-
+#endif
 //    portBox.addFocusListener( new FocusListener() {
 //    /*    @Override
 //        /*public*/ void focusGained(FocusEvent e){
@@ -809,3 +814,50 @@ class ComboBoxRenderer extends JLabel
     }
 #endif
 }
+/*protected*/ void AbstractSerialConnectionConfig::addNameEntryCheckers(/*@Nonnull*/ PortAdapter* adapter) {
+    if (adapter->getSystemConnectionMemo() != nullptr) {
+//        systemPrefixField.addActionListener(e -> checkPrefixEntry(adapter));
+//        systemPrefixField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                checkPrefixEntry(adapter);
+//            }
+
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//        });
+     connect(systemPrefixField, &JTextField::editingFinished, [=] {checkPrefixEntry(adapter);});
+//        connectionNameField.addActionListener(e -> checkNameEntry(adapter));
+//        connectionNameField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                checkNameEntry(adapter);
+//            }
+
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//        });
+     connect(connectionNameField, &JTextField::editingFinished, [=]{checkNameEntry(adapter);});
+    }
+}
+
+/*private*/ void AbstractSerialConnectionConfig::checkPrefixEntry(/*@Nonnull*/ PortAdapter* adapter) {
+    if (!systemPrefixField->isValid()) { // invalid prefix format entry, actually can't lose focus until valid
+        systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
+    }
+    if (!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text())) { // in use
+        JOptionPane::showMessageDialog(nullptr, tr("Connection Prefix %1 is already assigned").arg(systemPrefixField->text()));
+        systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
+    }
+}
+
+/*private*/ void AbstractSerialConnectionConfig::checkNameEntry(/*@Nonnull*/ PortAdapter* adapter) {
+    if (!adapter->getSystemConnectionMemo()->setUserName(connectionNameField->text())) {
+        JOptionPane::showMessageDialog(nullptr, tr("Connection Name %1 is already assigned").arg(connectionNameField->text()));
+        connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());
+    }
+}
+
+/*private*/ /*final*/ /*static*/ Logger* AbstractSerialConnectionConfig::log = LoggerFactory::getLogger("AbstractSerialConnectionConfig");

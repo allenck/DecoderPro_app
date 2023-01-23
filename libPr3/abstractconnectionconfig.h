@@ -56,8 +56,11 @@ signals:
 
 public slots:
 private:
+  static Logger* log;
     /*abstract*/ virtual void checkInitDone();
     /*abstract*/ virtual void showAdvancedItems();
+  /*private*/ void checkPrefixEntry(/*@Nonnull*/ PortAdapter* adapter);
+  /*private*/ void checkNameEntry(/*@Nonnull*/ PortAdapter* adapter);
 
 protected:
     /*protected*/ /*final*/ UserPreferencesManager* pref;// = InstanceManager.getDefault(UserPreferencesManager.class);
@@ -78,6 +81,8 @@ protected:
     /*protected*/ GridBagConstraints* cL;// = new GridBagConstraints();
     /*protected*/ GridBagConstraints* cR;// = new GridBagConstraints();
     /*protected*/ int addStandardDetails(PortAdapter* adapter, bool incAdvanced, int i);
+    /*protected*/ void addNameEntryCheckers(/*@Nonnull*/ PortAdapter* adapter);
+
 friend class ASCCActionListener;
 
 };

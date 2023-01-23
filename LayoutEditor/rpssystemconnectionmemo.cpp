@@ -15,7 +15,7 @@
 
 /*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name, QObject* parent)
 : DefaultSystemConnectionMemo(prefix, name, parent){
-    //super(prefix, name);
+    initNames(prefix, name);
     _register(); // registers general type
     InstanceManager::store(this, "RpsSystemConnectionMemo"); // also register as specific type
 

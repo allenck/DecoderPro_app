@@ -1207,3 +1207,102 @@ Document* JTextField::getDocument()
 // e->ignore();
 //}
 
+/**
+ * Validate the field information. Does not make any GUI changes. A field
+ * value that is zero-length is considered invalid.
+ *
+ * @return true if current field information is valid; otherwise false
+ */
+//@Override
+/*public*/ bool JTextField::isValid() {
+#if 1
+ if(text().isEmpty())
+  return false;
+ return true;
+#else
+    QString value;
+    if (thisone == null) {
+        return false;
+    }
+    value = getText();
+    if (null == fieldType) {
+        // unknown validation field type
+        return false;
+    } else {
+        switch (fieldType) {
+            case TEXT:
+                if ((value.length() < 1) && (!allow0Length)) {
+                    return false;
+                } else {
+                    return ((allow0Length) && (value.length() == 0))
+                            || (value.matches(validateRegExpr));
+                }
+            case INTEGRALNUMERIC:
+                try {
+                    if ((allow0Length) && (value.length() == 0)) {
+                        return true;
+                    } else if (value.length() == 0) {
+                        return false;
+                    } else {
+                        return (Integer.parseInt(value) >= minAllowedValue)
+                                && (Integer.parseInt(value) <= maxAllowedValue);
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            case INTEGRALNUMERICPLUSSTRING:
+                Integer findLocation = -1;
+                Integer location;
+                if ((allow0Length) && (value.length() == 0)) {
+                    return true;
+                } else if (value.length() == 0) {
+                    return false;
+                }
+
+                location = value.indexOf('c');
+                if ((location != -1) && (location < findLocation)) {
+                    findLocation = location;
+                }
+                location = value.indexOf('C');
+                if ((location != -1) && (location < findLocation)) {
+                    findLocation = location;
+                }
+                location = value.indexOf('t');
+                if ((location != -1) && (location < findLocation)) {
+                    findLocation = location;
+                }
+                location = value.indexOf('T');
+                if ((location != -1) && (location < findLocation)) {
+                    findLocation = location;
+                }
+                if (findLocation == -1) {
+                    return false;
+                }
+
+                try {
+                    int address = Integer.parseInt(value.substring(0, findLocation));
+                    return (address >= minAllowedValue
+                            && address <= maxAllowedValue
+                            && value.length() >= 2
+                            && value.matches(validateRegExpr));
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            case LIMITEDHEX:
+                try {
+                    if (value.isEmpty()) {
+                        return false;
+                    } else {
+                        return Integer.parseInt(value, 16) >= minAllowedValue
+                                && Integer.parseInt(value, 16) <= maxAllowedValue;
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            default:
+                // unknown validation field type
+                return false;
+        }
+    }
+#endif
+}

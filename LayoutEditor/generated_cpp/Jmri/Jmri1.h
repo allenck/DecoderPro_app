@@ -1037,6 +1037,8 @@ virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
 virtual bool  isOptionAdvanced(QString  option);
+virtual bool  isOptionTypePassword(QString  option);
+virtual bool  isOptionTypeText(QString  option);
 virtual bool  isRestartRequired();
 virtual QString  openPort(QString  arg__1, QString  arg__2);
 virtual void recover();
@@ -1896,6 +1898,8 @@ virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
 virtual bool  isOptionAdvanced(QString  arg__1);
+virtual bool  isOptionTypePassword(QString  option);
+virtual bool  isOptionTypeText(QString  option);
 virtual bool  isRestartRequired();
 virtual void recover();
 virtual void setAdvertisementName(QString  arg__1);
@@ -2155,6 +2159,8 @@ virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
 virtual bool  isOptionAdvanced(QString  arg__1);
+virtual bool  isOptionTypePassword(QString  option);
+virtual bool  isOptionTypeText(QString  option);
 virtual bool  isRestartRequired();
 virtual void recover();
 virtual void setDisabled(bool  arg__1);
@@ -2197,6 +2203,8 @@ inline QString  py_q_getSystemPrefix() { return PortAdapter::getSystemPrefix(); 
 inline QString  py_q_getUserName() { return PortAdapter::getUserName(); }
 inline bool  py_q_isDirty() { return PortAdapter::isDirty(); }
 inline bool  py_q_isOptionAdvanced(QString  arg__1) { return PortAdapter::isOptionAdvanced(arg__1); }
+inline bool  py_q_isOptionTypePassword(QString  option) { return this->isOptionTypePassword(option); }
+inline bool  py_q_isOptionTypeText(QString  option) { return this->isOptionTypeText(option); }
 inline bool  py_q_isRestartRequired() { return PortAdapter::isRestartRequired(); }
 inline void py_q_recover() { PortAdapter::recover(); }
 inline void py_q_setDisabled(bool  arg__1) { PortAdapter::setDisabled(arg__1); }
@@ -2264,6 +2272,10 @@ void delete_PortAdapter(PortAdapter* obj) { delete obj; }
    bool  py_q_isDirty(PortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_isDirty());}
    bool  isOptionAdvanced(PortAdapter* theWrappedObject, QString  arg__1);
    bool  py_q_isOptionAdvanced(PortAdapter* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_isOptionAdvanced(arg__1));}
+   bool  isOptionTypePassword(PortAdapter* theWrappedObject, QString  option);
+   bool  py_q_isOptionTypePassword(PortAdapter* theWrappedObject, QString  option){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_isOptionTypePassword(option));}
+   bool  isOptionTypeText(PortAdapter* theWrappedObject, QString  option);
+   bool  py_q_isOptionTypeText(PortAdapter* theWrappedObject, QString  option){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_isOptionTypeText(option));}
    bool  isRestartRequired(PortAdapter* theWrappedObject);
    bool  py_q_isRestartRequired(PortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_isRestartRequired());}
    void recover(PortAdapter* theWrappedObject);

@@ -394,6 +394,8 @@ virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
 virtual bool  isOptionAdvanced(QString  option);
+virtual bool  isOptionTypePassword(QString  option);
+virtual bool  isOptionTypeText(QString  option);
 virtual bool  isRestartRequired();
 virtual QString  openPort(QString  arg__1, QString  arg__2);
 virtual void recover();
@@ -690,6 +692,7 @@ virtual bool  provides(QString  arg__1);
 virtual QObject*  self();
 virtual void setDisabled(bool  arg__1);
 virtual void setOutputInterval(int  arg__1);
+virtual bool  setSystemPrefix(QString  arg__1);
 virtual bool  setUserName(QString  arg__1);
 
   const QMetaObject* metaObject() const;
@@ -712,6 +715,7 @@ inline bool  py_q_provides(QString  arg__1) { return SystemConnectionMemo::provi
 inline QObject*  py_q_self() { return SystemConnectionMemo::self(); }
 inline void py_q_setDisabled(bool  arg__1) { SystemConnectionMemo::setDisabled(arg__1); }
 inline void py_q_setOutputInterval(int  arg__1) { SystemConnectionMemo::setOutputInterval(arg__1); }
+inline bool  py_q_setSystemPrefix(QString  arg__1) { return SystemConnectionMemo::setSystemPrefix(arg__1); }
 inline bool  py_q_setUserName(QString  arg__1) { return SystemConnectionMemo::setUserName(arg__1); }
 };
 
@@ -748,6 +752,8 @@ void delete_SystemConnectionMemo(SystemConnectionMemo* obj) { delete obj; }
    void py_q_setDisabled(SystemConnectionMemo* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setDisabled(arg__1));}
    void setOutputInterval(SystemConnectionMemo* theWrappedObject, int  arg__1);
    void py_q_setOutputInterval(SystemConnectionMemo* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setOutputInterval(arg__1));}
+   bool  setSystemPrefix(SystemConnectionMemo* theWrappedObject, QString  arg__1);
+   bool  py_q_setSystemPrefix(SystemConnectionMemo* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setSystemPrefix(arg__1));}
    bool  setUserName(SystemConnectionMemo* theWrappedObject, QString  arg__1);
    bool  py_q_setUserName(SystemConnectionMemo* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setUserName(arg__1));}
 };

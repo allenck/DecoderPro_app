@@ -47,7 +47,7 @@ public slots:
 private:
     /*protected*/ bool init = false;
     void common();
-    Logger* log;
+    static Logger* log;
     //@SuppressWarnings("UseOfObsoleteCollectionType")
     QVector<QString>* v;
     //@SuppressWarnings("UseOfObsoleteCollectionType")
@@ -55,11 +55,13 @@ private:
     QString invalidPort;//=NULL;
     QString value;
     QSignalMapper* optionsMapper;
+    /*private*/ void checkPrefixEntry(/*@Nonnull*/ PortAdapter* adapter);
+    /*private*/ void checkNameEntry(/*@Nonnull */PortAdapter* adapter);
 
 protected:
     /*protected*/ SerialPortAdapter* adapter;// = NULL;
-    /*protected*/ /*final*/ void addToActionList();
-    /*protected*/ void removeFromActionList();
+    QT_DEPRECATED /*protected*/ /*final*/ void addToActionList();
+    QT_DEPRECATED /*protected*/ void removeFromActionList();
     /*protected*/ void checkInitDone();
     UserPreferencesManager* p;// = InstanceManager.getDefault("UserPreferencesManager");
     ///*protected*/ JComboBox<String> portBox = new JComboBox<String>();
@@ -75,11 +77,13 @@ protected:
     /*protected*/ virtual QStringList getPortFriendlyNames();
     /*abstract*/ /*protected*/ virtual void getInstance() {}
     // /*abstract*/ /*protected*/ virtual void _register() =0;
+    /*protected*/ void addNameEntryCheckers(/*@Nonnull*/ PortAdapter* adapter);
 
 protected slots:
     /*protected*/ void showAdvancedItems();
 
 };
+
 class PortNameMapper
 {
  //  /*private*/ static QMap<QString, SerialPortFriendlyName>* serialPortNames;// = new HashMap<String, SerialPortFriendlyName>();

@@ -1,5 +1,3 @@
-
-
 #include "abstractconnectionconfig.h"
 #include "instancemanager.h"
 #include "jmriuserpreferencesmanager.h"
@@ -12,6 +10,9 @@
 #include <QCheckBox>
 #include "connectionconfigmanager.h"
 #include "configuremanager.h"
+#include "loggerfactory.h"
+#include "joptionpane.h"
+
 
 AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
     ConnectionConfig(parent)
@@ -242,3 +243,51 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
         ccm->remove(this);
     }
 }
+
+/*protected*/ void AbstractConnectionConfig::addNameEntryCheckers(/*@Nonnull*/ PortAdapter* adapter) {
+    if (adapter->getSystemConnectionMemo() != nullptr) {
+//        systemPrefixField.addActionListener(e -> checkPrefixEntry(adapter));
+//        systemPrefixField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                checkPrefixEntry(adapter);
+//            }
+
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//        });
+     connect(systemPrefixField, &JTextField::editingFinished, [=]{checkPrefixEntry(adapter);});
+//        connectionNameField.addActionListener(e -> checkNameEntry(adapter));
+//        connectionNameField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                checkNameEntry(adapter);
+//            }
+
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//        });
+     connect(connectionNameField, &JTextField::editingFinished, [=]{checkNameEntry(adapter);});
+    }
+}
+
+/*private*/ void AbstractConnectionConfig::checkPrefixEntry(/*@Nonnull*/ PortAdapter* adapter) {
+    if (!systemPrefixField->isValid()) { // invalid prefix format entry, actually can't lose focus until valid
+        systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
+    }
+    if (!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text())) { // in use
+        JOptionPane::showMessageDialog(nullptr, tr("Connection Prefix %1 is already assigned").arg(systemPrefixField->text()));
+        systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
+    }
+}
+
+/*private*/ void AbstractConnectionConfig::checkNameEntry(/*@Nonnull*/ PortAdapter* adapter) {
+    if (!adapter->getSystemConnectionMemo()->setUserName(connectionNameField->text())) {
+        JOptionPane::showMessageDialog(nullptr, tr("Connection Name %1 is already assigned").arg(connectionNameField->text()));
+        connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());
+    }
+}
+
+/*private*/ /*final*/ /*static*/ Logger* AbstractConnectionConfig::log = LoggerFactory::getLogger("AbstractConnectionConfig");

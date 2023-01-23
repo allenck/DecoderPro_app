@@ -90,7 +90,20 @@ public:
     virtual QString getOptionState(QString /*option*/)  {return "";}
 
     virtual QStringList getOptionChoices(QString /*option*/)  {return QStringList();}
+    /**
+     * Should this option be represented by a text field
+     * (as opposed to a JCombobox)
+     * @param option Name of the option to check
+     * @return true for text representation preferred
+     */
+    /*public*/ virtual bool isOptionTypeText(QString option) =0;
 
+    /**
+     * Should this option be represented by a password field
+     * @param option Name of the option to check
+     * @return true for text representation preferred
+     */
+    /*public*/virtual bool isOptionTypePassword(QString option)=0;
      /**
      * Return the System Manufacturers Name
      */

@@ -167,10 +167,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
 {
  //QMutexLocker locker(mutex);
  QString stateText = getConnectionState(systemName, portName);
- if (stateText!=(CONNECTION_UP))
-  return false;
- else
-  return true;
+ return !(stateText == CONNECTION_DOWN);
 }
 
 /*public*/ /*synchronized*/ void ConnectionStatus::addPropertyChangeListener(PropertyChangeListener* l)

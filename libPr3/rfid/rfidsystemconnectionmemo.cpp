@@ -29,13 +29,14 @@
 
 /*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo(RfidTrafficController* rt, QObject *parent) : DefaultSystemConnectionMemo("F", "Rfid", parent)
 {
+ initNames("F", "Rfid");
     //this();
     setRfidTrafficController(rt);
 }
 
 /*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo( QObject *parent) : DefaultSystemConnectionMemo("F", "Rfid", parent)
 {
-    //super("F", "Rfid");
+    initNames("F", "Rfid");
     _register(); // registers general type
     InstanceManager::store(this, "RfidSystemConnectionMemo"); // also register as specific type
 

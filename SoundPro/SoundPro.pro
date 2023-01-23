@@ -20,7 +20,7 @@ CONFIG(debug, debug|release) {
     OBJECTS_DIR = moc_objd
 }
 
-CONFIG += c++11
+CONFIG += c++14
 
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {

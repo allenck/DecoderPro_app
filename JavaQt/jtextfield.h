@@ -67,6 +67,7 @@ public:
       if(!jself()->objectName().isEmpty()) return jself()->objectName();
       else return jself()->metaObject()->className();
     }
+    bool isValid();
 
 signals:
  void enterField();

@@ -38,7 +38,7 @@ LnOverTcpConnectionConfig::LnOverTcpConnectionConfig(QObject *parent) :
 
 /*public*/ QString LnOverTcpConnectionConfig::name()
 {
- return "LocoNetOverTcp LbServer";
+ return "LocoNet OverTcp";
 }
 
 /*public*/ bool LnOverTcpConnectionConfig::isOptList1Advanced()

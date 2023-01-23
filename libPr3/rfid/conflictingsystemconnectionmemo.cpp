@@ -19,7 +19,7 @@
     /*public*/ ConflictingSystemConnectionMemo::ConflictingSystemConnectionMemo(QString prefix, QString userName, QObject* parent)
      : DefaultSystemConnectionMemo(prefix, userName, parent)
     {
-        //super(prefix, userName);
+        initNames(prefix, userName);
     }
 
 //    //@Override

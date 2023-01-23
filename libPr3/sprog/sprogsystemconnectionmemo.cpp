@@ -29,7 +29,7 @@ using namespace Sprog;
 /*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogTrafficController* st, SprogConstants::SprogMode sm, QObject* parent)
  : DefaultSystemConnectionMemo(st->getController()->getSystemConnectionMemo()->getSystemPrefix(), SprogConnectionTypeList::SPROG, parent)
 {
-    //super(st.getController().getSystemConnectionMemo().getSystemPrefix(), SprogConnectionTypeList.SPROG);
+    initNames(st->getController()->getSystemConnectionMemo()->getSystemPrefix(), SprogConnectionTypeList::SPROG);
     if (log->isDebugEnabled()) {
         log->debug(tr("SprogSystemConnectionMemo, prefix='%1'").arg(st->getController()->getSystemConnectionMemo()->getSystemPrefix()));
     }
@@ -40,7 +40,7 @@ using namespace Sprog;
 /*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, QObject* parent)
  : DefaultSystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
 {
-    //super("S", SprogConnectionTypeList::SPROG); // default to S
+    initNames("S", SprogConnectionTypeList::SPROG); // default to S
  common(sm);
 }
 
@@ -65,7 +65,7 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
 /*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, SprogType* type, QObject* parent)
  : DefaultSystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
 {
-    //super("S", SprogConnectionTypeList::SPROG); // default to S
+    initNames("S", SprogConnectionTypeList::SPROG); // default to S
     common(sm);
 }
 

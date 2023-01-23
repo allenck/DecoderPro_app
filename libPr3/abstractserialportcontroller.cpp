@@ -45,6 +45,10 @@ QStringList Option::getOptions()
  return options;
 }
 
+Option::Type Option::getType() {
+    return type;
+}
+
 QString Option::getDisplayText()
 {
  return displayText;

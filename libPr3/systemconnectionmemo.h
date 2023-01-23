@@ -60,18 +60,26 @@ public:
  virtual int getDefaultOutputInterval() {return 0;}
     virtual void setOutputInterval(int /*newInterval*/) {}
 
- /**
-  * Does this connection provide a manager of this type?
-  */
- virtual bool provides(QString /*c*/) {return false;}
- /**
-  * Does this connection provide a manager of this type?
-  */
- virtual Manager* get(QString /*type*/) {return nullptr;}
+    /**
+     * Does this connection provide a manager of this type?
+     */
+    virtual bool provides(QString /*c*/) {return false;}
+    /**
+     * Does this connection provide a manager of this type?
+     */
+    virtual Manager* get(QString /*type*/) {return nullptr;}
     virtual void dispose() {}
- virtual bool getDisabled() {return false;}
+    virtual bool getDisabled() {return false;}
     virtual void setDisabled(bool /*disabled*/)  {}
- //static SystemConnectionMemo* instance();
+    /**
+     * Set the system prefix.
+     *
+     * @param systemPrefix prefix to use for this system connection
+     * @throws java.lang.NullPointerException if systemPrefix is null
+     * @return true if the system prefix could be set
+     */
+    virtual bool setSystemPrefix(/*@Nonnull*/ QString /*systemPrefix*/) {return false;}
+    //static SystemConnectionMemo* instance();
 // static void addPropertyChangeListener(PropertyChangeListener* l);
 // static void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ static /*final*/ QString DISABLED;// = "ConnectionDisabled";

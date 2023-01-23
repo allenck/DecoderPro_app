@@ -45,6 +45,7 @@
 AbstractAudioFrame(title, model, parent)
 {
  //super(title, model);
+ setFrameRef(getClassName());
  position = new JPanelVector3f(tr("Position"),
             tr("units"));
  velocity = new JPanelVector3f(tr("Velocity"),

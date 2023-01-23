@@ -10,7 +10,7 @@ public:
  ~DCS240ConnectionConfig() {}
  DCS240ConnectionConfig(const DCS240ConnectionConfig&) : AbstractSerialConnectionConfig() {}
  Q_INVOKABLE /*public*/ DCS240ConnectionConfig(QObject* parent = nullptr);
- /*public*/ QString name();
+ /*public*/ QString name() override;
 
 protected:
  /*protected*/ void setInstance();

@@ -43,6 +43,8 @@ BeanTableFrame(parent)
 
  audioPanel = panel;
 
+ setFrameRef(getClassName());
+
  // general GUI config
  //getContentPane()->setLayout(new QVBoxLayout);//(getContentPane(), BoxLayout.Y_AXIS));
  QVBoxLayout* centralWidgetLayout;

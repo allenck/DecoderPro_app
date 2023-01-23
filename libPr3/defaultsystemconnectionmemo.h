@@ -15,7 +15,7 @@ class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
   DefaultSystemConnectionMemo(QObject* parent = nullptr) : SystemConnectionMemo(parent){}
   /*public*/ void _register() override;
   /*public*/ QString getSystemPrefix() const override;
-  /*public*/ /*final*/ bool setSystemPrefix(/*@Nonnull*/ QString systemPrefix);
+  /*public*/ /*final*/ bool setSystemPrefix(/*@Nonnull*/ QString systemPrefix) override;
   /*public*/ QString getUserName() const override;
   /*public*/ /*final*/ bool setUserName(/*@Nonnull*/ QString userName) override;
   /*public*/ bool provides(/*Class<?>*/QString c) override;
@@ -34,7 +34,9 @@ class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
   /*public*/ int getDefaultOutputInterval() override;
   /*public*/ int getOutputInterval() override;
   /*public*/ void setOutputInterval(int newInterval) override;
+  /*public*/ void initNames(QString prefix, QString userName);
   //QObject* self() {return (QObject*)this;}
+
  private:
   /*private*/ bool disabled = false;
   /*private*/ bool disabledAsLoaded = false; // Boolean can be true, false, or null

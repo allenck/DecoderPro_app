@@ -12,6 +12,11 @@
 class LIBPR3SHARED_EXPORT Option
 {
  public:
+  /*public*/ enum Type {
+              JCOMBOBOX,
+              TEXT,
+              PASSWORD
+          };
   Option();
   Option(QString displayText, QStringList options, bool advanced);
   Option(QString displayText, QStringList options);
@@ -21,12 +26,13 @@ class LIBPR3SHARED_EXPORT Option
   QString getDisplayText();
   bool isAdvanced();
   bool isDirty();
-
+  Type getType();
  private:
   QString currentValue;
   QString displayText;
   QStringList options;
   bool advancedOption; // = true;
+  Type type;
 
  protected:
   /*protected*/ QString manufacturerName;// = null;
@@ -38,64 +44,67 @@ class LIBPR3SHARED_EXPORT AbstractPortController : public NetworkPortAdapter
     Q_OBJECT
 public:
     ~AbstractPortController();
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     // returns the InputStream from the port
-    /*public abstract*/ /*DataInputStream*/ virtual QDataStream* getInputStream() {return NULL;}
+    /*public abstract*/ /*DataInputStream*/ virtual QDataStream* getInputStream()override {return NULL;}
     // returns the outputStream to the port
-    /*public abstract*/ /*DataOutputStream*/virtual QDataStream* getOutputStream(){return NULL;}
+    /*public abstract*/ /*DataOutputStream*/virtual QDataStream* getOutputStream()override{return NULL;}
     // check that this object is ready to operate
-    /*public*/ bool status();
-    /*abstract public*/ virtual QString getCurrentPortName()  {return "";}
+    /*public*/ bool status()override;
+    /*abstract public*/ virtual QString getCurrentPortName() override {return "";}
     /*
         The next set of configureOptions are to support the old configuration files.
     */
-    /*public*/  void configureOption1(QString value);
-    /*public*/  void configureOption2(QString value);
-    /*public*/  void configureOption3(QString value);
-    /*public*/  void configureOption4(QString value);
+    /*public*/  void configureOption1(QString value)override;
+    /*public*/  void configureOption2(QString value)override;
+    /*public*/  void configureOption3(QString value)override;
+    /*public*/  void configureOption4(QString value)override;
     /*
     The next set of getOption Names are to support legacy configuration files
     */
-    /*public*/  QString getOption1Name();
-    /*public*/  QString getOption2Name();
-    /*public*/  QString getOption3Name();
-    /*public*/  QString getOption4Name();
+    /*public*/  QString getOption1Name()override;
+    /*public*/  QString getOption2Name()override;
+    /*public*/  QString getOption3Name()override;
+    /*public*/  QString getOption4Name()override;
     /**
     * Get a list of all the options configured against this adapter.
     */
-    /*public*/  QStringList getOptions();
+    /*public*/  QStringList getOptions()override;
     /**
     * Set the value of an option
     */
-    /*public*/  void setOptionState(QString option, QString value);
+    /*public*/  void setOptionState(QString option, QString value)override;
     /**
     *  Get the value of a specific option
     */
-    /*public*/  QString getOptionState(QString option);
+    /*public*/  QString getOptionState(QString option)override;
     /**
     *   return a list of the various choices allowed with an option.
     */
-    /*public*/  QStringList getOptionChoices(QString option);
-    /*public*/  QString getOptionDisplayName(QString option);
-    /*public*/  bool isOptionAdvanced(QString option);
+    /*public*/  QStringList getOptionChoices(QString option)override;
+    /*public*/  QString getOptionDisplayName(QString option)override;
+    /*public*/  bool isOptionAdvanced(QString option)override;
     /**
     * Get and set of the Manufacturer for network (TCP/IP) based
     * connections is handled by the ConnectionConfig code in each
     * connector.  this is here as we implement the serialdriveradpter.
     */
-    /*public*/  QString getManufacturer();
-    /*public*/  void setManufacturer(QString manufacturer);
-    /*public*/  bool getDisabled();
-    /*public*/ void setDisabled(bool disabled) ;
-    /*public*/ QString getSystemPrefix();
-    /*public*/ void setSystemPrefix(QString systemPrefix);
-    /*public*/ QString getUserName() ;
-    /*public*/ void setUserName(QString userName);
-    /*abstract public*/ virtual void recover() {}
+    /*public*/  QString getManufacturer() override;
+    /*public*/  void setManufacturer(QString manufacturer) override;
+    /*public*/  bool getDisabled() override;
+    /*public*/ void setDisabled(bool disabled) override;
+    /*public*/ QString getSystemPrefix() override;
+    /*public*/ void setSystemPrefix(QString systemPrefix) override;
+    /*public*/ QString getUserName() override;
+    /*public*/ void setUserName(QString userName) override;
+    /*abstract public*/ virtual void recover() override{}
     /*public*/ bool isDirty() override;
-    /*public*/ bool isRestartRequired();
-    /*public*/ void setSystemConnectionMemo(SystemConnectionMemo* connectionMemo);
-    /*public*/ SystemConnectionMemo* getSystemConnectionMemo() const;
+    /*public*/ bool isRestartRequired() override;
+    /*public*/ void setSystemConnectionMemo(SystemConnectionMemo* connectionMemo) override;
+    /*public*/ SystemConnectionMemo* getSystemConnectionMemo() const override;
+  /*public*/ bool isOptionTypeText(QString option) override;
+  /*public*/ bool isOptionTypePassword(QString option) override;
+
 
 signals:
     

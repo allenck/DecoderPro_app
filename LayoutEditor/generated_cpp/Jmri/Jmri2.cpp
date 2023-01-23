@@ -3356,6 +3356,72 @@ if (_wrapper) {
 }
   return SerialPortAdapter::isOptionAdvanced(option0);
 }
+bool  PythonQtShell_SerialPortAdapter::isOptionTypePassword(QString  option0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isOptionTypePassword");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&option0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isOptionTypePassword", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SerialPortAdapter::isOptionTypePassword(option0);
+}
+bool  PythonQtShell_SerialPortAdapter::isOptionTypeText(QString  option0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isOptionTypeText");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&option0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isOptionTypeText", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SerialPortAdapter::isOptionTypeText(option0);
+}
 bool  PythonQtShell_SerialPortAdapter::isRestartRequired()
 {
 if (_wrapper) {
@@ -5115,6 +5181,39 @@ if (_wrapper) {
 }
   SystemConnectionMemo::setOutputInterval(arg__1);
 }
+bool  PythonQtShell_SystemConnectionMemo::setSystemPrefix(QString  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSystemPrefix");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("setSystemPrefix", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SystemConnectionMemo::setSystemPrefix(arg__1);
+}
 bool  PythonQtShell_SystemConnectionMemo::setUserName(QString  arg__1)
 {
 if (_wrapper) {
@@ -5232,6 +5331,11 @@ void PythonQtWrapper_SystemConnectionMemo::setDisabled(SystemConnectionMemo* the
 void PythonQtWrapper_SystemConnectionMemo::setOutputInterval(SystemConnectionMemo* theWrappedObject, int  arg__1)
 {
   ( theWrappedObject->setOutputInterval(arg__1));
+}
+
+bool  PythonQtWrapper_SystemConnectionMemo::setSystemPrefix(SystemConnectionMemo* theWrappedObject, QString  arg__1)
+{
+  return ( theWrappedObject->setSystemPrefix(arg__1));
 }
 
 bool  PythonQtWrapper_SystemConnectionMemo::setUserName(SystemConnectionMemo* theWrappedObject, QString  arg__1)

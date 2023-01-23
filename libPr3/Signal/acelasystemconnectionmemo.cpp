@@ -24,7 +24,7 @@
 /*public*/  AcelaSystemConnectionMemo::AcelaSystemConnectionMemo(/*@Nonnull*/ QString prefix, QString userName, QObject* parent)
 : DefaultSystemConnectionMemo(prefix, userName, parent)
 {
-    //super(prefix, userName);
+    initNames(prefix, userName);
  common();
 }
 void AcelaSystemConnectionMemo::common()

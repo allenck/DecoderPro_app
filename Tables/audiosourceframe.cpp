@@ -49,6 +49,7 @@
  //super(title, model);
  log = new Logger("AudioSourceFrame");
  lock = new QObject();
+ setFrameRef(getClassName());
 
  // UI components for Add/Edit Source
  assignedBufferLabel = new QLabel(tr("Assigned Buffer"));

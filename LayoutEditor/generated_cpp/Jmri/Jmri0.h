@@ -369,6 +369,8 @@ virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
 virtual bool  isOptionAdvanced(QString  option);
+virtual bool  isOptionTypePassword(QString  option);
+virtual bool  isOptionTypeText(QString  option);
 virtual bool  isRestartRequired();
 virtual void recover();
 virtual void setAdvertisementName(QString  arg__1);
@@ -419,6 +421,8 @@ inline QString  py_q_getSystemPrefix() { return AbstractPortController::getSyste
 inline QString  py_q_getUserName() { return AbstractPortController::getUserName(); }
 inline bool  py_q_isDirty() { return AbstractPortController::isDirty(); }
 inline bool  py_q_isOptionAdvanced(QString  option) { return AbstractPortController::isOptionAdvanced(option); }
+inline bool  py_q_isOptionTypePassword(QString  option) { return AbstractPortController::isOptionTypePassword(option); }
+inline bool  py_q_isOptionTypeText(QString  option) { return AbstractPortController::isOptionTypeText(option); }
 inline bool  py_q_isRestartRequired() { return AbstractPortController::isRestartRequired(); }
 inline void py_q_recover() { AbstractPortController::recover(); }
 inline void py_q_setDisabled(bool  disabled) { AbstractPortController::setDisabled(disabled); }
@@ -459,6 +463,8 @@ void delete_AbstractPortController(AbstractPortController* obj) { delete obj; }
    QString  py_q_getUserName(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getUserName());}
    bool  py_q_isDirty(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_isDirty());}
    bool  py_q_isOptionAdvanced(AbstractPortController* theWrappedObject, QString  option){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_isOptionAdvanced(option));}
+   bool  py_q_isOptionTypePassword(AbstractPortController* theWrappedObject, QString  option){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_isOptionTypePassword(option));}
+   bool  py_q_isOptionTypeText(AbstractPortController* theWrappedObject, QString  option){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_isOptionTypeText(option));}
    bool  py_q_isRestartRequired(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_isRestartRequired());}
    void purgeStream(AbstractPortController* theWrappedObject, QDataStream*  serialStream);
    void py_q_recover(AbstractPortController* theWrappedObject){  (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_recover());}
@@ -651,6 +657,8 @@ virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
 virtual bool  isOptionAdvanced(QString  option);
+virtual bool  isOptionTypePassword(QString  option);
+virtual bool  isOptionTypeText(QString  option);
 virtual bool  isRestartRequired();
 virtual QString  openPort(QString  arg__1, QString  arg__2);
 virtual void recover();
@@ -2727,7 +2735,7 @@ void delete_FileUtil(FileUtil* obj) { delete obj; }
    QString  static_FileUtil_locateFile(QDir  start, QString  fileName);
    void static_FileUtil_logFilePaths();
    QString  static_FileUtil_pathFromPortablePath(QString  path);
-   QString  static_FileUtil_readURL(QUrl *url);
+   QString  static_FileUtil_readURL(QUrl*  url);
    QString  static_FileUtil_sanitizeFilename(QString  name);
    void static_FileUtil_setProfilePath(QString  path);
    void static_FileUtil_setProgramPath(QString  path);

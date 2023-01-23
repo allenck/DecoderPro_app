@@ -24,7 +24,7 @@
 /*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt, QObject *parent)
  : DefaultSystemConnectionMemo("J", "JMRI Client", parent)
 {
-    //super("J", "JMRI Client");
+    initNames("J", "JMRI Client");
     this->jt = jt;
     common();
 }
@@ -39,7 +39,7 @@ void JMRIClientSystemConnectionMemo::common()
 }
 
 /*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo(QObject* parent) : DefaultSystemConnectionMemo("J", "JMRI Client", parent) {
-    //super("J", "JMRIClient");
+    initNames("J", "JMRIClient");
     this->jt = new JMRIClientTrafficController();
     common();
 }

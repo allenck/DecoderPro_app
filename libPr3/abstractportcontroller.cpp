@@ -171,6 +171,24 @@ return options.value(option)->getOptions();
 return QStringList();
 }
 
+//@Override
+/*public*/ bool AbstractPortController::isOptionTypeText(QString option) {
+    if (options.contains(option)) {
+        return options.value(option)->getType() == Option::Type::TEXT;
+    }
+    log->error(tr("did not find option %1 for type").arg(option));
+    return false;
+}
+
+//@Override
+/*public*/ bool AbstractPortController::isOptionTypePassword(QString option) {
+    if (options.contains(option)) {
+        return options.value(option)->getType() == Option::Type::PASSWORD;
+    }
+    log->error(tr("did not find option %1 for type").arg(option));
+    return false;
+}
+
 /*public*/ QString AbstractPortController::getOptionDisplayName(QString option){
     if(options.contains(option)){
         return options.value(option)->getDisplayText();

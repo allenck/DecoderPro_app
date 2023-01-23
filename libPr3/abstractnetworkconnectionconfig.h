@@ -8,6 +8,7 @@
 #include "jspinner.h"
 #include <QPushButton>
 
+class JComboBox;
 class JLabel;
 class QCheckBox;
 class JTextField;
@@ -26,7 +27,7 @@ public:
  /*public*/ virtual bool isHostNameAdvanced();
  /*public*/ virtual bool isPortAdvanced();
  /*public*/ virtual bool isAutoConfigPossible() ;
- /*public*/ QString getManufacturer();
+ /*public*/ QString getManufacturer() override;
  /*public*/ void setManufacturer(QString manufacturer) override;
  /*public*/ bool getDisabled() override;
  /*public*/ void setDisabled(bool disabled) override;
@@ -49,7 +50,7 @@ public slots:
 
 private:
  void common();
- Logger* log;
+ static Logger* log;
  UserPreferencesManager* p;// = InstanceManager.getDefault("UserPreferencesManager");
 
 private slots:
@@ -61,15 +62,15 @@ protected:
  /*protected*/ bool init = false;
   /*protected*/ void checkInitDone() override;
  /*protected*/ JTextField* hostNameField;// = new JTextField(15);
- /*protected*/ QLabel* hostNameFieldLabel;
+ /*protected*/ QLabel* hostNameFieldLabel=nullptr;
  /*protected*/ JTextField* portField;// = new JTextField(10);
- /*protected*/ QLabel* portFieldLabel;
+ /*protected*/ QLabel* portFieldLabel=nullptr;
 
  /*protected*/ QCheckBox* showAutoConfig;// = new JCheckBox(rb.getString("AutoConfigLabel"));
  /*protected*/ JTextField* adNameField;// = new JTextField(15);
- /*protected*/ QLabel* adNameFieldLabel;
+ /*protected*/ QLabel* adNameFieldLabel =nullptr;
  /*protected*/ JTextField* serviceTypeField;// = new JTextField(15);
- /*protected*/ QLabel* serviceTypeFieldLabel;
+ /*protected*/ QLabel* serviceTypeFieldLabel=nullptr;
 
  /*protected*/ SpinnerNumberModel* intervalSpinner = new SpinnerNumberModel(250, 0, 10000, 1); // 10 sec max seems long enough
  /*protected*/ JSpinner* outputIntervalSpinner = new JSpinner(intervalSpinner);
@@ -79,6 +80,7 @@ protected:
  /*protected*/ NetworkPortAdapter* adapter = nullptr;
  /*abstract*/ /*protected*/ virtual void setInstance() override;
  /*protected*/ int addStandardDetails(bool incAdvanced, int i);
+ /*protected*/ void checkOptionValueValidity(QString i, JComboBox/*<String>*/* opt);
 
 };
 

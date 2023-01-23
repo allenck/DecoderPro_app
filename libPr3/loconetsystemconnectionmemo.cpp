@@ -33,7 +33,7 @@
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : DefaultSystemConnectionMemo("L","LocoNet", parent)
 {
- //super("L", "LocoNet");
+ initNames("L", "LocoNet");
  common();
  this->lt = lt;
  this->sm = sm; // doesn't full register, but fine for this purpose.
@@ -42,12 +42,13 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  : DefaultSystemConnectionMemo("L","LocoNet", parent)
 {
+ initNames("L", "LocoNet");
  common();
 }
 /*public*/ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name)
  : DefaultSystemConnectionMemo(prefix, name)
 {
- //super(prefix, name); // NOI18N
+ initNames(prefix, name); // NOI18N
  common();
 
 }

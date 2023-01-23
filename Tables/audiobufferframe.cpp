@@ -52,6 +52,7 @@ int AudioBufferFrame::counter = 1;
  : AbstractAudioFrame(title, model, parent)
 {
  //super(title, model);
+    setFrameRef(getClassName());
  log = new Logger("AudioBufferFrame");
  counter = 1;
  lock = new QObject();

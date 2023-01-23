@@ -39,18 +39,21 @@
 /*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QString prefix, QString name, bool defaultInstanceType, QObject *parent)
  : DefaultSystemConnectionMemo(prefix, name, parent)
 {
+ initNames(prefix, name);
  common(prefix, name, defaultInstanceType);
 }
 
 /*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QString prefix, QString name,QObject* parent)
  : DefaultSystemConnectionMemo(prefix, name, parent)
 {
+ initNames(prefix, name);
  common(prefix, name, true);
 }
 
 /*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(bool defaultInstanceType,QObject* parent)
  : DefaultSystemConnectionMemo("I", "Internal", parent)
 {
+ initNames("I", "Internal");
  common("I", "Internal", defaultInstanceType);
 }
 
@@ -59,6 +62,7 @@
 /*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QObject* parent)
  : DefaultSystemConnectionMemo("I", "Internal", parent)
 {
+ initNames("I", "Internal");
     //this(true);
  common("I", "Internal", true);
 }

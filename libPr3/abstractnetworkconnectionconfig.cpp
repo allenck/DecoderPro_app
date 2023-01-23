@@ -7,7 +7,7 @@
 #include "jlabel.h"
 #include "systemconnectionmemo.h"
 #include <QMessageBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QLabel>
 #include <QFont>
 #include "gridbaglayout.h"
@@ -15,7 +15,7 @@
 #include "gridbagconstraints.h"
 #include "abstractnetworkportcontroller.h"
 #include <QSignalMapper>
-
+#include "loggerfactory.h"
 
 AbstractNetworkConnectionConfig::AbstractNetworkConnectionConfig(QObject *parent) :
   AbstractConnectionConfig(parent)
@@ -46,7 +46,6 @@ AbstractConnectionConfig(parent)
 
 void AbstractNetworkConnectionConfig::common()
 {
- log = new Logger("AbstractNetworkConnectionConfig");
  init = false;
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  hostNameField = new JTextField(16);
@@ -390,6 +389,16 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
     return adapter->getCurrentPortName();
 }
 
+/*protected*/ void AbstractNetworkConnectionConfig::checkOptionValueValidity(QString i, JComboBox/*<String>*/* opt) {
+    if (adapter->getOptionState(i) != (opt->getSelectedItem())) {
+        // no, set 1st option choice
+        opt->setSelectedIndex(0);
+        // log before setting new value to show old value
+        log->warn(tr("Loading found invalid value for option %1, found \"%2\", setting to \"%3\"").arg(i).arg(adapter->getOptionState(i), opt->getSelectedItem()));
+        adapter->setOptionState(i, /*(String)*/ opt->getSelectedItem());
+    }
+}
+
 //Override
 /*public*/ void AbstractNetworkConnectionConfig::loadDetails(/*final*/ JPanel* details)
 {
@@ -401,20 +410,25 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   //Hashtable<String, AbstractPortController.Option> adapterOptions = ((AbstractPortController)adapter).getOptionList();
   QStringList optionsAvailable = adapter->getOptions();
   options = QHash<QString, Option*>();
-  foreach (QString i, optionsAvailable)
-  {
-   QComboBox* opt = new QComboBox(/*adapter->getOptionChoices(i)*/);
-   opt->addItems(adapter->getOptionChoices(i));
-   opt->setCurrentIndex(opt->findText(adapter->getOptionState(i)));
-   // check that it worked
-   if (adapter->getOptionState(i)!=(opt->currentText()))
-   {
-    // no, set 1st option choice
-    opt->setCurrentIndex(0);
-    adapter->setOptionState(i, opt->currentText());
-    log->warn(tr("Loading found invalid value for option %1, found \"%2\", setting to \"%3\"").arg( i).arg( adapter->getOptionState(i)).arg( opt->currentText()));
-   }
-   options.insert(i, new Option(adapter->getOptionDisplayName(i), opt, adapter->isOptionAdvanced(i)));
+  for (QString i : optionsAvailable) {
+      if (adapter->isOptionTypeText(i) ) {
+          JTextField* opt = new JTextField(15);
+          opt->setText(adapter->getOptionState(i));
+          options.insert(i, new Option(adapter->getOptionDisplayName(i), opt, adapter->isOptionAdvanced(i)));
+      } else if (adapter->isOptionTypePassword(i) ) {
+          JTextField* opt = new JTextField(15);//JPasswordField(15);
+          opt->setEchoMode(QLineEdit::Password);
+          opt->setText(adapter->getOptionState(i));
+          options.insert(i, new Option(adapter->getOptionDisplayName(i), opt, adapter->isOptionAdvanced(i)));
+      } else {
+          JComboBox/*<String>*/* opt = new JComboBox(adapter->getOptionChoices(i));
+          opt->setSelectedItem(adapter->getOptionState(i));
+
+          // check that it worked
+          checkOptionValueValidity(i, opt);
+
+          options.insert(i, new Option(adapter->getOptionDisplayName(i), opt, adapter->isOptionAdvanced(i)));
+      }
   }
  }
 
@@ -782,3 +796,4 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 // hostNameField->setText(adapter->getHostName());
 // portField->setText(QString::number(adapter->getPort()));
 //}
+/*private*/ /*final*/ /*static*/ Logger* AbstractNetworkConnectionConfig::log = LoggerFactory::getLogger("AbstractNetworkConnectionConfig");
