@@ -79,6 +79,8 @@
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
 {
+ setFrameRef(getClassName());
+
  init("NoName");
 
 }

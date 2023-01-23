@@ -22,6 +22,7 @@
 
     //super();
 
+    setFrameRef(getClassName());
     oblockPanel = panel;
     resize(800, 600);
 

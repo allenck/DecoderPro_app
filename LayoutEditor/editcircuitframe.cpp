@@ -28,10 +28,6 @@
 #include "indicatortrack.h"
 
 
-//EditCircuitFrame::EditCircuitFrame(QWidget *parent) :
-//    JmriJFrame(parent)
-//{
-//}
 /**
  * <P>
  * @author  Pete Cressman Copyright: Copyright (c) 2011
@@ -49,6 +45,7 @@
 /*public*/ EditCircuitFrame::EditCircuitFrame(QString title, CircuitBuilder* parent, OBlock* block)
  : EditFrame(title, parent, block)
 {
+ setFrameRef(getClassName());
  _blockName = new JTextField(5);
  _detectorSensorName = new JTextField(5);
  _errorSensorName = new JTextField(5);

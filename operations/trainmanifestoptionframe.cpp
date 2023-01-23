@@ -38,7 +38,8 @@ namespace Operations
   /*public*/ TrainManifestOptionFrame::TrainManifestOptionFrame(QWidget* parent)
      : OperationsFrame(tr("Options"), parent)
   {
- log = new Logger("TrainManifestOptionFrame");
+    setFrameRef(getClassName());
+    log = new Logger("TrainManifestOptionFrame");
       //(tr("TitleOptions"));
       _train = NULL;
 

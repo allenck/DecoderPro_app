@@ -29,6 +29,7 @@ EditFrame::EditFrame()
     /*public*/ EditFrame::EditFrame(QString title, CircuitBuilder* parent, OBlock* block)
       : JmriJFrame(false, false)
     {
+     setFrameRef(getClassName());
      //super(false, false);
         _parent = parent;
         if (block != nullptr) {

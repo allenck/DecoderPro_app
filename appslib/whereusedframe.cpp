@@ -41,6 +41,7 @@
 
     /*public*/ WhereUsedFrame::WhereUsedFrame(QWidget* parent) : JmriJFrame(true, true, parent){
         //super(true, true);
+     setFrameRef(getClassName());
         setTitle(tr("Where Used"));  // NOI18N
         createFrame();
         addHelpMenu("package.jmri.jmrit.whereused.WhereUsed", true);  // NOI18N

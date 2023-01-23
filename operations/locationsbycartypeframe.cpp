@@ -41,6 +41,7 @@ namespace Operations
  /*public*/ LocationsByCarTypeFrame::LocationsByCarTypeFrame(QWidget* parent) : OperationsFrame(parent)
  {
      //super();
+  setFrameRef(getClassName());
   log = new Logger("LocationsByCarTypeFrame");
   Empty = "            ";
 

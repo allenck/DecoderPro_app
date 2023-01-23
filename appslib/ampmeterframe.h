@@ -46,7 +46,7 @@ private:
  NamedIcon* ampIcon;
  /*private*/ void buildContents();
  /*synchronized*/ void update();
- void resizeEvent(QResizeEvent *e);
+ void resizeEvent(QResizeEvent *e)override;
  bool initDone = false;
 
 private slots:

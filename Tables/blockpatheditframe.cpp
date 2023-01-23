@@ -29,6 +29,7 @@
 //@SuppressWarnings("OverridableMethodCallInConstructor")
 /*public*/ BlockPathEditFrame::BlockPathEditFrame(QString title, OBlock* block, OPath* path,
                           TableFrames::PathTurnoutJPanel* turnouttable, BlockPathTableModel* pathmodel, TableFrames* parent) :JmriJFrameX(title, true, true) {
+ setFrameRef(getClassName());
     //super(title, true, true);
     _block = block;
     _turnoutTablePane = turnouttable;

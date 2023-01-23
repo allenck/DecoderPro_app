@@ -79,6 +79,7 @@
     : JmriJFrame(false, true, parent)
 {
     //super(false, true);
+ setFrameRef(getClassName());
  log = new Logger("DispatcherFrame");
  // Dispatcher options (saved to disk if user requests, and restored if present)
  _LE = NULL;

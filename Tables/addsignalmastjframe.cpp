@@ -3,10 +3,6 @@
 #include <QBoxLayout>
 #include "addsignalmastpanel.h"
 
-//AddSignalMastJFrame::AddSignalMastJFrame()
-//{
-
-//}
 /**
  * JFrame to create a new SignalMast
  *
@@ -23,6 +19,7 @@
 /*public*/ AddSignalMastJFrame::AddSignalMastJFrame(QWidget* parent)
 : JmriJFrame(tr("Add Signal Mast"), false, true)
 {
+    setFrameRef(getClassName());
     //super(Bundle.getMessage("TitleAddSignalMast"), false, true);
     AddSignalMastPanel* sigMastPanel = nullptr;
 

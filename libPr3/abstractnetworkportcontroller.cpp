@@ -151,7 +151,7 @@ void AbstractNetworkPortController::on_socketConn_error(QAbstractSocket::SocketE
   msg = m_HostName + ":" + QString::number(m_port) + " error: " + socketConn->errorString();
   log->error(msg);
  }
- throw new IOException(msg);
+ //throw new IOException(msg);
 }
 
 void AbstractNetworkPortController::displayMsg()

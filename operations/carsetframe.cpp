@@ -58,6 +58,7 @@ namespace Operations
  /*public*/ CarSetFrame::CarSetFrame(QWidget* parent) : RollingStockSetFrame(tr("Car Set"), parent)
  {
      //super(tr("TitleCarSet"));
+  setFrameRef(getClassName());
   log = new Logger("CarSetFrame");
   setObjectName("CarSetFrame");
   editActive = false;

@@ -41,7 +41,8 @@ namespace Operations
    : OperationsFrame(tr("Road Options"), parent)
  {
      //super(tr("MenuItemRoadOptions"));
- log = new Logger("TrainRoadOptionsFrame");
+  setFrameRef(getClassName());
+  log = new Logger("TrainRoadOptionsFrame");
      _train = NULL;
 
      pRoadControls = new JPanel();

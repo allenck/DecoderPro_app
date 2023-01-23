@@ -20,6 +20,7 @@ namespace Operations
    : OperationsFrame(/*new TrainConductorPanel(),*/ parent)
  {
   //super(new TrainConductorPanel(train));
+  setFrameRef(getClassName());
   setContentPane(new TrainConductorPanel(train, this));
   this->initComponents(train);
  }

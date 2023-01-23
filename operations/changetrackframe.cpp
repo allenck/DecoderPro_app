@@ -33,6 +33,7 @@ namespace Operations
    : OperationsFrame()
  {
    //super();
+  setFrameRef(getClassName());
   log = new Logger("ChangeTrackFrame");
   // radio buttons
   spurRadioButton = new QRadioButton(tr("Spur"));

@@ -78,6 +78,7 @@ namespace Operations
      : OperationsFrame(tr("Edit Train"), parent)
  {
   //super(tr("TitleTrainEdit"));
+  setFrameRef(getClassName());
   log = new Logger("TrainEditFrame");
    typeCarCheckBoxes = QList<QCheckBox*>();
   typeEngineCheckBoxes = QList<QCheckBox*>();

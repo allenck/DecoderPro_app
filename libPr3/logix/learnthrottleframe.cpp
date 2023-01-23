@@ -17,10 +17,6 @@
 #include "loggerfactory.h"
 #include "jmriexception.h"
 
-//LearnThrottleFrame::LearnThrottleFrame(QWidget *parent) :
-//    JmriJFrame(parent)
-//{
-//}
 /**
  *  A JFrame to contain throttle elements such as speed control,
  *  function panel.  It keeps a record of the throttle commands
@@ -46,6 +42,7 @@
 /*public*/ LearnThrottleFrame::LearnThrottleFrame(WarrantFrame* warrantFrame, QWidget *parent) : JmriJFrame(false, false, parent)
     {
         //super(false, false);
+ setFrameRef(getClassName());
         _warrantFrame = warrantFrame;
 
         powerMgr = (AbstractPowerManager*)InstanceManager::getDefault("PowerManager");

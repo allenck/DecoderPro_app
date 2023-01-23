@@ -4,6 +4,7 @@
 
 TreeFrame::TreeFrame(QWidget* parent) : JmriJFrame(parent)
 {
+ setFrameRef(getClassName());
 
 }
 /**

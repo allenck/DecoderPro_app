@@ -78,6 +78,7 @@ jmri.util.swing.ImagePanel -- preview
 /*public*/ DisplayFrame::DisplayFrame(bool saveSize, bool savePosition, QWidget* parent)
  : JmriJFrame(saveSize, savePosition, parent){
     //super(saveSize, savePosition);
+ setFrameRef(getClassName());
  previewBgSet = 0;
  makeBackgrounds();
 }

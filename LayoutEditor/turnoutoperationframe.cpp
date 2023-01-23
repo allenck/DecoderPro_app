@@ -7,10 +7,6 @@
 #include <QPushButton>
 #include "QMessageBox"
 
-//TurnoutOperationFrame::TurnoutOperationFrame(QWidget *parent) :
-//    QDialog(parent)
-//{
-//}
 /**
  * @author John Harper
  *

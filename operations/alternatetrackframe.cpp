@@ -32,6 +32,7 @@ namespace Operations
 
  /*public*/ AlternateTrackFrame::AlternateTrackFrame(TrackEditFrame* tef, QWidget* parent) : OperationsFrame(parent){
      //super();
+  setFrameRef(getClassName());
  trackBox = new JComboBox();
 
  saveButton = new JButton(tr("Save"));

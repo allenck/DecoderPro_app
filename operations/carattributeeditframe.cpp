@@ -67,6 +67,7 @@ namespace Operations
   : RollingStockAttributeEditFrame(parent)
  {
   setObjectName("CarAttributeEditFrame");
+  setFrameRef(getClassName());
   log = new Logger("CarAttributeEditFrame");
   carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
  }

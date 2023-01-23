@@ -5,10 +5,6 @@
 #include <QBoxLayout>
 #include "addentryexitpairpanel.h"
 
-//AddEntryExitPairFrame::AddEntryExitPairFrame(QWidget *parent) :
-//  JmriJFrame(parent)
-//{
-//}
 /**
  * Frame Entry Exit Frames
  *
@@ -26,6 +22,8 @@
   JmriJFrame(false, true, parent)
 {
  //super(false, true);
+ setFrameRef(getClassName());
+
 }
 
 

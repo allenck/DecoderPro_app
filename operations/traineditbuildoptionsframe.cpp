@@ -55,7 +55,8 @@ namespace Operations
     : OperationsFrame(tr("Build Options"), parent)
  {
      //super(tr("MenuItemBuildOptions"));
- log = new Logger("TrainEditBuildOptionsFrame");
+  setFrameRef(getClassName());
+  log = new Logger("TrainEditBuildOptionsFrame");
   _train = NULL;
 
   panelOwnerNames = new JPanel();

@@ -25,10 +25,6 @@
 #include "joptionpane.h"
 
 
-//VSDManagerFrame::VSDManagerFrame(QWidget *parent) :
-//  JmriJFrame(parent)
-//{
-//}
 #if 0
 /**
  * class VSDManagerFrame
@@ -133,6 +129,7 @@
 /*public*/ VSDManagerFrame::VSDManagerFrame(QWidget *parent) :
   JmriJFrame(false, false, parent) {
     //super(false, false);
+     setFrameRef(getClassName());
     config = new VSDConfig();
     this->addPropertyChangeListener(VSDecoderManager::instance());
     is_auto_loading = VSDecoderManager::instance()->getVSDecoderPreferences()->isAutoLoadingDefaultVSDFile();

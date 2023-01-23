@@ -38,6 +38,7 @@ DrawFrame::DrawFrame(QWidget *parent) :
 
 /*public*/ DrawFrame::DrawFrame(QString which, QString title, ShapeDrawer* parent) : JmriJFrame(title, false, false, (QWidget*)parent)
 {
+ setFrameRef(getClassName());
  //super(title, false, false);
  _sensorName = new JTextField(30);
  _shape = NULL;

@@ -8,16 +8,12 @@
 #include <QDebug>
 #include "abstractsensor.h"
 #include "locoicon.h"
-#include "lememoryicon.h"
 #include "light.h"
 #include "abstractlight.h"
 #include "xmladapter.h"
 #include "panelmenu.h"
-#include "addpaneleditordialog.h"
 #include "inputdialog.h"
 #include "turnouticon.h"
-//#include "lcdclockframe.h"
-//#include "nixieclockframe.h"
 #include "signalheadicon.h"
 #include "signalmasticon.h"
 #include "multisensoricon.h"
@@ -42,6 +38,7 @@
 #include "lcdclockframe.h"
 #include "nixieclockframe.h"
 #include "loggerfactory.h"
+#include "memoryicon.h"
 
 PanelEditor::PanelEditor(QWidget *parent) :
     Editor("NoName", false, true, parent),
@@ -49,6 +46,7 @@ PanelEditor::PanelEditor(QWidget *parent) :
 {
  ui->setupUi(this);
  // init("NoName");  must be called by subclass
+ setFrameRef(getClassName());
  setTitle();
  initComponents();
 }

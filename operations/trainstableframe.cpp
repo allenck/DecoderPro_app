@@ -78,6 +78,7 @@ namespace Operations
  {
   //super();
   setObjectName("TrainsTableFrame");
+  setFrameRef(getClassName());
   log = new Logger("TrainsTableFrame");
   carManagerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml")); // load cars
   engineManagerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml")); // load engines

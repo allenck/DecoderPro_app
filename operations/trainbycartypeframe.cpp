@@ -46,6 +46,7 @@ namespace Operations
      : OperationsFrame(parent)
  {
      //super();
+  setFrameRef(getClassName());
  log = new Logger("TrainByCarTypeFrame");
  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
  _train = train;

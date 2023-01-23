@@ -70,6 +70,7 @@ namespace Operations
   RollingStockEditFrame(tr("Edit Engine"), parent)
  {
   //super();
+  setFrameRef(getClassName());
  }
 
  /*public*/ void EngineEditFrame::initComponents()

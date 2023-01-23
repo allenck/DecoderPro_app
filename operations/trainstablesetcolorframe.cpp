@@ -37,6 +37,7 @@ namespace Operations
     : OperationsFrame(parent)
  {
  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+ setFrameRef(getClassName());
 
  // labels
  // text field

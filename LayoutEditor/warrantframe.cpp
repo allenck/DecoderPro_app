@@ -78,6 +78,7 @@
 /*public*/ WarrantFrame::WarrantFrame(QString warrantName, QWidget *parent) : WarrantRoute(parent)
 {
  //super(false, false);
+ setFrameRef(getClassName());
  init0();
  _warrant = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(warrantName);
  _create = false;

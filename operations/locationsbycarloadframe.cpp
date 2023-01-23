@@ -45,6 +45,7 @@ namespace Operations
  /*public*/ LocationsByCarLoadFrame::LocationsByCarLoadFrame(QWidget* parent) : OperationsFrame(parent)
  {
   //super();
+  setFrameRef(getClassName());
   log = new Logger("LocationsByCarLoadFrame");
   // checkboxes track id as the checkbox name
   trackCheckBoxList = QList<QCheckBox*>();

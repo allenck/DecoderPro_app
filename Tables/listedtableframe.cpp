@@ -29,10 +29,6 @@
 #include "../libPr3/logixng/logixngtabletableaction.h"
 #endif
 
-//ListedTableFrame::ListedTableFrame()
-//{
-
-//}
 /**
  * Provide access to the various tables via a listed pane. Based upon the
  * apps.gui3.TabbedPreferences.java by Bob Jacoben
@@ -68,6 +64,7 @@
 void ListedTableFrame::common()
 {
  setObjectName("ListedTableFrame");
+ setFrameRef(getClassName());
  pref = (JmriUserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  itemBeingAdded = NULL;
  log = new Logger("ListedTableFrame");

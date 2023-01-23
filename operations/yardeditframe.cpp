@@ -26,6 +26,7 @@ namespace Operations
 
  /*public*/ YardEditFrame::YardEditFrame(QWidget* parent) : TrackEditFrame(parent) {
     // super();
+  setFrameRef(getClassName());
  }
 
  /*public*/ void YardEditFrame::initComponents(Location* location, Track* track)

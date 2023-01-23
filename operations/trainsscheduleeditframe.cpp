@@ -36,6 +36,7 @@ namespace Operations
    : OperationsFrame(parent)
  {
      //super();
+  setFrameRef(getClassName());
   log = new Logger("TrainsScheduleEditFrame");
   // text box
   addTextBox = new JTextField(Control::max_len_string_attibute);

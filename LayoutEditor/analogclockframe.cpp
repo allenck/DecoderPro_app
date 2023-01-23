@@ -4,10 +4,6 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
-//AnalogClockFrame::AnalogClockFrame(QWidget *parent) :
-//    JmriJFrame(parent)
-//{
-//}
 /**
  * Creates a JFrame containing an analog clockface and hands.
  *
@@ -25,6 +21,7 @@
 {
     //super(Bundle.getMessage("Analog Clock"));
     setWindowTitle("Analog Clock");
+    setFrameRef(getClassName());
 
 
 //    clock = InstanceManager.timebaseInstance();

@@ -18,6 +18,7 @@ namespace Operations
  /*public*/ EditSwitchListTextFrame::EditSwitchListTextFrame(QWidget* parent)
      : OperationsFrame(tr("Switch List Text"), parent)
  {
+  setFrameRef(getClassName());
      //super(Bundle.getMessage("TitleSwitchListText"), new EditSwitchListTextPanel());
  }
 

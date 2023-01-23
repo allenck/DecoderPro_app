@@ -22,6 +22,7 @@ namespace Operations
     : OperationsFrame(tr("Yardmaster"), parent)
  {
   setObjectName("YardmasterFrame");
+  setFrameRef(getClassName());
      setContentPane(new YardmasterPanel(location, this));
      //super(tr("Yardmaster"), new YardmasterPanel(location));
      this->initComponents(location);

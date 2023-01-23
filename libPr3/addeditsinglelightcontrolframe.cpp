@@ -23,9 +23,11 @@
  * @param ctrl If LightControl is null, is a Add Control Window.
  *              If LightControl specified, is an Edit Control window.
  */
-/*public*/ AddEditSingleLightControlFrame::AddEditSingleLightControlFrame(/*@Nonnull*/ LightControlPane* pane, LightControl* ctrl) : JmriJFrame(tr("Add Light Control"), false, true)
+/*public*/ AddEditSingleLightControlFrame::AddEditSingleLightControlFrame(/*@Nonnull*/ LightControlPane* pane, LightControl* ctrl)
+ : JmriJFrame(tr("Add Light Control"), false, true)
 {
     //super(tr("TitleAddLightControl"), false, true);
+ setFrameRef(getClassName());
     lc = ctrl;
     lcp = pane;
     init();

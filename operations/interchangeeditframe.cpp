@@ -29,6 +29,7 @@ namespace Operations
 
  /*public*/ InterchangeEditFrame::InterchangeEditFrame(QWidget* parent) : TrackEditFrame(parent) {
      //super();
+  setFrameRef(getClassName());
  }
 
  /*public*/ void InterchangeEditFrame::initComponents(Location* location, Track* track) {

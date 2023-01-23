@@ -32,6 +32,7 @@ namespace Operations
 
  /*public*/ IgnoreUsedTrackFrame::IgnoreUsedTrackFrame(TrackEditFrame* tef) :OperationsFrame(tef){
      //super();
+  setFrameRef(getClassName());
  log = new Logger("IgnoreUsedTrackFrame");
      zeroPercent = new QRadioButton(tr("Disabled"));
      twentyfivePercent = new QRadioButton("25%");	// NOI18N

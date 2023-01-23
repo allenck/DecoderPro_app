@@ -26,6 +26,7 @@
     : JmriJFrame(tr("Track Current Meter"), parent){
     //super(Bundle.getMessage("TrackCurrentMeterTitle"));
      digits = QVector<NamedIcon*>(10);
+     setFrameRef(getClassName());
 
     meter = (AbstractMultiMeter*)InstanceManager::getDefault("MultiMeter");
 }

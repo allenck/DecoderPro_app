@@ -37,6 +37,7 @@ namespace Operations
  /*public*/ ChangeDepartureTimesFrame::ChangeDepartureTimesFrame(QWidget* parent)
 : OperationsFrame(parent)
 {
+  setFrameRef(getClassName());
  changeButton = new JButton(tr("Change"));
 
 // combo boxes

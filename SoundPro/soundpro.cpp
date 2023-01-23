@@ -38,7 +38,7 @@
     SoundPro::SoundPro(JFrame* p, QWidget* parent) : Apps(p, parent){
         //super();
      JmriJFrame* frame = new JmriJFrameX("SoundPro");
-
+     frame->setFrameRef(getClassName());
     createFrame(this, (JmriJFrame*)frame);
 
     SPWindowListener* l = new SPWindowListener(frame, this);

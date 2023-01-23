@@ -76,7 +76,8 @@ namespace Operations
  /*public*/ LocationEditFrame::LocationEditFrame(Location* location, QWidget* parent) : OperationsFrame(tr("Edit Location"), parent)
  {
      //super(tr("TitleLocationEdit"));
- log = new Logger("LocationEditFrame");
+  setFrameRef(getClassName());
+  log = new Logger("LocationEditFrame");
 
   yardModel = new YardTableModel();
   yardTable = new JTable(yardModel);

@@ -95,6 +95,7 @@
 
 /*private*/ void EditPortalFrame::common(QString title, CircuitBuilder* parent, OBlock* block)
 {
+ setFrameRef(getClassName());
 }
 
 //@Override

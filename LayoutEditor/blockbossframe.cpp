@@ -59,6 +59,7 @@
 
 /*public*/ BlockBossFrame::BlockBossFrame(QString frameName, QWidget *parent) : JmriJFrame(frameName, false, true, parent)
 {
+    setFrameRef(getClassName());
 
  init();
 }

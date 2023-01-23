@@ -38,6 +38,7 @@ namespace Operations
 
  /*public*/ TrainsByCarTypeFrame::TrainsByCarTypeFrame(QWidget* parent) : OperationsFrame(parent) {
      //super();
+  setFrameRef(getClassName());
  log = new Logger("TrainsByCarTypeFrame");
      Empty = "            ";
      trainList = QList<QCheckBox*>();

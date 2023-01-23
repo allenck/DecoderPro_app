@@ -41,12 +41,10 @@
 #include "controlpaneleditor.h"
 #include "paneleditor.h"
 #include "rpspositionicon.h"
-#include "leblockcontentsicon.h"
 #include "box.h"
 #include "catalogpanel.h"
 #include "border.h"
 #include "borderfactory.h"
-#include "compoundborder.h"
 #include "signalheadmanager.h"
 #include "signalmastmanager.h"
 #include "joptionpane.h"
@@ -57,11 +55,8 @@
 #include "editormanager.h"
 #include "abstractsignalheadmanager.h"
 #include "defaultsignalmastmanager.h"
+#include "blockcontentsicon.h"
 
-//Editor::Editor(QWidget *parent) :
-//    JmriJFrame(parent)
-//{
-//}
 /**
  * This is the Model and a Controller for panel editor Views.
  * (Panel Editor, Layout Editor or any subsequent editors)
@@ -133,7 +128,8 @@
 
 void Editor::commonInit()
 {
- //commonInit();
+ setFrameRef(getClassName());
+
  _urlMap = new QMap<QString, QString>();
  _debug = false;
  _loadFailed = false;

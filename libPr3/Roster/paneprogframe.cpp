@@ -58,6 +58,7 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
     ui(new Ui::PaneProgFrame)
 {
  ui->setupUi(this);
+ setFrameRef(getClassName());
  setObjectName("PaneProgFrame");
  _rosterEntry = pRosterEntry;
  _opsMode = opsMode;

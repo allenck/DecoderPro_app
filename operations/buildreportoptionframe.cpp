@@ -20,6 +20,7 @@ namespace Operations
  /*public*/ BuildReportOptionFrame::BuildReportOptionFrame(QWidget* parent)
     : OperationsFrame(tr("Build Report Options"), parent)
  {
+  setFrameRef(getClassName());
   //super(Bundle.getMessage("TitleBuildReportOptions"), new BuildReportOptionPanel());
   setContentPane(new BuildReportOptionPanel(this));
  }

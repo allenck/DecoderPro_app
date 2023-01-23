@@ -28,10 +28,6 @@
 #include "oblock.h"
 #include "blockorder.h"
 
-//WarrantTableFrame::WarrantTableFrame(QWidget *parent) :
-//  JmriJFrame(parent)
-//{
-//}
 /**
  * The WarrantTableFrame lists the existing Warrants and has controls to set their routes,
  * train IDs launch them and control their running (halt, resume, abort. etc.
@@ -97,6 +93,7 @@
   JmriJFrame(false,true, parent)
 {
  //super(false, true);
+ setFrameRef(getClassName());
  log = new Logger("WarrantTableFrame");
  _startWarrant = new JTextField(30);
  _endWarrant = new JTextField(30);

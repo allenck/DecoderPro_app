@@ -18,6 +18,7 @@ namespace Operations
  /*public*/ EditManifestHeaderTextFrame::EditManifestHeaderTextFrame(QWidget* parent)
     : OperationsFrame(parent)
  {
+  setFrameRef(getClassName());
      //super(Bundle.getMessage("TitleManifestHeaderText"), new EditManifestHeaderTextPanel());
  }
 

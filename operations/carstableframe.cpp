@@ -35,10 +35,7 @@
 #include "joptionpane.h"
 #include "borderfactory.h"
 #include "printcarloadsaction.h"
-//CarsTableFrame::CarsTableFrame()
-//{
 
-//}
 namespace Operations
 {
 /**
@@ -56,6 +53,7 @@ namespace Operations
  /*public*/ CarsTableFrame::CarsTableFrame(bool showAllCars, QString locationName, QString trackName, QWidget* parent)
  : OperationsFrame(tr("Cars"), parent)
  {
+  setFrameRef(getClassName());
   setObjectName("CarsTableFrame");
   log = new Logger("CarsTableFrame");
   carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));

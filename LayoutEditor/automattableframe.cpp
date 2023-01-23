@@ -4,10 +4,6 @@
 #include <QBoxLayout>
 #include "jtable.h"
 
-//AutomatTableFrame::AutomatTableFrame(QWidget *parent) :
-//  JmriJFrame(parent)
-//{
-//}
 /**
  * Frame providing a table of Automat instances
  *
@@ -28,6 +24,7 @@
 {
 
  //super();
+ setFrameRef(getClassName());
  dataModel = model;
 
  //dataTable = JTableUtil.sortableDataModel(dataModel);

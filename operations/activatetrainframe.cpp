@@ -25,10 +25,6 @@
 #include "vptr.h"
 #include "autotrainsframe.h"
 
-//ActivateTrainFrame::ActivateTrainFrame(QObject *parent) : QObject(parent)
-//{
-
-//}
 /**
  * Displays the Activate New Train dialog and processes information entered
  * there.
@@ -53,6 +49,7 @@
 ////*public*/ class ActivateTrainFrame {
 
 /*public*/ ActivateTrainFrame::ActivateTrainFrame(DispatcherFrame* d) {
+ setFrameRef(getClassName());
  // operational instance variables
  _dispatcher = NULL;
  _tiFile = NULL;

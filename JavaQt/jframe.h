@@ -68,6 +68,7 @@ public:
     /*public*/ QSize getMaximumSize();
     QPoint getLocation();
     void setLocation(int x, int y);
+//    virtual QString getClassName() =0;
     virtual void dispose();
     virtual JPanel* getContentPane(bool addLayout = true);
     void toFront();
@@ -93,10 +94,10 @@ public:
     /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
     bool _closed = false;
     virtual bool closedNormally() {return _closed;}
-    QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
-    QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
-    void setSize(int, int) {}
-    QString toString() {
+    QFontMetrics getFontMetrics(QFont f) override{return QFontMetrics (f);}
+    QFontMetrics getFontMetrics() override{return QFontMetrics (getFont());}
+    void setSize(int, int) override{}
+    QString toString() override{
       if(!jself()->objectName().isEmpty()) return jself()->objectName();
       else return jself()->metaObject()->className();
     }

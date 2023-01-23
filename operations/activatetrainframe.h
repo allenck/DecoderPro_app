@@ -5,6 +5,7 @@
 #include <QStringList>
 #include "actionevent.h"
 #include "activetrain.h"
+#include "jmrijframe.h"
 #include "jpanel.h"
 #include "jlabel.h"
 #include "jcheckbox.h"
@@ -29,7 +30,7 @@ class QPushButton;
 class ActiveTrain;
 class TrainInfoFile;
 class DispatcherFrame;
-class ActivateTrainFrame : public QObject
+class ActivateTrainFrame : public JmriJFrame
 {
  Q_OBJECT
 public:
@@ -37,6 +38,7 @@ public:
  /*public*/ ActivateTrainFrame(DispatcherFrame* d);
  /*public*/ void showActivateFrame(RosterEntry* re);
  /*public*/ void initiateTrain(JActionEvent* e, RosterEntry* re, Block* b);
+ /*public*/ QString getClassName() override {return "jmri.jmrit.dispatcher.ActivateTrainFrame";}
 
 signals:
 

@@ -49,6 +49,7 @@ namespace Operations
  /*public*/ EnginesTableFrame::EnginesTableFrame(QWidget* parent) :
  OperationsFrame(tr("Engines Table"), parent)
  {
+  setFrameRef(getClassName());
         //super(tr("Engines Table"));
         // general GUI config
  setObjectName("EnginesTableFrame");

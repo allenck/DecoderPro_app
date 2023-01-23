@@ -2,8 +2,6 @@
 #include "ui_rosterframe.h"
 #include "rosterentry.h"
 #include "roster.h"
-#include "dcclocoaddress.h"
-//#include "functionlabelsmediadlg.h"
 #include "../LayoutEditor/panelmenu.h"
 #include "../LayoutEditor/editor.h"
 
@@ -105,6 +103,8 @@ RosterFrame::RosterFrame( QWidget *parent) :
 void RosterFrame::common()
 {
  setObjectName("RosterFrame");
+ setFrameRef(getClassName());
+
  ui->setupUi(this);
  menuBar = new QMenuBar();
  baseTitle = "Roster";

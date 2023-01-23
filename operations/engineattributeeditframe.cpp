@@ -49,6 +49,7 @@ namespace Operations
     /*public*/EngineAttributeEditFrame:: EngineAttributeEditFrame(QWidget *parent) :
   RollingStockAttributeEditFrame(parent)
 {
+  setFrameRef(getClassName());
  setObjectName("EngineAttributeEditFrame");
  log = new Logger("EngineAttributeEditFrame");
  engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));

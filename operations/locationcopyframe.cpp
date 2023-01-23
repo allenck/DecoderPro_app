@@ -45,6 +45,7 @@ namespace Operations
   /*public*/ LocationCopyFrame::LocationCopyFrame(QWidget* parent)
    : OperationsFrame(parent)
   {
+   setFrameRef(getClassName());
    log = new Logger("LocationCopyFrame");
    locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 

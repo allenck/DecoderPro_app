@@ -44,6 +44,7 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
 {
 
  JmriJFrame* frame = new JmriJFrameX("PanelPro");
+ frame->setFrameRef(getClassName());
  createFrame(this, frame);
 
  PPWindowListener* l = new PPWindowListener(frame, this);

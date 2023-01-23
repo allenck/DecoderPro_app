@@ -12,7 +12,7 @@ class SoundPro : public Apps
 public:
     SoundPro(JFrame *frame, QWidget *parent = nullptr);
     /*public*/ static void main(char *args[]);
-
+    QString getClassName() {return "apps.SoundPro";}
 private:
     static Logger* log;
     /**

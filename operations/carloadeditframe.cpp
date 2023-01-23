@@ -45,6 +45,7 @@ namespace Operations
 
  /*public*/ CarLoadEditFrame::CarLoadEditFrame(QWidget* parent) : OperationsFrame(parent)
  {
+  setFrameRef(getClassName());
   log = new Logger("CarEditFrame");
   setObjectName("CarEditFrame");
   carLoads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"));

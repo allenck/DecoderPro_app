@@ -13,11 +13,6 @@
 #include "jslider.h"
 #include "joptionpane.h"
 
-
-//AbstractAudioFrame::AbstractAudioFrame(QWidget *parent) :
-//  JmriJFrame(parent)
-//{
-//}
 /**
  * Abstract GUI to edit Audio objects
  *
@@ -59,6 +54,7 @@
 {
  //super(title);
  frame = this;
+ setFrameRef(getClassName());
  // Common UI components for Add/Edit Audio
  sysNameLabel = new QLabel(tr("System Name"));
  sysName = new JTextField(5);

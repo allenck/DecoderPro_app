@@ -35,6 +35,7 @@ namespace Operations
 
 
  /*public*/ EngineSetFrame::EngineSetFrame(QObject* parent) : RollingStockSetFrame(tr("Set Locomotive")) {
+  setFrameRef(getClassName());
      //super(Bundle.getMessage("TitleEngineSet"));
   manager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   managerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"));

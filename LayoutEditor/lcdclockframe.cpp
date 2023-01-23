@@ -29,6 +29,7 @@
 
 /*public*/ LcdClockFrame::LcdClockFrame( QWidget *parent) : JmriJFrame("Lcd Clock", true, true, parent)
 {
+ setFrameRef(getClassName());
  //super(Bundle.getMessage("MenuItemLcdClock"));
  log = new Logger("Lcd Clock");
  tubes =  QVector<NamedIcon*>(10, NULL);

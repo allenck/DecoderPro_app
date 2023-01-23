@@ -31,9 +31,11 @@ namespace Operations
  ///*private*/ static final long serialVersionUID = 4829987018175695904L;
 
 
- /*public*/ TrainCopyFrame::TrainCopyFrame(Train* train, QWidget* parent) : OperationsFrame(parent){
- log = new Logger("TrainCopyFrame");
- trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+ /*public*/ TrainCopyFrame::TrainCopyFrame(Train* train, QWidget* parent) : OperationsFrame(parent)
+ {
+  setFrameRef(getClassName());
+  log = new Logger("TrainCopyFrame");
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
 
  // labels
  // text field

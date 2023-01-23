@@ -20,6 +20,7 @@
 HexFileFrame::HexFileFrame(QWidget *parent) :
     JmriJFrame(parent)
 {
+ setFrameRef(getClassName());
  //private static final long serialVersionUID = -2625562807572301674L;
  // member declarations
  openHexFileButton = new QPushButton();

@@ -10,6 +10,7 @@ class PanelPro : public Apps
 public:
     PanelPro(JFrame* p, QWidget *parent = nullptr);
     /*public*/ static void main(char *argv[]);
+    QString getClassName() {return "apps.PanelPro";}
     QObject* pself() override {return (QObject*)this;}
 signals:
 

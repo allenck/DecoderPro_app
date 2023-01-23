@@ -35,6 +35,7 @@
 JmriJFrame(QString("LocoNetOverTcp Server"), parent)
 {
  this->server = server;
+ setFrameRef(getClassName());
  //super("LocoNetOverTcp Server");
  portNumberLabel = new QLabel("  Port Number: ");
  statusLabel = new QLabel("Server Status:         ");

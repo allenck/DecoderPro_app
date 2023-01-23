@@ -43,6 +43,7 @@ namespace Operations
     : OperationsFrame(tr("SwitchLists"), parent)
  {
   //super(tr("TitleSwitchLists"));
+  setFrameRef(getClassName());
   locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
   locationCheckBoxes = QList<QCheckBox*>();
   locationComboBoxes = QList<JComboBox*>();

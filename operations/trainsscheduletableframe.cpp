@@ -50,6 +50,7 @@ namespace Operations
 
  /*public*/ TrainsScheduleTableFrame::TrainsScheduleTableFrame(QWidget* parent) : OperationsFrame(parent)
  {
+  setFrameRef(getClassName());
   log = new Logger("TrainsScheduleTableFrame");
   trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
   trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"));

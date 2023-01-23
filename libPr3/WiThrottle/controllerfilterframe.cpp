@@ -28,6 +28,7 @@
 
 /*public*/ ControllerFilterFrame::ControllerFilterFrame(QWidget* parent) : JmriJFrame(tr("Filter Controls"), parent){
     //super(tr("TitleControlsFilter"), true, true);
+ setFrameRef(getClassName());
 }
 
 ////@Override

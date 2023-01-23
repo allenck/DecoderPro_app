@@ -40,6 +40,7 @@ namespace Operations
  /*public*/ TrainScriptFrame::TrainScriptFrame(QWidget* parent) : OperationsFrame(parent)
 {
    //super();
+  setFrameRef(getClassName());
  log = new Logger("TrainScriptFrame");
  fc = XmlFile::userFileChooser(tr("Python Script Files"), "py"); // NOI18N
 
