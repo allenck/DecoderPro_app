@@ -300,7 +300,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* ActionMemory::getCategory() {
+/*public*/  Category ActionMemory::getCategory() {
     return Category::ITEM;
 }
 

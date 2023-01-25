@@ -17,7 +17,7 @@ class ActionBlock : public AbstractDigitalAction, public VetoableChangeListener
   Q_OBJECT
   Q_INTERFACES(VetoableChangeListener)
  public:
-  ActionBlock(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE ActionBlock(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  /*enum*/class DirectOperation {
 //      SetOccupied(Bundle.getMessage("ActionBlock_SetOccupied")),
 //      SetNotOccupied(Bundle.getMessage("ActionBlock_SetNotOccupied")),
@@ -96,7 +96,7 @@ class ActionBlock : public AbstractDigitalAction, public VetoableChangeListener
   /*public*/  void setBlockValue(/*@Nonnull*/ QString value);
   /*public*/  QString getBlockValue();
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/override;
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

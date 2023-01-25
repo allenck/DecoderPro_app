@@ -44,7 +44,7 @@ Q_INTERFACES(Manager)
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QHash<Category*, QList</*Class<? extends Base>*/QString> > getExpressionClasses()=0;
+    /*public*/ virtual QHash<Category, QList</*Class<? extends Base>*/QString> > getExpressionClasses()=0;
 
     /*.*
      * Add an DigitalExpressionBean.

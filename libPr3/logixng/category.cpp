@@ -20,28 +20,28 @@
     /**
      * A item on the layout, for example turnout, sensor and signal mast.
      */
-    /*public*/  /*static*/ /*final*/ Item* Category::ITEM = new Item();
+    /*public*/  /*static*/ /*final*/ Item Category::ITEM =  Item();
 
     /**
      * Common.
      */
-    /*public*/  /*static*/ /*final*/ Common* Category::COMMON = new Common();
+    /*public*/  /*static*/ /*final*/ Common Category::COMMON =  Common();
 
     /**
      * Other things.
      */
-    /*public*/  /*static*/ /*final*/ Other* Category::OTHER = new Other();
+    /*public*/  /*static*/ /*final*/ Other Category::OTHER =  Other();
 
     /**
      * Get all the registered Categories
      * @return a list of categories
      */
-    /*public*/  /*static*/ QList<Category*> Category::values() {
+    /*public*/  /*static*/ QList<Category> Category::values() {
         if (_categories.isEmpty()) {
             /*synchronized(Category.class)*/ {
                 if (_categories.isEmpty()) {
                     // It's not often any item is added to this list so we use CopyOnWriteArrayList
-                    _categories = QList<Category*>(_categories);
+                    _categories = QList<Category>(_categories);
                     //registerCategory(ITEM);
                     _categories.append(ITEM);
 //                    registerCategory(COMMON);
@@ -51,14 +51,14 @@
                 }
             }
         }
-        return QList<Category*>(_categories);
+        return QList<Category>(_categories);
     }
 
     /**
      * Register a category
      * @param category the category
      */
-    /*public*/  /*static*/ void Category::registerCategory(Category* category) {
+    /*public*/  /*static*/ void Category::registerCategory(Category category) {
         // Ensure that the _categories variable is initialized
         values();
 
@@ -69,7 +69,7 @@
 
 
 
-    /*protected*/ Category::Category(QString name, QString description, int order, QObject* parent) {
+    /*protected*/ Category::Category(QString name, QString description, int order) {
         _name = name;
         _description = description;
         _order = order;
@@ -88,13 +88,18 @@
         return _order;
     }
 
+    /*public*/  QString Category::description() const {
+     return _description;
+    }
+
+
     //@Override
-    /*public*/ bool Category::equals(QObject* o) {
-        if (qobject_cast<Category*>(o)) {
-            Category* c = (Category*)o;
-            return _description == (c->_description) && _name == (c->_name);
-        }
-        return false;
+    /*public*/ bool Category::equals(Category o) {
+//        if (static_cast<Category>(o)) {
+            Category c = (Category)o;
+            return _description == (c._description) && _name == (c._name);
+//        }
+//        return false;
     }
 
     //@Override
@@ -104,9 +109,9 @@
     }
 
     //@Override
-    /*public*/  int  Category::compareTo(Category* c) {
-        if (_order < c->order()) return -1;
-        if (_order > c->order()) return 1;
+    /*public*/  int  Category::compareTo(Category c) {
+        if (_order < c.order()) return -1;
+        if (_order > c.order()) return 1;
         return 0;
     }
-/*private*/ /*static*/ /*volatile*/ QList<Category*> Category::_categories = QList<Category*>();
+/*private*/ /*static*/ /*volatile*/ QList<Category> Category::_categories = QList<Category>();

@@ -12,7 +12,7 @@ class ExpressionMemorySwing : public AbstractDigitalExpressionSwing
 {
   Q_OBJECT
  public:
-  explicit ExpressionMemorySwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionMemorySwing(QObject *parent = nullptr);
   ~ExpressionMemorySwing() {}
   ExpressionMemorySwing(const ExpressionMemorySwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

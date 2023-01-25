@@ -57,7 +57,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/   Category* StringExpressionMemory::getCategory() {
+/*public*/   Category StringExpressionMemory::getCategory() {
     return Category::ITEM;
 }
 

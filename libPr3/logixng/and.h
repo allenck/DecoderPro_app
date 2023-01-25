@@ -11,7 +11,7 @@ class And : public AbstractDigitalExpression, public FemaleSocketListener
   Q_OBJECT
   Q_INTERFACES(FemaleSocketListener)
  public:
-  explicit And(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE explicit And(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  And(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /* This class is public  since ExpressionAndXml needs to access it. */
@@ -30,7 +30,7 @@ class And : public AbstractDigitalExpression, public FemaleSocketListener
     friend class And;
   };
   /*public*/  QString getExpressionSystemName(int index);
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  bool evaluate() /*throws JmriException*/ override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

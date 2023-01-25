@@ -12,10 +12,10 @@
     /**
      * A item on the layout, for example turnout, sensor and signal mast.
      */
-    /*public*/ /*static*/ /*final*/ CategoryLocoNet* CategoryLocoNet::LOCONET = new CategoryLocoNet();
+    /*public*/ /*static*/ /*final*/ CategoryLocoNet CategoryLocoNet::LOCONET = CategoryLocoNet();
 
 
-    /*public*/ CategoryLocoNet::CategoryLocoNet(QObject *parent ) : Category("LOCONET", tr("LocoNet"), 300, parent){
+    /*public*/ CategoryLocoNet::CategoryLocoNet() : Category("LOCONET", "LocoNet", 300){
 
     }
 

@@ -99,7 +99,7 @@ QObject* bself() override{ return (QObject*)this;}
     }
 
     //@Override
-    /*public*/  Category* getCategory() override{
+    /*public*/  Category getCategory() override{
         throw new UnsupportedOperationException("Not supported");
     }
 

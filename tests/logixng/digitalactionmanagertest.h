@@ -97,7 +97,7 @@ public:
     }
 
     //@Override
-    /*public*/  Category* getCategory() override{
+    /*public*/  Category getCategory() override{
         throw new UnsupportedOperationException("Not supported");
     }
 

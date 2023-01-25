@@ -81,7 +81,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* Antecedent::getCategory() {
+/*public*/  Category Antecedent::getCategory() {
     return Category::COMMON;
 }
 

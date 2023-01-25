@@ -107,7 +107,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* DigitalBooleanMany::getCategory() {
+/*public*/  Category DigitalBooleanMany::getCategory() {
     return Category::COMMON;
 }
 

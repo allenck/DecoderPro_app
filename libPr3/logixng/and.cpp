@@ -67,7 +67,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* And::getCategory() {
+/*public*/  Category And::getCategory() {
     return Category::COMMON;
 }
 

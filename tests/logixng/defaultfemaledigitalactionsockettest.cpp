@@ -74,7 +74,7 @@
 
     //@Test
     /*public*/  void DefaultFemaleDigitalActionSocketTest::testGetConnectableClasses() {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> map = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+        QHash<Category, QList</*Class<? extends Base>*/QString>> map = QHash<Category, QList</*Class<? extends Base>*/QString>>();
 
         QList<QString> classes = QList<QString>();
         classes.append("ActionAudio");
@@ -175,7 +175,7 @@
     /*public*/  void DefaultFemaleDigitalActionSocketTest::tearDown() {
         LogixNG_Thread::stopAllLogixNGThreads();
         JUnitUtil::deregisterBlockManagerShutdownTask();
-        JUnitUtil::deregisterEditorManagerShutdownTask();
+        JUnitUtil::deregisterEditorManagerShutdownTask(); // not registered?
         JUnitUtil::tearDown();
     }
 

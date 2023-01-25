@@ -7,7 +7,7 @@ class AndSwing : public AbstractDigitalExpressionSwing
 {
   Q_OBJECT
  public:
-  explicit AndSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("AndSwing");}
+ Q_INVOKABLE  explicit AndSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("AndSwing");}
   ~AndSwing() {}
   AndSwing(const AndSwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages) override;

@@ -11,7 +11,7 @@ class ActionClock : public AbstractDigitalAction
 {
   Q_OBJECT
  public:
-   ActionClock(QString sys, QString user, QObject *parent = nullptr);
+   Q_INVOKABLE ActionClock(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  /*enum*/ class ClockState {
     public:
 //      SetClock(Bundle.getMessage("ActionClock_SetClock")),
@@ -52,7 +52,7 @@ class ActionClock : public AbstractDigitalAction
    /*public*/  void setClockTime(int minutes);
    /*public*/  int getClockTime();
    /*public*/  static QString formatTime(int minutes);
-   /*public*/  Category* getCategory()override;
+   /*public*/  Category getCategory()override;
    /*public*/  void execute() /*throws JmriException*/override;
    /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
    /*public*/  int getChildCount()override;

@@ -20,7 +20,7 @@ class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, 
  public:
   TableForEach(QString sys, QString user, QObject* parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws JmriException*/;
-  /*public*/  Category* getCategory();
+  /*public*/  Category getCategory();
   /*public*/  void execute() /*throws JmriException */;
   /*public*/  void setTable(/*@Nonnull*/ QString tableName);
   /*public*/  void setAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/;

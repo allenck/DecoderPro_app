@@ -36,7 +36,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* DigitalBooleanOnChange::getCategory() {
+/*public*/  Category DigitalBooleanOnChange::getCategory() {
     return Category::COMMON;
 }
 

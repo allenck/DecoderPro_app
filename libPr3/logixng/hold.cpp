@@ -41,7 +41,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* Hold::getCategory() {
+    /*public*/  Category Hold::getCategory() {
         return Category::OTHER;
     }
 

@@ -46,7 +46,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* ExecuteDelayed::getCategory() {
+/*public*/  Category ExecuteDelayed::getCategory() {
     return Category::COMMON;
 }
 /*

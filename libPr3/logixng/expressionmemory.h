@@ -138,7 +138,7 @@ class ExpressionMemory : public AbstractDigitalExpression, public PropertyChange
   /*public*/  CompareTo::TYPE getCompareTo();
   /*public*/  void setCaseInsensitive(bool caseInsensitive);
   /*public*/  bool getCaseInsensitive();
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  bool evaluate() override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;
   /*public*/  int getChildCount() override;

@@ -250,14 +250,14 @@
      */
     /*final*/ /*protected*/ void TreeEditor::addPressed(FemaleSocket* femaleSocket, TreePath* path) {
 
-        QHash<Category*, QList</*Class<? extends Base>*/QString> > connectableClasses =
+        QHash<Category, QList</*Class<? extends Base>*/QString> > connectableClasses =
                 femaleSocket->getConnectableClasses();
 
         _categoryComboBox->clear();
-        QList<Category*> list = QList<Category*>(connectableClasses.keys());
+        QList<Category> list = QList<Category>(connectableClasses.keys());
 // TODO:       Collections.sort(list);
-        for (Category* item : list) {
-            _categoryComboBox->addItem(VPtr<Category>::asQVariant(item));
+        for (Category item : list) {
+            _categoryComboBox->addItem(item.name());
         }
 //  TODO:      JComboBoxUtil.setupComboBoxMaxRows(_categoryComboBox);
 
@@ -266,7 +266,7 @@
         }
 
         connect(_categoryComboBox, &JComboBox::itemStateChanged, [=] {
-            Category* category = VPtr<Category>::asPtr(_categoryComboBox->getItemAt(_categoryComboBox->getSelectedIndex()));
+            Category category = Category(_categoryComboBox->currentText(), "", 0);//_categoryComboBox->getItemAt(_categoryComboBox->getSelectedIndex()));
             _swingConfiguratorComboBox->clear();
             QList</*Class<? extends Base>*/QString> classes = connectableClasses.value(category);
             if (!classes.isEmpty()) {

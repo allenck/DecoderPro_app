@@ -14,8 +14,8 @@ class FemaleSocketTestBase : public QObject
 public:
     explicit FemaleSocketTestBase(QObject *parent = nullptr);
     /*public*/  /*final*/ bool isConnectionClassesEquals(
-            QHash<Category*, QList</*Class<? extends Base>*/QString>> expectedMap,
-            QHash<Category*, QList</*Class<? extends Base>*/QString>> actualMap);
+            QHash<Category, QList</*Class<? extends Base>*/QString>> expectedMap,
+            QHash<Category, QList</*Class<? extends Base>*/QString>> actualMap);
 
 signals:
 public slots:
@@ -36,7 +36,7 @@ public slots:
 private:
   static Logger* log;
     /*private*/ /*SortedSet*/QSet<QString> getClassNames(QList</*Class<? extends Base>*/QString> classes);
-    /*private*/ bool isSetsEqual(Category* category, /*SortedSet*/QSet<QString> set1, /*SortedSet*/QSet<QString> set2);
+    /*private*/ bool isSetsEqual(Category category, /*SortedSet*/QSet<QString> set1, /*SortedSet*/QSet<QString> set2);
     /*private*/ bool setName_verifyException(QString newName, QString expectedExceptionMessage);
     /*private*/ class IncompatibleMaleSocket : public QObject, public MaleSocket {
     public:
@@ -153,7 +153,7 @@ private:
         }
 
         //@Override
-        /*public*/  Category* getCategory() override {
+        /*public*/  Category getCategory() override {
             throw new UnsupportedOperationException("Not supported.");
         }
 

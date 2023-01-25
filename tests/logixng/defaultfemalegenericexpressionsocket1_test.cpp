@@ -184,7 +184,7 @@
     }
 
     /*private*/ void DefaultFemaleGenericExpressionSocket1_Test::checkConnectableClasses(FemaleSocket* femaleSocket) {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> classes = femaleSocket->getConnectableClasses();
+        QHash<Category, QList</*Class<? extends Base>*/QString>> classes = femaleSocket->getConnectableClasses();
         //Assert::assertNotNull("classes is not null", classes, __FILE__, __LINE__);
         Assert::assertTrue("classes is not null", !classes.isEmpty(), __FILE__, __LINE__);
         Assert::assertFalse("classes is not empty", classes.isEmpty(), __FILE__, __LINE__);

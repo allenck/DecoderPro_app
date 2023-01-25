@@ -14,12 +14,12 @@
     }
 
     //@Override
-    /*public*/ QSet<QHash<Category*, /*Class<? extends DigitalExpressionBean>*/QString>> ExpressionFactory::getExpressionClasses() {
-        QSet<QHash<Category*,/* Class<? extends DigitalExpressionBean>*/QString>> expressionClasses = QSet<QHash<Category*,/* Class<? extends DigitalExpressionBean>*/QString>>();
+    /*public*/ QSet<QHash<Category, /*Class<? extends DigitalExpressionBean>*/QString>> ExpressionFactory::getExpressionClasses() {
+        QSet<QHash<Category,/* Class<? extends DigitalExpressionBean>*/QString>> expressionClasses = QSet<QHash<Category,/* Class<? extends DigitalExpressionBean>*/QString>>();
 
         // We don't want to add these classes if we don't have a LocoNet connection
         if (CategoryLocoNet::hasLocoNet()) {
-            expressionClasses.insert(QHash<Category*,QString> {{CategoryLocoNet::LOCONET, "ExpressionSlotUsage"}});
+            expressionClasses.insert(QHash<Category,QString> {{CategoryLocoNet::LOCONET, "ExpressionSlotUsage"}});
         }
 
         return expressionClasses;

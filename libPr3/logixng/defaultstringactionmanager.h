@@ -19,7 +19,7 @@ class DefaultStringActionManager : public AbstractBaseManager, public StringActi
   /*public*/  QChar typeLetter() const override;
   /*public*/  FemaleStringActionSocket* createFemaleSocket(
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
-  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getActionClasses()override;
+  /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getActionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  void deleteStringAction(MaleStringActionSocket* x)override;
   static /*public*/  DefaultStringActionManager* instance();
@@ -33,7 +33,7 @@ QString getClassName() override {return ".jmri.jmrit.logixng.implementation.Defa
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+  /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultStringActionManager* _instance;// = null;
 

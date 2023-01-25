@@ -14,7 +14,7 @@ class DefaultFemaleStringActionSocket : public AbstractFemaleSocket, public Fema
   /*public*/  void setValue(QString value) /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
-  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getConnectableClasses()override;
+  /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getConnectableClasses()override;
   /*public*/  void disposeMe()override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.implementation.DefaultFemaleStringActionSocket";}
 

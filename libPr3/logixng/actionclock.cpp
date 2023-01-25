@@ -62,7 +62,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionClock::getCategory() {
+    /*public*/  Category ActionClock::getCategory() {
         return Category::ITEM;
     }
 

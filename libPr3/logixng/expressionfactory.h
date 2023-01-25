@@ -18,7 +18,7 @@ class ExpressionFactory : public QObject, public DigitalExpressionFactory
       }
   };
   /*public*/ void init()override;
-  /*public*/ QSet<QHash<Category*, /*Class<? extends DigitalExpressionBean>*/QString>> getExpressionClasses()override;
+  /*public*/ QSet<QHash<Category, /*Class<? extends DigitalExpressionBean>*/QString>> getExpressionClasses()override;
 
  signals:
 

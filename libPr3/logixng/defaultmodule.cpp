@@ -150,7 +150,7 @@
 }
 
 //@Override
-/*public*/  Category* DefaultModule::getCategory() {
+/*public*/  Category DefaultModule::getCategory() {
     return Category::OTHER;
 }
 /*

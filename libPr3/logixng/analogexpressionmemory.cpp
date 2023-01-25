@@ -56,7 +56,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* AnalogExpressionMemory::getCategory() {
+    /*public*/  Category AnalogExpressionMemory::getCategory() {
         return Category::ITEM;
     }
 

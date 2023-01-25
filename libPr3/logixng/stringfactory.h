@@ -10,7 +10,7 @@ class StringFactory : public QObject, public StringExpressionFactory
   Q_INTERFACES(StringExpressionFactory)
  public:
   StringFactory(QObject* parent = nullptr) : QObject(parent) {setObjectName("StringFactory");}
-  /*public*/ QSet<QHash<Category*, /*Class<? extends Base>*/QString>> getClasses();
+  /*public*/ QSet<QHash<Category, /*Class<? extends Base>*/QString>> getClasses();
 
 };
 

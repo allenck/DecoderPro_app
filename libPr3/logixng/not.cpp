@@ -36,7 +36,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* Not::getCategory() {
+/*public*/  Category Not::getCategory() {
     return Category::COMMON;
 }
 

@@ -33,7 +33,7 @@
     (new DigitalFactory())->init();
     (new ActionFactory_LocoNet())->init();
 
-    for (Category* category : Category::values()) {
+    for (Category category : Category::values()) {
         actionClassList.insert(category, QList<QString>());
     }
 
@@ -46,10 +46,10 @@
     QList<DigitalActionFactory*> factories = {(DigitalActionFactory*) new ActionFactory(), (DigitalActionFactory*)new DigitalFactory()};
     for(DigitalActionFactory* actionFactory : factories)
     {
-     QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> sets = actionFactory->getActionClasses();
-     for (QHash<Category*, /*Class<? extends DigitalActionBean>*/QString> set : sets)
+     QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> sets = actionFactory->getActionClasses();
+     for (QHash<Category, /*Class<? extends DigitalActionBean>*/QString> set : sets)
      {
-      QHashIterator<Category*, QString> entry(set);
+      QHashIterator<Category, QString> entry(set);
       while(entry.hasNext())
       {
        entry.next();
@@ -139,7 +139,7 @@
 }
 
 //@Override
-/*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultDigitalActionManager::getActionClasses() {
+/*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> DefaultDigitalActionManager::getActionClasses() {
     return actionClassList;
 }
 

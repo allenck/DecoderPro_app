@@ -71,7 +71,7 @@ class ActionTurnoutLock : public AbstractDigitalAction, public VetoableChangeLis
   /*public*/  QString getLockLocalVariable();
   /*public*/  void setLockFormula(/*Nonnull*/ QString formula) /*throws ParserException*/ ;
   /*public*/  QString getLockFormula();
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  void execute() /*throws JmriException*/  override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override;
   /*public*/  int getChildCount()  override;

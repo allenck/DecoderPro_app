@@ -22,7 +22,9 @@ ActionClockSwing::ActionClockSwing(QObject *parent) : AbstractDigitalActionSwing
 
     //@Override
     /*protected*/ void ActionClockSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionClock* action = (ActionClock*) object->bself();
+        ActionClock* action = nullptr;
+        if(object)
+         action = (ActionClock*) object->bself();
 
         panel = new JPanel(new FlowLayout());
 

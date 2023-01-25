@@ -10,7 +10,7 @@ class AnalogExpressionConstant : public AbstractAnalogExpression
  public:
   explicit AnalogExpressionConstant(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void setValue(double value);
   /*public*/  double getValue();
   /*public*/  double evaluate()override;

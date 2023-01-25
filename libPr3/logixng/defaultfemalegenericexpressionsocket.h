@@ -28,7 +28,7 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*public*/  QVariant evaluateGeneric() /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
-  /*public*/  QHash<Category *, QList<QString> > getConnectableClasses()override;
+  /*public*/  QHash<Category, QList<QString> > getConnectableClasses()override;
   /*public*/  void _connect(MaleSocket* socket) /*throws SocketAlreadyConnectedException*/override;
   /*public*/  void _disconnect()override;
   /*public*/  MaleSocket* getConnectedSocket() override;
@@ -50,8 +50,8 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*private*/ /*final*/ FemaleStringExpressionSocket* _stringSocket;// = new DefaultFemaleStringExpressionSocket(this, this, "S");
   /*private*/ bool _do_i18n;
   /*private*/ void addClassesToMap(
-    QHash<Category*, QList</*Class<? extends Base>*/QString> > destinationClasses,
-    QHash<Category*, QList</*Class<? extends Base>*/QString> > sourceClasses);
+    QHash<Category, QList</*Class<? extends Base>*/QString> > destinationClasses,
+    QHash<Category, QList</*Class<? extends Base>*/QString> > sourceClasses);
 
 };
 

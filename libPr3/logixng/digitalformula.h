@@ -52,7 +52,7 @@ class DigitalFormula : public AbstractDigitalExpression, public FemaleSocketList
   /*public*/  QString getExpressionManager(int index);
   /*public*/  /*final*/ void setFormula(QString formula) /*throws ParserException */;
   /*public*/  QString getFormula();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  bool evaluate() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

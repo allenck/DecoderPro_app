@@ -233,7 +233,7 @@ static final Hashtable methodCache;
  return categoryName;
 }
 #if 0
-/*public*/ /*Category*/Logger* LoggingEvent::getLogger() {
+/*public*/ /*Category/Logger* LoggingEvent::getLogger() {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: getfield      org/apache/log4j/spi/LoggingEvent.logger:Lorg/apache/log4j/Category;

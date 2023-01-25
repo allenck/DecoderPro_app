@@ -88,7 +88,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*final*/ Category* AbstractMaleSocket::getCategory() {
+/*public*/ /*final*/ Category AbstractMaleSocket::getCategory() {
     return _object->getCategory();
 }
 

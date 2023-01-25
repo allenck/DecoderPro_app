@@ -99,7 +99,7 @@ class ActionTurnout : public AbstractDigitalAction, public VetoableChangeListene
   /*public*/  QString getStateLocalVariable() ;
   /*public*/  void setStateFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/;
   /*public*/  QString getStateFormula();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override;
   /*public*/  int getChildCount() override;

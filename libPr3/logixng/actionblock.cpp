@@ -269,7 +269,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionBlock::getCategory() {
+    /*public*/  Category ActionBlock::getCategory() {
         return Category::ITEM;
     }
 

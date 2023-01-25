@@ -42,7 +42,7 @@
 //                actionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
 //        }
-          QSet<QHash<Category*, /*Class<? extends Base>*/QString>> classes = (new StringFactory())->getClasses();
+          QSet<QHash<Category, /*Class<? extends Base>*/QString>> classes = (new StringFactory())->getClasses();
 
 //        for (MaleStringActionSocketFactory* maleSocketFactory : ServiceLoader.load(MaleStringActionSocketFactory.class)) {
 //            _maleSocketFactories.add(maleSocketFactory);
@@ -135,7 +135,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category *, QList<QString> > DefaultStringActionManager::getActionClasses() {
+    /*public*/  QHash<Category, QList<QString> > DefaultStringActionManager::getActionClasses() {
         return actionClassList;
     }
 

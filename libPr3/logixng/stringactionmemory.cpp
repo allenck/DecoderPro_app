@@ -107,7 +107,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* StringActionMemory::getCategory() {
+    /*public*/  Category StringActionMemory::getCategory() {
         return Category::ITEM;
     }
 

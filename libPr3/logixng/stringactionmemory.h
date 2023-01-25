@@ -24,7 +24,7 @@ class StringActionMemory : public AbstractStringAction, public VetoableChangeLis
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  void setup()override;

@@ -41,7 +41,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleDigitalBooleanActionSocket::getConnectableClasses() {
+    /*public*/  QHash<Category, QList<QString> > DefaultFemaleDigitalBooleanActionSocket::getConnectableClasses() {
         return ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getActionClasses();
     }
 

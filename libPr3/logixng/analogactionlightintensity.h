@@ -27,7 +27,7 @@ class AnalogActionLightIntensity : public AbstractAnalogAction, public VetoableC
   /*public*/  QString getLocalVariable() ;
   /*public*/  void setFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/;
   /*public*/  QString getFormula() ;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void setValue(double value) /*throws JmriException*/ override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;
   /*public*/  int getChildCount() override;

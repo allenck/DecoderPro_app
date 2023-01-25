@@ -214,7 +214,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ExpressionLight::getCategory() {
+    /*public*/  Category ExpressionLight::getCategory() {
         return Category::ITEM;
     }
 

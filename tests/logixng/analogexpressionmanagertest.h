@@ -94,7 +94,7 @@ class AnalogExpressionManagerTest : public AbstractManagerTestBase
       }
 
       //@Override
-      /*public*/  Category* getCategory() {
+      /*public*/  Category getCategory() {
           throw new UnsupportedOperationException("Not supported");
       }
 

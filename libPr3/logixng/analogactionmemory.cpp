@@ -127,7 +127,7 @@ void AAMRun::run()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* AnalogActionMemory::getCategory() {
+/*public*/  Category AnalogActionMemory::getCategory() {
     return Category::ITEM;
 }
 

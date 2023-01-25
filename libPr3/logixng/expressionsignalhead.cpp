@@ -313,7 +313,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ExpressionSignalHead::getCategory() {
+    /*public*/  Category ExpressionSignalHead::getCategory() {
         return Category::ITEM;
     }
 

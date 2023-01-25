@@ -17,7 +17,7 @@ class ActionAtomicBoolean : public AbstractDigitalAction
   /*public*/  AtomicBoolean* getAtomicBoolean();
   /*public*/  void setNewValue(bool newValue);
   /*public*/  bool getNewValue();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute()override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;
   /*public*/  int getChildCount()override;

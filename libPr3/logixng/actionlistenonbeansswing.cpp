@@ -23,7 +23,9 @@ ActionListenOnBeansSwing::ActionListenOnBeansSwing(QObject *parent) : AbstractDi
         if ((object != nullptr) && (! (qobject_cast<ActionListenOnBeans*>(object->bself())))) {
             throw new IllegalArgumentException(QString("object is not a Module: ") + object->bself()->metaObject()->className());
         }
-        ActionListenOnBeans* listenOnBeans = (ActionListenOnBeans*)object->bself();
+        ActionListenOnBeans* listenOnBeans = nullptr;
+        if(object)
+         listenOnBeans = (ActionListenOnBeans*)object->bself();
 
         panel = new JPanel();
 

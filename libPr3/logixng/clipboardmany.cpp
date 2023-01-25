@@ -94,7 +94,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Category* ClipboardMany::getCategory() {
+    /*public*/ Category ClipboardMany::getCategory() {
         return Category::COMMON;
     }
 

@@ -6,8 +6,8 @@
 class CategoryLocoNet : public Category
 {
  public:
-  explicit CategoryLocoNet(QObject *parent = nullptr);
-  /*public*/ static /*final*/ CategoryLocoNet* LOCONET;// = new CategoryLocoNet();
+  explicit CategoryLocoNet();
+  /*public*/ static /*final*/ CategoryLocoNet LOCONET;// = new CategoryLocoNet();
   /*public*/ static void registerCategory();
   /*public*/ static bool hasLocoNet();
 

@@ -22,7 +22,8 @@
 
     //@Override
     /*protected*/ void ActionSignalHeadSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionSignalHead* action = (ActionSignalHead*)object->bself();
+        ActionSignalHead* action = nullptr;
+        if(object) action =(ActionSignalHead*)object->bself();
 
         panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
@@ -367,8 +368,10 @@ used to tell JMRI which %2 the indirect addressed signal %1 may show.</html>").a
         }
         ActionSignalHead* action = (ActionSignalHead*)object->bself();
         if (_tabbedPaneSignalHead->getSelectedComponent() == _panelSignalHeadDirect) {
-            SignalHead* signalHead = (SignalHead*)_signalHeadBeanPanel->getNamedBean()->self();
-            if (signalHead != nullptr) {
+            //SignalHead* signalHead = (SignalHead*)_signalHeadBeanPanel->getNamedBean()->self();
+            SignalHead* signalHead = nullptr;
+            NamedBean* nb = _signalHeadBeanPanel->getNamedBean();
+            if (nb != nullptr) {
                 NamedBeanHandle<SignalHead*>* handle
                         = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
                                 ->getNamedBeanHandle(signalHead->getDisplayName(), signalHead);

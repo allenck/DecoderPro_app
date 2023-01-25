@@ -78,7 +78,7 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
 
     //@Test
     /*public*/  void DefaultFemaleAnalogActionSocketTest::testGetConnectableClasses() {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> map = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+        QHash<Category, QList</*Class<? extends Base>*/QString>> map = QHash<Category, QList</*Class<? extends Base>*/QString>>();
 
         QList</*Class<? extends Base>*/QString> classes = QList</*Class<? extends Base>*/QString>();
         classes.append("AnalogActionLightIntensity");
@@ -92,7 +92,7 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
         classes = QList</*Class<? extends Base>*/QString>();
         map.insert(Category::OTHER, classes);
 
-        QHash<Category*, QList<QString> > expected = _femaleSocket->getConnectableClasses();
+        QHash<Category, QList<QString> > expected = _femaleSocket->getConnectableClasses();
         Assert::assertTrue("maps are equal",
                 isConnectionClassesEquals(map, _femaleSocket->getConnectableClasses()), __FILE__, __LINE__);
     }
@@ -101,7 +101,7 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
     public  void DefaultFemaleAnalogActionSocketTest::testCategory() {
         // Test that the classes method getCategory() returns the same value as
         // the factory.
-        QHash<Category*, QList<Class<? extends Base>QString>> map = femaleSocket.getConnectableClasses();
+        QHash<Category, QList<Class<? extends Base>QString>> map = femaleSocket.getConnectableClasses();
 
         for (Map.Entry<Category, List<Class<? extends Base>>> entry : map.entrySet()) {
 

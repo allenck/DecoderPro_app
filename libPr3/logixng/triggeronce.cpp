@@ -39,7 +39,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* TriggerOnce::getCategory() {
+/*public*/  Category TriggerOnce::getCategory() {
     return Category::OTHER;
 }
 

@@ -26,7 +26,9 @@ setObjectName("ActionBlockSwing");
 
     //@Override
     /*protected*/ void ActionBlockSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionBlock* action = (ActionBlock*)object->bself();
+        ActionBlock* action = nullptr;
+        if(object)
+         action =(ActionBlock*)object->bself();
 
         panel = new JPanel(new FlowLayout());
         // Left section
@@ -321,8 +323,10 @@ setObjectName("ActionBlockSwing");
         ActionBlock* action = (ActionBlock*) object->bself();
 
         if (_tabbedPaneBlock->getSelectedComponent() == _panelBlockDirect) {
-            Block* block = (Block*)_blockBeanPanel->getNamedBean()->self();
-            if (block != nullptr) {
+            //Block* block = (Block*)_blockBeanPanel->getNamedBean()->self();
+            Block* block = nullptr;
+            NamedBean* nb = _blockBeanPanel->getNamedBean();
+            if (nb != nullptr) {
                 NamedBeanHandle<Block*>* handle
                         = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
                                 ->getNamedBeanHandle(block->getDisplayName(), block);

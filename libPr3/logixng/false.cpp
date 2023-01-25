@@ -28,7 +28,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* False::getCategory() {
+    /*public*/  Category False::getCategory() {
         return Category::OTHER;
     }
 

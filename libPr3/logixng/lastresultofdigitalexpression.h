@@ -17,7 +17,7 @@ class LastResultOfDigitalExpression : public AbstractDigitalExpression, public P
   /*public*/  void setDigitalExpression(/*@Nonnull*/ DigitalExpressionBean* digitalExpression);
   /*public*/  void removeDigitalExpression() ;
   /*public*/  NamedBeanHandle<DigitalExpressionBean*>* getDigitalExpression();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  bool evaluate() override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

@@ -40,7 +40,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void setSocketSystemName(QString systemName);
   /*public*/  QString getSocketSystemName();
   /*final*/ /*public*/  void setup()override;

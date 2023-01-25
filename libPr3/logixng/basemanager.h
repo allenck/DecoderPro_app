@@ -70,7 +70,8 @@ class MaleSocketFactory;
      * Register a male socket factory.
      * @param factory the factory
      */
-  /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory){throw new UnsupportedOperationException("registerMaleSocketFactory not implemented");}
+//  /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory){throw new UnsupportedOperationException("registerMaleSocketFactory not implemented");}
+  /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)=0;
 
   virtual QString getClassName() =0;
 

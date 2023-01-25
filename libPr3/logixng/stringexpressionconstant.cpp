@@ -34,7 +34,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* StringExpressionConstant::getCategory() {
+/*public*/  Category StringExpressionConstant::getCategory() {
     return Category::ITEM;
 }
 

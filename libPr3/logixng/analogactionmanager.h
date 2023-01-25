@@ -38,7 +38,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/virtual QHash<Category*, QList</*Class<? extends Base>*/QString > > getActionClasses()=0;
+    /*public*/virtual QHash<Category, QList</*Class<? extends Base>*/QString > > getActionClasses()=0;
 
     /*.*
      * Add an Action.

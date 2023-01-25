@@ -19,7 +19,7 @@ public:
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QSet<QHash<Category*, /*Class<? extends DigitalActionBean>>*/QString>> getActionClasses()=0;
+    /*public*/ virtual QSet<QHash<Category, /*Class<? extends DigitalActionBean>>*/QString>> getActionClasses()=0;
 
 };
 Q_DECLARE_INTERFACE(DigitalActionFactory, "DigitalActionFactory")

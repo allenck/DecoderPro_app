@@ -46,7 +46,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category*, QList<QString> > DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
+    /*public*/  QHash<Category, QList<QString> > DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
         return ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses();
     }
 

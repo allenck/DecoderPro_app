@@ -36,7 +36,7 @@ class StringFormula : public AbstractStringExpression, public FemaleSocketListen
   /*public*/  QString getExpressionManager(int index);
   /*public*/  /*final*/ void setFormula(QString formula) /*throws ParserException*/ ;
   /*public*/  QString getFormula();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  QString evaluate() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;
   /*public*/  int getChildCount()override;

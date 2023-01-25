@@ -202,7 +202,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* ActionSensor::getCategory() {
+/*public*/  Category ActionSensor::getCategory() {
     return Category::ITEM;
 }
 

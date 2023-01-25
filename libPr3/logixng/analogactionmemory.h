@@ -24,7 +24,7 @@ class AnalogActionMemory : public AbstractAnalogAction, public VetoableChangeLis
   /*public*/  FemaleSocket* getChild(int index)
           /*throws IllegalArgumentException, UnsupportedOperationException*/ override;
   /*public*/  int getChildCount()override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  void setup() override;

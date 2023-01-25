@@ -35,7 +35,7 @@
 //        }
         (new DigitalBooleanFactory())->init();
 
-        for (Category* category : Category::values()) {
+        for (Category category : Category::values()) {
             actionClassList.insert(category, QList<QString>());
         }
 
@@ -45,10 +45,10 @@
 //                actionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
 //        }
-        //QSetIterator<QHash<Category*, QString>> entry((new DigitalBooleanFactory())->getClasses());
-        for(QHash<Category*, QString> map : (new DigitalBooleanFactory())->getClasses())
+        //QSetIterator<QHash<Category, QString>> entry((new DigitalBooleanFactory())->getClasses());
+        for(QHash<Category, QString> map : (new DigitalBooleanFactory())->getClasses())
         {
-         QHashIterator<Category*, QString> entry(map);
+         QHashIterator<Category, QString> entry(map);
          while(entry.hasNext())
          {
           entry.next();
@@ -148,7 +148,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultDigitalBooleanActionManager::getActionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> DefaultDigitalBooleanActionManager::getActionClasses() {
         return actionClassList;
     }
 

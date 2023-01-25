@@ -22,62 +22,66 @@ class Item;
 class Item;
 class Common;
 class Other;
-/*public*/ /*abstract*/ class Category : public QObject//, Comparable<Category>
+/*public*/ /*abstract*/ class Category //: public QObject//, Comparable<Category>
 {
- Q_OBJECT
+ //Q_OBJECT
  protected:
-  /*protected*/ Category(QString name, QString description, int order, QObject* parent = nullptr) ;
+  /*protected*/ Category(QString name, QString description, int order/*, QObject* parent = nullptr*/) ;
 
  public:
-  /*public*/  static /*final*/ Item* ITEM;// = new Item();
-  /*public*/  static /*final*/ Common* COMMON;// = new Common();
-  /*public*/  static /*final*/ Other* OTHER;// = new Other();
+  /*public*/  static /*final*/ Item ITEM;// = new Item();
+  /*public*/  static /*final*/ Common COMMON;// = new Common();
+  /*public*/  static /*final*/ Other OTHER;// = new Other();
 
   /*public*/  QString name() const;
   /*public*/  /*final*/ QString toString();
   /*public*/  int order();
-  /*public*/ bool equals(QObject* o);
+  /*public*/ bool equals(Category o);
   /*public*/  uint hashCode();
-  inline bool operator==(const Category &e1)
-  {
-    return _description ==(e1._description) && _name == (e1._name);
-  }
-
-//  inline uint qHash(const Category &key, uint seed) const
-//  {
-//      return key._order;
-//  }
-  /*public*/  int compareTo(Category* c);
-  /*public*/  static QList<Category*> values();
-  /*public*/  static void registerCategory(Category* category);
+  /*public*/ QString description() const;
+  /*public*/  int compareTo(Category c);
+  /*public*/  static QList<Category> values();
+  /*public*/  static void registerCategory(Category category);
 
  private:
-  /*private*/ static /*volatile*/ QList<Category*> _categories;
+  /*private*/ static /*volatile*/ QList<Category> _categories;
 
   /*private*/ /*final*/ QString _name;
   /*private*/ /*final*/ QString _description;
   /*private*/ /*final*/ int _order;
-
-
+  friend class TreeEditor;
 };
+  inline bool operator==(const Category &e1, const Category &e2)
+  {
+    return e2.name() == (e1.name());
+  }
+
+  inline uint qHash(const Category &key, uint seed=0)
+  {
+      return qHash(key.name(), seed);
+  }
+
+
+
+
 
 /*public*/  /*static*/ /*final*/ class Item : public Category {
 public:
-    /*public*/  Item() : Category("ITEM", tr("Item"), 100){
+    /*public*/  Item() : Category("ITEM", QString("Item"), 100){
         //super("ITEM", Bundle.getMessage("CategoryItem"), 100);
     }
 };
 
 /*public*/  /*static*/ /*final*/ class Common : public Category {
 public:
-    /*public*/  Common() : Category("COMMON", tr("Common"), 200){
+    /*public*/  Common() : Category("COMMON", QString("Common"), 200){
         //super("COMMON", Bundle.getMessage("CategoryCommon"), 200);
     }
 };
 
 /*public*/  /*static*/ /*final*/ class Other : public Category {
 public:
-    /*public*/  Other() : Category("OTHER", tr("Other"),300) {
+    /*public*/  Other() : Category("OTHER", QString("Other"),300) {
         //super("OTHER", Bundle.getMessage("CategoryOther"), 300);
     }
 };

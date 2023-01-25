@@ -74,7 +74,7 @@
 
     //@Test
     /*public*/  void DefaultFemaleDigitalBooleanActionSocketTest::testGetConnectableClasses() {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> map = QHash<Category*, QList<QString>>();
+        QHash<Category, QList</*Class<? extends Base>*/QString>> map = QHash<Category, QList<QString>>();
 
         QList</*Class<? extends Base>*/QString> classes = QList<QString>();
 //        classes.add(jmri.jmrit.logixng.actions.ActionLight.class);

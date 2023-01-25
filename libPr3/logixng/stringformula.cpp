@@ -119,7 +119,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* StringFormula::getCategory() {
+    /*public*/  Category StringFormula::getCategory() {
         return Category::COMMON;
     }
 

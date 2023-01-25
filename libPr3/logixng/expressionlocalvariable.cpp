@@ -176,7 +176,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ExpressionLocalVariable::getCategory() {
+    /*public*/  Category ExpressionLocalVariable::getCategory() {
         return Category::ITEM;
     }
 

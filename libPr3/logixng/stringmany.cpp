@@ -102,7 +102,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* StringMany::getCategory() {
+/*public*/  Category StringMany::getCategory() {
     return Category::COMMON;
 }
 

@@ -205,7 +205,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* ExpressionMemory::getCategory() {
+/*public*/  Category ExpressionMemory::getCategory() {
     return Category::ITEM;
 }
 

@@ -121,7 +121,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* AnalogFormula::getCategory() {
+    /*public*/  Category AnalogFormula::getCategory() {
         return Category::COMMON;
     }
 

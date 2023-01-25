@@ -25,7 +25,8 @@ ActionSensorSwing::ActionSensorSwing(QObject *parent) : AbstractDigitalActionSwi
 
     //@Override
     /*protected*/ void ActionSensorSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionSensor* action = (ActionSensor*)object->bself();
+        ActionSensor* action = nullptr;
+        if(object) action=(ActionSensor*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 
@@ -191,7 +192,9 @@ ActionSensorSwing::ActionSensorSwing(QObject *parent) : AbstractDigitalActionSwi
         }
         ActionSensor* action = (ActionSensor*)object->bself();
         if (_tabbedPaneSensor->getSelectedComponent() == _panelSensorDirect) {
-            Sensor* sensor = (Sensor*)sensorBeanPanel->getNamedBean()->self();
+//            Sensor* sensor = (Sensor*)sensorBeanPanel->getNamedBean()->self();
+         Sensor* sensor = nullptr;
+         NamedBean*nb = sensorBeanPanel->getNamedBean();
             if (sensor != nullptr) {
                 NamedBeanHandle<Sensor*>* handle
                         = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))

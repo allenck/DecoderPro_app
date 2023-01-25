@@ -37,7 +37,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* Logix_Emulator::getCategory() {
+/*public*/  Category Logix_Emulator::getCategory() {
     return Category::OTHER;
 }
 

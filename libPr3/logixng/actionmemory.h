@@ -17,7 +17,7 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener VetoableChangeListener)
  public:
-  explicit ActionMemory(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionMemory(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  /*enum*/class  MemoryOperation {
 //      SetToNull(Bundle.getMessage("ActionMemory_MemoryOperation_SetToNull")),
 //      SetToString(Bundle.getMessage("ActionMemory_MemoryOperation_SetToString")),
@@ -78,7 +78,7 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
   /*public*/  QString getOtherLocalVariable();
   /*public*/  void setOtherFormula(QString formula) /*throws ParserException */;
   /*public*/  QString getOtherFormula();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override;
   /*public*/  int getChildCount()override;

@@ -10,7 +10,7 @@ class DigitalFactory : public QObject, public DigitalActionFactory
   Q_INTERFACES(DigitalActionFactory)
  public:
   explicit DigitalFactory(QObject *parent = nullptr);
-  /*public*/ QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> getActionClasses()override;
+  /*public*/ QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> getActionClasses()override;
 
  signals:
 

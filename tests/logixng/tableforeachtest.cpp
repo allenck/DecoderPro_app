@@ -292,7 +292,7 @@
         _logixNG->setEnabled(false);
         LogixNG_Thread::stopAllLogixNGThreads();
         JUnitUtil::tearDown();
-        _category = nullptr;
+        _category = Other();
         _logixNG = nullptr;
         _conditionalNG = nullptr;
         _tableForEach = nullptr;

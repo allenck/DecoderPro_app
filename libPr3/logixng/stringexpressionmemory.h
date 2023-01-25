@@ -16,7 +16,7 @@ class StringExpressionMemory : public AbstractStringExpression, public PropertyC
 
   /*public*/   Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/   void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ override;
-  /*public*/   Category* getCategory()override;
+  /*public*/   Category getCategory()override;
   /*public*/   void setMemory(/*@Nonnull*/QString memoryName);
   /*public*/   void setMemory(/*@Nonnull*/ NamedBeanHandle<Memory*>* handle) ;
   /*public*/   void setMemory(/*@Nonnull*/ Memory* memory);

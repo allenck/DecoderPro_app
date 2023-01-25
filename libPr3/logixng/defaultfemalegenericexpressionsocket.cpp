@@ -168,10 +168,10 @@
     }
 
     /*private*/ void DefaultFemaleGenericExpressionSocket::addClassesToMap(
-     QHash<Category*, QList</*Class<? extends Base>*/QString> > destinationClasses,
-     QHash<Category*, QList</*Class<? extends Base>*/QString> > sourceClasses){
+     QHash<Category, QList</*Class<? extends Base>*/QString> > destinationClasses,
+     QHash<Category, QList</*Class<? extends Base>*/QString> > sourceClasses){
 
-        for (Category* category : Category::values()) {
+        for (Category category : Category::values()) {
             // Some categories might not have any expression.
             if (sourceClasses.value(category).isEmpty()) continue;
 
@@ -185,10 +185,10 @@
     }
 
     //@Override
-    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> classes = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+    /*public*/  QHash<Category, QList<QString> > DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
+        QHash<Category, QList</*Class<? extends Base>*/QString>> classes = QHash<Category, QList</*Class<? extends Base>*/QString>>();
 
-        for (Category* category : Category::values()) {
+        for (Category category : Category::values()) {
             classes.insert(category, QList<QString>());
         }
 

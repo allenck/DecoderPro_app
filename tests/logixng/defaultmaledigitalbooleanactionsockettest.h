@@ -76,7 +76,7 @@ class DefaultMaleDigitalBooleanActionSocketTest : public MaleSocketTestBase
       }
 
       //@Override
-      /*public*/  Category* getCategory() {
+      /*public*/  Category getCategory() {
           return Category::OTHER;
       }
 

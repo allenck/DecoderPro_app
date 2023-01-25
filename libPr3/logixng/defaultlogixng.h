@@ -26,7 +26,7 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ QString getLongDescription(QLocale locale)override;
   /*public*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount()override;
-  /*public*/ Category* getCategory() override;
+  /*public*/ Category getCategory() override;
   /*final*/ /*public*/ void setup() override;
   /*public*/ void setEnabled(bool enable) override;
   /*public*/ bool isEnabled()override;

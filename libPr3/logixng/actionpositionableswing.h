@@ -17,7 +17,7 @@ class ActionPositionableSwing : public AbstractDigitalActionSwing
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;
   /*public*/  QString toString()override;
-  /*public*/  void dispose();
+  /*public*/  void dispose()override;
 
   QObject* sself() override{return (QObject*)this;}
  private:

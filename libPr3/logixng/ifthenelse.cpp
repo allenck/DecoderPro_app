@@ -39,7 +39,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* IfThenElse::getCategory() {
+    /*public*/  Category IfThenElse::getCategory() {
         return Category::COMMON;
     }
 

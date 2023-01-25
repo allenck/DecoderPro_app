@@ -25,8 +25,8 @@
     }
 
     //@Override
-    /*public*/ QHash<Category*, QList<QString> > DefaultFemaleAnySocket::getConnectableClasses() {
-     return QHash<Category*, QList<QString> >();
+    /*public*/ QHash<Category, QList<QString> > DefaultFemaleAnySocket::getConnectableClasses() {
+     return QHash<Category, QList<QString> >();
     }
 
     //@Override

@@ -9,7 +9,7 @@ class ExpressionReferenceSwing : public AbstractDigitalExpressionSwing
 {
   Q_OBJECT
  public:
-  explicit ExpressionReferenceSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionReferenceSwing(QObject *parent = nullptr);
   ~ExpressionReferenceSwing() {}
   ExpressionReferenceSwing(const ExpressionReferenceSwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

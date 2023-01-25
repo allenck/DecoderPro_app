@@ -68,7 +68,7 @@ class ExpressionPower : public AbstractDigitalExpression, public PropertyChangeL
    /*public*/  Is_IsNot_Enum::VAL get_Is_IsNot();
    /*public*/  void setBeanState(PowerState::STATE state);
    /*public*/  PowerState::STATE getBeanState();
-   /*public*/  Category* getCategory() override;
+   /*public*/  Category getCategory() override;
    /*public*/  bool evaluate() /*throws JmriException */override;
    /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
    /*public*/  int getChildCount()override;

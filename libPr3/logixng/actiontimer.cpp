@@ -77,7 +77,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionTimer::getCategory() {
+    /*public*/  Category ActionTimer::getCategory() {
         return Category::COMMON;
     }
 

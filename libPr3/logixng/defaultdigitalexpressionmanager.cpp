@@ -33,7 +33,7 @@
 //        }
           (new DigitalFactory_Expressions())->init();
           (new ExpressionFactory())->init();
-        for (Category* category : Category::values()) {
+        for (Category category : Category::values()) {
             expressionClassList.insert(category, QList<QString>());
         }
 
@@ -48,10 +48,10 @@
 #if 1 // TODO:
         for (DigitalExpressionFactory* expressionFactory : list)
         {
-         //QSetIterator<QMap<Category*, QString>> map((new DigitalFactory())->getExpressionClasses());
-         for(QHash<Category*, QString> map : expressionFactory->getExpressionClasses())
+         //QSetIterator<QMap<Category, QString>> map((new DigitalFactory())->getExpressionClasses());
+         for(QHash<Category, QString> map : expressionFactory->getExpressionClasses())
          {
-          QHashIterator<Category*, QString> entry(map);
+          QHashIterator<Category, QString> entry(map);
           while(entry.hasNext())
           {
            entry.next();
@@ -154,7 +154,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>>  DefaultDigitalExpressionManager::getExpressionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>>  DefaultDigitalExpressionManager::getExpressionClasses() {
         return expressionClassList;
     }
 

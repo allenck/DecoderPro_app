@@ -56,7 +56,7 @@ class ActionLocalVariable : public AbstractDigitalAction, public PropertyChangeL
     }
   };
 
-  ActionLocalVariable(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE ActionLocalVariable(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setLocalVariable(QString variableName) ;
   /*public*/  QString getLocalVariable();
@@ -78,7 +78,7 @@ class ActionLocalVariable : public AbstractDigitalAction, public PropertyChangeL
   /*public*/  QString getFormula() ;
   /*public*/  void setListenToMemory(bool listenToMemory);
   /*public*/  bool getListenToMemory() ;
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount() override;

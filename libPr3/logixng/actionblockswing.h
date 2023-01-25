@@ -10,7 +10,7 @@ class ActionBlockSwing : public AbstractDigitalActionSwing
 {
   Q_OBJECT
  public:
-  explicit ActionBlockSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionBlockSwing(QObject *parent = nullptr);
   ~ActionBlockSwing() {}
   ActionBlockSwing(const ActionBlockSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages) ;

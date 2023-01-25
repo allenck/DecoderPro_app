@@ -20,7 +20,7 @@ public:
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QSet<QHash<Category*, /*Class<? extends Base>*/QString>> getClasses()=0;
+    /*public*/ virtual QSet<QHash<Category, /*Class<? extends Base>*/QString>> getClasses()=0;
 
 };
 Q_DECLARE_INTERFACE(StringExpressionFactory, "StringExpressionFactory")

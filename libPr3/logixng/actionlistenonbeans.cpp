@@ -107,7 +107,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionListenOnBeans::getCategory() {
+    /*public*/  Category ActionListenOnBeans::getCategory() {
         return Category::OTHER;
     }
 

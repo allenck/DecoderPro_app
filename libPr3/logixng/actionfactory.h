@@ -10,7 +10,7 @@ class ActionFactory : public QObject, public DigitalActionFactory
  public:
   ActionFactory(QObject* parent = nullptr) : QObject(parent){setObjectName("ActionFactory");}
   /*public*/  void init() override;
-  /*public*/  QSet<QHash<Category *, QString> > getActionClasses()override;
+  /*public*/  QSet<QHash<Category, QString> > getActionClasses()override;
 
 };
 

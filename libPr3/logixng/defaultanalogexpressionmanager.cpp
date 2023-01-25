@@ -46,7 +46,7 @@
          factory->init();
         }
 
-        for (Category* category : Category::values()) {
+        for (Category category : Category::values()) {
             expressionClassList.insert(category,  QList</*Class<? extends Base*/QString>());
         }
 //        //        System.out.format("Read expressions%n");
@@ -58,10 +58,10 @@
 //                }
         for (AnalogExpressionFactory* expressionFactory : factories)
         {
-         QSet<QHash<Category*, QString>> classes = expressionFactory->getClasses();
-         for(QHash<Category*, QString> map : classes )
+         QSet<QHash<Category, QString>> classes = expressionFactory->getClasses();
+         for(QHash<Category, QString> map : classes )
          {
-          QHashIterator<Category*, QString> entry(map);
+          QHashIterator<Category, QString> entry(map);
           while(entry.hasNext())
           {
            entry.next();
@@ -176,7 +176,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category *, QList<QString> > DefaultAnalogExpressionManager::getExpressionClasses() {
+    /*public*/  QHash<Category, QList<QString> > DefaultAnalogExpressionManager::getExpressionClasses() {
         return expressionClassList;
     }
 

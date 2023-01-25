@@ -214,7 +214,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* ExpressionTurnout::getCategory() {
+/*public*/  Category ExpressionTurnout::getCategory() {
     return Category::ITEM;
 }
 

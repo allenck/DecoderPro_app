@@ -9,7 +9,7 @@ class ActionListenOnBeansSwing : public AbstractDigitalActionSwing
 {
   Q_OBJECT
  public:
-  explicit ActionListenOnBeansSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionListenOnBeansSwing(QObject *parent = nullptr);
   ~ActionListenOnBeansSwing(){}
   ActionListenOnBeansSwing(const ActionListenOnBeansSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

@@ -28,7 +28,9 @@ ActionLightSwing::ActionLightSwing(QObject *parent) : AbstractDigitalActionSwing
 
     //@Override
     /*protected*/ void ActionLightSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionLight* action = (ActionLight*)object->bself();
+        ActionLight* action = nullptr;
+        if(object)
+         action = (ActionLight*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 
@@ -313,8 +315,10 @@ ActionLightSwing::ActionLightSwing(QObject *parent) : AbstractDigitalActionSwing
         ActionLight* action = (ActionLight*)object->bself();
         if (_tabbedPaneLight->getSelectedComponent() == _panelLightDirect) {
             if (lightBeanPanel != nullptr) {
-                Light* light = (Light* )lightBeanPanel->getNamedBean()->self();
-                if (light != nullptr) {
+                //Light* light = (Light* )lightBeanPanel->getNamedBean()->self();
+             Light* light = nullptr;
+             NamedBean* nb = lightBeanPanel->getNamedBean();
+                if (nb != nullptr) {
                     NamedBeanHandle<Light*>* handle
                             = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
                                     ->getNamedBeanHandle(light->getDisplayName(), light);

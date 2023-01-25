@@ -101,7 +101,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* LastResultOfDigitalExpression::getCategory() {
+    /*public*/  Category LastResultOfDigitalExpression::getCategory() {
         return Category::OTHER;
     }
 

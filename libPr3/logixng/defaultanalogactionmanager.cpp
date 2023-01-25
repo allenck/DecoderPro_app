@@ -33,7 +33,7 @@
 //        }
       (new AnalogFactory())->init();
 
-    for (Category* category : Category::values()) {
+    for (Category category : Category::values()) {
         actionClassList.insert(category, QList<QString>());
     }
 
@@ -45,10 +45,10 @@
 //        }
 // TODO:        (new AnalogFactory())->
       AnalogFactory* actionFactory = new AnalogFactory();
-      QSet<QHash<Category*, /*Class<? extends Base>*/QString> > set = actionFactory->getClasses();
-      for(QHash<Category*, QString> map : set)
+      QSet<QHash<Category, /*Class<? extends Base>*/QString> > set = actionFactory->getClasses();
+      for(QHash<Category, QString> map : set)
       {
-       QHashIterator<Category*, QString> entry(map);
+       QHashIterator<Category, QString> entry(map);
        while (entry.hasNext())
        {
         entry.next();
@@ -165,7 +165,7 @@
 }
 
 //@Override
-/*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultAnalogActionManager::getActionClasses() {
+/*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> DefaultAnalogActionManager::getActionClasses() {
     return actionClassList;
 }
 

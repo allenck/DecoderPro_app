@@ -56,7 +56,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/   QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultFemaleStringExpressionSocket::getConnectableClasses() {
+    /*public*/   QHash<Category, QList</*Class<? extends Base>*/QString>> DefaultFemaleStringExpressionSocket::getConnectableClasses() {
         return ((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses();
     }
 

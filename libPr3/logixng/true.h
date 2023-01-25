@@ -6,9 +6,9 @@
 class True : public AbstractDigitalExpression
 {
  public:
-  True(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE True(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames)override;
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  bool evaluate()override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

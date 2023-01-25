@@ -690,7 +690,7 @@ DigitalFormulaTest::DigitalFormulaTest(QObject *parent) : AbstractDigitalExpress
         JUnitUtil::initInternalTurnoutManager();
         JUnitUtil::initLogixNGManager();
 
-        _category = Category::COMMON;
+        _category = Common();//Category::COMMON;
         _isExternal = false;
 
         logixNG = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N

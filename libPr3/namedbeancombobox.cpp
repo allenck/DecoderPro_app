@@ -136,10 +136,11 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     setKeySelectionManager(namedBeanRenderer);
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
-#endif
+//#endif
     ((SwingPropertyChangeSupport*)this->manager->mself())->SwingPropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
     ((SwingPropertyChangeSupport*)this->manager->mself())->SwingPropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
     sort();
+#endif
     setSelectedItem(selection);
 }
 
@@ -154,7 +155,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 /*public*/ /*final*/ void NamedBeanComboBox::setDisplayOrder(NamedBean::DisplayOptions displayOrder) {
     if (displayOptions != displayOrder) {
         displayOptions = displayOrder;
-        sort();
+//        sort();
     }
 }
 

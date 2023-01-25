@@ -26,7 +26,7 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void printTree(
           PrintTreeSettings* settings,
           PrintWriter* writer,

@@ -17,10 +17,10 @@
     }
 
     //@Override
-    /*public*/  QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> ActionFactory::getActionClasses() {
-        QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> actionClasses = QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> ();
+    /*public*/  QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> ActionFactory::getActionClasses() {
+        QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> actionClasses = QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> ();
 
-        actionClasses.insert(QHash<Category*, QString> {{CategoryDisplay::DISPLAY, "jmri.jmrit.display.logixng.ActionPositionable"}});
+        actionClasses.insert(QHash<Category, QString> {{CategoryDisplay(), "jmri.jmrit.display.logixng.ActionPositionable"}});
 
         return actionClasses;
     }

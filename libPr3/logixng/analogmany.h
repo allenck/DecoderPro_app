@@ -14,7 +14,7 @@ class AnalogMany : public AbstractAnalogAction, public FemaleSocketListener
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override ;
   /*public*/  QString getActionSystemName(int index);
   /*public*/  void setup()override;
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  void setValue(double value) /*throws JmriException */override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

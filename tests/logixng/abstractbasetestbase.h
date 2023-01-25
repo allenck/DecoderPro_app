@@ -71,17 +71,17 @@ class AbstractBaseTestBase : public QObject
     QObject* bself() override {return (QObject*)this;}
 protected:
       //@Override
-      /*protected*/ void registerListenersForThisClass() {
+      /*protected*/ void registerListenersForThisClass() override{
           throw new UnsupportedOperationException("Not supported.");
       }
 
       //@Override
-      /*protected*/ void unregisterListenersForThisClass() {
+      /*protected*/ void unregisterListenersForThisClass() override{
           throw new UnsupportedOperationException("Not supported.");
       }
 
       //@Override
-      /*protected*/ void disposeMe() {
+      /*protected*/ void disposeMe() override{
           throw new UnsupportedOperationException("Not supported.");
       }
 public:
@@ -131,7 +131,7 @@ public:
       }
 
       //@Override
-      /*public*/  Category* getCategory() {
+      /*public*/  Category getCategory() {
           throw new UnsupportedOperationException("Not supported.");
       }
 
@@ -154,7 +154,7 @@ public:
  protected:
   /*protected*/ Base* _base = nullptr;
   /*protected*/ MaleSocket* _baseMaleSocket = nullptr;
-  /*protected*/ Category* _category = nullptr;
+  /*protected*/ Category _category = Other();
   /*protected*/ bool _isExternal = false;
 
 };

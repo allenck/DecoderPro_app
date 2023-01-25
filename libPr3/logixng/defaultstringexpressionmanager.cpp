@@ -29,7 +29,7 @@
 //        }
           (new StringFactory())->init();
 
-        for (Category* category : Category::values()) {
+        for (Category category : Category::values()) {
             expressionClassList.insert(category, QList<QString>());
         }
 
@@ -41,10 +41,10 @@
 //                expressionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
 //        }
-        QSet<QHash<Category*, /*Class<? extends Base>*/QString>> classes =(new StringFactory())->getClasses();
-        for(QHash<Category*, QString> map : classes)
+        QSet<QHash<Category, /*Class<? extends Base>*/QString>> classes =(new StringFactory())->getClasses();
+        for(QHash<Category, QString> map : classes)
         {
-         QHashIterator<Category*, QString> entry(map);
+         QHashIterator<Category, QString> entry(map);
          while(entry.hasNext())
          {
           entry.next();
@@ -143,7 +143,7 @@
     }
 
     //@Override
-    /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultStringExpressionManager::getExpressionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> DefaultStringExpressionManager::getExpressionClasses() {
         return expressionClassList;
     }
 

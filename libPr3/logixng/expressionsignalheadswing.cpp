@@ -28,7 +28,8 @@ ExpressionSignalHeadSwing::ExpressionSignalHeadSwing(QObject *parent) : Abstract
 
     //@Override
     /*protected*/ void ExpressionSignalHeadSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ExpressionSignalHead* expression = (ExpressionSignalHead*)object->bself();
+        ExpressionSignalHead* expression = nullptr;
+        if(object) expression = (ExpressionSignalHead*)object->bself();
 
         panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));

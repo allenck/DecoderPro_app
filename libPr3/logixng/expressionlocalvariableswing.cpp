@@ -44,7 +44,8 @@ ExpressionLocalVariableSwing::ExpressionLocalVariableSwing(QObject *parent) : Ab
 
     //@Override
     /*protected*/ void ExpressionLocalVariableSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ExpressionLocalVariable* expression = (ExpressionLocalVariable*)object->bself();
+        ExpressionLocalVariable* expression = nullptr;
+        if(object) expression = (ExpressionLocalVariable*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 
@@ -70,7 +71,7 @@ ExpressionLocalVariableSwing::ExpressionLocalVariableSwing(QObject *parent) : Ab
         _tabbedPaneCompareTo = new JTabbedPane();
         _tabbedPane->addTab("", _tabbedPaneCompareTo);
 
-        _compareToConstant = new JPanel();
+        _compareToConstant = new JPanel(new FlowLayout());
         _compareToMemory = new JPanel();
         _compareToLocalVariable = new JPanel();
         _compareToRegEx = new JPanel(new FlowLayout());

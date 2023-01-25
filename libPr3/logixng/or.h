@@ -10,8 +10,8 @@ class Or : public AbstractDigitalExpression, public FemaleSocketListener
   Q_OBJECT
   Q_INTERFACES(FemaleSocketListener)
  public:
-  Or(QString sys, QString user, QObject* parent= nullptr);
-  /*public*/  Or(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
+  Q_INVOKABLE Or(QString sys, QString user, QObject* parent= nullptr);
+  Q_INVOKABLE /*public*/  Or(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
 
   /* This class is public  since ExpressionOrXml needs to access it. */
   /*private*/ /*static*/ class ExpressionEntry {
@@ -30,7 +30,7 @@ class Or : public AbstractDigitalExpression, public FemaleSocketListener
   };
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  QString getExpressionSystemName(int index);
-  /*public*/  Category* getCategory() override;
+  /*public*/  Category getCategory() override;
   /*public*/  bool evaluate() /*throws JmriException*/override;
   /*public*/  AbstractFemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

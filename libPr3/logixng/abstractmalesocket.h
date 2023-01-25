@@ -24,7 +24,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ void setLocked(bool locked)override;
   /*public*/ bool isSystem()override;
   /*public*/ void setSystem(bool system) override;
-  /*public*/ /*final*/ Category* getCategory() override;
+  /*public*/ /*final*/ Category getCategory() override;
   /*public*/ /*final*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ /*final*/ int getChildCount()override;
   /*public*/ /*final*/ QString getShortDescription(QLocale locale) override;

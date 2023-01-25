@@ -39,7 +39,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* TimeSinceMidnight::getCategory() {
+    /*public*/  Category TimeSinceMidnight::getCategory() {
         return Category::ITEM;
     }
 

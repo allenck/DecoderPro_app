@@ -315,7 +315,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionSignalHead::getCategory() {
+    /*public*/  Category ActionSignalHead::getCategory() {
         return Category::ITEM;
     }
 

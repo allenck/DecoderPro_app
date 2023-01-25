@@ -42,7 +42,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* DoStringAction::getCategory() {
+/*public*/  Category DoStringAction::getCategory() {
     return Category::COMMON;
 }
 

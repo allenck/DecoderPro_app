@@ -54,7 +54,7 @@ public:
           /*throw (BadUserNameException, BadSystemNameException)*/;
   /*public*/ QString getItemSystemName(int index);
   /*public*/ void setup()override;
-  /*public*/ Category* getCategory()override;
+  /*public*/ Category getCategory()override;
 
   /*public*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount()override;

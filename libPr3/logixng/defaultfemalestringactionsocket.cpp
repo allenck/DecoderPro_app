@@ -2,7 +2,8 @@
 #include "instancemanager.h"
 #include "stringactionmanager.h"
 #include "malestringactionsocket.h"
-
+#include "defaultstringactionmanager.h"
+#include "defaultmalestringactionsocket.h"
 /**
  * Default implementation of the Female String Action socket
  */
@@ -17,13 +18,13 @@
 
     //@Override
     /*public*/  bool DefaultFemaleStringActionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleStringActionSocket*>(socket->bself());
+        return qobject_cast<DefaultMaleStringActionSocket*>(socket->bself());
     }
 
     //@Override
     /*public*/  void DefaultFemaleStringActionSocket::setValue(QString value) /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            ((MaleStringActionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->setValue(value);
+            ((DefaultMaleStringActionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->setValue(value);
         }
     }
 
@@ -34,12 +35,12 @@
 
     //@Override
     /*public*/  QString DefaultFemaleStringActionSocket::getLongDescription(QLocale locale) {
-        return tr(/*locale,*/ "?s %1").arg(AbstractFemaleSocket::getName());
+        return tr(/*locale,*/ "!s %1").arg(AbstractFemaleSocket::getName());
     }
 
     //@Override
-    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleStringActionSocket::getConnectableClasses() {
-        return ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getActionClasses();
+    /*public*/  QHash<Category, QList<QString> > DefaultFemaleStringActionSocket::getConnectableClasses() {
+        return ((DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager"))->getActionClasses();
     }
 
     /** {@inheritDoc} */

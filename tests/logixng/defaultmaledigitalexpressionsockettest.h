@@ -83,7 +83,7 @@ public:
     }
 
     //@Override
-    /*public*/  Category* getCategory() override{
+    /*public*/  Category getCategory() override{
         return Category::COMMON;
     }
 

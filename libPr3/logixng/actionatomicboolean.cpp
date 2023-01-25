@@ -64,7 +64,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionAtomicBoolean::getCategory() {
+    /*public*/  Category ActionAtomicBoolean::getCategory() {
         return Category::OTHER;
     }
 

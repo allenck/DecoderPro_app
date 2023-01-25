@@ -12,7 +12,7 @@ class ActionListenOnBeans : public AbstractDigitalAction, public PropertyChangeL
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener VetoableChangeListener )
  public:
-  ActionListenOnBeans(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE ActionListenOnBeans(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
   /*public*/  /*static*/ class NamedBeanReference {
 
@@ -74,7 +74,7 @@ public:
   /*public*/  void removeReference(NamedBeanReference* reference);
   /*public*/  QList<NamedBeanReference*> getReferences();
   /*public*/  void clearReferences() ;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute()override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;  /*public*/  int getChildCount()override;
   /*public*/  QString getShortDescription(QLocale locale)override;

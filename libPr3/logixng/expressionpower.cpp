@@ -51,7 +51,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ExpressionPower::getCategory() {
+    /*public*/  Category ExpressionPower::getCategory() {
         return Category::ITEM;
     }
 

@@ -22,7 +22,7 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
   /*public*/  QChar typeLetter() const override;
   /*public*/  FemaleStringExpressionSocket* createFemaleSocket(
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
-  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getExpressionClasses()override;
+  /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getExpressionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  void deleteStringExpression(MaleStringExpressionSocket* x)override;
   static /*public*/  DefaultStringExpressionManager* instance();
@@ -37,7 +37,7 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+  /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultStringExpressionManager* _instance;// = null;
 

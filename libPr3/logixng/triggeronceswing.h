@@ -6,7 +6,7 @@
 class TriggerOnceSwing : public AbstractDigitalExpressionSwing
 {
  public:
-  explicit TriggerOnceSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit TriggerOnceSwing(QObject *parent = nullptr);
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;

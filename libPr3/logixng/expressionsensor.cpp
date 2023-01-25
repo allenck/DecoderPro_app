@@ -212,7 +212,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ExpressionSensor::getCategory() {
+    /*public*/  Category ExpressionSensor::getCategory() {
         return Category::ITEM;
     }
 

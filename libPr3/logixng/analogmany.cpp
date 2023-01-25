@@ -104,7 +104,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* AnalogMany::getCategory() {
+/*public*/  Category AnalogMany::getCategory() {
     return Category::COMMON;
 }
 

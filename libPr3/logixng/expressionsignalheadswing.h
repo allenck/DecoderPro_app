@@ -12,7 +12,7 @@ class ExpressionSignalHeadSwing : public AbstractDigitalExpressionSwing
 {
   Q_OBJECT
  public:
-  explicit ExpressionSignalHeadSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionSignalHeadSwing(QObject *parent = nullptr);
   ~ExpressionSignalHeadSwing() {}
   ExpressionSignalHeadSwing(const ExpressionSignalHeadSwing&) : AbstractDigitalExpressionSwing() {}
   /*public*/  static /*final*/ int NUM_COLUMNS_TEXT_FIELDS;// = 20;

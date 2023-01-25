@@ -22,7 +22,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
 //  /*public*/  Manager::NameValidity validSystemNameFormat(QString systemName)override;
   /*public*/  FemaleAnalogActionSocket* createFemaleSocket(
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
-  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getActionClasses()override;
+  /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getActionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   static /*public*/  DefaultAnalogActionManager* instance();
   /*public*/  /*Class<MaleAnalogActionSocket>*/QString getNamedBeanClass() const override;
@@ -38,7 +38,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
  private:
   static Logger* log;
   static /*volatile*/ DefaultAnalogActionManager* _instance;// = null;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> actionClassList =  QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+  /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> actionClassList =  QHash<Category, QList</*Class<? extends Base>*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
 
  protected:

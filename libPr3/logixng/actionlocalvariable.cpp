@@ -197,7 +197,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionLocalVariable::getCategory() {
+    /*public*/  Category ActionLocalVariable::getCategory() {
         return Category::ITEM;
     }
 

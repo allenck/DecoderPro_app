@@ -10,7 +10,7 @@ class DigitalFactory_Expressions : public QObject, public DigitalExpressionFacto
   Q_INTERFACES(DigitalExpressionFactory)
  public:
   DigitalFactory_Expressions(QObject* parent = nullptr) : QObject(parent) {setObjectName("DigitalFactory");}
-  /*public*/ QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> getExpressionClasses() override;
+  /*public*/ QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> getExpressionClasses() override;
 
 };
 

@@ -42,7 +42,8 @@ ExpressionMemorySwing::ExpressionMemorySwing(QObject *parent) : AbstractDigitalE
 
     //@Override
     /*protected*/ void ExpressionMemorySwing::createPanel(/*CheckForNull*/ Base* object,/*@Nonnull*/ JPanel* buttonPanel) {
-        ExpressionMemory* expression = (ExpressionMemory*)object->bself();
+        ExpressionMemory* expression = nullptr;
+        if(object) expression = (ExpressionMemory*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 

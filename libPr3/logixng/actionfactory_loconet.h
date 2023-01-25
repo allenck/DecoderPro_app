@@ -10,7 +10,7 @@ class ActionFactory_LocoNet : public QObject, public DigitalActionFactory
  public:
   ActionFactory_LocoNet(QObject* parent = nullptr) : QObject(parent) {setObjectName("ActionFactory_LocoNet");}
   /*public*/  void init()override;
-  /*public*/  QSet<QHash<Category*, /*Class<? extends DigitalActionBean>*/QString>> getActionClasses()override;
+  /*public*/  QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> getActionClasses()override;
 
 };
 

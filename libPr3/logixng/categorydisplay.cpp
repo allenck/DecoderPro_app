@@ -10,10 +10,10 @@
     /**
      * An item related to panels.
      */
-    /*public*/ /*static*/ /*final*/ CategoryDisplay* CategoryDisplay::DISPLAY = new CategoryDisplay();
+    /*public*/ /*static*/ /*final*/ CategoryDisplay CategoryDisplay::DISPLAY = CategoryDisplay();
 
 
-    /*public*/ CategoryDisplay::CategoryDisplay(QObject* parent) : Category("DISPLAY", tr("Display"), 200, parent){
+    /*public*/ CategoryDisplay::CategoryDisplay() : Category("DISPLAY", "Display", 200){
         //super("DISPLAY", tr("CategoryDisplay"), 200, parent);
     }
 

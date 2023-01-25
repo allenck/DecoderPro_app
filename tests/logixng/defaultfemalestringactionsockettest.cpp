@@ -74,7 +74,7 @@
 
     //@Test
     /*public*/  void DefaultFemaleStringActionSocketTest::testGetConnectableClasses() {
-        QHash<Category*, QList<QString>> map = QHash<Category*, QList<QString>>();
+        QHash<Category, QList<QString>> map = QHash<Category, QList<QString>>();
 
         QList</*Class<? extends Base>*/QString> classes = QList<QString>();
         classes.append("jmri.jmrit.logixng.actions.StringActionMemory");

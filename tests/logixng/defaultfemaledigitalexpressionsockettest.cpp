@@ -76,7 +76,7 @@
 
     ////@Test
     /*public*/  void DefaultFemaleDigitalExpressionSocketTest::testGetConnectableClasses() {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> map = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+        QHash<Category, QList</*Class<? extends Base>*/QString>> map = QHash<Category, QList</*Class<? extends Base>*/QString>>();
 
         QList</*Class<? extends Base>*/QString> classes = QList</*Class<? extends Base>*/QString>();
         classes.append("jmri.jmrit.logixng.expressions.ExpressionBlock");

@@ -21,7 +21,8 @@ ActionPowerSwing::ActionPowerSwing(QObject *parent) : AbstractDigitalActionSwing
 
     //@Override
     /*protected*/ void ActionPowerSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionPower* action = (ActionPower*)object->bself();
+        ActionPower* action = nullptr;
+        if(object) action = (ActionPower*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 

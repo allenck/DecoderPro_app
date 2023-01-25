@@ -66,7 +66,7 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
   /*public*/  void setStateFormula(/*@Nonnull*/ QString formula) /*throws ParserException*/ ;
   /*public*/  QString getStateFormula();
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException */override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute()/* throws JmriException*/ override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;
   /*public*/  int getChildCount()override;

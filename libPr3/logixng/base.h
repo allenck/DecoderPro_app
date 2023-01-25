@@ -301,7 +301,7 @@ class Base;
      * Get the category.
      * @return the category
      */
-    /*public*/ virtual Category* getCategory(){return Category::OTHER;}
+    /*public*/ virtual Category getCategory()=0;
 
     /**
      * Is this item active? If this item is enabled and all the parents are

@@ -185,7 +185,7 @@
     }
 
     //@Override
-    /*public*/ Category *DefaultClipboard::getCategory() {
+    /*public*/ Category DefaultClipboard::getCategory() {
         throw new UnsupportedOperationException("Not supported");
     }
 

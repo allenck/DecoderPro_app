@@ -37,7 +37,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* ActionPower::getCategory() {
+/*public*/  Category ActionPower::getCategory() {
     return Category::ITEM;
 }
 

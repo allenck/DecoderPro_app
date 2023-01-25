@@ -8,7 +8,7 @@ class ActionClockSwing : public AbstractDigitalActionSwing
 {
   Q_OBJECT
  public:
-  explicit ActionClockSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionClockSwing(QObject *parent = nullptr);
   ~ActionClockSwing() {}
   ActionClockSwing(const ActionClockSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> *errorMessages);

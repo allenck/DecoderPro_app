@@ -10,7 +10,7 @@ class ExpressionReference : public AbstractDigitalExpression, public PropertyCha
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
  public:
-  explicit ExpressionReference(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE explicit ExpressionReference(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  /*enum*/class PointsTo {
 //      Nothing(Bundle.getMessage("ReferencePointsTo_Nothing")),
 //      Audio(Bundle.getMessage("ReferencePointsTo_Audio")),
@@ -66,7 +66,7 @@ class ExpressionReference : public AbstractDigitalExpression, public PropertyCha
   /*public*/  Is_IsNot_Enum::VAL get_Is_IsNot() ;
   /*public*/  void setPointsTo(ExpressionReference::PointsTo::TYPE pointsTo);
   /*public*/  ExpressionReference::PointsTo::TYPE getPointsTo();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  bool evaluate()override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

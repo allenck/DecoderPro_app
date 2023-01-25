@@ -203,8 +203,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category*  ActionPositionable::getCategory() {
-        return CategoryDisplay::DISPLAY;
+    /*public*/  Category  ActionPositionable::getCategory() {
+        return CategoryDisplay();
     }
 
     /*private*/ QString  ActionPositionable::getNewState() /*throws JmriException*/ {

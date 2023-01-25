@@ -99,7 +99,7 @@ class ActionSignalHead : public AbstractDigitalAction, public VetoableChangeList
   /*public*/  QString getAppearanceLocalVariable();
   /*public*/  void setAppearanceFormula(/*@Nonnull*/ QString formula)/* throws ParserException*/;
   /*public*/  QString getAppearanceFormula();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override;
   /*public*/  int getChildCount()override;

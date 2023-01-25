@@ -38,7 +38,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* DoAnalogAction::getCategory() {
+/*public*/  Category DoAnalogAction::getCategory() {
     return Category::COMMON;
 }
 

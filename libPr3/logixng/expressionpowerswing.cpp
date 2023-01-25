@@ -19,7 +19,8 @@ ExpressionPowerSwing::ExpressionPowerSwing(QObject *parent) : AbstractDigitalExp
 
     //@Override
     /*protected*/ void ExpressionPowerSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ExpressionPower* expression = (ExpressionPower*)object->bself();
+        ExpressionPower* expression = nullptr;
+        if(object) expression = (ExpressionPower*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 

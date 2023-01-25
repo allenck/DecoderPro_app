@@ -21,7 +21,8 @@ ExpressionReferenceSwing::ExpressionReferenceSwing(QObject *parent) : AbstractDi
 
     //@Override
     /*protected*/ void ExpressionReferenceSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ExpressionReference* expression = (ExpressionReference*)object->bself();
+        ExpressionReference* expression = nullptr;
+        if(object) expression = (ExpressionReference*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 

@@ -54,7 +54,7 @@ class ActionTimer : public AbstractDigitalAction, public FemaleSocketListener
           QList<ActionData*> actionDataList, QObject *parent = nullptr)
           /*throws BadUserNameException, BadSystemNameException*/;
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  int getDelay(int actionSocket);
   /*public*/  void setDelay(int actionSocket, int delay);

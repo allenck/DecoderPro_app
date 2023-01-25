@@ -16,7 +16,7 @@ class ActionLight : public AbstractDigitalAction, public VetoableChangeListener
   Q_OBJECT
   Q_INTERFACES(VetoableChangeListener)
  public:
-  explicit ActionLight(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE explicit ActionLight(QString sys, QString user, QObject *parent = nullptr);
   /*public*/ /*enum*/class LightState {
 //      Off(Light.OFF, Bundle.getMessage("StateOff")),
 //      On(Light.ON, Bundle.getMessage("StateOn")),
@@ -125,7 +125,7 @@ class ActionLight : public AbstractDigitalAction, public VetoableChangeListener
   /*public*/  void setLightValue(int value) ;
   /*public*/  int getLightValue() ;
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/override;
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;

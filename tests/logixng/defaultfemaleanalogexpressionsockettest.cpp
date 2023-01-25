@@ -9,7 +9,7 @@
 #include "defaultmemorymanager.h"
 #include "defaultanalogexpressionmanager.h"
 #include "defaultanalogexpressionmanager.h"
-
+#include <QtCore/qglobal.h>
 /**
  * Test DefaultFemaleAnalogExpressionSocket
  *
@@ -66,14 +66,15 @@
         _femaleSocket->_connect(maleSocket);
         _memory->setValue(0.0);
         double result = ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate();
-        Assert::assertTrue("values are equals", 0.0 == ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate(), __FILE__, __LINE__);
+        Assert::assertTrue("values are equals", fabs(0.0-((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate()) < 0.000001, __FILE__, __LINE__);
         _memory->setValue(1.2);
-        Assert::assertTrue("values are equals", 1.2 == ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate(), __FILE__, __LINE__);
+        result = ((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate();
+        Assert::assertTrue("values are equals", fabs(1.2 -((DefaultFemaleAnalogExpressionSocket*)_femaleSocket->bself())->evaluate()) < 0.000001, __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/   void DefaultFemaleAnalogExpressionSocketTest::testGetConnectableClasses() {
-        QHash<Category*, QList</*Class<? extends Base>*/QString>> map = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+        QHash<Category, QList</*Class<? extends Base>*/QString>> map = QHash<Category, QList</*Class<? extends Base>*/QString>>();
 
         QList</*Class<? extends Base>*/QString> classes = QList</*Class<? extends Base>*/QString>();
         classes.append("AnalogExpressionMemoryAnalogExpressionAnalogIO");

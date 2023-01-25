@@ -76,7 +76,7 @@
 }
 
 //@Override
-/*public*/ Category* DefaultLogixNG::getCategory() {
+/*public*/ Category DefaultLogixNG::getCategory() {
     throw new UnsupportedOperationException("Not supported.");
 }
 

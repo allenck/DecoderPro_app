@@ -202,7 +202,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionTurnout::getCategory() {
+    /*public*/  Category ActionTurnout::getCategory() {
         return Category::ITEM;
     }
 

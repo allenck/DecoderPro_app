@@ -19,7 +19,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
   /*public*/  QChar typeLetter() const override;
   /*public*/  FemaleDigitalExpressionSocket* createFemaleSocket(
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
-  /*public*/  QHash<Category *, QList<QString> > getExpressionClasses() override;
+  /*public*/  QHash<Category, QList<QString> > getExpressionClasses() override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  void deleteDigitalExpression(MaleDigitalExpressionSocket* x)override;
   static /*public*/  DefaultDigitalExpressionManager* instance();
@@ -32,7 +32,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
  private:
   static Logger* log;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+  /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultDigitalExpressionManager* _instance;// = null;
 

@@ -51,7 +51,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* TableForEach::getCategory() {
+    /*public*/  Category TableForEach::getCategory() {
         return Category::COMMON;
     }
 

@@ -26,7 +26,9 @@ ActionLocalVariableSwing::ActionLocalVariableSwing(QObject *parent) : AbstractDi
 
     //@Override
     /*protected*/ void ActionLocalVariableSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionLocalVariable* action = (ActionLocalVariable*)object->bself();
+        ActionLocalVariable* action = nullptr;
+        if(object)
+         action = (ActionLocalVariable*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 

@@ -272,7 +272,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ActionLight::getCategory() {
+    /*public*/  Category ActionLight::getCategory() {
         return Category::ITEM;
     }
 

@@ -265,7 +265,7 @@
     }
 
     //@Override
-    /*public*/  Category* DefaultConditionalNG::getCategory() {
+    /*public*/  Category DefaultConditionalNG::getCategory() {
         throw new UnsupportedOperationException("Not supported.");
     }
 

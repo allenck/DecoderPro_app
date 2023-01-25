@@ -126,7 +126,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  Category* AnalogActionLightIntensity::getCategory() {
+/*public*/  Category AnalogActionLightIntensity::getCategory() {
     return Category::ITEM;
 }
 

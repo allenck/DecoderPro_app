@@ -83,7 +83,7 @@ class ModuleEditor_FemaleSocketListener1 : public QObject, public FemaleSocketLi
     }
 
     //@Override
-    /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getConnectableClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getConnectableClasses() {
 //            Map<Category, List<Class<? extends Base>>> map = new HashMap<>();
 //            List<Class<? extends Base>> list = new ArrayList<>();
 //            map.put(Category.OTHER, list);

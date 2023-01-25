@@ -21,7 +21,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
   /*public*/  QChar typeLetter() const override;
   /*public*/  FemaleDigitalActionSocket* createFemaleSocket(
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
-  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getActionClasses() override;
+  /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getActionClasses() override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  void deleteDigitalAction(MaleDigitalActionSocket* x)override;
   static /*public*/  DefaultDigitalActionManager* instance();
@@ -34,7 +34,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
  private:
   static Logger* log;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
+  /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultDigitalActionManager* _instance;// = null;
 

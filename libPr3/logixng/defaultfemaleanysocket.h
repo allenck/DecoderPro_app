@@ -14,7 +14,7 @@ class DefaultFemaleAnySocket : public AbstractFemaleSocket, public FemaleAnySock
   /*public*/ DefaultFemaleAnySocket(Base* parent, FemaleSocketListener* listener, QString name, QObject* parentObject=nullptr);
   /*public*/ void disposeMe() override;
   /*public*/ bool isCompatible(MaleSocket* socket)override;
-  /*public*/ QHash<Category*, QList<QString> > getConnectableClasses()override;
+  /*public*/ QHash<Category, QList<QString> > getConnectableClasses()override;
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale)override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.implementation.DefaultFemaleAnySocket";}

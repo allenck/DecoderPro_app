@@ -31,7 +31,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
   /*public*/  NameValidity validSystemNameFormat(QString systemName) override;
   /*public*/  FemaleAnalogExpressionSocket* createFemaleSocket(
     Base* parent, FemaleSocketListener* listener, QString socketName)override;
-  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getExpressionClasses()override;
+  /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getExpressionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural)const override;
   static /*public*/  DefaultAnalogExpressionManager* instance();
   /*public*/  /*Class<MaleAnalogExpressionSocket>*/QString getNamedBeanClass()const override;
@@ -43,7 +43,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ QHash<Category*, QList</*Class<? extends Base*/QString>> expressionClassList = QHash<Category*, QList</*Class<? extends Base*/QString>>();
+  /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base*/QString>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultAnalogExpressionManager* _instance;// = nullptr;
 protected:

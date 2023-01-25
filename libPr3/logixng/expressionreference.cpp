@@ -87,7 +87,7 @@
 */
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* ExpressionReference::getCategory() {
+    /*public*/  Category ExpressionReference::getCategory() {
         return Category::ITEM;
     }
 
