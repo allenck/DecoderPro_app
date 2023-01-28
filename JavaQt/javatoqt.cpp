@@ -10,7 +10,7 @@ JavaToQt::JavaToQt()
   return clazz;
  if(jClass.lastIndexOf('.')>0)
   return jClass.mid(jClass.lastIndexOf('.')+1);
- return "";
+ return jClass;
 }
 
 /*static*/ QMap<QString, QString> JavaToQt::map = {
