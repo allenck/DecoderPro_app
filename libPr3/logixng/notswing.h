@@ -5,8 +5,9 @@
 
 class NotSwing : public AbstractDigitalExpressionSwing
 {
+  Q_OBJECT
  public:
-  explicit NotSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit NotSwing(QObject *parent = nullptr);
   ~NotSwing() {}
   NotSwing(const NotSwing&) : AbstractDigitalExpressionSwing() {}
  protected:

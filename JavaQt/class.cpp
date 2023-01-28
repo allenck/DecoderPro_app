@@ -7,6 +7,8 @@
 #include "instancemanagerautoinitialize.h"
 #include "classmigration.h"
 #include "jmriserviceproviderinterface.h"
+#include "javatoqt.h"
+
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of
@@ -203,8 +205,9 @@
 //        return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
      QString clazz = className;
      className = ClassMigration::migrateName(className);
-     if(className.contains("."))
-      clazz = className.mid(className.lastIndexOf(".")+1);
+//     if(className.contains("."))
+//      clazz = className.mid(className.lastIndexOf(".")+1);
+     clazz = JavaToQt::getQtName(className);
      int id = QMetaType::type(clazz.toLocal8Bit());
      QObject* obj;
      if(id != 0)
@@ -417,7 +420,7 @@
         Class* clazz = (Class*)((QObject*)this)->metaObject()->newInstance();
         if(clazz == nullptr)
         {
-          QString msg = tr("Constructor may need Q_INVOKABLE %1").arg(metaObject()->className());
+          QString msg = tr("Constructor may need Q_INVOKABLE or Q_OBJECT %1").arg(metaObject()->className());
           log->error(msg);
           throw new InvocationTargetException(msg);
           //return this;

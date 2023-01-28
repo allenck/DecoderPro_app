@@ -69,10 +69,10 @@ ExpressionMemorySwing::ExpressionMemorySwing(QObject *parent) : AbstractDigitalE
         _tabbedPaneCompareTo = new JTabbedPane();
         _tabbedPane->addTab("", _tabbedPaneCompareTo);
 
-        _compareToConstant = new JPanel();
-        _compareToMemory = new JPanel();
-        _compareToLocalVariable = new JPanel();
-        _compareToRegEx = new JPanel();
+        _compareToConstant = new JPanel(new FlowLayout);
+        _compareToMemory = new JPanel(new FlowLayout);
+        _compareToLocalVariable = new JPanel(new FlowLayout);
+        _compareToRegEx = new JPanel(new FlowLayout);
 
         _tabbedPaneCompareTo->addTab(ExpressionMemory::CompareTo::toString(ExpressionMemory::CompareTo::Value), _compareToConstant);
         _tabbedPaneCompareTo->addTab(ExpressionMemory::CompareTo::toString(ExpressionMemory::CompareTo::Memory), _compareToMemory);

@@ -104,6 +104,20 @@
 #include "expressionreferenceswing.h"
 #include "expressionreferencexml.h"
 #include "defaultdigitalactionmanagerxml.h"
+#include "actions/logdata.h"
+#include "actions/logdataswing.h"
+#include "actions/logdataxml.h"
+#include "expressions/ex_logdata.h"
+#include "expressions/ex_logdataswing.h"
+#include "expressions/ex_logdataxml.h"
+#include "defaultanalogexpressionmanagerxml.h"
+#include "expressionreporter.h"
+#include "expressionreporterswing.h"
+#include "expressionreporterxml.h"
+#include "sequenceswing.h"
+#include "expressions/ex_digitalcallmoduleswing.h"
+#include "actions/digitalcallmoduleswing.h"
+
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -221,11 +235,21 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionSignalHeadSwing>("ActionSignalHeadSwing");
    qRegisterMetaType<ActionPowerSwing>("ActionPowerSwing");
    qRegisterMetaType<ActionLightSwing>("ActionLightSwing");
+   qRegisterMetaType<Actions::LogData>("Actions::LogData");
+   qRegisterMetaType<DefaultAnalogExpressionManagerXml>("DefaultAnalogExpressionManagerXml");
+//   qRegisterMetaType<ExpressionReporter>("ExpressionReporter");
+   qRegisterMetaType<Actions::DigitalCallModuleSwing>("Actions::DigitalCallModuleSwing");
+
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
-
-
+   qRegisterMetaType<SequenceSwing>("SequenceSwing");
+   qRegisterMetaType<Expressions::DigitalCallModuleSwing>("Expressions::DigitalCallModuleSwing");
+   qRegisterMetaType<Expressions::LogData>("Expressions::LogData");
+   qRegisterMetaType<Expressions::LogDataSwing>("Expressions::LogDataSwing");
+   qRegisterMetaType<Expressions::LogDataXml>("Expressions::LogDataXml");
+   qRegisterMetaType<ExpressionReporterXml>("ExpressionReporterXml");
+   qRegisterMetaType<ExpressionReporterSwing>("ExpressionReporterSwing");
 
    LogixNG_Metatypes::ng_done = true;
 }

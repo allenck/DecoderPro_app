@@ -260,7 +260,7 @@
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         ((AbstractMaleSocket*)getObject()->bself())->addLocalVariable(name, initialValueType, initialValueData);
     } else {
-        _localVariables->insert(new VariableData(name, initialValueType, initialValueData));
+        _localVariables.insert(new VariableData(name, initialValueType, initialValueData));
     }
 }
 
@@ -270,7 +270,7 @@
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         ((AbstractMaleSocket*)getObject()->bself())->addLocalVariable(variableData);
     } else {
-        _localVariables->insert(variableData);
+        _localVariables.insert(variableData);
     }
 }
 
@@ -279,12 +279,12 @@
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         ((AbstractMaleSocket*)getObject()->bself())->clearLocalVariables();
     } else {
-        _localVariables->clear();
+        _localVariables.clear();
     }
 }
 
 //@Override
-/*public*/ QSet<VariableData*>* AbstractMaleSocket::getLocalVariables() {
+/*public*/ QSet<VariableData*> AbstractMaleSocket::getLocalVariables() {
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         return ((AbstractMaleSocket*)getObject()->bself())->getLocalVariables();
     } else {
@@ -514,7 +514,7 @@
     printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 
     if (settings->_printLocalVariables) {
-        for (VariableData* localVariable : *_localVariables) {
+        for (VariableData* localVariable : _localVariables) {
             printLocalVariable(settings, locale, writer, currentIndent, lineNumber, localVariable);
         }
     }
@@ -573,7 +573,7 @@
     maleSocket->setSystem(false);    // If a system item is copied, the new item is not treated as system
     maleSocket->setCatchAbortExecution(getCatchAbortExecution());
 
-    for (VariableData* data : *_localVariables) {
+    for (VariableData* data : _localVariables) {
         maleSocket->addLocalVariable(data->_name, data->_initalValueType, data->_initialValueData);
     }
 

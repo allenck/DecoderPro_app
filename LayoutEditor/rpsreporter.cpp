@@ -155,7 +155,7 @@ void RpsReporter::notifyArriving(int id) {
  * anywhere retrievable. NOT DONE YET
  */
 /*public*/ PhysicalLocation* RpsReporter::getPhysicalLocation() {
-    return PhysicalLocation::getBeanPhysicalLocation((NamedBean*)this);
+    return PhysicalLocation::getBeanPhysicalLocation((AbstractNamedBean*)this);
 }
 /**
  * getPhysicalLocation(String s)

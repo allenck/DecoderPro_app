@@ -172,7 +172,7 @@
  */
 //@Override
 /*public*/ PhysicalLocation *AbstractIdTagReporter::getPhysicalLocation(QString s) {
-    return (PhysicalLocation::getBeanPhysicalLocation(this));
+    return (PhysicalLocation::getBeanPhysicalLocation((AbstractNamedBean*)this));
 }
 
 

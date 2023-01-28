@@ -11,8 +11,9 @@ class Or : public AbstractDigitalExpression, public FemaleSocketListener
   Q_INTERFACES(FemaleSocketListener)
  public:
   Q_INVOKABLE Or(QString sys, QString user, QObject* parent= nullptr);
-  Q_INVOKABLE /*public*/  Or(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
-
+  Q_INVOKABLE /*public*/ Or(QString sys, QString user, QList<QMap<QString, QString>> expressionSystemNames, QObject* parent=nullptr);
+  ~Or() {}
+  Or(const Or&) : AbstractDigitalExpression("", "") {}
   /* This class is public  since ExpressionOrXml needs to access it. */
   /*private*/ /*static*/ class ExpressionEntry {
       /*private*/ QString _socketSystemName;

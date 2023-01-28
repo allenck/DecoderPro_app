@@ -121,7 +121,7 @@ LocoNetMessageInterpretTest::LocoNetMessageInterpretTest(QObject *parent) : QObj
                 "(BDL16x Board 2 RX4 zone C).\n",
                 LocoNetMessageInterpret::interpretMessage(l, "LT", "LS", "LR"), __FILE__, __LINE__);
 
-        r->setUserName("AUserName");
+        r->AbstractNamedBean::setUserName("AUserName");
 
         l = new LocoNetMessage(QVector<int>() <<  0xE5<< 0x09<< 0x00<< 0x7D<< 0x03<< 0x00<< 0x12<< 0x00<< 0x7F);
         Assert::assertEquals("Transponding in B, with reporter user name",
@@ -156,16 +156,16 @@ LocoNetMessageInterpretTest::LocoNetMessageInterpretTest(QObject *parent) : QObj
                 LocoNetMessageInterpret::interpretMessage(l, "LT", "LS", "LR"), __FILE__, __LINE__);
         Assert::assertNull("reporter not Created", lnrm->getBySystemName("LR25")->self(), __FILE__, __LINE__);
         lnrm->provideReporter("LR25");
-        ((LnReporter*) lnrm->getBySystemName("LR25")->self())->setUserName("Friendly name E");
+        ((LnReporter*) lnrm->getBySystemName("LR25")->self())->AbstractNamedBean::setUserName("Friendly name E");
         Assert::assertEquals("check setting of username", lnrm->getBySystemName("LR25")->getUserName(), "Friendly name E", __FILE__, __LINE__);
 
-        ((LnReporter*) lnrm->provideReporter("LR31"))->setUserName("Friendly Name H");
-        ((LnReporter*) lnrm->provideReporter("LR29"))->setUserName("Friendly Name G");
-        ((LnReporter*) lnrm->provideReporter("LR27"))->setUserName("Friendly Name F");
-        ((LnReporter*) lnrm->provideReporter("LR23"))->setUserName("Friendly Name D");
-        ((LnReporter*) lnrm->provideReporter("LR21"))->setUserName("Friendly Name C");
-        ((LnReporter*) lnrm->provideReporter("LR19"))->setUserName("Friendly Name B");
-        ((LnReporter*) lnrm->provideReporter("LR17"))->setUserName("Friendly Name A");
+        ((LnReporter*) lnrm->provideReporter("LR31"))->AbstractNamedBean::setUserName("Friendly Name H");
+        ((LnReporter*) lnrm->provideReporter("LR29"))->AbstractNamedBean::setUserName("Friendly Name G");
+        ((LnReporter*) lnrm->provideReporter("LR27"))->AbstractNamedBean::setUserName("Friendly Name F");
+        ((LnReporter*) lnrm->provideReporter("LR23"))->AbstractNamedBean::setUserName("Friendly Name D");
+        ((LnReporter*) lnrm->provideReporter("LR21"))->AbstractNamedBean::setUserName("Friendly Name C");
+        ((LnReporter*) lnrm->provideReporter("LR19"))->AbstractNamedBean::setUserName("Friendly Name B");
+        ((LnReporter*) lnrm->provideReporter("LR17"))->AbstractNamedBean::setUserName("Friendly Name A");
 
         l = new LocoNetMessage(QVector<int>() <<  0xE5<< 0x09<< 0x00<< 0x00<< 0x04<< 0x00<< 0x18<< 0x00<< 0x7F);
         Assert::assertEquals(" in D",

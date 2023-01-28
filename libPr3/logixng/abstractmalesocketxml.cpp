@@ -40,7 +40,7 @@
             element.appendChild(doc.createElement("errorHandling").appendChild(doc.createTextNode(ErrorHandlingType::toString( maleSocket->getErrorHandlingType()))));  // NOI18N
         }
 
-        for (VariableData* data : *maleSocket->getLocalVariables()) {
+        for (VariableData* data : maleSocket->getLocalVariables()) {
             QDomElement elementVariable = doc.createElement("LocalVariable");                                     // NOI18N
             elementVariable.appendChild(doc.createElement("name").appendChild(doc.createTextNode(data->_name)));                     // NOI18N
             elementVariable.appendChild(doc.createElement("type").appendChild(doc.createTextNode(InitialValueType::toString(data->_initalValueType))));   // NOI18N

@@ -57,7 +57,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
           QString initialValueData)override;
   /*public*/ void addLocalVariable(VariableData* variableData)override;
   /*public*/ void clearLocalVariables()override;
-  /*public*/ QSet<VariableData *> *getLocalVariables() override;
+  /*public*/ QSet<VariableData *> getLocalVariables() override;
   /*public*/ Base* getParent() const override;
   /*public*/ void setParent(Base* parent)override;
   /*public*/ /*final*/ ConditionalNG* getConditionalNG()override;
@@ -123,7 +123,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*private*/ bool _listen = true;     // By default, actions and expressions listen
 
  protected:
-  /*protected*/ /*final*/ QSet<VariableData*>* _localVariables = new QSet<VariableData*>();
+  /*protected*/ /*final*/ QSet<VariableData*> _localVariables = QSet<VariableData*>();
   /*abstract*/virtual /*protected*/ void registerListenersForThisClass()=0;
   /*protected*/ void printTreeRow(PrintTreeSettings* settings,
           QLocale locale,

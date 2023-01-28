@@ -47,16 +47,16 @@ AbstractReporter::AbstractReporter(QString systemName, QString userName, QObject
     return tr("Reporter");
 }
 
-ReporterVariant AbstractReporter::getCurrentReport()
+QVariant AbstractReporter::getCurrentReport()
 {
- ReporterVariant  rv = ReporterVariant(_currentReport);
+ QVariant  rv = ReporterVariant(_currentReport);
  //return _currentReport;
  return rv;
 }
 
-ReporterVariant AbstractReporter::getLastReport()
+QVariant AbstractReporter::getLastReport()
 {
- ReporterVariant  rv = ReporterVariant(_lastReport);
+ QVariant  rv = ReporterVariant(_lastReport);
  //return _lastReport;
  return rv;
 }

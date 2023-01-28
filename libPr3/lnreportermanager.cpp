@@ -62,7 +62,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  NamedBean* t;
 //        int addr = Integer.valueOf(systemName.substring(prefix.length()+1)).intValue();
  int addr = QString(systemName.mid(AbstractManager::getSystemPrefix().length()+1)).toInt();
- t = (NamedBean*)(new LnReporter(addr, tc, AbstractManager::getSystemPrefix()));
+ t = (AbstractNamedBean*)(new LnReporter(addr, tc, AbstractManager::getSystemPrefix()));
  ((NamedBean*)t)->setUserName(userName);
  ((NamedBean*)t)->addPropertyChangeListener(this);
 

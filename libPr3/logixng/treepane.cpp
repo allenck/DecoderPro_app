@@ -420,7 +420,7 @@
 
                 mainPanel->setToolTip(connectedSocket->getShortDescription());
 
-                for (VariableData* variableData : *connectedSocket->getLocalVariables()) {
+                for (VariableData* variableData : connectedSocket->getLocalVariables()) {
                     JLabel* variableLabel = new JLabel(tr(
                             "Local variable \"%1\", init to %2 \"%3\"").arg(
                             variableData->_name,

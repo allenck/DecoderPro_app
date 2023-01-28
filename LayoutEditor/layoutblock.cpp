@@ -1048,7 +1048,7 @@ void LayoutBlock::blockEditDonePressed(JActionEvent*) {
         if (reporter != nullptr && block != nullptr) {
             QString msg = tr("Sensor %1 has Reporter %2 associated with it; do you want to use the Reporter with this block?").arg(
                     s->getDisplayName(),
-                        ((AbstractReporter*)reporter)->getDisplayName());
+                        ((AbstractReporter*)reporter)->AbstractNamedBean::getDisplayName());
             if (JOptionPane::showConfirmDialog(editLayoutBlockFrame,
                     msg, tr("Assign Reporter to Block"),
                     JOptionPane::YES_NO_OPTION) == 0) {

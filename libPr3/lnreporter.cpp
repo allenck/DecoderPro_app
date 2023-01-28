@@ -288,12 +288,12 @@ int LnReporter::getNumber() { return _number; }
     }
 
     PhysicalLocation* LnReporter::getPhysicalLocation() {
-    return(PhysicalLocation::getBeanPhysicalLocation(this));
+    return(PhysicalLocation::getBeanPhysicalLocation((AbstractNamedBean*)this));
     }
 
     // Does not use the parameter S.
     PhysicalLocation* LnReporter::getPhysicalLocation(QString s) {
-     return(PhysicalLocation::getBeanPhysicalLocation(this));
+     return(PhysicalLocation::getBeanPhysicalLocation((AbstractNamedBean*)this));
     }
     // Collecting Reporter Interface methods
     /**

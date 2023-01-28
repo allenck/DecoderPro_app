@@ -129,7 +129,7 @@
             tr("Sensor %1 %2 %3"), components);
 
     if(panel->layout())
-    for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c);
+    for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
 }
 
 /** {@inheritDoc} */

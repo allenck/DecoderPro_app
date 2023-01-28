@@ -1,16 +1,16 @@
 #ifndef FALSESWING_H
 #define FALSESWING_H
 
-#include "abstractdigitalactionswing.h"
+#include "abstractdigitalexpressionswing.h"
 
-class FalseSwing : public AbstractDigitalActionSwing
+class FalseSwing : public AbstractDigitalExpressionSwing
 {
   Q_OBJECT
 
  public:
-  Q_INVOKABLE FalseSwing(QObject* parent= nullptr) : AbstractDigitalActionSwing(parent) {setObjectName("FalseSwing");}
+  Q_INVOKABLE FalseSwing(QObject* parent= nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("FalseSwing");}
   ~FalseSwing() {}
-  FalseSwing(const FalseSwing&) : AbstractDigitalActionSwing(){}
+  FalseSwing(const FalseSwing&) : AbstractDigitalExpressionSwing(){}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString> *errorMessages)override;
   /*public*/  MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
   /*public*/  void updateObject(/*@Nonnull*/ Base* object)override;

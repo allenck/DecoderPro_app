@@ -40,7 +40,7 @@ public:
     RfidReporterTimeoutThread(TimeoutRfidReporter* parent = nullptr) : QThread(){
         //super();
      this->parent = parent;
-        this->setObjectName("Timeout-" + parent->getSystemName());
+        this->setObjectName("Timeout-" + parent->AbstractNamedBean::getSystemName());
     }
 
     //@Override
@@ -54,7 +54,7 @@ public:
         }
         parent->TimeoutRfidReporter::notify(nullptr);
         if (parent->logDebug) {
-            parent->log->debug("Timeout-" + parent->getSystemName());
+            parent->log->debug("Timeout-" + parent->AbstractNamedBean::getSystemName());
         }
         parent->cleanUpTimeout();
     }

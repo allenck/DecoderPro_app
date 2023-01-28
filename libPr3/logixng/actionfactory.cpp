@@ -2,7 +2,8 @@
 #include "categorydisplay.h"
 #include <QSet>
 #include <QMap>
-#include "category.h"
+#include "categoryloconet.h"
+
 /**
  * The factory for LogixNG Display classes.
  *
@@ -20,7 +21,11 @@
     /*public*/  QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> ActionFactory::getActionClasses() {
         QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> actionClasses = QSet<QHash<Category, /*Class<? extends DigitalActionBean>*/QString>> ();
 
-        actionClasses.insert(QHash<Category, QString> {{CategoryDisplay(), "jmri.jmrit.display.logixng.ActionPositionable"}});
-
+        //actionClasses.insert(QHash<Category, QString> {{CategoryDisplay(), "jmri.jmrit.display.logixng.ActionPositionable"}});
+        // We don't want to add these classes if we don't have a LocoNet connection
+        if (CategoryLocoNet::hasLocoNet()) {
+            actionClasses.insert(QHash<Category, QString> {{CategoryLocoNet::LOCONET, "ActionClearSlots"}});
+            actionClasses.insert(QHash<Category, QString> {{CategoryLocoNet::LOCONET, "ActionUpdateSlots"}});
+        }
         return actionClasses;
     }

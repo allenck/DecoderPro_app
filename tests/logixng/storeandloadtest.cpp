@@ -105,6 +105,7 @@
 #include "actionlight.h"
 #include "tableforeach.h"
 #include "expressionreference.h"
+#include "actions/logdata.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -702,7 +703,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionListenOnBeans);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 #endif
-#if 0
+#if 1
         actionListenOnBeans = new ActionListenOnBeans(digitalActionManager->getAutoSystemName(), "");
         actionListenOnBeans->AbstractNamedBean::setComment("A comment");
         actionListenOnBeans->addReference("Turnout:"+turnout2->getUserName());
@@ -1575,12 +1576,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 
-        jmri.jmrit.logixng.actions.DigitalCallModule callModule = new jmri.jmrit.logixng.actions.DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
+        Actions::DigitalCallModule callModule = new Actions::DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(callModule);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        callModule = new jmri.jmrit.logixng.actions.DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
+        callModule = new Actions::DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
         callModule->AbstractNamedBean::setComment("A comment");
         callModule.setModule("IQM1");
         callModule.addParameter("Abc", InitialValueType.FloatingNumber, "12.32", Module.ReturnValueType.LocalVariable, "SomeVar");
@@ -1825,7 +1826,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(logix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0
+
         DigitalBooleanMany* booleanMany =
                 new DigitalBooleanMany(digitalBooleanActionManager->getAutoSystemName(), "");
         maleSocket = digitalBooleanActionManager->registerAction(booleanMany);
@@ -1853,55 +1854,55 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         booleanMany->getChild(2)->_connect(maleSocket);
 
 
-        jmri.jmrit.logixng.actions.LogData logData = new jmri.jmrit.logixng.actions.LogData(digitalActionManager->getAutoSystemName(), "");
+        Actions::LogData* logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(logData);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        logData = new jmri.jmrit.logixng.actions.LogData(digitalActionManager->getAutoSystemName(), "");
+        logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
-        logData.setLogToLog(true);
-        logData.setLogToScriptOutput(true);
-        logData.setFormat("Some text");
-        logData.setFormatType(jmri.jmrit.logixng.actions.LogData.FormatType.OnlyText);
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.LocalVariable, "MyVar"));
+        logData->setLogToLog(true);
+        logData->setLogToScriptOutput(true);
+        logData->setFormat("Some text");
+        logData->setFormatType(Actions::LogData::FormatType::OnlyText);
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::LocalVariable, "MyVar"));
         maleSocket = digitalActionManager->registerAction(logData);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        logData = new jmri.jmrit.logixng.actions.LogData(digitalActionManager->getAutoSystemName(), "");
+        logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
-        logData.setLogToLog(true);
-        logData.setLogToScriptOutput(true);
-        logData.setFormat("");
-        logData.setFormatType(jmri.jmrit.logixng.actions.LogData.FormatType.CommaSeparatedList);
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.Memory, "IM1"));
+        logData->setLogToLog(true);
+        logData->setLogToScriptOutput(true);
+        logData->setFormat("");
+        logData->setFormatType(Actions::LogData::FormatType::CommaSeparatedList);
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Memory, "IM1"));
         maleSocket = digitalActionManager->registerAction(logData);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        logData = new jmri.jmrit.logixng.actions.LogData(digitalActionManager->getAutoSystemName(), "");
+        logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
-        logData.setLogToLog(true);
-        logData.setLogToScriptOutput(true);
-        logData.setFormat("MyVar has the value %s");
-        logData.setFormatType(jmri.jmrit.logixng.actions.LogData.FormatType.StringFormat);
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.Reference, "{MyVar}"));
+        logData->setLogToLog(true);
+        logData->setLogToScriptOutput(true);
+        logData->setFormat("MyVar has the value %s");
+        logData->setFormatType(Actions::LogData::FormatType::StringFormat);
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Reference, "{MyVar}"));
         maleSocket = digitalActionManager->registerAction(logData);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        logData = new jmri.jmrit.logixng.actions.LogData(digitalActionManager->getAutoSystemName(), "");
+        logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
-        logData.setLogToLog(true);
-        logData.setLogToScriptOutput(true);
-        logData.setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
-        logData.setFormatType(jmri.jmrit.logixng.actions.LogData.FormatType.StringFormat);
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.Formula, "str(10)"));
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.Formula, "25"));
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.Memory, "IM1"));
-        logData.getDataList().add(new jmri.jmrit.logixng.actions.LogData.Data(jmri.jmrit.logixng.actions.LogData.DataType.LocalVariable, "MyVar"));
+        logData->setLogToLog(true);
+        logData->setLogToScriptOutput(true);
+        logData->setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
+        logData->setFormatType(Actions::LogData::FormatType::StringFormat);
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Formula, "str(10)"));
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Formula, "25"));
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Memory, "IM1"));
+        logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::LocalVariable, "MyVar"));
         maleSocket = digitalActionManager->registerAction(logData);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         LogLocalVariables logLocalVariables = new LogLocalVariables(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(logLocalVariables);
         maleSocket->setEnabled(false);
@@ -3130,7 +3131,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr.setLogToScriptOutput(true);
         logDataExpr.setFormat("Some text");
         logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.OnlyText);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.LocalVariable, "MyVar"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.LocalVariable, "MyVar"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
@@ -3140,7 +3141,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr.setLogToScriptOutput(true);
         logDataExpr.setFormat("");
         logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.CommaSeparatedList);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.Memory, "IM1"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.Memory, "IM1"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
@@ -3150,7 +3151,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr.setLogToScriptOutput(true);
         logDataExpr.setFormat("MyVar has the value %s");
         logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.StringFormat);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.Reference, "{MyVar}"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.Reference, "{MyVar}"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
@@ -3160,10 +3161,10 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr.setLogToScriptOutput(true);
         logDataExpr.setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
         logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.StringFormat);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.Formula, "str(10)"));
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.Formula, "25"));
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.Memory, "IM1"));
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData.Data(jmri.jmrit.logixng.expressions.LogData.DataType.LocalVariable, "MyVar"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData::DataType::Formula, "str(10)"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData::DataType::Formula, "25"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.Memory, "IM1"));
+        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.LocalVariable, "MyVar"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 

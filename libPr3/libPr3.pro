@@ -168,6 +168,16 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+ logixng/actions/digitalcallmodule.cpp \
+ logixng/actions/digitalcallmoduleswing.cpp \
+ logixng/callmoduleparametertablemodel.cpp \
+ logixng/expressionreporter.cpp \
+ logixng/expressionreporterswing.cpp \
+ logixng/expressionreporterxml.cpp \
+ logixng/expressions/ex_digitalcallmodule.cpp \
+ logixng/expressions/ex_digitalcallmoduleswing.cpp \
+ logixng/sequence.cpp \
+ logixng/sequenceswing.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1140,6 +1150,13 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/expressions/ex_logdata.cpp \
+ logixng/expressions/ex_logdataswing.cpp \
+ logixng/expressions/ex_logdatatablemodel.cpp \
+    logixng/actions/logdata.cpp \
+    logixng/actions/logdataswing.cpp \
+    logixng/actions/logdatatablemodel.cpp \
+    logixng/actions/logdataxml.cpp \
     logixng/editthreadsdialog.cpp \
     logixng/expressionreference.cpp \
     logixng/expressionreferenceswing.cpp \
@@ -1148,6 +1165,7 @@ equals(ENABLE_LOGIXNG, "Y") {
     logixng/actionlightswing.cpp \
     logixng/actionlightxml.cpp \
     logixng/digitalmanyxml.cpp \
+ logixng/expressions/ex_logdataxml.cpp \
     logixng/forxml.cpp \
     logixng/actionpower.cpp \
     logixng/actionpowerswing.cpp \
@@ -1522,6 +1540,16 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+ logixng/actions/digitalcallmodule.h \
+ logixng/actions/digitalcallmoduleswing.h \
+ logixng/callmoduleparametertablemodel.h \
+ logixng/expressionreporter.h \
+ logixng/expressionreporterswing.h \
+ logixng/expressionreporterxml.h \
+ logixng/expressions/ex_digitalcallmodule.h \
+ logixng/expressions/ex_digitalcallmoduleswing.h \
+ logixng/sequence.h \
+ logixng/sequenceswing.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2607,6 +2635,13 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actions/logdata.h \
+    logixng/actions/logdataswing.h \
+    logixng/actions/logdatatablemodel.h \
+    logixng/actions/logdataxml.h \
+ logixng/expressions/ex_logdata.h \
+ logixng/expressions/ex_logdataswing.h \
+ logixng/expressions/ex_logdatatablemodel.h \
     logixng/clipboardeventlistener.h \
     logixng/editthreadsdialog.h \
     logixng/analogexpressionbean.h \
@@ -2617,6 +2652,7 @@ HEADERS += \
     logixng/actionlightswing.h \
     logixng/actionlightxml.h \
     logixng/digitalmanyxml.h \
+ logixng/expressions/ex_logdataxml.h \
     logixng/forxml.h \
     logixng/actionpower.h \
     logixng/actionpowerswing.h \

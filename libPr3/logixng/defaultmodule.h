@@ -54,7 +54,7 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
           InitialValueType::TYPES initialValueType,
           QString initialValueData)override;
   /*public*/  QSet<Parameter*> getParameters()override;
-  /*public*/  QSet<VariableData*> getLocalVariables()override;
+  /*public*/  QSet<VariableData *> getLocalVariables()override;
   /*public*/  void connected(FemaleSocket* socket)override;
   /*public*/  void disconnected(FemaleSocket* socket)override;
   /*public*/  void setSocketSystemName(QString systemName);

@@ -10,8 +10,6 @@
 ///*public*/  abstract class AbstractDigitalExpression extends AbstractBase
 //        implements DigitalExpressionBean {
 
-
-
 /*public*/  AbstractDigitalExpression::AbstractDigitalExpression(QString sys, QString user, QObject* parent) : AbstractBase(sys, user, parent)
         /*throws BadUserNameException, BadSystemNameException*/ {
     //super(sys, user);
@@ -91,3 +89,4 @@
 
 
 /*private*/ /*final*/ /*static*/ Logger* AbstractDigitalExpression::log = LoggerFactory::getLogger("AbstractDigitalExpression");
+

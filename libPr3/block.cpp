@@ -249,7 +249,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
  if (_reporter != NULL)
  {
   // attach listener
-  ((AbstractReporter*)_reporter->self())->addPropertyChangeListener(_reporterListener = new BPropertyChangeListener(this));
+  ((AbstractReporter*)_reporter->self())->AbstractNamedBean::addPropertyChangeListener(_reporterListener = new BPropertyChangeListener(this));
 
 // #if 0
 //  {

@@ -7,10 +7,10 @@
 //#include "rfid/reportervariant.h"
 
 class ReporterVariant;
-class Reporter /*:  public AbstractNamedBean*/
+class Reporter  : public NamedBean
 {
     //Q_OBJECT
-  //Q_INTERFACES(NamedBean)
+  Q_INTERFACES(NamedBean)
 public:
     //explicit Reporter(QObject *parent = 0);
 //    Reporter(QObject* parent =0) : AbstractNamedBean(parent) {}
@@ -71,14 +71,14 @@ public:
          * current report will be equal.  If nothing has ever
          * been reported, this will return a null object.
          */
-        virtual ReporterVariant getLastReport()  =0; //{return QVariant();}
+        virtual QVariant getLastReport()  =0; //{return QVariant();}
 
         /**
          * Query the current report.  If there is no current report
          * available (e.g. the reporting hardware says no information is
          * currently available) this will return a null object.
          */
-        virtual ReporterVariant getCurrentReport() =0;//{return QVariant();}
+        virtual QVariant getCurrentReport() =0;//{return QVariant();}
 
         /**
          * Set the report to an arbitrary object.

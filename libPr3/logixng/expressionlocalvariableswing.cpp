@@ -72,8 +72,8 @@ ExpressionLocalVariableSwing::ExpressionLocalVariableSwing(QObject *parent) : Ab
         _tabbedPane->addTab("", _tabbedPaneCompareTo);
 
         _compareToConstant = new JPanel(new FlowLayout());
-        _compareToMemory = new JPanel();
-        _compareToLocalVariable = new JPanel();
+        _compareToMemory = new JPanel(new FlowLayout);
+        _compareToLocalVariable = new JPanel(new FlowLayout);
         _compareToRegEx = new JPanel(new FlowLayout());
 
         _tabbedPaneCompareTo->addTab(ExpressionLocalVariable::CompareTo::toString(ExpressionLocalVariable::CompareTo::Value), _compareToConstant);

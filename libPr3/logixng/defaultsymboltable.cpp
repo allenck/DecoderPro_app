@@ -141,17 +141,17 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void DefaultSymbolTable::createSymbols(/*Collection<? extends SymbolTable.*/QSet<VariableData*>* symbolDefinitions) /*throws JmriException*/ {
+    /*public*/  void DefaultSymbolTable::createSymbols(/*Collection<? extends SymbolTable.*/QSet<VariableData*> symbolDefinitions) /*throws JmriException*/ {
         createSymbols(this, symbolDefinitions);
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  void DefaultSymbolTable::createSymbols(SymbolTable* symbolTable,
-            /*Collection<? extends SymbolTable.*/QSet<VariableData*>* symbolDefinitions)
+            /*Collection<? extends SymbolTable.*/QSet<VariableData*> symbolDefinitions)
             /*throws JmriException */{
 
-        for (VariableData* variable : *symbolDefinitions) {
+        for (VariableData* variable : symbolDefinitions) {
             Symbol* symbol = new DefaultSymbol(variable->getName(), _stack->getCount() - _firstSymbolIndex);
             QVariant initialValue = QVariant();
 
@@ -217,9 +217,9 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void DefaultSymbolTable::removeSymbols(/*Collection<? extends SymbolTable.*/QSet<VariableData*>* symbolDefinitions) /*throws JmriException */{
+    /*public*/  void DefaultSymbolTable::removeSymbols(/*Collection<? extends SymbolTable.*/QSet<VariableData*> symbolDefinitions) /*throws JmriException */{
         //symbolDefinitions.forEach((parameter) -> {
-        foreach(VariableData* parameter, *symbolDefinitions){
+        foreach(VariableData* parameter, symbolDefinitions){
             _symbols.remove(parameter->getName());
         }//);
     }

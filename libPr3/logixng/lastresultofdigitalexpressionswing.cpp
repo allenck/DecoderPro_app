@@ -20,20 +20,24 @@ LastResultOfDigitalExpressionSwing::LastResultOfDigitalExpressionSwing(QObject *
 
     //@Override
     /*protected*/ void LastResultOfDigitalExpressionSwing::createPanel(/*CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        LastResultOfDigitalExpression* expression = (LastResultOfDigitalExpression*)object->bself();
+        LastResultOfDigitalExpression* expression = nullptr;
+        if(object) expression = (LastResultOfDigitalExpression*)object->bself();
 
         panel = new JPanel(new FlowLayout());
 
         _expressionsComboBox = new JComboBox();
         _expressionsComboBox->addItem("");
         for (NamedBean* nb :  ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getNamedBeanSet()) {
-           MaleDigitalExpressionSocket* bean = (DefaultMaleDigitalExpressionSocket*) nb->self();
-         if (bean->NamedBean::getUserName() != "") {
-                _expressionsComboBox->addItem(bean->getDisplayName());
+//           MaleDigitalExpressionSocket* bean = qobject_cast</*DefaultMaleDigitalExpressionSocket*/AbstractMaleSocket*>(nb->self());
+//         if (bean->NamedBean::getUserName() != "") {
+         if(nb->getUserName()!= "")
+         {
+               // _expressionsComboBox->addItem(bean->getDisplayName());
+          _expressionsComboBox->addItem(nb->getDisplayName());
                 if (expression != nullptr) {
                     NamedBeanHandle<DigitalExpressionBean*>* handle = expression->getDigitalExpression();
-                    if ((handle != nullptr) && (handle->getName() == bean->getDisplayName())) {
-                        _expressionsComboBox->setSelectedItem(bean->getDisplayName());
+                    if ((handle != nullptr) && (handle->getName() == /*bean*/nb->getDisplayName())) {
+                        _expressionsComboBox->setSelectedItem(/*bean*/nb->getDisplayName());
                     }
                 }
             }

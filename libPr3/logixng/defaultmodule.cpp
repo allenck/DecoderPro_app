@@ -240,8 +240,7 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
         QString name,
         InitialValueType::TYPES initialValueType,
         QString initialValueData) {
-
-    _localVariables.insert(new VariableData(
+            _localVariables.insert(new VariableData(
             name,
             initialValueType,
             initialValueData));

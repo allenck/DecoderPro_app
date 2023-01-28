@@ -13,6 +13,7 @@ class DigitalFormula : public AbstractDigitalExpression, public FemaleSocketList
   Q_INTERFACES(FemaleSocketListener)
  public:
   DigitalFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QObject *parent = nullptr);
+
   /* This class is public since ExpressionFormulaXml needs to access it. */
   /*public*/ /*static*/ class ExpressionEntry {
       /*private*/ /*final*/ FemaleGenericExpressionSocket* _socket;

@@ -32,10 +32,13 @@ ExpressionSignalHeadSwing::ExpressionSignalHeadSwing(QObject *parent) : Abstract
         if(object) expression = (ExpressionSignalHead*)object->bself();
 
         panel = new JPanel();
+        panel->setObjectName("panel");
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
 
         JPanel* examplePanel = new JPanel(new FlowLayout());
+        examplePanel->setObjectName("examplePanel");
         JPanel* innerExamplePanel = new JPanel(new FlowLayout());
+        innerExamplePanel->setObjectName("innerExamplePanel");
         innerExamplePanel->setBorder(BorderFactory::createLineBorder(Qt::black));
         _exampleSignalHeadBeanPanel = new BeanSelectPanel((AbstractManager*)InstanceManager::getDefault("SignalHeadManager"), nullptr);
         innerExamplePanel->layout()->addWidget(_exampleSignalHeadBeanPanel);
@@ -46,14 +49,18 @@ ExpressionSignalHeadSwing::ExpressionSignalHeadSwing(QObject *parent) : Abstract
 
 
         JPanel* expressionPanel = new JPanel(new FlowLayout());
-
+        expressionPanel->setObjectName("expressionPanel");
 
         // Set up tabbed pane for selecting the signal head
         _tabbedPaneSignalHead = new JTabbedPane();
         _panelSignalHeadDirect = new JPanel(new FlowLayout());
+        _panelSignalHeadDirect->setObjectName("_panelSignalHeadDirect");
         _panelSignalHeadReference = new JPanel(new FlowLayout());
+        _panelSignalHeadReference->setObjectName("_panelSignalHeadReference");
         _panelSignalHeadLocalVariable = new JPanel(new FlowLayout());
+        _panelSignalHeadLocalVariable->setObjectName("_panelSignalHeadLocalVariable");
         _panelSignalHeadFormula = new JPanel(new FlowLayout());
+        _panelSignalHeadFormula->setObjectName("_panelSignalHeadFormula");
 
         _tabbedPaneSignalHead->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelSignalHeadDirect);
         _tabbedPaneSignalHead->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Reference), _panelSignalHeadReference);
@@ -87,13 +94,17 @@ ExpressionSignalHeadSwing::ExpressionSignalHeadSwing(QObject *parent) : Abstract
 
         // Set up the tabbed pane for selecting the operation
         _tabbedPaneQueryType = new JTabbedPane();
-        _panelQueryTypeDirect = new JPanel(new FlowLayout());
+        _panelQueryTypeDirect = new JPanel();
+        _panelQueryTypeDirect->setObjectName("_panelQueryTypeDirect");
         _panelQueryTypeDirect->setLayout(new QVBoxLayout());//_panelQueryTypeDirect, BoxLayout.Y_AXIS));
-        _panelQueryTypeReference = new JPanel(new FlowLayout());
+        _panelQueryTypeReference = new JPanel();
+        _panelQueryTypeReference->setObjectName("_panelQueryTypeReference");
         _panelQueryTypeReference->setLayout(new QVBoxLayout());//_panelQueryTypeReference, BoxLayout.Y_AXIS));
-        _panelQueryTypeLocalVariable = new JPanel(new FlowLayout());
+        _panelQueryTypeLocalVariable = new JPanel();
+        _panelQueryTypeLocalVariable->setObjectName("_panelQueryTypeLocalVariable");
         _panelQueryTypeLocalVariable->setLayout(new QVBoxLayout());//_panelQueryTypeLocalVariable, BoxLayout.Y_AXIS));
-        _panelQueryTypeFormula = new JPanel(new FlowLayout());
+        _panelQueryTypeFormula = new JPanel();
+        _panelQueryTypeFormula->setObjectName("_panelQueryTypeFormula");
         _panelQueryTypeFormula->setLayout(new QVBoxLayout());//_panelQueryTypeFormula, BoxLayout.Y_AXIS));
 
         _tabbedPaneQueryType->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Direct), _panelQueryTypeDirect);
@@ -375,16 +386,20 @@ used to tell JMRI which %2 the indirect addressed signal %1 may show.</html>").a
             throw new IllegalArgumentException(QString("object must be an ExpressionSignalHead but is a: ")+object->bself()->metaObject()->className());
         }
         ExpressionSignalHead* expression = (ExpressionSignalHead*)object->bself();
-        if (_tabbedPaneSignalHead->getSelectedComponent() == _panelSignalHeadDirect) {
-            SignalHead* signalHead = (SignalHead*)_signalHeadBeanPanel->getNamedBean()->self();
-            if (signalHead != nullptr) {
-                NamedBeanHandle<SignalHead*>* handle
-                        = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
-                                ->getNamedBeanHandle(signalHead->getDisplayName(), signalHead);
-                expression->setSignalHead(handle);
-            } else {
-                expression->removeSignalHead();
-            }
+        if (_tabbedPaneSignalHead->getSelectedComponent() == _panelSignalHeadDirect)
+        {
+         NamedBean* nb = _signalHeadBeanPanel->getNamedBean();
+         SignalHead* signalHead = nullptr;
+         if(nb)
+           signalHead = (SignalHead*)_signalHeadBeanPanel->getNamedBean()->self();
+         if (signalHead != nullptr) {
+             NamedBeanHandle<SignalHead*>* handle
+                     = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
+                             ->getNamedBeanHandle(signalHead->getDisplayName(), signalHead);
+             expression->setSignalHead(handle);
+         } else {
+             expression->removeSignalHead();
+         }
         } else {
             expression->removeSignalHead();
         }

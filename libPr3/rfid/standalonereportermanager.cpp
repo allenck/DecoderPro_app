@@ -44,7 +44,7 @@
         }
         TimeoutRfidReporter* r;
         r = new TimeoutRfidReporter(systemName, userName);
-        r->addPropertyChangeListener(this);
+        r->AbstractNamedBean::addPropertyChangeListener(this);
         return r;
     }
 

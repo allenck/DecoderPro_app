@@ -5,8 +5,9 @@
 
 class OrSwing : public AbstractDigitalExpressionSwing
 {
+  Q_OBJECT
  public:
-  explicit OrSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing() {}
+  Q_INVOKABLE explicit OrSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing() {}
   ~OrSwing() {}
   OrSwing(const OrSwing& ) : AbstractDigitalExpressionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

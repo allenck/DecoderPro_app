@@ -16,8 +16,8 @@ public:
     AbstractReporter(QString systemName, QObject *parent = 0);
     AbstractReporter(QString systemName, QString userName, QObject *parent = 0);
     /*public*/ QString getBeanType() override;
-    ReporterVariant getCurrentReport()override;
-    ReporterVariant getLastReport()override;
+    QVariant getCurrentReport()override;
+    QVariant getLastReport()override;
     /**
      * Provide a general method for updating the report.
      */

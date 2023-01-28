@@ -88,8 +88,8 @@ public:
    /*public*/ int getLocoAddrFromTranspondingMsg(LocoNetMessage* l);
    /*public*/ Collection getCollection() override;
 
-   ReporterVariant getCurrentReport()override {return AbstractReporter::getCurrentReport();}
-   ReporterVariant getLastReport()override {return AbstractReporter::getLastReport();}
+   QVariant getCurrentReport()override {return AbstractReporter::getCurrentReport();}
+   QVariant getLastReport()override {return AbstractReporter::getLastReport();}
 
    QObject* self() override {return (QObject*)this;}
 signals:

@@ -6,6 +6,7 @@
 
 class DigitalFormulaSwing : public AbstractDigitalExpressionSwing
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit DigitalFormulaSwing(QObject *parent = nullptr) : AbstractDigitalExpressionSwing(parent) {setObjectName("DigitalFormulaSwing");}
   ~DigitalFormulaSwing() {}
