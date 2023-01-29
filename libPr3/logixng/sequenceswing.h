@@ -7,7 +7,7 @@ class JCheckBox;
 class SequenceSwing : public AbstractDigitalActionSwing
 {
  public:
-  SequenceSwing(QObject* parent = nullptr);
+  Q_INVOKABLE SequenceSwing(QObject* parent = nullptr) {}
   ~SequenceSwing() {}
   SequenceSwing(const SequenceSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

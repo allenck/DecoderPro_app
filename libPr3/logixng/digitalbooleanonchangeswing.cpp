@@ -21,6 +21,7 @@
         _triggerComboBox = new JComboBox();
         for (DigitalBooleanOnChange::Trigger::TargetAction e : DigitalBooleanOnChange::Trigger::values()) {
             _triggerComboBox->addItem(DigitalBooleanOnChange::Trigger::toString(e), e);
+            _triggerComboBox->setCurrentText(DigitalBooleanOnChange::Trigger::toString(e));
         }
 //        JComboBoxUtil.setupComboBoxMaxRows(_triggerComboBox);
         panel->layout()->addWidget(_triggerComboBox);
@@ -51,8 +52,10 @@
         }
         DigitalBooleanOnChange* action = (DigitalBooleanOnChange*)object->bself();
         //action->setTrigger(_triggerComboBox->getItemAt(_triggerComboBox->getSelectedIndex()).toInt());
-        action->setTrigger(DigitalBooleanOnChange::Trigger::toTargetAction(_triggerComboBox->currentText()));
-    }
+        int ix = _triggerComboBox->currentIndex();
+        //action->setTrigger(DigitalBooleanOnChange::Trigger::toTargetAction(_triggerComboBox->currentText()));
+        action->setTrigger((DigitalBooleanOnChange::Trigger::TargetAction) ix);
+}
 
     /** {@inheritDoc} */
     //@Override

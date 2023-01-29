@@ -51,6 +51,10 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
 
+  bool setParentForAllChildren(QList<QString>* list) override{
+   return AbstractBase::setParentForAllChildren(list);
+  }
+
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}
 

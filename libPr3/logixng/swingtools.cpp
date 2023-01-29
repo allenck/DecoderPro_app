@@ -4,6 +4,8 @@
 #include "class.h"
 #include "logixng/logixng_metatypes.h"
 #include "abstractswingconfigurator.h"
+#include "javatoqt.h"
+
 /**
  * LogixNG Swing tools.
  *
@@ -34,6 +36,11 @@
     /*public*/  /*static*/ QString SwingTools::adapterNameForClass(QString c) {
         QString className = c/*.getName()*/;
         log->trace(tr("handle object of class %1").arg(className));
+        QString qClass = JavaToQt::getQtName(c);
+        if(qClass.contains("::"))
+        {
+         return qClass+"Swing";
+        }
         int lastDot = className.lastIndexOf(".");
         if (lastDot > 0) {
             // found package-class boundary OK

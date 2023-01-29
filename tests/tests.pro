@@ -34,7 +34,13 @@ CONFIG(debug, debug|release) {
     MOC_DIR = moc_objd
     OBJECTS_DIR = moc_objd
 }
+include(../scripts_config.prf)
+equals(ENABLE_SCRIPTING, "Y") {
+    DEFINES += SCRIPTING_ENABLED
+}
+
 include(../logixng_config.prf)
+
 equals(ENABLE_LOGIXNG, "Y") {
     DEFINES += HAVE_LOGIXNG
     message("tests: LogixNG enabled")

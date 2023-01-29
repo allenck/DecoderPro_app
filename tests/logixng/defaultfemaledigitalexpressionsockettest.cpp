@@ -91,7 +91,9 @@
         classes.append("jmri.jmrit.logixng.expressions.ExpressionPower");
         classes.append("jmri.jmrit.logixng.expressions.ExpressionReference");
         classes.append("jmri.jmrit.logixng.expressions.ExpressionReporter");
+#ifdef SCRIPTING_ENABLED
         classes.append("jmri.jmrit.logixng.expressions.ExpressionScript");
+#endif
         classes.append("jmri.jmrit.logixng.expressions.ExpressionSensor");
         classes.append("jmri.jmrit.logixng.expressions.ExpressionSignalHead");
         classes.append("jmri.jmrit.logixng.expressions.ExpressionSignalMast");

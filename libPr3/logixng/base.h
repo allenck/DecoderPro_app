@@ -265,7 +265,7 @@ class Base;
      * @param errors a list of potential errors
      * @return true if success, false otherwise
      */
-  /*public*/ virtual bool setParentForAllChildren(QList<QString>* errors){return false;}
+  /*public*/ virtual bool setParentForAllChildren(QList<QString>* errors)=0;
 
     /**
      * Get a child of this item

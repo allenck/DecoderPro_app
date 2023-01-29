@@ -163,7 +163,10 @@
             throw new IllegalArgumentException(QString("object must be an ExpressionReporter but is a: ")+ (object?object->bself()->metaObject()->className():"null"));
         }
         ExpressionReporter* expression = (ExpressionReporter*)object->bself();
-        Reporter* reporter = (AbstractReporter*)_reporterBeanPanel->getNamedBean()->self();
+        NamedBean* nb = _reporterBeanPanel->getNamedBean();
+        Reporter* reporter = nullptr;
+        if(nb)
+         Reporter* reporter = (AbstractReporter*)_reporterBeanPanel->getNamedBean()->self();
 
         if (reporter != nullptr) {
             NamedBeanHandle<Reporter*>* handle

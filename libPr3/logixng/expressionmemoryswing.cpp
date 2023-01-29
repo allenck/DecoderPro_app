@@ -149,12 +149,15 @@ ExpressionMemorySwing::ExpressionMemorySwing(QObject *parent) : AbstractDigitalE
             throw new IllegalArgumentException(QString("object must be an ExpressionMemory but is a: ")+object->bself()->metaObject()->className());
         }
         ExpressionMemory* expression = (ExpressionMemory*)object->bself();
-        Memory* memory =(Memory*) _memoryBeanPanel->getNamedBean()->self();
-        if (memory != nullptr) {
-            NamedBeanHandle<Memory*>* handle
-                    = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
-                            ->getNamedBeanHandle(memory->getDisplayName(), memory);
-            expression->setMemory(handle);
+        NamedBean* nb = _memoryBeanPanel->getNamedBean();
+        Memory* memory = nullptr;
+        if(nb)
+          memory =(Memory*) _memoryBeanPanel->getNamedBean()->self();
+         if (memory != nullptr) {
+             NamedBeanHandle<Memory*>* handle
+                     = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
+                             ->getNamedBeanHandle(memory->getDisplayName(), memory);
+             expression->setMemory(handle);
         } else {
             expression->removeMemory();
         }

@@ -41,6 +41,7 @@ public:
    if(!jself()->objectName().isEmpty()) return jself()->objectName();
    else return jself()->metaObject()->className();
  }
+ void setLayout(QLayout* layout);
 
 private:
  Border* border = nullptr;

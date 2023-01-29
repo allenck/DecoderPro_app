@@ -435,7 +435,7 @@ SpinnerNumberModel::SpinnerNumberModel(QObject *parent)
      */
     /*public*/ void SpinnerNumberModel::setValue(QVariant value) {
         if ((value == QVariant()) || ((value.type() != QVariant::Double && value.type() != QVariant::Int))) {
-            throw new IllegalArgumentException("illegal value");
+            throw new IllegalArgumentException("SpinnerNumberModel:illegal value");
         }
         if (value!=(this->value)) {
             this->value = value;

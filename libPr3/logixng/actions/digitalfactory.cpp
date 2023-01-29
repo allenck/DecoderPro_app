@@ -28,7 +28,9 @@ DigitalFactory::DigitalFactory(QObject *parent) : QObject(parent)
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionOBlock"}});
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionPower"}});
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionReporter"}});
+#ifdef SCRIPTING_ENABLED
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionScript"}});
+#endif
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionSensor"}});
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionSignalHead"}});
         digitalActionClasses.insert(QHash<Category, QString> {{Category::ITEM, ".jmri.jmrit.logixng.ActionSignalMast"}});

@@ -165,6 +165,13 @@ QLayout* JPanel::findParentLayout(QWidget* w, QLayout* topLevelLayout)
   return nullptr;
 }
 
+void JPanel::setLayout(QLayout *layout)
+{
+ if(layout)
+  IllegalArgumentException("panel already has a layout");
+ QWidget::setLayout(layout);
+}
+
 /*public*/ void JPanel::addPropertyChangeListener(PropertyChangeListener* pl)
 {
  pcs->addPropertyChangeListener(pl);

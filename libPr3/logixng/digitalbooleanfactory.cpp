@@ -10,7 +10,7 @@
     //@Override
     /*public*/ QSet<QHash<Category, /*Class<? extends Base>*/QString>> DigitalBooleanFactory::getClasses() {
         QSet<QHash<Category, /*Class<? extends Base>*/QString>> digitalBooleanActionClasses = QSet<QHash<Category, /*Class<? extends Base>*/QString>>();
-        digitalBooleanActionClasses.insert(QHash<Category, QString> {{Category::COMMON, ".jmri.jmrit.logixng.actions.DigitalBooleanMany"}});
-        digitalBooleanActionClasses.insert(QHash<Category, QString> {{Category::COMMON, ".jmri.jmrit.logixng.actions.DigitalBooleanOnChange"}});
+        digitalBooleanActionClasses.insert(QHash<Category, QString> {{Category::COMMON, "jmri.jmrit.logixng.actions.DigitalBooleanMany"}});
+        digitalBooleanActionClasses.insert(QHash<Category, QString> {{Category::COMMON, "jmri.jmrit.logixng.actions.DigitalBooleanOnChange"}});
         return digitalBooleanActionClasses;
     }

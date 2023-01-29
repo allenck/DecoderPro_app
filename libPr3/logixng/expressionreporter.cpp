@@ -221,7 +221,7 @@
         return Category::ITEM;
     }
 
-    /*private*/ QString getString(QVariant o) {
+    /*private*/ QString ExpressionReporter::getString(QVariant o) {
         if (!o.isNull()) {
             return o.toString();
         }

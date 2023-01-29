@@ -31,8 +31,8 @@
     static VAL valueOf(QString s)
     {
      if(s==tr("Is")) return Is;
-     if(s== tr("IsNot")) return IsNot;
-     throw new IllegalArgumentException("illegal value");
+     if(s.isEmpty() || s== tr("IsNot")) return IsNot;
+     throw new IllegalArgumentException("Is_IsNot_Enum: illegal value '"+s+"'");
     }
 };
 #endif // IS_ISNOT_ENUM_H

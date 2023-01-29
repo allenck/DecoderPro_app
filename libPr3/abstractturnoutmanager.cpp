@@ -86,7 +86,7 @@ Turnout* AbstractTurnoutManager::getByUserName(QString key)
  NamedBean* bean = _tuser->value(key);
  if(!bean)
   return nullptr;
- Turnout* t = (Turnout*)bean->self();
+ Turnout* t = (AbstractTurnout*)bean->self();
  return t;
 }
 

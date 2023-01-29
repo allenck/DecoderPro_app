@@ -45,7 +45,7 @@ class DigitalBooleanOnChange : public AbstractDigitalBooleanAction, public Femal
      if(s == tr("On change to true")) return CHANGE_TO_TRUE;
      if(s== tr("On change to false")) return CHANGE_TO_FALSE;
      if(s== tr("On change")) return CHANGE;
-        throw new IllegalArgumentException(tr("%1 is vot a valid Trigger target action").arg(s));
+        throw new IllegalArgumentException(tr("%1 is not a valid Trigger target action").arg(s));
     }
   };
 

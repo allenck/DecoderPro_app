@@ -11,7 +11,7 @@ namespace Expressions
  {
    Q_OBJECT
   public:
-   DigitalCallModuleSwing(QObject* parent = nullptr);
+   Q_INVOKABLE DigitalCallModuleSwing(QObject* parent = nullptr) {}
    ~DigitalCallModuleSwing() {}
    DigitalCallModuleSwing(const DigitalCallModuleSwing&) {}
    /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

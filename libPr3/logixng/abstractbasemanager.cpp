@@ -124,7 +124,7 @@
         QString s1 = ((AbstractBase*)s->bself())->AbstractNamedBean::getSystemName();
 //        NamedBean* nb = (AbstractNamedBean*)s->bself();
 //        QString sys = nb->getSystemName();
-        MaleSocket* bean=nullptr;
+        MaleSocket* bean=s;
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, s);
         }

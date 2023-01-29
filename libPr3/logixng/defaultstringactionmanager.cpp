@@ -7,7 +7,7 @@
 #include "stringactionbean.h"
 #include "defaultmalestringactionsocket.h"
 #include "defaultfemalestringactionsocket.h"
-#include "stringfactory.h"
+#include "actions/stringfactory.h"
 #include "debuggermalestringactionsocketfactory.h"
 #include "namedbean.h"
 /**
@@ -34,7 +34,7 @@
 //        for (Category category : Category.values()) {
 //            actionClassList.put(category, new ArrayList<>());
 //        }
-        (new StringFactory())->init();
+        (new Actions::StringFactory())->init();
 
 //        for (StringActionFactory actionFactory : ServiceLoader.load(StringActionFactory.class)) {
 //            actionFactory.getClasses().forEach((entry) -> {
@@ -42,7 +42,7 @@
 //                actionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
 //        }
-          QSet<QHash<Category, /*Class<? extends Base>*/QString>> classes = (new StringFactory())->getClasses();
+          QSet<QHash<Category, /*Class<? extends Base>*/QString>> classes = (new Actions::StringFactory())->getClasses();
 
 //        for (MaleStringActionSocketFactory* maleSocketFactory : ServiceLoader.load(MaleStringActionSocketFactory.class)) {
 //            _maleSocketFactories.add(maleSocketFactory);

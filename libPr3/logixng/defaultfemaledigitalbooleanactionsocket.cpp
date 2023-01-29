@@ -32,7 +32,7 @@
 
     //@Override
     /*public*/  QString DefaultFemaleDigitalBooleanActionSocket::getShortDescription(QLocale locale) {
-        return tr(/*locale,*/ "!b ");
+        return tr(/*locale,*/ "!b");
     }
 
     //@Override

@@ -1431,7 +1431,7 @@ public URL getURL(URI uri) {
   if( fn == "JMRI" || /*fn == "jmri" ||*/ fn == "xml")
   {
 //   qDebug() << fn;
-   if(fn == "xml" && dirNames.contains(QString("web")) && dirNames.contains(QString("resources")))
+   if(fn == "xml" && dirNames.contains(QString("web")) && dirNames.contains(QString("resources"))&& dirNames.contains(QString("java")))
    {
     qDebug() << "scanDir found directory: " << info.path();
     QStringList names = QDir(info.filePath()).entryList(filters,QDir::Files);

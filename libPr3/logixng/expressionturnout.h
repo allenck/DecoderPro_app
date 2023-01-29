@@ -66,6 +66,10 @@ class ExpressionTurnout : public AbstractDigitalExpression, public PropertyChang
        if(s== tr("Other")) return Other;
        throw new IllegalArgumentException(tr("invaid TurnoutState %1").arg(s));
       }
+      static QList<VAL> values()
+      {
+      return {Closed, Thrown, Other};
+      }
   };
 
   explicit ExpressionTurnout(QString sys, QString user, QObject *parent = nullptr);

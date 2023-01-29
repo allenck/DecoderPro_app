@@ -12,7 +12,7 @@ namespace Actions {
  {
    Q_OBJECT
   public:
-   Q_INVOKABLE LogDataSwing(QObject* parent = nullptr);
+   Q_INVOKABLE LogDataSwing(QObject* parent = nullptr) {}
    ~LogDataSwing(){}
    LogDataSwing(const LogDataSwing&){}
    /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

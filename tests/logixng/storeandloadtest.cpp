@@ -153,9 +153,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         Sensor* sensor2 = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->provide("IS2");
         sensor2->setCommandedState(Sensor::INACTIVE);
         sensor2->setUserName("Some sensor");
-        Turnout* turnout1 = (Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provide("IT1")->self();
+        Turnout* turnout1 = (AbstractTurnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provide("IT1")->self();
         turnout1->setCommandedState(Turnout::CLOSED);
-        Turnout* turnout2 = (Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provide("IT2")->self();
+        Turnout* turnout2 = (AbstractTurnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provide("IT2")->self();
         turnout2->setCommandedState(Turnout::CLOSED);
         turnout2->setUserName("Some turnout");
         Turnout* turnout3 = (Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provide("IT3")->self();
@@ -209,7 +209,6 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         StringActionManager* stringActionManager = (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
         StringExpressionManager* stringExpressionManager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
         LogixNG_InitializationManager* logixNG_InitializationManager = (DefaultLogixNGInitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager");
-
 
         // Load table turnout_and_signals.csv
         NamedTable* csvTable =

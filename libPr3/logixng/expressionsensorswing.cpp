@@ -54,6 +54,7 @@
     _is_IsNot_ComboBox = new JComboBox();
     for (Is_IsNot_Enum::VAL e : Is_IsNot_Enum::values()) {
         _is_IsNot_ComboBox->addItem(Is_IsNot_Enum::toString(e),e);
+        _is_IsNot_ComboBox->setCurrentIndex(e);
     }
 //        JComboBoxUtil->setupComboBoxMaxRows(_is_IsNot_ComboBox);
 
@@ -196,16 +197,22 @@
         throw new IllegalArgumentException(QString("object must be an ExpressionSensor but is a: ")+object->bself()->metaObject()->className());
     }
     ExpressionSensor* expression = (ExpressionSensor*)object->bself();
+
     if (_tabbedPaneSensor->getSelectedComponent() == _panelSensorDirect) {
-        Sensor* sensor = (Sensor*)sensorBeanPanel->getNamedBean()->self();
-        if (sensor != nullptr) {
+      NamedBean* nb = sensorBeanPanel->getNamedBean();
+      Sensor* sensor = nullptr;
+      if(nb)
+      {
+        sensor = (Sensor*)sensorBeanPanel->getNamedBean()->self();
+      }
+      if (sensor != nullptr) {
             NamedBeanHandle<Sensor*>* handle
                     = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
                             ->getNamedBeanHandle(sensor->getDisplayName(), sensor);
             expression->setSensor(handle);
-        } else {
-            expression->removeSensor();
-        }
+      } else {
+          expression->removeSensor();
+      }
     } else {
         expression->removeSensor();
     }
@@ -225,7 +232,8 @@
             throw new IllegalArgumentException("_tabbedPaneSensor has unknown selection");
         }
 
-        expression->set_Is_IsNot(Is_IsNot_Enum::valueOf(_is_IsNot_ComboBox->getSelectedItem()));
+        int ix = _is_IsNot_ComboBox->currentIndex();
+        expression->set_Is_IsNot(Is_IsNot_Enum::valueOf(_is_IsNot_ComboBox->currentData().toString()));
 
         if (_tabbedPaneSensorState->getSelectedComponent() == _panelSensorStateDirect) {
             expression->setStateAddressing(NamedBeanAddressing::Direct);

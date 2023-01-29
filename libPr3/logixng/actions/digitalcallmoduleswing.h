@@ -11,7 +11,7 @@ namespace Actions
  {
    Q_OBJECT
   public:
-   Q_INVOKABLE DigitalCallModuleSwing(QObject* parent = nullptr);
+   Q_INVOKABLE DigitalCallModuleSwing(QObject* parent = nullptr) {}
    ~DigitalCallModuleSwing() {}
    DigitalCallModuleSwing(const DigitalCallModuleSwing&) {}
    /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

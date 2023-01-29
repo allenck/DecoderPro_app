@@ -4,7 +4,7 @@
 #include "loggingutil.h"
 #include "instancemanager.h"
 #include "logixng_manager.h"
-#include "stringfactory.h"
+#include "expressions/ex_stringfactory.h"
 #include "debuggermalestringexpressionsocketfactory.h"
 #include "defaultfemalestringexpressionsocket.h"
 #include "defaultmalestringexpressionsocket.h"
@@ -27,7 +27,7 @@
 //        for (StringExpressionFactory expressionFactory : ServiceLoader.load(StringExpressionFactory.class)) {
 //            expressionFactory.init();
 //        }
-          (new StringFactory())->init();
+          (new Expressions::StringFactory())->init();
 
         for (Category category : Category::values()) {
             expressionClassList.insert(category, QList<QString>());
@@ -41,7 +41,7 @@
 //                expressionClassList.get(entry.getKey()).add(entry.getValue());
 //            });
 //        }
-        QSet<QHash<Category, /*Class<? extends Base>*/QString>> classes =(new StringFactory())->getClasses();
+        QSet<QHash<Category, /*Class<? extends Base>*/QString>> classes =(new Expressions::StringFactory())->getClasses();
         for(QHash<Category, QString> map : classes)
         {
          QHashIterator<Category, QString> entry(map);

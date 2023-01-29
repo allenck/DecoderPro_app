@@ -12,7 +12,7 @@ namespace Expressions {
  {
    Q_OBJECT
   public:
-   LogDataSwing(QObject* parent = nullptr);
+   Q_INVOKABLE LogDataSwing(QObject* parent = nullptr) {}
    ~LogDataSwing(){}
    LogDataSwing(const LogDataSwing&){}
    /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

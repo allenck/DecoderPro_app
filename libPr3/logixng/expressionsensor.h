@@ -50,7 +50,7 @@ public:
       {
        if(s == tr("Inactive")) return Inactive;
        if(s== tr("Active")) return Active;
-       if(s == tr("other")) return Other;
+       if(s=="" || s == tr("other")) return Other;
        throw new IllegalArgumentException("invalid sensor state");
       }
 

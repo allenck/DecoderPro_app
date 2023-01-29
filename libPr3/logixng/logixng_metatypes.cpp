@@ -117,6 +117,10 @@
 #include "sequenceswing.h"
 #include "expressions/ex_digitalcallmoduleswing.h"
 #include "actions/digitalcallmoduleswing.h"
+#include "expressionentryexitxml.h"
+#include "expressionentryexitswing.h"
+#include "triggeronceswing.h"
+#include "triggeroncexml.h"
 
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
@@ -221,6 +225,9 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionPowerSwing>("ExpressionPowerSwing");
    qRegisterMetaType<ForSwing>("ForSwing");
    qRegisterMetaType<ExpressionReferenceSwing>("ExpressionReferenceSwing");
+   qRegisterMetaType<ExpressionEntryExitSwing>("ExpressionEntryExitSwing");
+   qRegisterMetaType<TriggerOnceSwing>("TriggerOnceSwing");
+   qRegisterMetaType<TriggerOnceXml>("TriggerOnceXml");
 
    // AbstractDigitalActionSwing
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
@@ -250,6 +257,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<Expressions::LogDataXml>("Expressions::LogDataXml");
    qRegisterMetaType<ExpressionReporterXml>("ExpressionReporterXml");
    qRegisterMetaType<ExpressionReporterSwing>("ExpressionReporterSwing");
+   qRegisterMetaType<ExpressionEntryExitXml>("ExpressionEntryExitXml");
 
    LogixNG_Metatypes::ng_done = true;
 }
