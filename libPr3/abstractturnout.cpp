@@ -410,11 +410,10 @@ void AbstractTurnout::setKnownStateToCommanded()
     // set the value
     int oldMode = _activeFeedbackType;
     _activeFeedbackType = mode;
-    if (oldMode != _activeFeedbackType)
-        firePropertyChange("feedbackchange", QVariant(oldMode),
-                QVariant(_activeFeedbackType));
     // unlock turnout if feedback is changed
-    setLocked(Turnout::CABLOCKOUT, false);
+    setLocked(CABLOCKOUT, false);
+    if (oldMode != _activeFeedbackType)
+        firePropertyChange("feedbackchange", QVariant(oldMode), QVariant(_activeFeedbackType));
 }
 
 /*public*/ int AbstractTurnout::getFeedbackMode() {

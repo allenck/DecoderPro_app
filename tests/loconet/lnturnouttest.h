@@ -13,8 +13,8 @@ class LnTurnoutTest : public AbstractTurnoutTestBase
 public:
     LnTurnoutTest(QObject* parent = nullptr);
     /*public*/ int numListeners();
-    /*public*/ void checkClosedMsgSent() throw (InterruptedException);
-    /*public*/ void checkThrownMsgSent() throw (InterruptedException);
+    /*public*/ void checkClosedMsgSent() /*throw (InterruptedException)*/;
+    /*public*/ void checkThrownMsgSent() /*throw (InterruptedException)*/;
     Q_INVOKABLE/*public*/ void setUp();
     Q_INVOKABLE/*public*/ void tearDown();
 public slots:
@@ -23,10 +23,10 @@ public slots:
     /*public*/ void testLnTurnoutStatusMsg();
     /*public*/ void testLnTurnoutStatusMsgAck();
     /*public*/ void testLnTurnoutExactFeedback();
-    /*public*/ void testBasicSet() throw (InterruptedException);
-    /*public*/ void testPropertySet() throw (InterruptedException);
-    /*public*/ void testPropertySet1() throw (InterruptedException);
-    /*public*/ void testPropertySet2() throw (InterruptedException);
+    /*public*/ void testBasicSet() /*throw (InterruptedException)*/;
+    /*public*/ void testPropertySet() /*throw (InterruptedException)*/;
+    /*public*/ void testPropertySet1() /*throw (InterruptedException)*/;
+    /*public*/ void testPropertySet2() /*throw (InterruptedException)*/;
     /*public*/ void testTurnoutLocks();
     /*public*/ void testMessageFromManagerWrongType();
     /*public*/ void testMyAddress();

@@ -16,16 +16,18 @@ public:
 
     AbstractProvidingTurnoutManagerTestBase(QObject* parent = nullptr);
     /*public*/ void testRegisterDuplicateSystemName(TurnoutManager *m, QString s1, QString s2)
-            throw (PropertyVetoException, /*NoSuchFieldException,
-            NoSuchFieldException, */IllegalArgumentException, IllegalAccessException) ;
+            /*throw (PropertyVetoException, NoSuchFieldException,
+            NoSuchFieldException, IllegalArgumentException, IllegalAccessException) */;
 public slots:
-    /*public*/ void testProvideEmpty() throw (IllegalArgumentException);
-    /*public*/ void testRegisterDuplicateSystemName() throw (PropertyVetoException, /*NoSuchFieldException,
-            NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException );
+    /*public*/ void testProvideEmpty() /*throw (IllegalArgumentException)*/;
+    /*public*/ void testRegisterDuplicateSystemName() /*throw (PropertyVetoException, NoSuchFieldException,
+            NoSuchFieldException, IllegalArgumentException, IllegalAccessException )*/;
 private:
     static Logger* log;
 protected:
 //    /*protected*/ Field getField(Class c, QString fieldName);
+    // Manager<E> under test - setUp() loads this
+    TurnoutManager* l = nullptr;
 
 };
 

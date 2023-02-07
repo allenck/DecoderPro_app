@@ -61,13 +61,13 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
   try
   {
    sen->setKnownState(getDefaultStateForNewSensors());
-  return sen;
   }
   catch (JmriException* ex) {
    log->error("An error occurred while trying to set initial state for sensor " + sen->getDisplayName());
    log->error(ex->toString());
   }
-  log->debug(tr("Internal Sensor \"%1\", \"%2\" created").arg(systemName).arg(userName));
+  log->debug(tr("Internal Sensor \"%1\", \"%2\" created").arg(systemName,userName));
+  return  sen;
 }
 
 /*static*/ int InternalSensorManager::defaultState = Sensor::UNKNOWN;

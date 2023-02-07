@@ -93,7 +93,7 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testCommandClosed() throw (InterruptedException) {
+    /*public*/ void AbstractTurnoutTestBase::testCommandClosed() /*throw (InterruptedException)*/ {
         t->setCommandedState(Turnout::CLOSED);
         // check
         Assert::assertEquals("commanded state 1", Turnout::CLOSED, t->getCommandedState(), __FILE__, __LINE__);
@@ -104,11 +104,11 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testCommandThrown() throw (InterruptedException) {
+    /*public*/ void AbstractTurnoutTestBase::testCommandThrown() /*throw (InterruptedException)*/ {
         t->setCommandedState(Turnout::THROWN);
         // check
         Assert::assertEquals("commanded state 1", Turnout::THROWN, t->getCommandedState(), __FILE__, __LINE__);
-        ((AbstractTurnout)t).setKnownStateToCommanded();
+        ((AbstractTurnout*)t)->setKnownStateToCommanded();
         Assert::assertEquals("commanded state 2", Turnout::THROWN, t->getState(), __FILE__, __LINE__);
         Assert::assertEquals("commanded state 3", "Thrown", t->describeState(t->getState()), __FILE__, __LINE__);
         checkThrownMsgSent();
@@ -146,7 +146,7 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testInvertedCommandClosed() throw (InterruptedException) {
+    /*public*/ void AbstractTurnoutTestBase::testInvertedCommandClosed() /*throw (InterruptedException)*/ {
         Assume::assumeTrue(t->canInvert());  // skip test if can't invert.
         t->setInverted(true);
         t->setCommandedState(Turnout::CLOSED);
@@ -159,7 +159,7 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testInvertedCommandThrown() throw (InterruptedException) {
+    /*public*/ void AbstractTurnoutTestBase::testInvertedCommandThrown() /*throw (InterruptedException)*/ {
         Assume::assumeTrue(t->canInvert());  // skip test if can't invert.
         t->setInverted(true);
         t->setCommandedState(Turnout::THROWN);
@@ -239,7 +239,7 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testDirectFeedback() throw (Exception) {
+    /*public*/ void AbstractTurnoutTestBase::testDirectFeedback() /*throw (Exception)*/ {
 
         // DIRECT mode is implemented in the AbstractTurnout class, so
      // it is possible on all systems.

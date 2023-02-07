@@ -16,28 +16,28 @@ public:
      * @return number of listeners registered with the TrafficController by the object under test
      */
     virtual /*public*/ int numListeners()=0;
-    virtual /*public*/ void checkThrownMsgSent() throw (InterruptedException) =0;
-    virtual /*public*/ void checkClosedMsgSent() throw (InterruptedException) =0;
-    /*public*/ void testCreate();
-    /*public*/ void testAddListener();
-    /*public*/ void testRemoveListener();
-    /*public*/ void testDispose();
-    /*public*/ void testCommandClosed() throw (InterruptedException) ;
-    /*public*/ void testCommandThrown() throw (InterruptedException);
-    /*public*/ void testRequestUpdate() /*throw (JmriException)*/;
-    /*public*/ void testGetAndSetInverted();
-    /*public*/ void testInvertedCommandClosed() throw (InterruptedException);
-    /*public*/ void testInvertedCommandThrown() throw (InterruptedException) ;
-    /*public*/ void testProvideFirstFeedbackSensor() /*throw (JmriException)*/;
-    /*public*/ void testProvideSecondFeedbackSensor() /*throw (JmriException)*/;
-    /*public*/ void testOneSensorFeedback() /*throw (JmriException)*/;
-    /*public*/ void testTwoSensorFeedback() /*throw (JmriException)*/;
-    /*public*/ void testDirectFeedback() throw (Exception);
-    /*public*/ void testGetBeanType();
+    virtual /*public*/ void checkThrownMsgSent() /*throw (InterruptedException)*/ =0;
+    virtual /*public*/ void checkClosedMsgSent() /*throw (InterruptedException)*/ =0;
 
 signals:
 
 public slots:
+  /*public*/ void testCreate();
+  /*public*/ void testAddListener();
+  /*public*/ void testRemoveListener();
+  /*public*/ void testDispose();
+  /*public*/ void testCommandClosed() /*throw (InterruptedException)*/ ;
+  /*public*/ void testCommandThrown() /*throw (InterruptedException)*/;
+  /*public*/ void testRequestUpdate() /*throw (JmriException)*/;
+  /*public*/ void testGetAndSetInverted();
+  /*public*/ void testInvertedCommandClosed() /*throw (InterruptedException)*/;
+  /*public*/ void testInvertedCommandThrown() /*throw (InterruptedException) */;
+  /*public*/ void testProvideFirstFeedbackSensor() /*throw (JmriException)*/;
+  /*public*/ void testProvideSecondFeedbackSensor() /*throw (JmriException)*/;
+  /*public*/ void testOneSensorFeedback() /*throw (JmriException)*/;
+  /*public*/ void testTwoSensorFeedback() /*throw (JmriException)*/;
+  /*public*/ void testDirectFeedback() /*throw (Exception)*/;
+  /*public*/ void testGetBeanType();
 
 protected:
     /*protected*/ Turnout* t = nullptr;	// holds object under test; set by setUp()

@@ -82,6 +82,21 @@ class ExpressionEntryExit : public AbstractDigitalExpression, public PropertyCha
   QObject* self() override {return this;}
   QObject* bself() override {return this;}
   QObject* pself() override {return this;}
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
+   AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
+  }
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
+                                                    QString name, QString listenerRef) override {
+   AbstractNamedBean::addPropertyChangeListener(propertyName, listener, name, listenerRef);
+  }
+  /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
+  ///*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
+  /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
+  /*public*/ virtual QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
+  /*public*/ virtual int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+  /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
+   return AbstractNamedBean::getPropertyChangeListenersByReference(name);
+  }
 
  private:
   static Logger* log;

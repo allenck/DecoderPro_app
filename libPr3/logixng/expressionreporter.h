@@ -131,9 +131,6 @@ class ExpressionReporter : public AbstractDigitalExpression, public PropertyChan
   /*public*/  bool getCaseInsensitive();
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) override;
   /*public*/  Category getCategory()override;
-  /*private*/ QString getString(QVariant o);
-  /*private*/ bool compare(QString value1, QString value2, bool caseInsensitive);
-  /*private*/ bool matchRegex(QString reporterValue, QString regex);
   /*public*/  bool evaluate()override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */override;
   /*public*/  int getChildCount()override;
@@ -223,6 +220,22 @@ class ExpressionReporter : public AbstractDigitalExpression, public PropertyChan
   QObject* pself() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}
 
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
+   AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
+  }
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
+                                                    QString name, QString listenerRef) override {
+   AbstractNamedBean::addPropertyChangeListener(propertyName, listener, name, listenerRef);
+  }
+  /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
+  ///*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
+  /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
+  /*public*/ virtual QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
+  /*public*/ virtual int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+  /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
+   return AbstractNamedBean::getPropertyChangeListenersByReference(name);
+  }
+
  private:
   static Logger* log;
   /*private*/ NamedBeanHandle<Reporter*>* _reporterHandle;
@@ -238,6 +251,10 @@ class ExpressionReporter : public AbstractDigitalExpression, public PropertyChan
   /*private*/ QString _regEx = "";
   /*private*/ bool _listenToMemory = true;
 //    /*private*/ boolean _listenToMemory = false;
+  /*private*/ QString getString(QVariant o);
+  /*private*/ bool compare(QString value1, QString value2, bool caseInsensitive);
+  /*private*/ bool matchRegex(QString reporterValue, QString regex);
+
 };
 //Q_DECLARE_METATYPE(ExpressionReporter)
 #endif // EXPRESSIONREPORTER_H

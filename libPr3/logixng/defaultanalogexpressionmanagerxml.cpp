@@ -32,19 +32,19 @@
     /*public*/  QDomElement DefaultAnalogExpressionManagerXml::store(QObject* o) {
         QDomElement expressions = doc.createElement("LogixNGAnalogExpressions");
         setStoreElementClass(expressions);
-        AnalogExpressionManager* tm = (AnalogExpressionManager*) o;
+        AnalogExpressionManager* tm = (DefaultAnalogExpressionManager*) o;
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleAnalogExpressionSocket* expression = (MaleAnalogExpressionSocket*)nb->self();
-                log->debug("expression system name is " + expression->NamedBean::getSystemName());  // NOI18N
+             DefaultMaleAnalogExpressionSocket* expression = (DefaultMaleAnalogExpressionSocket*)nb->self();
+                log->debug("expression system name is " + expression->AbstractNamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleAnalogExpressionSocket* a = expression;
+                    DefaultMaleAnalogExpressionSocket* a = expression;
                     while (!(static_cast<DefaultMaleAnalogExpressionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
-                        a = (MaleAnalogExpressionSocket*) a->getObject()->bself();
+                        a = (DefaultMaleAnalogExpressionSocket*) a->getObject()->bself();
                     }
                     QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
                     if (e != QDomElement()) {

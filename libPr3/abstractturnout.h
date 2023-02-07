@@ -158,8 +158,6 @@ public:
     /*public*/ float getStraightLimit() override;
     /*public*/ QString getStraightSpeed() override;
     /*public*/ void setStraightSpeed(QString s)const  /*throw(JmriException)*/ override;
-    QObject* self() override{return (QObject*)this;}
-    QObject* pself() override{return (QObject*)this;}
     /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean)override;
     /*public*/ bool isCanFollow()override;
     /*public*/ Turnout* getLeadingTurnout()override;
@@ -169,6 +167,9 @@ public:
     /*public*/ void setFollowingCommandedState(bool following)override;
     //void propertyChange(PropertyChangeEvent *);
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/override;
+
+    QObject* self() override{return this;}
+    QObject* pself() override{return this;}
 
 public slots:
     void propertyChange(PropertyChangeEvent *evt) override;

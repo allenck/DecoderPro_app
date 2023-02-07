@@ -65,9 +65,9 @@ class  ReleaseUntilO8 : public ReleaseUntil
 {
     Q_OBJECT
     AbstractSensorTestBase* test;
-    int i;
+    //int i;
 public:
-    ReleaseUntilO8(AbstractSensorTestBase* test) {this->i = i; this->test = test;}
+    ReleaseUntilO8(AbstractSensorTestBase* test) {this->test = test;}
     bool ready() /*throw (Exception)*/
  {return test->t->getState() == test->t->getRawState();}
 };

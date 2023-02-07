@@ -184,7 +184,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@CheckForNull
     /*public*/  /*E*/NamedBean* AbstractProxyManager::getByUserName(/*@Nonnull*/ QString userName) {
         for (Manager/*<E>*/* m : this->mgrs) {
-            /*E*/NamedBean* b = m->getByUserName(userName);
+            /*E*/NamedBean* b = ((AbstractManager*)m->mself())->getByUserName(userName);
             if (b != nullptr) {
                 return b;
             }

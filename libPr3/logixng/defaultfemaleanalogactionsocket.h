@@ -31,6 +31,10 @@ class DefaultFemaleAnalogActionSocket : public AbstractFemaleSocket, public Fema
   {
    AbstractFemaleSocket::getUsageDetail(level, bean, report, cdl);
   }
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
 };
 
 #endif // DEFAULTFEMALEANALOGACTIONSOCKET_H

@@ -83,7 +83,7 @@ namespace Expressions
          return _format;
      }
 
-     /*public*/  QList<LogData::Data> LogData::getDataList() {
+     /*public*/  QList<Expressions::LogData::Data> LogData::getDataList() {
          return _dataList;
      }
 

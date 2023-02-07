@@ -151,7 +151,7 @@
   {
     if (propertyName == "" || l == nullptr)
       return;
-    while (static_cast<VetoableChangeListenerProxy*>(l))
+    while (dynamic_cast<VetoableChangeListenerProxy*>(l))
     {
         VetoableChangeListenerProxy* p = (VetoableChangeListenerProxy*) l;
         if (propertyName == "" ? p->propertyName != ""
@@ -194,7 +194,7 @@
       = (Java_VetoableChangeSupport*) children->value(propertyName);
     if (s == nullptr)
       return;
-    while (static_cast<VetoableChangeListenerProxy*>(l))
+    while (dynamic_cast<VetoableChangeListenerProxy*>(l))
      {
         VetoableChangeListenerProxy* p = (VetoableChangeListenerProxy*) l;
         if (propertyName == "" ? p->propertyName != ""

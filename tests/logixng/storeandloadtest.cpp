@@ -106,6 +106,13 @@
 #include "tableforeach.h"
 #include "expressionreference.h"
 #include "actions/logdata.h"
+#include "expressions/ex_logdata.h"
+#include "sequence.h"
+#include "executedelayed.h"
+#include "analogactionlightintensity.h"
+#include "actions/digitalcallmodule.h"
+#include "symboltable.h"
+#include "module.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -599,7 +606,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 #if 0
-        ActionLightIntensity actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
+        ActionLightIntensity* actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
@@ -702,7 +709,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionListenOnBeans);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 #endif
-#if 1
+#if 0
         actionListenOnBeans = new ActionListenOnBeans(digitalActionManager->getAutoSystemName(), "");
         actionListenOnBeans->AbstractNamedBean::setComment("A comment");
         actionListenOnBeans->addReference("Turnout:"+turnout2->getUserName());
@@ -973,6 +980,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
 #if 0
+#ifdef SCRIPTING_ENABLED
         ActionScript simpleScript = new ActionScript(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(simpleScript);
         maleSocket->setEnabled(false);
@@ -1033,7 +1041,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         simpleScript.setScriptReference("{M2}");
         maleSocket = digitalActionManager->registerAction(simpleScript);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-
+#endif
 #endif
         ActionSensor* actionSensor = new ActionSensor(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionSensor);
@@ -1573,24 +1581,24 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-
-
-        Actions::DigitalCallModule callModule = new Actions::DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
+#endif
+#if 0
+        Actions::DigitalCallModule* callModule = new Actions::DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(callModule);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         callModule = new Actions::DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
         callModule->AbstractNamedBean::setComment("A comment");
-        callModule.setModule("IQM1");
-        callModule.addParameter("Abc", InitialValueType.FloatingNumber, "12.32", Module.ReturnValueType.LocalVariable, "SomeVar");
-        callModule.addParameter("Def", InitialValueType.Formula, "12 + 32", Module.ReturnValueType.Memory, "M1");
-        callModule.addParameter("Ghi", InitialValueType.Integer, "21", Module.ReturnValueType.None, null);
-        callModule.addParameter("Jkl", InitialValueType.LocalVariable, "MyVar", Module.ReturnValueType.Memory, "M34");
-        callModule.addParameter("Mno", InitialValueType.Memory, "M2", Module.ReturnValueType.LocalVariable, "SomeVar");
-        callModule.addParameter("Pqr", InitialValueType.None, null, Module.ReturnValueType.LocalVariable, "SomeVar");
-        callModule.addParameter("Stu", InitialValueType.Reference, "{MyVar}", Module.ReturnValueType.LocalVariable, "SomeVar");
-        callModule.addParameter("Vxy", InitialValueType.String, "Some string", Module.ReturnValueType.LocalVariable, "SomeVar");
+        callModule->setModule("IQM1");
+        callModule->addParameter("Abc", InitialValueType::FloatingNumber, "12.32", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Def", InitialValueType::Formula, "12 + 32", ReturnValueType::Memory, "M1");
+        callModule->addParameter("Ghi", InitialValueType::Integer, "21", ReturnValueType::None, "");
+        callModule->addParameter("Jkl", InitialValueType::LocalVariable, "MyVar", ReturnValueType::Memory, "M34");
+        callModule->addParameter("Mno", InitialValueType::Memory, "M2", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Pqr", InitialValueType::None, "", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Stu", InitialValueType::Reference, "{MyVar}", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Vxy", InitialValueType::String, "Some string", ReturnValueType::LocalVariable, "SomeVar");
         maleSocket = digitalActionManager->registerAction(callModule);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
@@ -1743,43 +1751,43 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         entryExit.setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(entryExit);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-
-
-        ExecuteDelayed executeDelayed = new ExecuteDelayed(digitalActionManager->getAutoSystemName(), "");
-        executeDelayed.setResetIfAlreadyStarted(false);
+#endif
+#if 0
+        ExecuteDelayed* executeDelayed = new ExecuteDelayed(digitalActionManager->getAutoSystemName(), "");
+        executeDelayed->setResetIfAlreadyStarted(false);
         maleSocket = digitalActionManager->registerAction(executeDelayed);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         executeDelayed = new ExecuteDelayed(digitalActionManager->getAutoSystemName(), "");
         executeDelayed->AbstractNamedBean::setComment("A comment");
-        executeDelayed.setDelayAddressing(NamedBeanAddressing::Direct);
-        executeDelayed.setDelay(100);
-        executeDelayed.setResetIfAlreadyStarted(true);
+        executeDelayed->setDelayAddressing(NamedBeanAddressing::Direct);
+        executeDelayed->setDelay(100);
+        executeDelayed->setResetIfAlreadyStarted(true);
         maleSocket = digitalActionManager->registerAction(executeDelayed);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         executeDelayed = new ExecuteDelayed(digitalActionManager->getAutoSystemName(), "");
         executeDelayed->AbstractNamedBean::setComment("A comment");
-        executeDelayed.setDelayAddressing(NamedBeanAddressing::LocalVariable);
-        executeDelayed.setDelayLocalVariable("MyVar");
-        executeDelayed.setResetIfAlreadyStarted(true);
+        executeDelayed->setDelayAddressing(NamedBeanAddressing::LocalVariable);
+        executeDelayed->setDelayLocalVariable("MyVar");
+        executeDelayed->setResetIfAlreadyStarted(true);
         maleSocket = digitalActionManager->registerAction(executeDelayed);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         executeDelayed = new ExecuteDelayed(digitalActionManager->getAutoSystemName(), "");
         executeDelayed->AbstractNamedBean::setComment("A comment");
-        executeDelayed.setDelayAddressing(NamedBeanAddressing::Reference);
-        executeDelayed.setDelayReference("{MyMemory}");
-        executeDelayed.setResetIfAlreadyStarted(true);
+        executeDelayed->setDelayAddressing(NamedBeanAddressing::Reference);
+        executeDelayed->setDelayReference("{MyMemory}");
+        executeDelayed->setResetIfAlreadyStarted(true);
         maleSocket = digitalActionManager->registerAction(executeDelayed);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         executeDelayed = new ExecuteDelayed(digitalActionManager->getAutoSystemName(), "");
         executeDelayed->AbstractNamedBean::setComment("A comment");
-        executeDelayed.setDelayAddressing(NamedBeanAddressing::Formula);
-        executeDelayed.setDelayFormula("MyVar + 10");
-        executeDelayed.setResetIfAlreadyStarted(true);
+        executeDelayed->setDelayAddressing(NamedBeanAddressing::Formula);
+        executeDelayed->setDelayFormula("MyVar + 10");
+        executeDelayed->setResetIfAlreadyStarted(true);
         maleSocket = digitalActionManager->registerAction(executeDelayed);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
@@ -1825,7 +1833,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(logix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         DigitalBooleanMany* booleanMany =
                 new DigitalBooleanMany(digitalBooleanActionManager->getAutoSystemName(), "");
         maleSocket = digitalBooleanActionManager->registerAction(booleanMany);
@@ -1837,8 +1845,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         booleanMany2->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalBooleanActionManager->registerAction(booleanMany2);
         booleanMany->getChild(0)->_connect(maleSocket);
+#endif
 
-
+#if 0
         DigitalBooleanOnChange* onChange =
                 new DigitalBooleanOnChange(digitalBooleanActionManager->getAutoSystemName(),
                         "", DigitalBooleanOnChange::Trigger::CHANGE);
@@ -1851,7 +1860,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         onChange->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalBooleanActionManager->registerAction(onChange);
         booleanMany->getChild(2)->_connect(maleSocket);
-
+#endif
 
         Actions::LogData* logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(logData);
@@ -1923,23 +1932,23 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(many);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0
-        Sequence sequence =
+#if 1
+        Sequence* sequence =
                 new Sequence(digitalActionManager->getAutoSystemName(), "");
-        sequence.setRunContinuously(false);
-        sequence.setStartImmediately(true);
+        sequence->setRunContinuously(false);
+        sequence->setStartImmediately(true);
         maleSocket = digitalActionManager->registerAction(sequence);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         sequence = new Sequence(digitalActionManager->getAutoSystemName(), "");
         sequence->AbstractNamedBean::setComment("A comment");
-        sequence.setRunContinuously(true);
-        sequence.setStartImmediately(false);
+        sequence->setRunContinuously(true);
+        sequence->setStartImmediately(false);
         maleSocket = digitalActionManager->registerAction(sequence);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-        And andTemp = new And(digitalExpressionManager->getAutoSystemName(), "");
+        And* andTemp = new And(digitalExpressionManager->getAutoSystemName(), "");
         andTemp->AbstractNamedBean::setComment("Start expression");
         maleSocket = digitalExpressionManager->registerExpression(andTemp);
         maleSocket->setEnabled(false);
@@ -1953,32 +1962,32 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         andTemp = new And(digitalExpressionManager->getAutoSystemName(), "");
         andTemp->AbstractNamedBean::setComment("Reset expression");
         maleSocket = digitalExpressionManager->registerExpression(andTemp);
-        sequence.getChild(2)->_connect(maleSocket);
+        sequence->getChild(2)->_connect(maleSocket);
 
-        DigitalMany manyTemp = new DigitalMany(digitalActionManager->getAutoSystemName(), "");
+        DigitalMany* manyTemp = new DigitalMany(digitalActionManager->getAutoSystemName(), "");
         manyTemp->AbstractNamedBean::setComment("Action socket 1");
         maleSocket = digitalActionManager->registerAction(manyTemp);
         maleSocket->setEnabled(false);
-        sequence.getChild(3)->_connect(maleSocket);
+        sequence->getChild(3)->_connect(maleSocket);
 
         andTemp = new And(digitalExpressionManager->getAutoSystemName(), "");
         andTemp->AbstractNamedBean::setComment("Expression socket 1");
         maleSocket = digitalExpressionManager->registerExpression(andTemp);
-        sequence.getChild(4)->_connect(maleSocket);
+        sequence->getChild(4)->_connect(maleSocket);
 
-        sequence.doSocketOperation(4, FemaleSocketOperation.InsertAfter);
+        sequence->doSocketOperation(4, FemaleSocketOperation::InsertAfter);
 
         manyTemp = new DigitalMany(digitalActionManager->getAutoSystemName(), "");
         manyTemp->AbstractNamedBean::setComment("Action socket 2");
         maleSocket = digitalActionManager->registerAction(manyTemp);
-        sequence.getChild(5)->_connect(maleSocket);
+        sequence->getChild(5)->_connect(maleSocket);
 
         andTemp = new And(digitalExpressionManager->getAutoSystemName(), "");
         andTemp->AbstractNamedBean::setComment("Expression socket 2");
         maleSocket = digitalExpressionManager->registerExpression(andTemp);
-        sequence.getChild(6)->_connect(maleSocket);
-
-
+        sequence->getChild(6)->_connect(maleSocket);
+#endif
+#if 0
         ShutdownComputer shutdownComputer =
                 new ShutdownComputer(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
@@ -2136,22 +2145,22 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
 #if 0
-        jmri.jmrit.logixng.expressions.DigitalCallModule expressionCallModule = new jmri.jmrit.logixng.expressions.DigitalCallModule(digitalExpressionManager->getAutoSystemName(), "");
+        Expressions::DigitalCallModule expressionCallModule = new Expressions::DigitalCallModule(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionCallModule);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-        expressionCallModule = new jmri.jmrit.logixng.expressions.DigitalCallModule(digitalExpressionManager->getAutoSystemName(), "");
+        expressionCallModule = new Expressions::DigitalCallModule(digitalExpressionManager->getAutoSystemName(), "");
         expressionCallModule->AbstractNamedBean::setComment("A comment");
         expressionCallModule.setModule("IQM1");
-        expressionCallModule.addParameter("Abc", InitialValueType.FloatingNumber, "12.32", Module.ReturnValueType.LocalVariable, "SomeVar");
-        expressionCallModule.addParameter("Def", InitialValueType.Formula, "12 + 32", Module.ReturnValueType.Memory, "M1");
-        expressionCallModule.addParameter("Ghi", InitialValueType.Integer, "21", Module.ReturnValueType.None, null);
-        expressionCallModule.addParameter("Jkl", InitialValueType.LocalVariable, "MyVar", Module.ReturnValueType.Memory, "M34");
-        expressionCallModule.addParameter("Mno", InitialValueType.Memory, "M2", Module.ReturnValueType.LocalVariable, "SomeVar");
-        expressionCallModule.addParameter("Pqr", InitialValueType.None, null, Module.ReturnValueType.LocalVariable, "SomeVar");
-        expressionCallModule.addParameter("Stu", InitialValueType.Reference, "{MyVar}", Module.ReturnValueType.LocalVariable, "SomeVar");
-        expressionCallModule.addParameter("Vxy", InitialValueType.String, "Some string", Module.ReturnValueType.LocalVariable, "SomeVar");
+        expressionCallModule.addParameter("Abc", InitialValueType::FloatingNumber, "12.32", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule.addParameter("Def", InitialValueType::Formula, "12 + 32", ReturnValueType::Memory, "M1");
+        expressionCallModule.addParameter("Ghi", InitialValueType::Integer, "21", ReturnValueType::None, null);
+        expressionCallModule.addParameter("Jkl", InitialValueType::LocalVariable, "MyVar", ReturnValueType::Memory, "M34");
+        expressionCallModule.addParameter("Mno", InitialValueType::Memory, "M2", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule.addParameter("Pqr", InitialValueType::None, null, ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule.addParameter("Stu", InitialValueType::Reference, "{MyVar}", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule.addParameter("Vxy", InitialValueType::String, "Some string", ReturnValueType::LocalVariable, "SomeVar");
         maleSocket = digitalExpressionManager->registerExpression(expressionCallModule);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
@@ -2681,6 +2690,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
 #if 0
+#ifdef SCRIPTING_ENABLED
         ExpressionScript expressionScript = new ExpressionScript(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionScript);
         maleSocket->setEnabled(false);
@@ -2693,6 +2703,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         expressionScript.setUnregisterListenerScript("sensors.provideSensor(\"IS1\").removePropertyChangeListener(self)");
         maleSocket = digitalExpressionManager->registerExpression(expressionScript);
         _and->getChild(indexExpr++)->_connect(maleSocket);
+#endif
 #endif
 
         ExpressionSensor* expressionSensor = new ExpressionSensor(digitalExpressionManager->getAutoSystemName(), "");
@@ -3118,52 +3129,52 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(lastResultOfDigitalExpression);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0
-        jmri.jmrit.logixng.expressions.LogData logDataExpr = new jmri.jmrit.logixng.expressions.LogData(digitalExpressionManager->getAutoSystemName(), "");
+#if 1
+        Expressions::LogData* logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-        logDataExpr = new jmri.jmrit.logixng.expressions.LogData(digitalExpressionManager->getAutoSystemName(), "");
+        logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
-        logDataExpr.setLogToLog(true);
-        logDataExpr.setLogToScriptOutput(true);
-        logDataExpr.setFormat("Some text");
-        logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.OnlyText);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.LocalVariable, "MyVar"));
+        logDataExpr->setLogToLog(true);
+        logDataExpr->setLogToScriptOutput(true);
+        logDataExpr->setFormat("Some text");
+        logDataExpr->setFormatType(Expressions::LogData::FormatType::OnlyText);
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::LocalVariable, "MyVar"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-        logDataExpr = new jmri.jmrit.logixng.expressions.LogData(digitalExpressionManager->getAutoSystemName(), "");
+        logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
-        logDataExpr.setLogToLog(true);
-        logDataExpr.setLogToScriptOutput(true);
-        logDataExpr.setFormat("");
-        logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.CommaSeparatedList);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.Memory, "IM1"));
+        logDataExpr->setLogToLog(true);
+        logDataExpr->setLogToScriptOutput(true);
+        logDataExpr->setFormat("");
+        logDataExpr->setFormatType(Expressions::LogData::FormatType::CommaSeparatedList);
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Memory, "IM1"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-        logDataExpr = new jmri.jmrit.logixng.expressions.LogData(digitalExpressionManager->getAutoSystemName(), "");
+        logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
-        logDataExpr.setLogToLog(true);
-        logDataExpr.setLogToScriptOutput(true);
-        logDataExpr.setFormat("MyVar has the value %s");
-        logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.StringFormat);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.Reference, "{MyVar}"));
+        logDataExpr->setLogToLog(true);
+        logDataExpr->setLogToScriptOutput(true);
+        logDataExpr->setFormat("MyVar has the value %s");
+        logDataExpr->setFormatType(Expressions::LogData::FormatType::StringFormat);
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Reference, "{MyVar}"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-        logDataExpr = new jmri.jmrit.logixng.expressions.LogData(digitalExpressionManager->getAutoSystemName(), "");
+        logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
-        logDataExpr.setLogToLog(true);
-        logDataExpr.setLogToScriptOutput(true);
-        logDataExpr.setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
-        logDataExpr.setFormatType(jmri.jmrit.logixng.expressions.LogData.FormatType.StringFormat);
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData::DataType::Formula, "str(10)"));
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData::DataType::Formula, "25"));
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.Memory, "IM1"));
-        logDataExpr.getDataList().add(new jmri.jmrit.logixng.expressions.LogData::Data(jmri.jmrit.logixng.expressions.LogData.DataType.LocalVariable, "MyVar"));
+        logDataExpr->setLogToLog(true);
+        logDataExpr->setLogToScriptOutput(true);
+        logDataExpr->setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
+        logDataExpr->setFormatType(Expressions::LogData::FormatType::StringFormat);
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Formula, "str(10)"));
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Formula, "25"));
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Memory, "IM1"));
+        logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::LocalVariable, "MyVar"));
         maleSocket = digitalExpressionManager->registerExpression(logDataExpr);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 

@@ -61,6 +61,6 @@ template<class T>
 /*public*/ int NamedBeanHandle<T>::hashCode() {
         int hash = 7;
         hash = 37 * hash + (getBean() != NULL ? this->getBean().hashCode() : 0);
-        hash = 37 * hash + (this.getName() != NULL ? this->getName().hashCode() : 0);
+        hash = 37 * hash + (this->getName() != NULL ? this->getName().hashCode() : 0);
         return hash;
     }

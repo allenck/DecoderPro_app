@@ -78,6 +78,27 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
 
   QObject* bself() override{return (QObject*)this;}
   QObject* self() override{return (QObject*)this;}
+
+  /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
+   AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
+  }
+  /*public*/  void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
+                                                    QString name, QString listenerRef) override {
+   AbstractNamedBean::addPropertyChangeListener(propertyName, listener, name, listenerRef);
+  }
+  /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
+  /*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
+  /*public*/ QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
+  /*public*/ QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
+  /*public*/ int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+  /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
+   return AbstractNamedBean::getPropertyChangeListenersByReference(name);
+  }
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+  /*public*/ virtual void dispose() override {AbstractNamedBean::dispose();}
+
  private:
   /*private*/ /*final*/ LogixNG_Manager* _manager = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
   /*private*/ bool _enabled = false;

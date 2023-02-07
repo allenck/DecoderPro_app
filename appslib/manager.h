@@ -102,7 +102,7 @@ public:
  * Provides access to the system prefix string.
  * This was previously called the "System letter"
  */
- virtual QString getSystemPrefix() const  /*= 0*/ {return "L";}
+ virtual QString getSystemPrefix() const  {return "";}//= 0; // {return "L";}
 
 /**
  * @return The type letter for a specific implementation
@@ -126,6 +126,7 @@ public:
  /*public*/ /*default*/ virtual QString getSystemNamePrefix() const {
      return getSystemPrefix() + typeLetter();
  }
+
  /*public*/ /*default*/ virtual QString getSubSystemNamePrefix() const {
      return getSystemNamePrefix();
  }

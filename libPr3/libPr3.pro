@@ -168,8 +168,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
- logixng/actions/stringfactory.cpp \
- logixng/expressions/ex_stringfactory.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1142,6 +1140,8 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/actions/stringfactory.cpp \
+    logixng/expressions/ex_stringfactory.cpp \
     logixng/expressionturnoutswing.cpp \
     logixng/expressionentryexitswing.cpp \
     logixng/actions/digitalcallmodule.cpp \
@@ -1545,9 +1545,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- logixng/actions/stringfactory.h \
- logixng/expressions/ex_stringfactory.h \
- logixng/expressionturnoutswing.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2633,6 +2630,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actions/stringfactory.h \
+    logixng/expressions/ex_stringfactory.h \
+    logixng/expressionturnoutswing.h \
     logixng/expressionturnoutswing.h \
     logixng/expressionentryexitswing.h \
     logixng/actions/digitalcallmodule.h \

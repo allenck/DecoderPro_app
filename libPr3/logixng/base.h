@@ -10,7 +10,8 @@
 //#include "logixng.h"
 #include "category.h"
 
-class MaleSocket;
+
+//class MaleSocket;
 class PrintTreeSettings;
 class MutableInt;
 class PrintWriter;
@@ -238,7 +239,7 @@ class Base;
      *
      * @return the parent of this object
      */
-  /*public*/ virtual Base* getParent() const {return nullptr;}
+  /*public*/ virtual Base* getParent() const =0;
 
     /**
      * Set the parent.
@@ -257,7 +258,7 @@ class Base;
      *
      * @param parent the new parent of this object
      */
-  /*public*/ virtual void setParent(Base* parent){}
+  /*public*/ virtual void setParent(Base* parent) {}
 
     /**
      * Set the parent for all the children.
@@ -290,13 +291,24 @@ class Base;
      * @return true if operation is allowed, false otherwise
      */
     /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper);
+//    {
+//     if(qobject_cast<MaleSocket*>(this->bself()))
+//      return ((MaleSocket*)this)->getObject()->isSocketOperationAllowed(index, oper);
+
+//    }
     /**
      * Do an operation on a child
      * @param index the index of the child to do the operation on
      * @param oper the operation to do
      */
-    /*public*/ virtual /*default*/ void doSocketOperation(int index, FemaleSocketOperation::TYPES oper);
-
+    /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper);
+//    {
+//     if(qobject_cast<MaleSocket*>(this->bself()))
+//     {
+//       ((MaleSocket*)this->bself())->getObject()->doSocketOperation(index, oper);
+//     }
+//     // By default, do nothing if not a male socket
+//    }
     /**
      * Get the category.
      * @return the category
@@ -308,14 +320,14 @@ class Base;
      * enabled, this item is active.
      * @return true if active, false otherwise.
      */
-  /*public*/ virtual bool isActive(){return false;}
+  /*public*/ virtual bool isActive() =0; //{return false;}
 
     /**
      * Setup this object and its children.
      * This method is used to lookup system names for child sockets, turnouts,
      * sensors, and so on.
      */
-  /*public*/ virtual void setup() {}
+  /*public*/ virtual void setup() =0;
 
     /**
      * Deactivate this object, so that it releases as many resources as possible
@@ -360,7 +372,7 @@ class Base;
      * Important: This method may be called more than once. Methods overriding
      * this method must ensure that listeners are not registered more than once.
      */
-  /*public*/ virtual void registerListeners(){}
+  /*public*/ virtual void registerListeners()=0;
 
     /**
      * Unregister listeners if this object needs that.
@@ -368,7 +380,7 @@ class Base;
      * Important: This method may be called more than once. Methods overriding
      * this method must ensure that listeners are not unregistered more than once.
      */
-  /*public*/ virtual void unregisterListeners() {}
+  /*public*/ virtual void unregisterListeners() =0;
 
     /**
      * Print the tree to a stream.
@@ -396,7 +408,7 @@ class Base;
             PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-    /*MutableInt*/int* lineNumber) {}
+    /*MutableInt*/int* lineNumber) =0;
 
     /**
      * Print the tree to a stream.
@@ -446,7 +458,7 @@ class Base;
             PrintWriter* writer,
             QString indent,
             QString currentIndent,
-    /*MutableInt*/int* lineNumber){}
+    /*MutableInt*/int* lineNumber)=0;
 
     /**
      * Navigate the LogixNG tree.
@@ -456,7 +468,7 @@ class Base;
      * @param report A list of NamedBeanUsageReport usage reports.
      * @param cdl    The current ConditionalNG bean.  Null for Module searches since there is no conditional
      */
-  /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl){}
+  /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)=0;
 
     /**
      * Add a new NamedBeanUsageReport to the report list if there are any matches in this action or expresssion.
@@ -472,7 +484,7 @@ class Base;
      * @param report A list of NamedBeanUsageReport usage reports.
      * @param cdl    The current ConditionalNG bean.  Null for Module searches since there is no conditional
      */
-  /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl){}
+  /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)=0;
 
     /**
      * Request a call-back when a bound property changes. Bound properties are
@@ -489,7 +501,7 @@ class Base;
      * @param listenerRef A textual reference for the listener, that can be
      *                        presented to the user when a delete is called
      */
-  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef){}
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)=0;
 
     /**
      * Request a call-back when a bound property changes. Bound properties are
@@ -509,11 +521,11 @@ class Base;
      *                         presented to the user when a delete is called
      */
     /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
-                                                      QString name, QString listenerRef){}
+                                                      QString name, QString listenerRef)=0;
 
-  /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName){}
+  /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName)=0;
 
-  /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/{}
+  /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/=0;
 
     /**
      * Get the textual reference for the specific listener
@@ -522,7 +534,7 @@ class Base;
      * @return the textual reference
      */
     //@CheckReturnValue
-  /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) {return "";}
+    /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) =0;
 
     /**
      * Returns a list of all the listeners references
@@ -530,7 +542,7 @@ class Base;
      * @return a list of textual references
      */
     //@CheckReturnValue
-  /*public*/ virtual QList<QString> getListenerRefs() {return  QList<QString>();}
+  /*public*/ virtual QList<QString> getListenerRefs() {return QList<QString>();}
 
     /**
      * Returns a list of all the listeners references for this object
@@ -539,7 +551,7 @@ class Base;
      * @param list a list of textual references
      */
     //@CheckReturnValue
-  /*public*/ virtual void getListenerRefsIncludingChildren(QList<QString> list){}
+  /*public*/ virtual void getListenerRefsIncludingChildren(QList<QString> list)=0;
 
     /**
      * Number of current listeners. May return -1 if the information is not
@@ -548,7 +560,7 @@ class Base;
      * @return the number of listeners.
      */
     //@CheckReturnValue
-  /*public*/ virtual int getNumPropertyChangeListeners() {return 0;}
+  /*public*/ virtual int getNumPropertyChangeListeners() =0;
 
     /**
      * Get a list of all the property change listeners that are registered using
@@ -560,7 +572,7 @@ class Base;
      */
     //@CheckReturnValue
     //@Nonnull
-    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name){return QVector<PropertyChangeListener*>();}
+    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)=0;
 
 
 
@@ -579,7 +591,8 @@ class Base;
 
     /*public*/ /*final*/ QString PRINT_LINE_NUMBERS_FORMAT = "%1:  ";
 
-  /*public*/ virtual QString toString(){return "";}
+  /*public*/ virtual QString toString() {return "";}
+
 
     virtual QObject* bself() =0;
 };

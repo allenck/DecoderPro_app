@@ -479,8 +479,8 @@
             }
             if (!error) {
                 // Requested turnout bit is not assigned to a Light
-                t = InstanceManager::turnoutManagerInstance()->
-                        getByUserName(turnoutName);
+                t = (AbstractTurnout*)InstanceManager::turnoutManagerInstance()->
+                        getByUserName(turnoutName)->self();
                 if (t == nullptr) {
                     // not user name, try system name
                     t = InstanceManager::turnoutManagerInstance()->

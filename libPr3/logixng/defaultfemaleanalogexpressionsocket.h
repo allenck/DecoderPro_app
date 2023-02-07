@@ -23,5 +23,10 @@ class DefaultFemaleAnalogExpressionSocket : public AbstractFemaleSocket, public 
   /*public*/ QString getClassName()override;
 
   QObject* bself() override{return (QObject*)this;}
+
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
 };
 #endif // DEFAULTFEMALEANALOGEXPRESSIONSOCKET_H

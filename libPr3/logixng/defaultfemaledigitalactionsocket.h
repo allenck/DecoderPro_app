@@ -23,6 +23,10 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override
   {AbstractFemaleSocket::getUsageDetail(level,bean, report,cdl );}
 
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
 };
 
 

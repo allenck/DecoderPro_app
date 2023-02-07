@@ -94,7 +94,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void setup() {
+    /*public*/  void ExpressionPower::setup() {
         // Do nothing
     }
 

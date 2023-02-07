@@ -1,6 +1,7 @@
 #ifndef VETOABLECHANGEPROVIDER_H
 #define VETOABLECHANGEPROVIDER_H
 #include <QList>
+
 /**
  * A set of methods that would need to be implemented to ensure the implementing
  * class provides a complete external interface for vetoable property changes.

@@ -5,7 +5,7 @@
 #include "loggerfactory.h"
 #include "junitutil.h"
 
-LnTurnoutManagerTestAction::LnTurnoutManagerTestAction(QObject* parent) : AbstractAction(tr("LnTurnout Manager test"), parent)
+LnTurnoutManagerTestAction::LnTurnoutManagerTestAction(QObject* parent) : AbstractAction(tr("LnTurnout Manager"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
@@ -27,6 +27,9 @@ void LnTurnoutManagerTestAction::actionPerformed()
       << "testProvideFailure"
       << "testTurnoutPutGet"
       << "testProvideName"
+      << "testProvideWithoutWithPrefix"
+      << "void testProvideWithWithoutPrefix"
+      << "testProvideFailWithPrefix"
       << "testDefaultSystemName"
       << "testSingleObject"
       << "testMisses"
@@ -34,6 +37,11 @@ void LnTurnoutManagerTestAction::actionPerformed()
       << "testRename"
       << "testThrownText"
       << "testClosedText"
+      << "testSetAndGetOutputInterval"
+      << "testAutoSystemNames"
+      << "testGetEntryToolTip"
+      << "testGetNextValidAddress"
+      << "testIncorrectGetNextValidAddress"
 
       // from LnTurnoutManagerTest
       << "testMisses"

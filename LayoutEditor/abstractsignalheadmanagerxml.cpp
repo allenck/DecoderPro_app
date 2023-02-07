@@ -40,7 +40,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 /*public*/ QDomElement AbstractSignalHeadManagerXml::store(QObject* o) {
    QDomElement signalheads = doc.createElement("signalheads");
    setStoreElementClass(signalheads);
-   SignalHeadManager* shm = (SignalHeadManager*) o;
+   SignalHeadManager* shm = (AbstractSignalHeadManager*) o;
    if (shm!=NULL)
    {
     QSet<NamedBean*> shList = shm->getNamedBeanSet();

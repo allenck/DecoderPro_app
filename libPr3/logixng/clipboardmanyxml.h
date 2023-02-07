@@ -8,7 +8,7 @@ class ClipboardManyXml : public AbstractNamedBeanManagerConfigXML
 {
   Q_OBJECT
  public:
-  explicit ClipboardManyXml(QObject *parent = nullptr);
+  Q_INVOKABLE explicit ClipboardManyXml(QObject *parent = nullptr);
   ~ClipboardManyXml() {}
   ClipboardManyXml(const ClipboardManyXml&) : AbstractNamedBeanManagerConfigXML() {}
   /*public*/  QDomElement store(QObject* o)override;

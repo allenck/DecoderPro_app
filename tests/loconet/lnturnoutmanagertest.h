@@ -10,12 +10,12 @@ class LnTurnoutManagerTest : public AbstractTurnoutMgrTestBase
  Q_OBJECT
 public:
  LnTurnoutManagerTest(QObject* parent = nullptr);
- Q_INVOKABLE /*public*/ void setUp();
+ Q_INVOKABLE /*public*/ void setUp()override;
  Q_INVOKABLE /*public*/ void tearDown();
- /*public*/ QString getSystemName(int i);
+ /*public*/ QString getSystemName(int i)override;
 
 public slots:
- /*public*/ void testMisses();
+ /*public*/ void testMisses()override;
  /*public*/ void testLocoNetMessages();
  /*public*/ void testCreateFromMessage1 ();
  /*public*/ void testCreateFromMessage2 ();

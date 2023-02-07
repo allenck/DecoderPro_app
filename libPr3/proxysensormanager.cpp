@@ -174,11 +174,11 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxy
 
 //@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingActive(){
- return ((SensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingActive();
+ return ((AbstractSensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingActive();
 }
 //@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingInActive(){
- return ((SensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingInActive();
+ return ((AbstractSensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingInActive();
 }
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingActive(long timer){

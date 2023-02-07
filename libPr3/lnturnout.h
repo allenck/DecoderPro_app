@@ -14,6 +14,9 @@ class LIBPR3SHARED_EXPORT LnTurnout : public AbstractTurnout
 public:
  //explicit LnTurnout(QObject *parent = 0);
  LnTurnout(QString prefix, int number, LocoNetInterface *controller, QObject *parent = 0);
+ /*public*/ void setBinaryOutput(bool state)override;
+ /*public*/ void setFeedbackMode(/*@Nonnull*/ QString mode) override;
+ /*public*/ void setFeedbackMode(int mode)override;
  /*public*/ int getNumber();
  /**
   * Send a single OPC_SW_REQ message
@@ -39,11 +42,13 @@ public:
  /*public*/ void messageFromManager(LocoNetMessage* l);
  static const int METERINTERVAL;// = 100;  // msec wait before closed
  /*public*/ void setUseOffSwReqAsConfirmation(bool state);
+ /*public*/ bool isByPassBushbyBit();
+ /*public*/ bool isSendOnAndOff();
 
 signals:
     
 public slots:
- /*public*/ void message(LocoNetMessage* l);
+// /*public*/ void message(LocoNetMessage* l);
  void meterTimerTimeout();
 
 private:
@@ -62,7 +67,7 @@ private:
  //method which takes a turnout state as a parameter and adjusts it  as necessary
  //to reflect the turnout invert property
  /*private*/ int adjustStateForInversion(int rawState);
- LnTurnoutTimerTask* timerTask;
+ LnTurnoutTimerTask* meterTask;
  /*private*/ void computeKnownStateOpSwAckReq(int sw2, int state);
  /*private*/ void setKnownStateFromOutputStateClosedReport();
  /*private*/ void setKnownStateFromOutputStateThrownReport() ;
@@ -84,14 +89,20 @@ private:
   * file has set the value; message-created turnouts have it false.
   */
  bool feedbackDeliberatelySet = false; // package to allow access from LnTurnoutManager
+ /*private*/ void startConsistencyTimerTask();
+ static /*final*/ int CONSISTENCYTIMER;// = 3000; // msec wait for command to take effect
+ int noConsistencyTimersRunning = 0;
+ /*private*/ TimerTask* consistencyTask = nullptr;
 
 protected:
  // Handle a request to change state by sending a LocoNet command
  /*protected*/ void forwardCommandChangeToLayout(/*final*/ int newstate) override;
-
  /*protected*/ void turnoutPushbuttonLockout(bool _pushButtonLockout) override;
+ /*protected*/ QString _prefix = "L"; // default to "L"
+
  friend class LnTurnoutTimerTask;
  friend class LnTurnoutTest;
+ friend class ConsistencyTimerTask;
 };
 
 class LnTurnoutTimerTask : public TimerTask
@@ -102,6 +113,24 @@ class LnTurnoutTimerTask : public TimerTask
 public:
  LnTurnoutTimerTask(int state, LnTurnout* turnout);
  /*public*/ void run();
+
+};
+
+class ConsistencyTimerTask : public TimerTask
+{
+ Q_OBJECT
+ LnTurnout* turnout;
+public:
+ ConsistencyTimerTask( LnTurnout* turnout) {this->turnout = turnout;}
+ /*public*/ void run()
+ {
+  turnout->noConsistencyTimersRunning--;
+  if (!turnout->isConsistentState() && turnout->noConsistencyTimersRunning == 0) {
+      turnout->log->debug(tr("LnTurnout resending command for turnout %1").arg(turnout->_number));
+      turnout->forwardCommandChangeToLayout(turnout->getCommandedState());
+  }
+
+ }
 
 };
 

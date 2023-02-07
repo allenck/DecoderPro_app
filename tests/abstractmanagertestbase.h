@@ -14,14 +14,19 @@ public:
 signals:
 
 public slots:
- /*public*/ /*final*/ void testManagerDataListenerAddAndRemove();
- /*public*/ /*final*/ void testPropertyChangeListenerAddAndRemove();
- /*public*/ /*final*/ void testVetoableChangeListenerAddAndRemove();
- /*public*/ void testMakeSystemName();
+  /*public*/ /*final*/ void testManagerDataListenerAddAndRemove();
+  /*public*/ /*final*/ void testPropertyChangeListenerAddAndRemove();
+  /*public*/ /*final*/ void testVetoableChangeListenerAddAndRemove();
+  /*public*/ void testMakeSystemName();
+  /*public*/ virtual void testMakeSystemNameWithPrefix();
+  /*public*/ virtual void testMakeSystemNameWithNoPrefixNotASystemName();
+  /*public*/ virtual void testMakeSystemNameWithPrefixNotASystemName();
+  /*public*/ virtual void testAutoSystemNames();
 
 protected:
  // Manager<E> under test - setUp() loads this
  /*protected*/ Manager* _manager = nullptr;
+ /*protected*/ QString getASystemNameWithNoPrefix();
 
 };
 

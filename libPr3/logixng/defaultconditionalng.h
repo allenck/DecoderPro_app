@@ -55,8 +55,51 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
    return AbstractBase::setParentForAllChildren(list);
   }
 
+  bool isActive() override {return AbstractBase::isActive();}
+
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}
+
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+  /*public*/ virtual void dispose() override {AbstractBase::dispose();}
+  /*public*/ virtual void registerListeners() override {AbstractBase::registerListeners();}
+  /*public*/ virtual void unregisterListeners() override {AbstractBase::unregisterListeners();}
+  /*public*/virtual void printTree(
+          PrintTreeSettings* settings,
+          PrintWriter* writer,
+          QString indent,
+    /*MutableInt*/int* lineNumber) override {AbstractBase::printTree(settings, writer, indent, lineNumber);}
+  /*public*/ virtual void printTree(
+          PrintTreeSettings* settings,
+          QLocale locale,
+          PrintWriter* writer,
+          QString indent,
+          QString currentIndent,
+    /*MutableInt*/int* lineNumber) override {AbstractBase::printTree(settings, locale, writer, indent, currentIndent, lineNumber);}
+  /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override
+  {
+   AbstractBase::getUsageTree(level, bean, report, cdl);
+  }
+  /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override
+  {AbstractBase::getUsageDetail(level, bean, report, cdl);}
+  /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
+   AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
+  }
+  /*public*/  void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
+                                                    QString name, QString listenerRef) override {
+   AbstractNamedBean::addPropertyChangeListener(propertyName, listener, name, listenerRef);
+  }
+  /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
+  /*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
+  /*public*/ QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
+  /*public*/ QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
+  /*public*/ int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+  /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
+   return AbstractNamedBean::getPropertyChangeListenersByReference(name);
+  }
+  /*public*/ virtual void getListenerRefsIncludingChildren(QList<QString> list)override {AbstractBase::getListenerRefsIncludingChildren(list);}
 
  private:
   static Logger* log;

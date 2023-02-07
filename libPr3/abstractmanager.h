@@ -122,6 +122,7 @@ public:
     /*public*/ QString getAutoSystemName();
 
     QObject* mself() override{return (QObject*)this;}
+
     QString getNamedBeanClass() const override{return "AbstractManager";}
     int getXMLOrder() const override {return 0;}
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
@@ -130,7 +131,7 @@ public:
     /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName)  override;
     /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName)  override;
 
-signals:
+ signals:
 //    void beanDeleted(NamedBean* s);
 //    void beanCreated(NamedBean* s);
     //void propertyChange(PropertyChangeEvent* e);

@@ -6,6 +6,7 @@
 
 class DefaultDigitalActionManagerXml : public AbstractManagerXml
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit DefaultDigitalActionManagerXml(QObject *parent = nullptr);
   ~DefaultDigitalActionManagerXml() {}

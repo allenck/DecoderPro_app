@@ -2,6 +2,8 @@
 #include "assert1.h"
 #include "abstractmanager.h"
 #include "proxymanager.h"
+#include "junitappender.h"
+#include "namedbean.h"
 
 AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(parent)
 {
@@ -121,3 +123,71 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
         Assert::assertFalse(s.isEmpty(), __FILE__, __LINE__);
     }
 
+    //@Test
+    /*public*/ void AbstractManagerTestBase::testMakeSystemNameWithPrefix() {
+        QString s = _manager->makeSystemName(_manager->getSystemNamePrefix()+getASystemNameWithNoPrefix());
+        Assert::assertNotNull(s, __FILE__, __LINE__);
+        Assert::assertFalse(s.isEmpty(), __FILE__, __LINE__);
+    }
+
+    //@Test
+    /*public*/ void AbstractManagerTestBase::testMakeSystemNameWithNoPrefixNotASystemName() {
+
+        //Assert::assertThrows("BadSystemNameException", () -> _manager->makeSystemName("$:"), __FILE__, __LINE__);
+        bool thrown = false;
+        try{
+         _manager->makeSystemName("$:");
+        }
+        catch(NamedBean::BadSystemNameException*)
+        {
+         thrown = true;
+        }
+        Assert::assertTrue(thrown, __FILE__, __LINE__);
+        JUnitAppender::assertErrorMessageStartsWith("Invalid system name for " + _manager->getBeanTypeHandled() + ": ", __FILE__, __LINE__);
+
+    }
+
+    //@Test
+    /*public*/ void AbstractManagerTestBase::testMakeSystemNameWithPrefixNotASystemName() {
+
+        //Assert::assertThrows("NamedBean::BadSystemNameException", [=]{ _manager->makeSystemName(_manager->getSystemNamePrefix()+"$:");});
+        bool thrown = false;
+        try{
+         _manager->makeSystemName(_manager->getSystemNamePrefix()+"$:");
+        }
+        catch(NamedBean::BadSystemNameException*)
+        {
+         thrown = true;
+        }
+        JUnitAppender::assertErrorMessageStartsWith("Invalid system name for " + _manager->getBeanTypeHandled() + ": ", __FILE__, __LINE__);
+
+    }
+
+
+
+    //@Test
+    /*public*/ void AbstractManagerTestBase::testAutoSystemNames() {
+        AbstractManager* m = (AbstractManager/*<E>*/*) _manager->mself();
+        QString sysPrefix = _manager->getSystemNamePrefix();
+        Assert::assertEquals(sysPrefix + ":AUTO:0001", m->getAutoSystemName(), __FILE__, __LINE__);
+        Assert::assertEquals(sysPrefix + ":AUTO:0002", m->getAutoSystemName(), __FILE__, __LINE__);
+        Assert::assertEquals(sysPrefix + ":AUTO:0003", m->getAutoSystemName(), __FILE__, __LINE__);
+        m->updateAutoNumber(sysPrefix + ":AUTO:0011");
+        Assert::assertEquals(sysPrefix + ":AUTO:0012", m->getAutoSystemName(), __FILE__, __LINE__);
+        Assert::assertEquals(sysPrefix + ":AUTO:0013", m->getAutoSystemName(), __FILE__, __LINE__);
+        m->updateAutoNumber(sysPrefix + ":AUTO:0005");
+        Assert::assertEquals(sysPrefix + ":AUTO:0014", m->getAutoSystemName(), __FILE__, __LINE__);
+        m->updateAutoNumber(sysPrefix + ":AUTO:0098");
+        Assert::assertEquals(sysPrefix + ":AUTO:0099", m->getAutoSystemName(), __FILE__, __LINE__);
+        m->updateAutoNumber(sysPrefix + ":AUTO:0097");
+        Assert::assertEquals(sysPrefix + ":AUTO:0100", m->getAutoSystemName(), __FILE__, __LINE__);
+        Assert::assertEquals(sysPrefix + ":AUTO:0101", m->getAutoSystemName(), __FILE__, __LINE__);
+        m->updateAutoNumber(sysPrefix + ":AUT:0203");
+        Assert::assertEquals(sysPrefix + ":AUTO:0102", m->getAutoSystemName(), __FILE__, __LINE__);
+        m->updateAutoNumber(QString("12") + ":AUT:0203"); // Bad system name prefix
+        Assert::assertEquals(sysPrefix + ":AUTO:0103", m->getAutoSystemName(), __FILE__, __LINE__);
+    }
+
+    /*protected*/ QString AbstractManagerTestBase::getASystemNameWithNoPrefix() {
+        return "1";
+    }

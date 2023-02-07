@@ -32,11 +32,27 @@ class AnalogExpressionAnalogIO : public AbstractAnalogExpression, public Propert
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+
   QObject* self() override{return (QObject*)this;}
   QObject* bself() override{return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
 
-  //QString getUserName()const override {return AbstractBase::getUserName();}
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
+   AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
+  }
+  /*public*/  void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
+                                                    QString name, QString listenerRef) override {
+   AbstractNamedBean::addPropertyChangeListener(propertyName, listener, name, listenerRef);
+  }
+  /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
+  ///*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
+  /*public*/ QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
+  /*public*/ QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
+  /*public*/ int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+  /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
+   return AbstractNamedBean::getPropertyChangeListenersByReference(name);
+  }
+
 
  public slots:
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/override;

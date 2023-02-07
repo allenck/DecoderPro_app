@@ -138,18 +138,19 @@ void LnTurnoutManager::message(LocoNetMessage* l)
  }
  // reach here for loconet switch command; make sure we know about this one
  QString s = prefix+"T"+QString("%1").arg(addr);
- if (getBySystemName(s) == NULL)
- {
-  // no turnout with this address, is there a light
-  QString sx = "LL"+QString("%1").arg(addr);
-#if 1 // TODO:
-  //if (InstanceManager::lightManagerInstance().getBySystemName(sx) == NULL)
-  {
-   // no light, create a turnout
-   LnTurnout* t = (LnTurnout*) provideTurnout(s);
-   t->message(l);
-  }
-#endif
+ LnTurnout* lnT = (LnTurnout*) getBySystemName(s);
+ if (lnT == nullptr) {
+     // no turnout with this address, is there a light?
+     QString sx = prefix + "L" + addr; // NOI18N
+     if (InstanceManager::lightManagerInstance()->getBySystemName(sx) == nullptr) {
+         // no light, create a turnout
+         LnTurnout* t = (LnTurnout*) provideTurnout(s);
+
+         // process the message to put the turnout in the right state
+         t->messageFromManager(l);
+     }
+ } else {
+     lnT->messageFromManager(l);
  }
 }
 

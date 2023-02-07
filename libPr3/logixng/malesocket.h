@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "class.h"
-//#include "base.h"
+#include "base.h"
 #include "debugable.h"
 #include "symboltable.h"
 //#include "basemanager.h"
@@ -76,6 +76,7 @@ public:
       return QList<TYPES> {Default, ShowDialogBox, LogError, LogErrorOnce,ThrowException, AbortExecution} ;
      }
  };
+
 /*public*/ /*interface*/ class MaleSocket : /*public QObject,*/ public Debugable
 {
   //Q_OBJECT

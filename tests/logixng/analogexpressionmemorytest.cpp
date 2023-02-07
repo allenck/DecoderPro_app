@@ -352,7 +352,7 @@ AnalogExpressionMemoryTest::AnalogExpressionMemoryTest(QObject *parent) : Abstra
 
         logixNG = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A logixNG");
         conditionalNG = new DefaultConditionalNGScaffold("IQC1", "A conditionalNG");  // NOI18N;
-        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register(conditionalNG);
+        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register((AbstractNamedBean*)conditionalNG->self());
         conditionalNG->setRunDelayed(false);
         conditionalNG->setEnabled(true);
 

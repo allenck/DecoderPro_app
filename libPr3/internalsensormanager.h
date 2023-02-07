@@ -3,6 +3,7 @@
 #include "abstractsensormanager.h"
 #include "abstractsensor.h"
 #include "libPr3_global.h"
+#include "preferNumericComparator.h"
 
 class InternalSystemConnectionMemo;
 class AbstractSensorManager;
@@ -19,7 +20,7 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
     /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) override;
     // /*public*/ QString getSystemPrefix();
-     /*public*/ SystemConnectionMemo* getMemo() override;
+    /*public*/ SystemConnectionMemo* getMemo() override;
     /*public*/ QString getEntryToolTip() override;
     /*public*/ QString getNamedBeanClass()const override {
         return "Sensor";
@@ -53,8 +54,13 @@ class InternalAbstractSensor : public AbstractSensor
  Q_OBJECT
 public:
  InternalAbstractSensor(QString systemName, QString userName) : AbstractSensor(systemName, userName) {}
- /*public*/ void requestUpdateFromLayout() const {}
-
+ /*public*/ void requestUpdateFromLayout() const {
+  // nothing to do
+ }
+ //@Override
+ /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, NamedBean* n) override{
+     return (new PreferNumericComparator())->compare(suffix1, suffix2);
+ }
 };
 
 #endif // INTERNALSENSORMANAGER_H

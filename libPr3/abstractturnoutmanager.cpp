@@ -67,7 +67,7 @@ Turnout* AbstractTurnoutManager::provideTurnout(QString name)
 //@Override
 //@CheckForNull
 Turnout* AbstractTurnoutManager::getTurnout(QString name)  {
-    Turnout* t = (Turnout*)getByUserName(name);
+    Turnout* t = (AbstractTurnout*)getByUserName(name)->self();
     if (t!=nullptr) return t;
 
     return (Turnout*)getBySystemName(name);
@@ -81,16 +81,17 @@ Turnout* AbstractTurnoutManager::getBySystemName(QString name)
  return (Turnout*)bean->self();
 }
 
-Turnout* AbstractTurnoutManager::getByUserName(QString key)
-{
- NamedBean* bean = _tuser->value(key);
- if(!bean)
-  return nullptr;
- Turnout* t = (AbstractTurnout*)bean->self();
- return t;
-}
+//Turnout* AbstractTurnoutManager::getByUserName(QString key)
+//{
+// NamedBean* bean = _tuser->value(key);
+// if(!bean)
+//  return nullptr;
+//// Turnout* t = dynamic_cast<AbstractTurnout*>(bean);
+//// return t;
+// return (Turnout*)bean->self();
+//}
 
-Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName)
+Turnout* AbstractTurnoutManager::newTurnout(/*@Nonnull*/ QString systemName, QString userName)
 {
  // add normalize? see AbstractSensor
  if (log->isDebugEnabled()) log->debug(QString("newTurnout: %1").arg(( (systemName=="") ? "null" : systemName)));
@@ -105,8 +106,11 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  }
 
  // return existing if there is one
- Turnout* t;
- if ( (userName!=nullptr) && ((t = (Turnout*)getByUserName(userName)) != nullptr))
+ Turnout* t=nullptr;
+ NamedBean* nb = getByUserName(userName);
+ if(nb)
+  t = (AbstractTurnout*)nb->self();
+ if ( (userName!=nullptr) && ((t /*= (AbstractTurnout*)getByUserName(userName)->self()*/) != nullptr))
  {
   if (getBySystemName(systemName)!=t)
    log->error(QString("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(systemName).arg(t->getSystemName()));

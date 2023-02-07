@@ -140,7 +140,7 @@
 
     //@Override
     /*public*/  QString DefaultAnalogExpressionManager::getBeanTypeHandled()const {
-        return tr("AnalogExpression");
+        return tr("Analog expression");
     }
 
     /** {@inheritDoc} */

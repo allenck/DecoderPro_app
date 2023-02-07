@@ -27,12 +27,12 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
     /**
      * Check that last two messages correspond to Turnout::CLOSED/on, then Turnout::CLOSED/off.
-     * Why last two? For Turnout::UNKNOWN reason(s), this test gets _three_ messages,
+     * Why last two? For unknown reason(s), this test gets _three_ messages,
      * with the first one being a set 21 Turnout::CLOSED and off. Is it left over from
      * some previous test?
      */
     //@Override
-    /*public*/ void LnTurnoutTest::checkClosedMsgSent() throw (InterruptedException) {
+    /*public*/ void LnTurnoutTest::checkClosedMsgSent() /*throw (InterruptedException)*/ {
         // Make sure that timed message has fired by waiting
 //        /*synchronized (this)*/ {
            this->wait(LnTurnout::METERINTERVAL + 25);
@@ -50,7 +50,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
      * Check that last two messages correspond to thrown/on, then thrown/off
      */
     //@Override
-    /*public*/ void LnTurnoutTest::checkThrownMsgSent() throw (InterruptedException) {
+    /*public*/ void LnTurnoutTest::checkThrownMsgSent()  {
         // Make sure that timed message has fired by waiting
         /*synchronized (this)*/ {
             this->wait(LnTurnout::METERINTERVAL + 25);
@@ -293,7 +293,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
     // test that only one message is sent when binaryOutput is set
     //@Test
-    /*public*/ void LnTurnoutTest::testBasicSet() throw (InterruptedException) {
+    /*public*/ void LnTurnoutTest::testBasicSet()  {
        t->setBinaryOutput(true);
        t->setCommandedState(Turnout::THROWN);
 
@@ -311,7 +311,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
     // test that only one message is sent when property SendOnAndOff is false.
     //@Test
-    /*public*/ void LnTurnoutTest::testPropertySet() throw (InterruptedException) {
+    /*public*/ void LnTurnoutTest::testPropertySet()  {
        t->setBinaryOutput(false);
        t->setProperty(LnTurnoutManager::SENDONANDOFFKEY, false);
        t->setCommandedState(Turnout::THROWN);
@@ -330,7 +330,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
     // test that only two messages are sent when property SendOnAndOff is true.
     //@Test
-    /*public*/ void LnTurnoutTest::testPropertySet1() throw (InterruptedException) {
+    /*public*/ void LnTurnoutTest::testPropertySet1()  {
        t->setBinaryOutput(false);
        t->setProperty(LnTurnoutManager::SENDONANDOFFKEY, true);
        t->setCommandedState(Turnout::THROWN);
@@ -349,7 +349,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
     // test that only two messages are sent when property SendOnAndOff is true, even if (ulenbook) binary set.
     //@Test
-    /*public*/ void LnTurnoutTest::testPropertySet2() throw (InterruptedException) {
+    /*public*/ void LnTurnoutTest::testPropertySet2()  {
        t->setBinaryOutput(true);
        t->setProperty(LnTurnoutManager::SENDONANDOFFKEY, true);
        t->setCommandedState(Turnout::THROWN);

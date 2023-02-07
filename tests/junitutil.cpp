@@ -818,7 +818,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initMemoryManager() {
     MemoryManager* m = new DefaultMemoryManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m, Manager::MEMORIES);
+        ((JmriConfigurationManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)m->mself(), Manager::MEMORIES);
     }
 }
 

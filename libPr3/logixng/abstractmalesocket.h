@@ -65,7 +65,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ /*final*/ bool setParentForAllChildren(QList<QString> *errors)override;
   /*public*/ /*final*/ void registerListeners()override;
   /*public*/ /*final*/ void unregisterListeners()override;
-  /*public*/ /*final*/ bool isActive()override;
+  /*public*/ /*final*/ bool isActive()final override;
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           PrintWriter* writer,

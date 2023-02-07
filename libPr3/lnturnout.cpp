@@ -1,6 +1,10 @@
 #include "lnturnout.h"
 #include "turnout.h"
 #include "loggerfactory.h"
+#include "lnturnoutmanager.h"
+#include "timertask.h"
+#include "timerutil.h"
+
 
 //LnTurnout::LnTurnout(QObject *parent) :
 //    AbstractTurnout(parent)
@@ -46,20 +50,25 @@ QVector<int> LnTurnout::modeValues;
  */
 
 // public class LnTurnout extends AbstractTurnout implements LocoNetListener {
+/*static*/ /*final*/ int LnTurnout::CONSISTENCYTIMER = 3000; // msec wait for command to take effect
+
 
 LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, QObject *parent) :
     AbstractTurnout(prefix+"T"+QString("%1").arg(number),parent)
 {
  // a human-readable turnout number must be specified!
  //super(prefix+"T"+number);  // can't use prefix here, as still in construction
+ _prefix = prefix;
  log->debug(QString("new turnout %1").arg(number));
  modeNames.clear();
  modeValues.clear();
  pending = false;
  meterTimer = new QTimer();
+
  this->controller = controller;
 
  _number = number;
+#if 0
  // At construction, register for messages
  if (this->controller!=NULL)
  {
@@ -68,6 +77,8 @@ LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, Q
  }
  else
   log->warn("No LocoNet connection, turnout won't update");
+#endif
+
  // update feedback modes
  _validFeedbackTypes |= Turnout::MONITORING|Turnout::EXACT|Turnout::INDIRECT;
  _activeFeedbackType = Turnout::MONITORING;
@@ -82,6 +93,23 @@ LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, Q
  _validFeedbackModes = modeValues;
 }
 
+//@Override
+/*public*/ void LnTurnout::setBinaryOutput(bool state) {
+    // TODO Auto-generated method stub
+    setProperty(LnTurnoutManager::SENDONANDOFFKEY, !state);
+    binaryOutput = state;
+}
+//@Override
+/*public*/ void LnTurnout::setFeedbackMode(/*@Nonnull*/ QString mode) /*throws IllegalArgumentException*/ {
+    feedbackDeliberatelySet = true;
+    AbstractTurnout::setFeedbackMode(mode);
+}
+
+//@Override
+/*public*/ void LnTurnout::setFeedbackMode(int mode) /*throws IllegalArgumentException*/ {
+    feedbackDeliberatelySet = true;
+    AbstractTurnout::setFeedbackMode(mode);
+}
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
 //                    justification="Only used during creation of 1st turnout")
@@ -113,31 +141,44 @@ LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, Q
     _useOffSwReqAsConfirmation = state;
 }
 
+/*public*/ bool LnTurnout::isByPassBushbyBit() {
+ QVariant returnVal = getProperty(LnTurnoutManager::BYPASSBUSHBYBITKEY);
+ if (returnVal.isNull()) {
+     return  false;
+ }
+ return /*(boolean)*/ returnVal.toBool();
+}
+
+/*public*/ bool LnTurnout::isSendOnAndOff() {
+ QVariant returnVal = getProperty(LnTurnoutManager::SENDONANDOFFKEY);
+ if (returnVal.isNull()) {
+     return  true;
+ }
+ return /*(boolean)*/ returnVal.toBool();
+}
+
  // Handle a request to change state by sending a LocoNet command
  /*protected*/ void LnTurnout::forwardCommandChangeToLayout(/*final*/ int newstate) {
 
      // send SWREQ for close/thrown ON
      sendOpcSwReqMessage(adjustStateForInversion(newstate), true);
      // schedule SWREQ for closed/thrown off, unless in basic mode
-     if (!binaryOutput) {
-#if 0 // Done:
-         meterTimer->schedule(new java.util.TimerTask(){
-            int state = newstate;
-            public void run() {
-                try {
-                    sendSetOffMessage(state);
-                } catch (Exception* e) {
-                    log->error("Exception occured while sending delayed off to turnout: "+e);
-                }
-            }
-         }, METERINTERVAL);
-#endif
-         meterTimer = new QTimer();
-         meterTimer->isSingleShot();
-         meterTimer->setInterval(METERINTERVAL);
-         timerTask = new LnTurnoutTimerTask(newstate, this);
-         connect(meterTimer, SIGNAL(timeout()), this, SLOT(meterTimerTimeout()));
-    }
+     if (isSendOnAndOff()) {
+      meterTask = new LnTurnoutTimerTask(newstate, this);
+      //      {
+      //          int state = newstate;
+
+      //          @Override
+      //          public void run() {
+      //              try {
+      //                  sendSetOffMessage(state);
+      //              } catch (Exception e) {
+      //                  log.error("Exception occurred while sending delayed off to turnout: {}", e);
+      //              }
+      //          }
+      //      };
+      TimerUtil::schedule(meterTask, METERINTERVAL);
+  }
 }
 /*static*/ const int LnTurnout::METERINTERVAL = 100;  // msec wait before closed
 
@@ -147,6 +188,7 @@ LnTurnoutTimerTask::LnTurnoutTimerTask(int state, LnTurnout* turnout)
  this->turnout = turnout;
  this-> state = state;
 }
+
 /*public*/ void LnTurnoutTimerTask::run()
 {
     try {
@@ -155,9 +197,10 @@ LnTurnoutTimerTask::LnTurnoutTimerTask(int state, LnTurnout* turnout)
         turnout->log->error("Exception occured while sending delayed off to turnout: "+e->getMessage());
     }
 }
+
 void LnTurnout::meterTimerTimeout()
 {
- timerTask->start();
+ meterTask->start();
 }
 
 /**
@@ -197,8 +240,27 @@ else
  l->setElement(2,hiadr);
 
  this->controller->sendLocoNetMessage(l);
+ if (_useOffSwReqAsConfirmation) {
+     noConsistencyTimersRunning++;
+     startConsistencyTimerTask();
+ }
 }
 
+/*private*/ void LnTurnout::startConsistencyTimerTask() {
+    // Start a timer to resend the command in a couple of seconds in case consistency is not obtained before then
+ //    consistencyTask = new TimerTask() {
+ //        @Override
+ //        public void run() {
+ //            noConsistencyTimersRunning--;
+ //            if (!isConsistentState() && noConsistencyTimersRunning == 0) {
+ //                log.debug("LnTurnout resending command for turnout {}", _number);
+ //                forwardCommandChangeToLayout(getCommandedState());
+ //            }
+ //        }
+ //    };
+ consistencyTask = new ConsistencyTimerTask(this);
+ TimerUtil::schedule(consistencyTask, CONSISTENCYTIMER);
+}
 
 /**
  * Set the turnout OFF, e.g. after a timeout
@@ -351,6 +413,7 @@ void LnTurnout::sendSetOffMessage(int state) {
         }
     }
 }
+
 /*private*/ void LnTurnout::handleReceivedOpSwRep(LocoNetMessage* l) {
     int sw1 = l->getElement(1);
     int sw2 = l->getElement(2);
@@ -380,7 +443,7 @@ void LnTurnout::sendSetOffMessage(int state) {
             computeKnownStateOpSwAckReq(sw2, state);
         }
     }
-
+#if 0
  // implementing classes will typically have a function/listener to get
  // updates from the layout, which will then call
  //		public void firePropertyChange(String propertyName,
@@ -490,7 +553,7 @@ void LnTurnout::sendSetOffMessage(int state) {
      }
      // reach here only in error
  }
-
+#endif
 // implementing classes will typically have a function/listener to get
 // updates from the layout, which will then call
 //        public void firePropertyChange(String propertyName,
@@ -533,8 +596,12 @@ void LnTurnout::sendSetOffMessage(int state) {
  //ln turnouts do support inversion
  /*public*/ bool LnTurnout::canInvert() const{return true;}
 
- //method which takes a turnout state as a parameter and adjusts it  as necessary
- //to reflect the turnout invert property
+/**
+ * Take a turnout state as a parameter and adjusts it as necessary
+ * to reflect the turnout "Invert" property.
+ *
+ * @param rawState "original" turnout state before optional inverting
+ */
  /*private*/ int LnTurnout::adjustStateForInversion(int rawState) {
 
      if (getInverted() && (rawState == Turnout::CLOSED || rawState == Turnout::THROWN)){

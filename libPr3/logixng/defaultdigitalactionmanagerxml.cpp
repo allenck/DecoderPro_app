@@ -31,15 +31,15 @@
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleDigitalActionSocket* action = (MaleDigitalActionSocket*)nb->self();
-                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
+             DefaultMaleDigitalActionSocket* action = (DefaultMaleDigitalActionSocket*)nb->self();
+                log->debug("action system name is " + action->AbstractNamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleDigitalActionSocket* a = action;
+                    DefaultMaleDigitalActionSocket* a = action;
                     while (!(static_cast<DefaultMaleDigitalActionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
-                        a = (MaleDigitalActionSocket*) a->getObject()->bself();
+                        a = (DefaultMaleDigitalActionSocket*) a->getObject()->bself();
                     }
                     QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
                     if (!e.isNull()) {

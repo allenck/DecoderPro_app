@@ -373,6 +373,11 @@ private:
             throw new UnsupportedOperationException("Not supported");
         }
     /*public*/ QString getClassName()override {return "IncompatiblealeSocket";}
+    /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+    /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+    /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
+
      QObject* bself() override {return (QObject*)this;}
     };
 protected:

@@ -93,6 +93,7 @@
 #include "misc/fileutilsupporttestaction.h"
 #include "programmers/abstractprogrammertestaction.h"
 #include "misc/vetoablechangesupporttestaction.h"
+#include "loconet/internalturnoutmanagertestaction.h"
 
 #ifdef HAVE_LOGIXNG
 #include "logixng/symboltabletestaction.h"
@@ -139,6 +140,7 @@
 #include "logixng/antecedenttestaction.h"
 #include "logixng/analogexpressionmanagertestaction.h"
 #include "logixng/analogexpressionmemorytestaction.h"
+#include "logixng/analogexpressionconstanttestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -213,6 +215,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTurnoutsMenu->addAction(new LnTurnoutManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageInterpretTestAction(this));
     loconetTestMenu->addAction(new LocoNetConsistTestAction(this));
+    loconetTestMenu->addAction(new InternalTurnoutManagerTestAction(this));
 
     QMenu* lncvMenu = new QMenu("Lncv");
     loconetTestMenu->addMenu(lncvMenu);
@@ -335,6 +338,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGTypesMenu->addAction(new ActionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new ActionSensorTestAction(this));
     logixNGTypesMenu->addAction(new AnalogActionMemoryTestAction(this));
+    logixNGTypesMenu->addAction(new AnalogExpressionConstantTestAction(this));
     logixNGTypesMenu->addAction(new AnalogExpressionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new AnalogFormulaTestAction(this));
     logixNGTypesMenu->addAction(new AntecedentTestAction(this));

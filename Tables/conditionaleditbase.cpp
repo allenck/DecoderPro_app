@@ -996,7 +996,7 @@ QString ConditionalEditBase::validateTurnoutReference(QString name) {
     Turnout* t = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            t = (Turnout*)InstanceManager::turnoutManagerInstance()->getByUserName(name);
+            t = (AbstractTurnout*)InstanceManager::turnoutManagerInstance()->getByUserName(name)->self();
             if (t != NULL) {
                 return name;
             }

@@ -2,7 +2,7 @@
 #include "junitutil.h"
 #include "instancemanager.h"
 #include "assert1.h"
-#include "token.h"
+#include "../libPr3/logixng/token.h"
 #include "atomicboolean.h"
 #include "invalidsyntaxexception.h"
 #include "loggerfactory.h"

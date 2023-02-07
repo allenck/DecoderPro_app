@@ -46,6 +46,10 @@ class AbstractBase : public AbstractNamedBean, public virtual Base
   /*public*/ /*final*/ void dispose()override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
 
+  /*public*/ /*default*/  bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper)override;
+  /*public*/  /*default*/  void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override;
+  /*public*/ void setParent(Base* parent) override {throw new IllegalArgumentException();} // here to fix an unresolved
+
   QObject* self() override {return (QObject*)this;}
 
   //QString getSystemName() const override {return mSystemName;}

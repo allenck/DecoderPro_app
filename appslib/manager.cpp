@@ -84,7 +84,7 @@
  */
 //@CheckReturnValue
 //@Nonnull
-/*public*/ /*static*/ QString Manager::getSystemPrefix(/*@Nonnull*/ QString inputName)const {
+/*public*/ /*static*/ QString Manager::getSystemPrefix(/*@Nonnull*/ QString inputName) const {
     return inputName.mid(0, getSystemPrefixLength(inputName));
 }
 

@@ -125,7 +125,7 @@ namespace Expressions {
    /*public*/  FormatType::FORMATTYPE getFormatType() ;
    /*public*/  void setFormat(QString format);
    /*public*/  QString getFormat();
-   /*public*/  QList<LogData::Data> getDataList();
+   /*public*/  QList<Data> getDataList();
    /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/override;
    /*public*/  Category getCategory()override;
    /*public*/  bool evaluate() /*throws JmriException*/override;
@@ -142,6 +142,22 @@ namespace Expressions {
 
    QObject* bself() override {return this;}
    QObject* pself() override {return this;}
+
+   /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
+    AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
+   }
+   /*public*/  void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
+                                                     QString name, QString listenerRef) override {
+    AbstractNamedBean::addPropertyChangeListener(propertyName, listener, name, listenerRef);
+   }
+   /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
+   // /*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
+   /*public*/ QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
+   /*public*/ QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
+   /*public*/ int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
+    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
+   }
 
 //   /*public*/  enum FormatType {
 //       OnlyText(Bundle.getMessage("LogData_FormatType_TextOnly"), true, false),

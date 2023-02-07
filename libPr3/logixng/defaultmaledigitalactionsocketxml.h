@@ -5,6 +5,7 @@
 
 class DefaultMaleDigitalActionSocketXml : public AbstractMaleSocketXml
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE explicit DefaultMaleDigitalActionSocketXml(QObject *parent = nullptr);
   ~DefaultMaleDigitalActionSocketXml() {}

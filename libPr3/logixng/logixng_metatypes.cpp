@@ -121,6 +121,7 @@
 #include "expressionentryexitswing.h"
 #include "triggeronceswing.h"
 #include "triggeroncexml.h"
+#include "defaultmaledigitalactionsocketxml.h"
 
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
@@ -246,6 +247,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DefaultAnalogExpressionManagerXml>("DefaultAnalogExpressionManagerXml");
 //   qRegisterMetaType<ExpressionReporter>("ExpressionReporter");
    qRegisterMetaType<Actions::DigitalCallModuleSwing>("Actions::DigitalCallModuleSwing");
+   qRegisterMetaType<DefaultMaleDigitalActionSocketXml>("DefaultMaleDigitalActionSocketXml");
 
 
    // AbstractStringExpressionSwing

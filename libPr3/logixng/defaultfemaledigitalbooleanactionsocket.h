@@ -21,6 +21,10 @@ class DefaultFemaleDigitalBooleanActionSocket : public AbstractFemaleSocket, pub
 
   QObject* bself() override {return (QObject*)this;}
 
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
 };
 
 #endif // DEFAULTFEMALEDIGITALBOOLEANACTIONSOCKET_H

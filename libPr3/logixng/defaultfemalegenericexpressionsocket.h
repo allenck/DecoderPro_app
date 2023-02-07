@@ -40,6 +40,11 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
 
   QObject* self() override{return (QObject*)this;}
   QObject* bself() override{return (QObject*)this;}
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
+
 
  private:
   /*private*/ SocketType _socketType;             // The type of the socket the user has selected

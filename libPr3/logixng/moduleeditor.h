@@ -103,5 +103,10 @@ class ModuleEditor_FemaleSocketListener1 : public QObject, public FemaleSocketLi
     }
   QObject* bself() override {return (QObject*)this;}
   QString getClassName() {return "RootSocket";}
+
+  /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
+  /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+
 };
 #endif // MODULEEDITOR_H

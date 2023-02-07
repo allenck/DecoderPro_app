@@ -35,7 +35,7 @@ class InternalTurnoutManager_AbstractTurnout : public AbstractTurnout
  Q_OBJECT
 public:
  InternalTurnoutManager_AbstractTurnout(QString systemName, QString userName) : AbstractTurnout(systemName, userName) {}
- QObject* self() override {return (QObject*)this;}
+ QObject* self() override {return this;}
 protected:
  //@Override
  /*protected*/ void forwardCommandChangeToLayout(int /*s*/)  override{
