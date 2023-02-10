@@ -13,7 +13,7 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
   explicit DefaultDigitalBooleanActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass() override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleSocket* registerBean(/*MaleDigitalBooleanActionSocket*/MaleSocket* maleSocket) override;
+  /*public*/  AbstractMaleSocket *registerBean(/*MaleDigitalBooleanActionSocket*/AbstractMaleSocket *maleSocket) override;
   /*public*/  MaleDigitalBooleanActionSocket* registerAction(/*@Nonnull*/ DigitalBooleanActionBean* action)
           /*throws IllegalArgumentException*/override;
   /*public*/  int getXMLOrder()  const override;

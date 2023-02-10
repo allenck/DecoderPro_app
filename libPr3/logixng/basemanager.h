@@ -2,11 +2,11 @@
 #define BASEMANAGER_H
 
 #include "../../appslib/manager.h"
-//#include "malesocket.h"
+//#include "abstractmalesocket.h"
 //#include "malesocketfactory.h"
 #include "maleanalogactionsocket.h"
 
-class MaleSocket;
+class AbstractMaleSocket;
 class MaleSocketFactory;
 /**
  * Base interface for the LogixNG action and expression managers.
@@ -31,7 +31,7 @@ class MaleSocketFactory;
      *                                                system name is already registered in
      *                                                the manager
      */
-    /*public*/virtual MaleSocket* registerBean(/*@Nonnull*/ MaleSocket* maleSocket)=0;
+    /*public*/virtual AbstractMaleSocket* registerBean(/*@Nonnull*/ AbstractMaleSocket* maleSocket)=0;
 
     /**
      * Method for a UI to delete a bean.

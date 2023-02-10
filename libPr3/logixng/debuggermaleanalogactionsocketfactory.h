@@ -2,6 +2,7 @@
 #define DEBUGGERMALEANALOGACTIONSOCKETFACTORY_H
 
 #include "maleanalogactionsocketfactory.h"
+#include "abstractmalesocket.h"
 
 class DebuggerMaleAnalogActionSocketFactory : public QObject, public MaleAnalogActionSocketFactory
 {
@@ -11,7 +12,7 @@ class DebuggerMaleAnalogActionSocketFactory : public QObject, public MaleAnalogA
   DebuggerMaleAnalogActionSocketFactory(QObject* parent = nullptr) : QObject(parent){
    setObjectName("DebuggerMaleAnalogActionSocketFactory");
   }
-  /*public*/ MaleSocket *encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, MaleSocket *maleSocket)override;
+  /*public*/ AbstractMaleSocket *encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, AbstractMaleSocket *maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 };

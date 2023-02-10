@@ -1,6 +1,6 @@
 #include "debuggermaleanalogexpressionsocket.h"
 #include "basemanager.h"
-#include "maleanalogexpressionsocket.h"
+#include "defaultmaleanalogexpressionsocket.h"
 #include <QDebug>
 /**
  *
@@ -14,6 +14,7 @@
  : AbstractDebuggerMaleSocket(manager, (MaleSocket*)maleSocket, parent)
 {
     //super(manager, maleSocket);
+ setObjectName("DebuggerMaleAnalogExpressionSocket");
  QString sys = maleSocket->getSystemName();
  qDebug() << maleSocket;
 }
@@ -80,7 +81,7 @@
 
 //@Override
 /*public*/  int DebuggerMaleAnalogExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-    return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    return ((DefaultMaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 //@Override

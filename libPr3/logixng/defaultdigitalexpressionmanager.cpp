@@ -83,15 +83,15 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket*  DefaultDigitalExpressionManager::getLastRegisteredMaleSocket() {
+    /*public*/  AbstractMaleSocket*  DefaultDigitalExpressionManager::getLastRegisteredMaleSocket() {
         return _lastRegisteredBean;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket*  DefaultDigitalExpressionManager::registerBean(/*MaleDigitalExpressionSocket*/MaleSocket* maleSocket) {
-        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
-        _lastRegisteredBean = (MaleSocket*)maleSocket;
+    /*public*/  AbstractMaleSocket *DefaultDigitalExpressionManager::registerBean(/*MaleDigitalExpressionSocket*/AbstractMaleSocket *maleSocket) {
+        AbstractMaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        _lastRegisteredBean = (AbstractMaleSocket*)maleSocket;
         return bean;
     }
 
@@ -120,7 +120,7 @@
 
         // save in the maps
         MaleDigitalExpressionSocket* maleSocket = createMaleExpressionSocket(expression);
-        registerBean(maleSocket);
+        registerBean((AbstractMaleSocket*)maleSocket->msself());
         return maleSocket;
     }
 
@@ -166,7 +166,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void  DefaultDigitalExpressionManager::deleteDigitalExpression(MaleDigitalExpressionSocket* x) {
+    /*public*/  void  DefaultDigitalExpressionManager::deleteDigitalExpression(DefaultMaleDigitalExpressionSocket* x) {
         // delete the MaleDigitalExpressionSocket
         deregister(x);
         x->NamedBean::dispose();

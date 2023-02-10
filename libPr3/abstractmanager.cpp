@@ -226,7 +226,6 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  */
 /*public*/ void AbstractManager::Register(NamedBean* s)
 {
-  //QString systemName = s->getSystemName();
  QString systemName;
    systemName = s->getSystemName();
 

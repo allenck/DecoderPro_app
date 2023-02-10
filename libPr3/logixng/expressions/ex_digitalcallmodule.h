@@ -63,7 +63,7 @@ namespace Expressions
 
   private:
    static Logger* log;
-   /*private*/ NamedBeanHandle<Module*>* _moduleHandle;
+   /*private*/ NamedBeanHandle<Module*>* _moduleHandle=nullptr;
    /*private*/ QSet<VariableData*> dataSet(QList<Module::ParameterData *> *list);
    /*final*/ QList<Module::ParameterData*>* _parameterData = new QList<Module::ParameterData*>();
 

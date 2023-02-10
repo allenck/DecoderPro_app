@@ -2,6 +2,7 @@
 #define MALESOCKETFACTORY_H
 #include "namedbean.h"
 #include "basemanager.h"
+#include "abstractmalesocket.h"
 
 /**
  * Factory class for male sockets. This class is used when a tool wants to add
@@ -20,7 +21,7 @@
      * @param maleSocket the male socket to be encapsulated
      * @return the new male socket that encapsulates the old male socket
      */
-  /*public*/ virtual MaleSocket* encapsulateMaleSocket(BaseManager/*<T>*/* manager, MaleSocket* maleSocket) {return nullptr;}
+  /*public*/ virtual AbstractMaleSocket* encapsulateMaleSocket(BaseManager/*<T>*/* manager, AbstractMaleSocket* maleSocket) {return nullptr;}
 
   virtual QObject*  self() =0;
 };

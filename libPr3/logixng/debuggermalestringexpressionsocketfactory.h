@@ -3,6 +3,7 @@
 
 #include "malestringexpressionsocketfactory.h"
 #include "malestringexpressionsocket.h"
+#include "abstractmalesocket.h"
 
 class DebuggerMaleStringExpressionSocketFactory : public QObject, public MaleStringExpressionSocketFactory
 {
@@ -10,7 +11,7 @@ class DebuggerMaleStringExpressionSocketFactory : public QObject, public MaleStr
   Q_INTERFACES(MaleStringExpressionSocketFactory)
  public:
   DebuggerMaleStringExpressionSocketFactory(QObject* parent = nullptr) : QObject(parent) {setObjectName("DebuggerMaleStringExpressionSocketFactory");}
-  /*public*/ /*MaleStringExpressionSocket*/MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, /*MaleStringExpressionSocket*/MaleSocket* maleSocket)override;
+  /*public*/ /*MaleStringExpressionSocket*/AbstractMaleSocket* encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, /*MaleStringExpressionSocket*/AbstractMaleSocket *maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 

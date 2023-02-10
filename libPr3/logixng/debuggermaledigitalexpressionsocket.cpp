@@ -1,5 +1,5 @@
 #include "debuggermaledigitalexpressionsocket.h"
-
+#include "defaultmaledigitalexpressionsocket.h"
 /**
  *
  * @author daniel
@@ -88,5 +88,5 @@
 
     //@Override
     /*public*/  int DebuggerMaleDigitalExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((MaleDigitalExpressionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        return ((DefaultMaleDigitalExpressionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }

@@ -10,7 +10,7 @@
 //public class DebuggerMaleAnalogActionSocketFactory implements MaleAnalogActionSocketFactory {
 
 //@Override
-/*public*/ MaleSocket* DebuggerMaleAnalogActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, MaleSocket* maleSocket) {
+/*public*/ AbstractMaleSocket* DebuggerMaleAnalogActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, AbstractMaleSocket* maleSocket) {
 
     if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
         return maleSocket;

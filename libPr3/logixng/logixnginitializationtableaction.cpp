@@ -16,13 +16,13 @@
 }
 
 /*public*/  LogixNGInitializationTableAction::LogixNGInitializationTableAction(QObject *parent)
-: AbstractAction(tr("LogixNGInitializationTable"), parent){
+: AbstractAction(tr("LogixNG Initialization Table"), parent){
     //this(tr("LogixNGInitializationTable")); // NOI18N
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 
 }
 
-/*private*/ /*static*/ LogixNGInitializationTable* LogixNGInitializationTableAction::initializationTableFrame = nullptr;
+/*private*/ /*static*/ QPointer<LogixNGInitializationTable> LogixNGInitializationTableAction::initializationTableFrame = nullptr;
 
 //@Override
 //@SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Only one ImportLogixFrame")

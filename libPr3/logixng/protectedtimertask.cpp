@@ -43,7 +43,7 @@
     //@SuppressWarnings(value = "SleepWhileInLoop")
     /*public*/  void ProtectedTimerTask::stopTimer() {
         /*synchronized (_lock)*/ {
-        QMutexLocker locker(&mutex1);
+        //QMutexLocker locker(&mutex1);
 
             _stopTimer = true;
             // If cancel() returns true, the task will never be

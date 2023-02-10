@@ -14,7 +14,7 @@ class LogixNGInitializationTableAction : public AbstractAction
   /*public*/  void actionPerformed(JActionEvent* e =0)override;
 
  private:
-  /*private*/ static LogixNGInitializationTable* initializationTableFrame;// = null;
+  /*private*/ static QPointer<LogixNGInitializationTable> initializationTableFrame;// = null;
 
 };
 

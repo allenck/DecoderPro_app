@@ -466,6 +466,7 @@
             {
                 QString blockName;
                 if (_blockHandle != nullptr) {
+                  Block* b = _blockHandle->getBean();
                     blockName = _blockHandle->getBean()->getDisplayName();
                 } else {
                     blockName = tr(/*locale,*/ "''");

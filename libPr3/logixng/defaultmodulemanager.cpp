@@ -96,10 +96,10 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Module* DefaultModuleManager::getByUserName(QString name) {
+    /*public*/  DefaultModule* DefaultModuleManager::getByUserName(QString name) {
 //        return (Module*)_tuser->value(name)->self();
-     if(_tsys->value(name))
-      return (Module*)_tuser->value(name)->self();
+     if(_tuser->value(name))
+      return (DefaultModule*)_tuser->value(name)->self();
      return nullptr;
     }
 

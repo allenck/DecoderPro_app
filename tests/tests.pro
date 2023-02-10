@@ -52,8 +52,6 @@ equals(ENABLE_LOGIXNG, "Y") {
 SOURCES += \
  loconet/internalturnoutmanagertest.cpp \
  loconet/internalturnoutmanagertestaction.cpp \
- logixng/analogexpressionconstanttest.cpp \
- logixng/analogexpressionconstanttestaction.cpp \
  misc/vetoablechangesupporttest.cpp \
  misc/vetoablechangesupporttestaction.cpp \
         powermanagerscaffold.cpp \
@@ -301,6 +299,8 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/analogexpressionconstanttest.cpp \
+    logixng/analogexpressionconstanttestaction.cpp \
     logixng/analogexpressionmemorytest.cpp \
     logixng/analogexpressionmemorytestaction.cpp \
     logixng/analogexpressionmanagertest.cpp \
@@ -408,8 +408,6 @@ SOURCES += \
 HEADERS += \
  loconet/internalturnoutmanagertest.h \
  loconet/internalturnoutmanagertestaction.h \
- logixng/analogexpressionconstanttest.h \
- logixng/analogexpressionconstanttestaction.h \
  misc/vetoablechangesupporttest.h \
  misc/vetoablechangesupporttestaction.h \
         powermanagerscaffold.h \
@@ -658,6 +656,8 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/analogexpressionconstanttest.h \
+    logixng/analogexpressionconstanttestaction.h \
     logixng/analogexpressionmemorytest.h \
     logixng/analogexpressionmemorytestaction.h \
     logixng/analogexpressionmanagertest.h \

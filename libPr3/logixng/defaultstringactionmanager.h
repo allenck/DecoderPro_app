@@ -11,8 +11,8 @@ class DefaultStringActionManager : public AbstractBaseManager, public StringActi
  public:
   explicit DefaultStringActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass() override;
-  /*public*/  MaleSocket* getLastRegisteredMaleSocket() override;
-  /*public*/  MaleSocket* registerBean(/*MaleStringActionSocket*/MaleSocket* maleSocket)override;
+  /*public*/  AbstractMaleSocket* getLastRegisteredMaleSocket() override;
+  /*public*/  AbstractMaleSocket* registerBean(/*MaleStringActionSocket*/AbstractMaleSocket* maleSocket)override;
   /*public*/  MaleStringActionSocket* registerAction(/*@Nonnull*/ StringActionBean* action)
           /*throws IllegalArgumentException*/ override;
   /*public*/  int getXMLOrder() const override;
@@ -34,7 +34,7 @@ QString getClassName() override {return ".jmri.jmrit.logixng.implementation.Defa
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
-  /*private*/ MaleSocket* _lastRegisteredBean;
+  /*private*/ AbstractMaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultStringActionManager* _instance;// = null;
 
  protected:

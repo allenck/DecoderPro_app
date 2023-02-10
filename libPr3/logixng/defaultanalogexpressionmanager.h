@@ -21,12 +21,12 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
  public:
   explicit DefaultAnalogExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
-  /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleSocket* registerBean(/*MaleAnalogExpressionSocket**/MaleSocket* maleSocket)override;
+  /*public*/  AbstractMaleSocket* getLastRegisteredMaleSocket()override;
+  /*public*/  AbstractMaleSocket *registerBean(/*MaleAnalogExpressionSocket**/AbstractMaleSocket *maleSocket)override;
   /*public*/  MaleAnalogExpressionSocket* registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression)override;
   /*public*/  int getXMLOrder() const override;
   /*public*/  QString getBeanTypeHandled() const override;
-  /*public*/  void deleteAnalogExpression(MaleAnalogExpressionSocket *x)override;
+  /*public*/  void deleteAnalogExpression(DefaultMaleAnalogExpressionSocket *x)override;
   /*public*/  QChar typeLetter() const override;
   /*public*/  NameValidity validSystemNameFormat(QString systemName) override;
   /*public*/  FemaleAnalogExpressionSocket* createFemaleSocket(
@@ -44,7 +44,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base*/QString>>();
-  /*private*/ MaleSocket* _lastRegisteredBean;
+  /*private*/ AbstractMaleSocket* _lastRegisteredBean = nullptr;
   static /*volatile*/ DefaultAnalogExpressionManager* _instance;// = nullptr;
 protected:
   /*protected*/ MaleAnalogExpressionSocket* createMaleAnalogExpressionSocket(AnalogExpressionBean* expression);

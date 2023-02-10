@@ -35,7 +35,8 @@
      QSet<NamedBean*> set;
         if ((set=tm->getNamedBeanSet()).isEmpty()) return QDomElement();
         for (NamedBean* nb : tm->getNamedBeanSet()) {
-            AbstractStringExpression* expression = (AbstractStringExpression*)nb->self();
+         AbstractStringExpression* expression = (AbstractStringExpression*)nb->self();
+         //AbstractMaleSocket* expression = (AbstractMaleSocket*)nb->self();
             log->debug("expression system name is " + expression->AbstractNamedBean::getSystemName());  // NOI18N
 //               log.error("expression system name is " + expression.getSystemName() + ", " + expression.getLongDescription());  // NOI18N
             try {
@@ -43,7 +44,7 @@
                 // The male socket may be embedded in other male socketsb
                 Base* base = expression->getParent();
                 QObject* o = (QObject*)base;
-                MaleStringExpressionSocket* a = (DefaultMaleStringExpressionSocket*)o;
+                DefaultMaleStringExpressionSocket* a = (DefaultMaleStringExpressionSocket*)o;
                 while (!(static_cast<DefaultMaleStringExpressionSocket*>(a->bself()))) {
                     elements.append(storeMaleSocket(a));
                     a = (DefaultMaleStringExpressionSocket*) a->getObject()->bself();

@@ -236,7 +236,7 @@ public:
     }
   /*public*/ virtual QString getClassName() =0;//{return "jmri.jmrit.logixng.MaleSocket";}
   //virtual QObject* bself()=0;
-  //QObject* bself() override{return (QObject*)this;}
+  virtual QObject* msself() =0;
 
    friend class Base;
 };

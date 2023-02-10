@@ -65,15 +65,15 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket* DefaultStringActionManager::getLastRegisteredMaleSocket() {
+    /*public*/  AbstractMaleSocket* DefaultStringActionManager::getLastRegisteredMaleSocket() {
         return _lastRegisteredBean;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket* DefaultStringActionManager::registerBean(/*MaleStringActionSocket*/MaleSocket* maleSocket) {
-        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
-        _lastRegisteredBean = (MaleSocket*)maleSocket;
+    /*public*/  AbstractMaleSocket* DefaultStringActionManager::registerBean(/*MaleStringActionSocket*/AbstractMaleSocket* maleSocket) {
+        AbstractMaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        _lastRegisteredBean = (AbstractMaleSocket*)maleSocket;
         return bean;
     }
 
@@ -102,7 +102,7 @@
         updateAutoNumber(((AbstractBase*)action->self())->AbstractNamedBean::getSystemName());
 
         MaleStringActionSocket* maleSocket = createMaleActionSocket(action);
-        registerBean(maleSocket);
+        registerBean((AbstractMaleSocket*)maleSocket->msself());
         return  maleSocket;
     }
 

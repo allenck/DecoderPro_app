@@ -3,6 +3,7 @@
 #include "defaultlogixngpreferences.h"
 #include "maledigitalexpressionsocket.h"
 #include "debuggermaledigitalexpressionsocket.h"
+#include "abstractmalesocket.h"
 
 /**
  *
@@ -12,7 +13,7 @@
 //public class DebuggerMaleDigitalExpressionSocketFactory implements MaleDigitalExpressionSocketFactory {
 
     //@Override
-    /*public*/ /*MaleDigitalExpressionSocket*/MaleSocket *DebuggerMaleDigitalExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, /*MaleDigitalExpressionSocket*/MaleSocket *maleSocket) {
+    /*public*/ /*MaleDigitalExpressionSocket*/AbstractMaleSocket *DebuggerMaleDigitalExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, /*MaleDigitalExpressionSocket*/AbstractMaleSocket *maleSocket) {
 
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;

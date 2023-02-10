@@ -10,6 +10,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
+class DefaultMaleDigitalExpressionSocket;
 /*public*/ /*interface*/class  DigitalExpressionManager :public virtual BaseManager/*<MaleDigitalExpressionSocket>*/ {
 Q_INTERFACES(Manager)
  public:
@@ -85,7 +86,7 @@ Q_INTERFACES(Manager)
      *
      * @param x the DigitalExpression to delete
      */
-    /*public*/ virtual void deleteDigitalExpression(MaleDigitalExpressionSocket* x)=0;
+    /*public*/ virtual void deleteDigitalExpression(DefaultMaleDigitalExpressionSocket* x)=0;
 
 };
 Q_DECLARE_INTERFACE(DigitalExpressionManager, "DigitalExpressionManager")

@@ -12,8 +12,9 @@
 class Base;
 class FemaleSocketListener;
 class FemaleStringExpressionSocket;
-class MaleStringExpressionSocket;
+class DefaultMaleStringExpressionSocket;
 class StringExpressionBean;
+class MaleStringExpressionSocket;
 /*public*/ /*interface*/class StringExpressionManager : public virtual BaseManager/*<MaleStringExpressionSocket>*/ {
 Q_INTERFACES(BaseManager)
  public:
@@ -90,7 +91,7 @@ Q_INTERFACES(BaseManager)
      *
      * @param x the StringExpression to delete
      */
-    /*public*/ virtual void deleteStringExpression(MaleStringExpressionSocket* x)=0;
+    /*public*/ virtual void deleteStringExpression(DefaultMaleStringExpressionSocket* x)=0;
 
 };
 Q_DECLARE_INTERFACE(StringExpressionManager, "StringExpressionManager")

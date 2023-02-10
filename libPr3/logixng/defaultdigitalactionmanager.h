@@ -5,6 +5,7 @@
 #include <QObject>
 #include "digitalactionmanager.h"
 #include "category.h"
+#include "abstractmalesocket.h"
 
 class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalActionManager
 {
@@ -13,8 +14,8 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
  public:
   explicit DefaultDigitalActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
-  /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleSocket* registerBean(/*MaleDigitalActionSocket*/MaleSocket *maleSocket)override;
+  /*public*/  AbstractMaleSocket *getLastRegisteredMaleSocket()override;
+  /*public*/  AbstractMaleSocket *registerBean(/*MaleDigitalActionSocket*/AbstractMaleSocket *maleSocket)override;
   /*public*/  MaleDigitalActionSocket* registerAction(/*@Nonnull*/ DigitalActionBean* action)
           /*throws IllegalArgumentException*/ override;
   /*public*/  int getXMLOrder() const override;
@@ -35,7 +36,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
-  /*private*/ MaleSocket* _lastRegisteredBean;
+  /*private*/ AbstractMaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultDigitalActionManager* _instance;// = null;
 
  protected:

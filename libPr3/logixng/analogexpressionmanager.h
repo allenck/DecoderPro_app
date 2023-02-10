@@ -1,6 +1,6 @@
 #ifndef ANALOGEXPRESSIONMANAGER_H
 #define ANALOGEXPRESSIONMANAGER_H
-#include "maleanalogexpressionsocket.h"
+#include "defaultmaleanalogexpressionsocket.h"
 #include "femaleanalogexpressionsocket.h"
 #include "femalesocketlistener.h"
 #include "basemanager.h"
@@ -88,7 +88,7 @@
      *
      * @param x the Expression to delete
      */
-    /*public*/ virtual void deleteAnalogExpression(MaleAnalogExpressionSocket* x)=0;
+    /*public*/ virtual void deleteAnalogExpression(DefaultMaleAnalogExpressionSocket* x)=0;
 
     /*public*/ virtual QString getClassName() =0;
 };

@@ -84,9 +84,9 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket* DefaultDigitalBooleanActionManager::registerBean(/*MaleDigitalBooleanActionSocket*/MaleSocket* maleSocket) {
-        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
-        _lastRegisteredBean = (MaleSocket*)maleSocket;
+    /*public*/  AbstractMaleSocket* DefaultDigitalBooleanActionManager::registerBean(/*MaleDigitalBooleanActionSocket*/AbstractMaleSocket* maleSocket) {
+        AbstractMaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        _lastRegisteredBean = (AbstractMaleSocket*)maleSocket;
         return bean;
     }
 
@@ -115,7 +115,7 @@
 
         // save in the maps
         MaleDigitalBooleanActionSocket* maleSocket = createMaleActionSocket(action);
-         registerBean(maleSocket);
+         registerBean((AbstractMaleSocket*)maleSocket->msself());
          return maleSocket;
     }
 

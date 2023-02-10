@@ -4,6 +4,8 @@
 #include <QObject>
 #include "maledigitalactionsocketfactory.h"
 #include "malesocket.h"
+#include "abstractmalesocket.h"
+
 
 class DebuggerMaleDigitalActionSocketFactory : public QObject, public MaleDigitalActionSocketFactory
 {
@@ -14,7 +16,7 @@ class DebuggerMaleDigitalActionSocketFactory : public QObject, public MaleDigita
    : QObject(parent) {
    setObjectName("DebuggerMaleDigitalActionSocketFactory");
   }
-  /*public*/ MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, MaleSocket* maleSocket)override;
+  /*public*/ AbstractMaleSocket *encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, AbstractMaleSocket *maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 

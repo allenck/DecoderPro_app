@@ -23,6 +23,7 @@
 //@Override
 /*public*/  void LogixNGInitializationTable::initComponents() {
     JmriJFrame::initComponents();
+    setWindowTitle(tr("LogixNG Initialization Table "));
     // build menu
    QMenuBar* menuBar = new QMenuBar();
    setMenuBar(menuBar);

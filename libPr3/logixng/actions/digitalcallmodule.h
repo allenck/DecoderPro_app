@@ -1,5 +1,5 @@
-#ifndef EX_DIGITALCALLMODULE_H
-#define EX_DIGITALCALLMODULE_H
+#ifndef DIGITALCALLMODULE_H
+#define DIGITALCALLMODULE_H
 
 #include "../abstractdigitalaction.h"
 #include "../module.h"
@@ -65,7 +65,7 @@ namespace Actions
 
   private:
    static Logger* log;
-   /*private*/ NamedBeanHandle<Module*>* _moduleHandle;
+   /*private*/ NamedBeanHandle<Module*>* _moduleHandle=nullptr;
    /*private*/ /*final*/ QList<Module::ParameterData*>* _parameterData = new QList<Module::ParameterData*>();
    /*private*/ QSet<VariableData*> dataSet(QList<Module::ParameterData *> *list);
 
@@ -73,4 +73,4 @@ namespace Actions
  };
 }
 
-#endif // EX_DIGITALCALLMODULE_H
+#endif // DIGITALCALLMODULE_H

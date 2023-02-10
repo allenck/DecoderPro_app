@@ -17,7 +17,7 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   explicit DefaultLogixNG(QString sys, QString user, QObject *parent = nullptr);
   ~DefaultLogixNG() {}
   DefaultLogixNG(const DefaultLogixNG&) : LogixNG() {}
-  /*public*/ Base* getParent()const override;
+  /*public*/ Base* getParent() const override;
   /*public*/ void setParent(Base* parent) override;
   /*public*/ QString getBeanType() override;
   /*public*/ void setState(int s) /*throw (JmriException)*/ override;
@@ -32,8 +32,8 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ bool isEnabled()override;
 
   /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean) override;
-  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl);
-  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl);
+  /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
   /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
   /*public*/ QString getUserName() const override {return AbstractNamedBean::getUserName();}

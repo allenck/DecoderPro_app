@@ -1,4 +1,5 @@
 #include "debuggermalestringactionsocket.h"
+#include "defaultmalestringactionsocket.h"
 
 /**
  *
@@ -77,5 +78,5 @@
 
     //@Override
     /*public*/  int DebuggerMaleStringActionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((MaleStringActionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        return ((DefaultMaleStringActionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }

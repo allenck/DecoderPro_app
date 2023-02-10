@@ -12,7 +12,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   explicit DefaultAnalogActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleSocket* registerBean(/*MaleAnalogActionSocket*/MaleSocket *maleSocket)override;
+  /*public*/  AbstractMaleSocket *registerBean(/*MaleAnalogActionSocket*/AbstractMaleSocket *maleSocket)override;
   /*public*/  MaleAnalogActionSocket* registerAction(/*@Nonnull*/ AnalogActionBean* action)
           /*throws IllegalArgumentException*/override;
   /*public*/  int getXMLOrder() const override;
@@ -31,6 +31,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   QObject* self() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
+
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
   QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}

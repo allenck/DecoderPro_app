@@ -20,7 +20,8 @@
     /*public*/  FunctionManager::FunctionManager(QObject* parent) : QObject(parent){
      setObjectName("FunctionManager");
         //for (FunctionFactory* actionFactory : ServiceLoader::load("FunctionFactory"))
-        QList<FunctionFactory*> list = {new StringFunctions(), new ClockFunctions() , new MathFunctions(), new ConvertFunctions()};
+        QList<FunctionFactory*> list = {new StringFunctions(), new ClockFunctions() , new MathFunctions(),
+                                        new ConvertFunctions()};
         foreach (FunctionFactory* actionFactory, list)
         {
             //actionFactory.getConstants().forEach((constant) -> {

@@ -379,6 +379,8 @@ private:
 
 
      QObject* bself() override {return (QObject*)this;}
+     QObject* msself() override {return (QObject*)this;}
+
     };
 protected:
     /*protected*/ Manager/*<? extends NamedBean>*/* manager;

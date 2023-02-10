@@ -1,4 +1,5 @@
 #include "debuggermalestringexpressionsocket.h"
+#include "defaultmalestringexpressionsocket.h"
 
 /**
  *
@@ -77,7 +78,7 @@
 
     //@Override
     /*public*/  int DebuggerMaleStringExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((MaleStringExpressionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        return ((DefaultMaleStringExpressionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }
 
     //@Override

@@ -242,6 +242,15 @@ void JUnitAppender::superappend(LoggingEvent* l) {
 }
 
 /**
+ * Returns the backlog.
+ * @return the backlog
+ */
+/*public*/ /*static*/ QList<LoggingEvent*> JUnitAppender::getBacklog() {
+    //return Collections.unmodifiableList(list);
+ return QList<LoggingEvent*>(list);
+}
+
+/**
  * Verify that no messages were emitted, logging any that were. Does not
  * stop the logging. Clears the accumulated list.
  *

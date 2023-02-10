@@ -176,12 +176,12 @@ class ExpressionMemory : public AbstractDigitalExpression, public PropertyChange
 
  private:
   static Logger* log;
-  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle;
+  /*private*/ NamedBeanHandle<Memory*>* _memoryHandle = nullptr;
   /*private*/ MemoryOperation::TYPE _memoryOperation = MemoryOperation::Equal;
   /*private*/ CompareTo::TYPE _compareTo = CompareTo::Value;
   /*private*/ bool _caseInsensitive = false;
   /*private*/ QString _constantValue = "";
-  /*private*/ NamedBeanHandle<Memory*>* _otherMemoryHandle;
+  /*private*/ NamedBeanHandle<Memory*>* _otherMemoryHandle=nullptr;
   /*private*/ QString _localVariable = "";
   /*private*/ QString _regEx = "";
   /*private*/ bool _listenToOtherMemory = true;

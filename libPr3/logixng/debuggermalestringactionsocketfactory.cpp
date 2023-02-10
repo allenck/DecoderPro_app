@@ -11,7 +11,7 @@
 //public class DebuggerMaleStringActionSocketFactory implements MaleStringActionSocketFactory {
 
     //@Override
-    /*public*/ /*MaleStringActionSocket*/MaleSocket *DebuggerMaleStringActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, /*MaleStringActionSocket*/MaleSocket *maleSocket) {
+    /*public*/ /*MaleStringActionSocket*/AbstractMaleSocket *DebuggerMaleStringActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, /*MaleStringActionSocket*/AbstractMaleSocket *maleSocket) {
 
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;

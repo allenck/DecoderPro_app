@@ -3,12 +3,14 @@
 
 #include "maledigitalexpressionsocketfactory.h"
 #include "maledigitalexpressionsocket.h"
+#include "abstractmalesocket.h"
+
 
 class DebuggerMaleDigitalExpressionSocketFactory : public QObject, public MaleDigitalExpressionSocketFactory
 {
  public:
   DebuggerMaleDigitalExpressionSocketFactory() {setObjectName("DebuggerMaleDigitalExpressionSocketFactory");}
-  /*public*/ /*MaleDigitalExpressionSocket*/MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, /*MaleDigitalExpressionSocket*/MaleSocket* maleSocket)override;
+  /*public*/ /*MaleDigitalExpressionSocket*/AbstractMaleSocket *encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, /*MaleDigitalExpressionSocket*/AbstractMaleSocket *maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 

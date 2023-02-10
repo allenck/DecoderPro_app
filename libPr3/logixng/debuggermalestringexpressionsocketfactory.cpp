@@ -11,7 +11,7 @@
 //public class DebuggerMaleStringExpressionSocketFactory implements MaleStringExpressionSocketFactory {
 
     //@Override
-    /*public*/ /*MaleStringExpressionSocket*/MaleSocket *DebuggerMaleStringExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, /*MaleStringExpressionSocket*/MaleSocket *maleSocket) {
+    /*public*/ /*MaleStringExpressionSocket*/AbstractMaleSocket *DebuggerMaleStringExpressionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, /*MaleStringExpressionSocket*/AbstractMaleSocket *maleSocket) {
 
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;

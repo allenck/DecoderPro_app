@@ -18,6 +18,9 @@ class ModuleEditorMaleSocket : public AbstractMaleSocket
   /*public*/  QString getComment() override;
   /*public*/  void setComment(QString comment)override;
   QString getClassName() override {return "jmri.jmrit.logixng.swing.ModuleEditorMaleSocket";}
+
+  QObject* msself() override {return this;}
+
  private:
 
  protected:

@@ -6,6 +6,7 @@
 #include "logixng.h"
 #include "abstractmalesocket.h"
 #include "abstractfemalesocket.h"
+#include "defaultlogixng.h"
 
 /**
  * The abstract class that is the base class for all LogixNG classes that
@@ -142,16 +143,16 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ /*final*/ bool AbstractBase::isActive() {
- bool enabled = isEnabled();
- AbstractBase* parent = nullptr;
- Base* bp = getParent();
- bool pActive = false;
- if(bp)
- {
-   parent = (AbstractBase*)getParent()->bself();
-   pActive = parent->AbstractBase::isActive();
- }
- return isEnabled() && ((getParent() == nullptr) || /*getParent()*/parent->isActive());
+// bool enabled = Base::isEnabled();
+// AbstractBase* parent = nullptr;
+// Base* bp = this->getParent();
+// bool pActive = false;
+// if(bp)
+// {
+//   parent = (AbstractBase*)getParent()->bself();
+//   pActive = parent->AbstractBase::isActive();
+// }
+ return isEnabled() && ((getParent() == nullptr) || getParent()->isActive());
  //return (enabled && parent == nullptr) || pActive;
 }
 

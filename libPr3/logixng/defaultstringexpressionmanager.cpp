@@ -64,23 +64,23 @@
         return "DefaultMaleStringExpressionSocket";
     }
 
-    /*protected*/ MaleStringExpressionSocket* DefaultStringExpressionManager::createMaleStringExpressionSocket(StringExpressionBean* expression) {
-        MaleStringExpressionSocket* socket = new DefaultMaleStringExpressionSocket(this, expression);
+    /*protected*/ DefaultMaleStringExpressionSocket* DefaultStringExpressionManager::createMaleStringExpressionSocket(StringExpressionBean* expression) {
+        DefaultMaleStringExpressionSocket* socket = new DefaultMaleStringExpressionSocket(this, expression);
         expression->setParent((Base*)socket->self());
         return socket;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket* DefaultStringExpressionManager::getLastRegisteredMaleSocket() {
+    /*public*/  AbstractMaleSocket *DefaultStringExpressionManager::getLastRegisteredMaleSocket() {
         return _lastRegisteredBean;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket* DefaultStringExpressionManager::registerBean(/*MaleStringExpressionSocket*/MaleSocket* maleSocket) {
-        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
-        _lastRegisteredBean = (MaleSocket*)maleSocket;
+    /*public*/  AbstractMaleSocket* DefaultStringExpressionManager::registerBean(/*MaleStringExpressionSocket*/AbstractMaleSocket* maleSocket) {
+        AbstractMaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        _lastRegisteredBean = (AbstractMaleSocket*)maleSocket;
         return bean;
     }
 
@@ -91,7 +91,7 @@
      * @param expression the bean
      */
     //@Override
-    /*public*/  MaleStringExpressionSocket* DefaultStringExpressionManager::registerExpression(/*@Nonnull*/ StringExpressionBean* expression)
+    /*public*/  DefaultMaleStringExpressionSocket* DefaultStringExpressionManager::registerExpression(/*@Nonnull*/ StringExpressionBean* expression)
             /*throws IllegalArgumentException*/ {
 
         if(qobject_cast<MaleStringExpressionSocket*>(expression->bself())) {
@@ -108,8 +108,8 @@
         updateAutoNumber(expression->NamedBean::getSystemName());
 
         // save in the maps
-        MaleStringExpressionSocket* maleSocket = createMaleStringExpressionSocket(expression);
-         registerBean(maleSocket);
+        DefaultMaleStringExpressionSocket* maleSocket = createMaleStringExpressionSocket(expression);
+         registerBean((AbstractMaleSocket*)maleSocket->msself());
          return maleSocket;
     }
 
@@ -155,7 +155,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void DefaultStringExpressionManager::deleteStringExpression(MaleStringExpressionSocket* x) {
+    /*public*/  void DefaultStringExpressionManager::deleteStringExpression(DefaultMaleStringExpressionSocket* x) {
         // delete the MaleStringExpressionSocket
         deregister(x);
         x->NamedBean::dispose();

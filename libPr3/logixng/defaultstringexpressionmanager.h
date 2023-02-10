@@ -2,11 +2,11 @@
 #define DEFAULTSTRINGEXPRESSIONMANAGER_H
 
 #include "abstractbasemanager.h"
-#include "malestringexpressionsocket.h"
 #include "stringexpressionmanager.h"
 #include "instancemanagerautodefault.h"
+#include "defaultmalestringexpressionsocket.h"
 
-
+class DefaultMaleStringExpressionSocket;
 class DefaultStringExpressionManager : public AbstractBaseManager, public StringExpressionManager, public InstanceManagerAutoDefault
 {
   Q_OBJECT
@@ -14,9 +14,9 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
  public:
   explicit DefaultStringExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
-  /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleSocket* registerBean(/*MaleStringExpressionSocket*/MaleSocket* maleSocket)override;
-  /*public*/  MaleStringExpressionSocket* registerExpression(/*@Nonnull*/ StringExpressionBean* expression)
+  /*public*/  AbstractMaleSocket* getLastRegisteredMaleSocket()override;
+  /*public*/  AbstractMaleSocket *registerBean(/*MaleStringExpressionSocket*/AbstractMaleSocket *maleSocket)override;
+  /*public*/  DefaultMaleStringExpressionSocket* registerExpression(/*@Nonnull*/ StringExpressionBean* expression)
           /*throws IllegalArgumentException*/override;
   /*public*/  int getXMLOrder()  const override;
   /*public*/  QChar typeLetter() const override;
@@ -24,7 +24,7 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
   /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getExpressionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
-  /*public*/  void deleteStringExpression(MaleStringExpressionSocket* x)override;
+  /*public*/  void deleteStringExpression(DefaultMaleStringExpressionSocket *x)override;
   static /*public*/  DefaultStringExpressionManager* instance();
   /*public*/  /*Class<MaleStringExpressionSocket>*/QString getNamedBeanClass()const override;
   QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultStringExpressionManager";}
@@ -38,13 +38,13 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
-  /*private*/ MaleSocket* _lastRegisteredBean;
+  /*private*/ AbstractMaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultStringExpressionManager* _instance;// = null;
 
 
  protected:
   /*protected*/ MaleStringExpressionSocket* castBean(MaleSocket* maleSocket)override;
-  /*protected*/ MaleStringExpressionSocket* createMaleStringExpressionSocket(StringExpressionBean* expression);
+  /*protected*/ DefaultMaleStringExpressionSocket *createMaleStringExpressionSocket(StringExpressionBean* expression);
 
 };
 

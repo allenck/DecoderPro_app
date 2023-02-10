@@ -9,6 +9,8 @@
 #include "defaultlogixngpreferences.h"
 #include "instancemanager.h"
 #include "debuggermaleanalogexpressionsocket.h"
+#include "abstractmalesocket.h"
+
 /**
  *
  * @author daniel
@@ -18,7 +20,7 @@
 
   Q_INTERFACES(MaleAnalogExpressionSocketFactory)
     //@Override
-    /*public*/ MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, MaleSocket* maleSocket)override {
+    /*public*/ AbstractMaleSocket* encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, AbstractMaleSocket* maleSocket)override {
 
         if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;

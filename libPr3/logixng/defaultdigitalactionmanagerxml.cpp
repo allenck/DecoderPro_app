@@ -1,6 +1,6 @@
 #include "defaultdigitalactionmanagerxml.h"
 #include "loggerfactory.h"
-#include "digitalactionmanager.h"
+#include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalactionsocket.h"
@@ -124,11 +124,11 @@
                     try {
                         AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket* oldLastItem = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* oldLastItem = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getLastRegisteredMaleSocket();
                         o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket* newLastItem = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* newLastItem = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getLastRegisteredMaleSocket();
                         if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
                         else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
                     } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {

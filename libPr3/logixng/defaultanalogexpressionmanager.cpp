@@ -92,15 +92,15 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket*DefaultAnalogExpressionManager:: getLastRegisteredMaleSocket() {
+    /*public*/  AbstractMaleSocket *DefaultAnalogExpressionManager::getLastRegisteredMaleSocket() {
         return _lastRegisteredBean;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket *DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/MaleSocket* maleSocket) {
-        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
-        _lastRegisteredBean = (MaleSocket*)maleSocket;
+    /*public*/  AbstractMaleSocket *DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/AbstractMaleSocket* maleSocket) {
+        AbstractMaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        _lastRegisteredBean = (AbstractMaleSocket*)maleSocket;
         return bean;
     }
 
@@ -129,7 +129,7 @@
 
         // save in the maps
         MaleAnalogExpressionSocket* maleSocket = createMaleAnalogExpressionSocket(expression);
-        /*return*/ registerBean(maleSocket);
+        /*return*/ registerBean((AbstractMaleSocket*)maleSocket->msself());
         return maleSocket;
     }
 
@@ -145,7 +145,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void DefaultAnalogExpressionManager::deleteAnalogExpression(MaleAnalogExpressionSocket* x) {
+    /*public*/  void DefaultAnalogExpressionManager::deleteAnalogExpression(DefaultMaleAnalogExpressionSocket* x) {
         // delete the MaleAnalogExpressionSocket
        deregister(x);
         x->NamedBean::dispose();

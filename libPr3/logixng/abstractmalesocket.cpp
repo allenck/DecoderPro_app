@@ -31,8 +31,8 @@
   mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
 
  _manager = manager;
- QObject* obj = (QObject*)object;
- if(static_cast<AbstractMaleSocket*>(obj))
+ QObject* obj = object->bself();
+ if(qobject_cast<AbstractMaleSocket*>(obj))
   _object = (AbstractMaleSocket*) obj;
  else
  _object = object;

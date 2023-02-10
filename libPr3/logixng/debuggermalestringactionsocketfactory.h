@@ -3,6 +3,8 @@
 
 #include "malestringactionsocketfactory.h"
 #include <QObject>
+#include "abstractmalesocket.h"
+
 class MaleStringActionSocket;
 class DebuggerMaleStringActionSocketFactory : public QObject, public MaleStringActionSocketFactory
 {
@@ -10,7 +12,7 @@ class DebuggerMaleStringActionSocketFactory : public QObject, public MaleStringA
   Q_INTERFACES(MaleStringActionSocketFactory)
  public:
   DebuggerMaleStringActionSocketFactory(QObject* parent = nullptr) : QObject(parent) {setObjectName("DebuggerMaleStringActionSocketFactory");}
-  /*public*/ MaleSocket *encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, MaleSocket *maleSocket)override;
+  /*public*/ AbstractMaleSocket *encapsulateMaleSocket(BaseManager/*<MaleStringActionSocket>*/* manager, AbstractMaleSocket *maleSocket)override;
 
   QObject* self() override {return (QObject*)this;}
 

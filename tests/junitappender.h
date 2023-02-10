@@ -23,6 +23,7 @@ public:
     /*public*/ /*synchronized*/ void append(LoggingEvent* event);
     /*public*/ static int clearBacklog(LogLevel *level);
     /*public*/ static int clearBacklog();
+    /*public*/ static QList<LoggingEvent*> getBacklog();
     /*public*/ static bool verifyNoBacklog();
     /*public*/ static JUnitAppender* instance();
     /*public*/ void activateOptions();

@@ -131,7 +131,7 @@ public:
  private:
   static Logger* log;
   /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-  /*private*/ NamedBeanHandle<Sensor*>* _sensorHandle;
+  /*private*/ NamedBeanHandle<Sensor*>* _sensorHandle=nullptr;
   /*private*/ QString _reference = "";
   /*private*/ QString _localVariable = "";
   /*private*/ QString _formula = "";

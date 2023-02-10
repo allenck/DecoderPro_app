@@ -126,7 +126,7 @@ class ActionBlock : public AbstractDigitalAction, public VetoableChangeListener
  private:
   static Logger* log;
   /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-  /*private*/ NamedBeanHandle<Block*>* _blockHandle;
+  /*private*/ NamedBeanHandle<Block*>* _blockHandle = nullptr;
   /*private*/ QString _reference = "";
   /*private*/ QString _localVariable = "";
   /*private*/ QString _formula = "";

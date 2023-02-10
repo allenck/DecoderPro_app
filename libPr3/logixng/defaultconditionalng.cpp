@@ -80,7 +80,7 @@
     /*public*/  void DefaultConditionalNG::setParent(Base* parent) {
         _parent = parent;
 
-        if (AbstractBase::isActive()) AbstractBase::registerListeners();
+        if (isActive()) AbstractBase::registerListeners();
         else AbstractBase::unregisterListeners();
     }
 

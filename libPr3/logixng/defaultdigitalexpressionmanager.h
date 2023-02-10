@@ -4,6 +4,7 @@
 #include "abstractbasemanager.h"
 #include "category.h"
 #include "digitalexpressionmanager.h"
+#include "defaultmaledigitalexpressionsocket.h"
 
 class MaleDigitalExpressionSocket;
 class DefaultDigitalExpressionManager : public AbstractBaseManager, public DigitalExpressionManager
@@ -11,8 +12,8 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
  public:
   explicit DefaultDigitalExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
-  /*public*/  MaleSocket* getLastRegisteredMaleSocket() override;
-  /*public*/  MaleSocket* registerBean(/*MaleDigitalExpressionSocket*/MaleSocket* maleSocket)override;
+  /*public*/  AbstractMaleSocket *getLastRegisteredMaleSocket() override;
+  /*public*/  AbstractMaleSocket* registerBean(/*MaleDigitalExpressionSocket*/AbstractMaleSocket* maleSocket)override;
   /*public*/  MaleDigitalExpressionSocket* registerExpression(/*@Nonnull*/DigitalExpressionBean* expression)
           /*throws IllegalArgumentException */override;
   /*public*/  int getXMLOrder() const override;
@@ -21,7 +22,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
   /*public*/  QHash<Category, QList<QString> > getExpressionClasses() override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
-  /*public*/  void deleteDigitalExpression(MaleDigitalExpressionSocket* x)override;
+  /*public*/  void deleteDigitalExpression(DefaultMaleDigitalExpressionSocket *x)override;
   static /*public*/  DefaultDigitalExpressionManager* instance();
   /*public*/  /*Class<MaleDigitalExpressionSocket>*/QString getNamedBeanClass() const override;
   QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultDigitalExpressionManager";}
@@ -33,7 +34,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
-  /*private*/ MaleSocket* _lastRegisteredBean;
+  /*private*/ AbstractMaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultDigitalExpressionManager* _instance;// = null;
 
  protected:

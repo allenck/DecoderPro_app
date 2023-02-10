@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include "maleanalogexpressionsocketfactory.h"
+#include "abstractmalesocket.h"
+
 
 class DebuggerMaleAnalogExpressionSocketFactory : public QObject, public MaleAnalogExpressionSocketFactory
 {
@@ -10,7 +12,7 @@ class DebuggerMaleAnalogExpressionSocketFactory : public QObject, public MaleAna
   Q_INTERFACES(MaleAnalogExpressionSocketFactory)
  public:
   explicit DebuggerMaleAnalogExpressionSocketFactory(QObject *parent = nullptr) : QObject(parent){}
-  /*public*/ MaleSocket *encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, MaleSocket *maleSocket) override;
+  /*public*/ AbstractMaleSocket *encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, AbstractMaleSocket *maleSocket) override;
 
   QObject* self() override {return (QObject*)this;}
  signals:

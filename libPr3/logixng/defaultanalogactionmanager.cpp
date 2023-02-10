@@ -85,8 +85,8 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  MaleSocket *DefaultAnalogActionManager::registerBean(MaleSocket *maleSocket) {
-     MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+/*public*/  AbstractMaleSocket *DefaultAnalogActionManager::registerBean(AbstractMaleSocket *maleSocket) {
+     AbstractMaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
     QString sys = bean->Base::getSystemName();
      _lastRegisteredBean = (MaleSocket*)maleSocket;
     return bean;
@@ -119,7 +119,7 @@
     AbstractNamedBean* nb = (AbstractNamedBean*)action->self();
     QString sys = nb->getSystemName();
     sys = maleSocket->getObject()->getSystemName();
-    registerBean(maleSocket);
+    registerBean((AbstractMaleSocket*)maleSocket->msself());
     return maleSocket;
 }
 

@@ -32,16 +32,17 @@
     /*public*/  QDomElement DefaultAnalogExpressionManagerXml::store(QObject* o) {
         QDomElement expressions = doc.createElement("LogixNGAnalogExpressions");
         setStoreElementClass(expressions);
-        AnalogExpressionManager* tm = (DefaultAnalogExpressionManager*) o;
+        DefaultAnalogExpressionManager* tm = (DefaultAnalogExpressionManager*) o;
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             DefaultMaleAnalogExpressionSocket* expression = (DefaultMaleAnalogExpressionSocket*)nb->self();
+             //DefaultMaleAnalogExpressionSocket* expression = (DefaultMaleAnalogExpressionSocket*)nb->self();
+             AbstractMaleSocket* expression = (AbstractMaleSocket*)nb->self();
                 log->debug("expression system name is " + expression->AbstractNamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    DefaultMaleAnalogExpressionSocket* a = expression;
+                    AbstractMaleSocket* a = expression;
                     while (!(static_cast<DefaultMaleAnalogExpressionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
                         a = (DefaultMaleAnalogExpressionSocket*) a->getObject()->bself();
@@ -129,11 +130,11 @@
                     try {
                         AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket* oldLastItem = ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* oldLastItem = ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getLastRegisteredMaleSocket();
                         o->load(expressionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket* newLastItem = ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* newLastItem = ((DefaultAnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getLastRegisteredMaleSocket();
                         if (newLastItem != oldLastItem) loadMaleSocket(expressionList.at(i).toElement(), newLastItem);
                         else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
                     } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {

@@ -4,8 +4,8 @@
 #include <abstractmanager.h>
 #include "femalesocketmanager.h"
 #include "modulemanager.h"
+#include "defaultmodule.h"
 
-class Module;
 class DefaultModuleManager : public AbstractManager, public ModuleManager
 {
   Q_OBJECT
@@ -20,7 +20,7 @@ class DefaultModuleManager : public AbstractManager, public ModuleManager
           /*throws IllegalArgumentException*/override;
   /*public*/  NamedBean *createModule(QString userName, FemaleSocketManager::SocketType* socketType)override;
   /*public*/  Module* getModule(QString name) override;
-  /*public*/  Module* getByUserName(QString name)override;
+  /*public*/  DefaultModule *getByUserName(QString name)override;
   /*public*/  Module* getBySystemName(QString name) override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  bool resolveAllTrees(QList<QString> *errors)override;
