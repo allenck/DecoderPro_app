@@ -77,7 +77,7 @@
     } else if (socket == _analogActionSocket) {
         _analogActionSocketSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("DoAnalogAction: unknown socket");
     }
 }
 
@@ -88,7 +88,7 @@
     } else if (socket == _analogActionSocket) {
         _analogActionSocketSystemName = "";
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("DoAnalogAction: unknown socket");
     }
 }
 

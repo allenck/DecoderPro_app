@@ -9,6 +9,7 @@
 class MaleDigitalExpressionSocket;
 class DefaultDigitalExpressionManager : public AbstractBaseManager, public DigitalExpressionManager
 {
+  Q_OBJECT
  public:
   explicit DefaultDigitalExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
@@ -25,7 +26,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
   /*public*/  void deleteDigitalExpression(DefaultMaleDigitalExpressionSocket *x)override;
   static /*public*/  DefaultDigitalExpressionManager* instance();
   /*public*/  /*Class<MaleDigitalExpressionSocket>*/QString getNamedBeanClass() const override;
-  QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultDigitalExpressionManager";}
+  QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultDigitalExpressionManager";}
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}

@@ -72,14 +72,14 @@ class ExecuteDelayed : public AbstractDigitalAction, public FemaleSocketListener
  private:
   static Logger* log;
   /*private*/ QString _socketSystemName;
-  /*private*/ /*final*/ FemaleDigitalActionSocket* _socket;
-  /*private*/ ProtectedTimerTask* _timerTask;
+  /*private*/ /*final*/ FemaleDigitalActionSocket* _socket = nullptr;
+  /*private*/ ProtectedTimerTask* _timerTask = nullptr;
   /*private*/ NamedBeanAddressing::TYPE _stateAddressing = NamedBeanAddressing::Direct;
   /*private*/ int _delay;
   /*private*/ QString _stateReference = "";
   /*private*/ QString _stateLocalVariable = "";
   /*private*/ QString _stateFormula = "";
-  /*private*/ ExpressionNode* _stateExpressionNode;
+  /*private*/ ExpressionNode* _stateExpressionNode = nullptr;
   /*private*/ TimerUnit::VAL _unit = TimerUnit::MilliSeconds;
   /*private*/ bool _resetIfAlreadyStarted;
   QMutex mutex1;

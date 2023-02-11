@@ -26,7 +26,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   static /*public*/  DefaultAnalogActionManager* instance();
   /*public*/  /*Class<MaleAnalogActionSocket>*/QString getNamedBeanClass() const override;
-  QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultAnalogActionManager";}
+  QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultAnalogActionManager";}
 
   QObject* self() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}

@@ -10,6 +10,7 @@ class DefaultMaleDigitalBooleanActionSocket : public AbstractMaleSocket, public 
   Q_INTERFACES(MaleDigitalBooleanActionSocket)
  public:
   DefaultMaleDigitalBooleanActionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager, /*@Nonnull*/ DigitalBooleanActionBean* action, QObject* parent = nullptr);
+
   /*public*/  /*static*/ class DigitalBooleanActionDebugConfig : public MaleSocket::DebugConfig {
       public:
       // If true, the socket is not executing the action.

@@ -78,7 +78,7 @@
 
     //@Override
     /*protected*/ QString RouteTableAction::getClassName() {
-        return /*RouteTableAction.class.getName()*/"jmri.jmrit.beantable.RouteTableAction.";
+        return /*RouteTableAction.class.getName()*/"jmri.jmrit.beantable.RouteTableAction";
     }
 
     //@Override

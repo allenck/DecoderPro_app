@@ -26,7 +26,7 @@
 //        implements LogixNG_Manager {
 
 
-/*public*/ DefaultLogixNGManager::DefaultLogixNGManager(QObject* parent) :AbstractManager(parent) {
+/*public*/ DefaultLogixNGManager::DefaultLogixNGManager(QObject* parent) : AbstractManager(parent) {
    setObjectName("DefaultLogixNGManager");
  // The LogixNGPreferences class may load plugins so we must ensure
     // it's loaded here.

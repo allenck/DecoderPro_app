@@ -68,7 +68,7 @@
     if (socket == _socket) {
         _socketSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("Not: unknown socket");
     }
 }
 
@@ -77,7 +77,7 @@
     if (socket == _socket) {
         _socketSystemName = "";
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("Not: unknown socket");
     }
 }
 

@@ -6,6 +6,7 @@
 #include "category.h"
 #include "femalesocketlistener.h"
 
+class DefaultMaleDigitalBooleanActionSocket;
 /**
  * Manager for DigitalBooleanActionBean
  *
@@ -81,7 +82,7 @@ public:
      *
      * @param x the DigitalBooleanAction to delete
      */
-    /*public*/ virtual void deleteDigitalBooleanAction(MaleDigitalBooleanActionSocket* x)=0;
+    /*public*/ virtual void deleteDigitalBooleanAction(DefaultMaleDigitalBooleanActionSocket* x)=0;
     };
   Q_DECLARE_INTERFACE(DigitalBooleanActionManager, "DigitalBooleanActionManager")
 #endif // DIGITALBOOLEANACTIONMANAGER_H

@@ -1,7 +1,7 @@
 #ifndef ABSTRACTNAMEDBEANMANAGERCONFIGXML_H
 #define ABSTRACTNAMEDBEANMANAGERCONFIGXML_H
 #include "abstractxmladapter.h"
-#include "namedbean.h"
+#include "abstractnamedbean.h"
 #include "liblayouteditor_global.h"
 
 
@@ -12,7 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractNamedBeanManagerConfigXML : public Ab
 public:
     explicit AbstractNamedBeanManagerConfigXML(QObject *parent = 0);
     ~AbstractNamedBeanManagerConfigXML() override;
- void checkNameNormalization(/*@Nonnull*/ QString rawSystemName, QString rawUserName, /*@Nonnull*/ Manager* manager);
+    void checkNameNormalization(/*@Nonnull*/ QString rawSystemName, QString rawUserName, /*@Nonnull*/ Manager* manager);
 
 signals:
 
@@ -21,7 +21,7 @@ private:
  Logger* log;
 
 protected:
- /*protected*/ void storeCommon(NamedBean* t, QDomElement elem);
+ /*protected*/ void storeCommon(NamedBean *t, QDomElement elem);
  /*protected*/ void loadCommon(NamedBean *t, QDomElement elem);
  void storeComment(NamedBean* t, QDomElement elem);
  void storeUserName(NamedBean* t, QDomElement elem);

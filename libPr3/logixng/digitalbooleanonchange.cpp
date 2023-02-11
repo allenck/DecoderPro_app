@@ -105,7 +105,7 @@
     if (socket == _socket) {
         _socketSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unknown socket");
+        throw new IllegalArgumentException("DigitalBooleanOnChange: unknown socket");
     }
 }
 
@@ -114,7 +114,7 @@
     if (socket == _socket) {
         _socketSystemName = "";
     } else {
-        throw new IllegalArgumentException("unknown socket");
+        throw new IllegalArgumentException("DigitalBooleanOnChange: unknown socket");
     }
 }
 

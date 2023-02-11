@@ -74,7 +74,7 @@
     if (socket == _childExpression) {
         _childExpressionSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("TriggerOnce: unkown socket");
     }
 }
 
@@ -83,7 +83,7 @@
     if (socket == _childExpression) {
         _childExpressionSystemName = "null";
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("TriggerOnce: unknown socket");
     }
 }
 

@@ -9,6 +9,8 @@
 #include "libPr3_global.h"
 #include "swingpropertychangesupport.h"
 #include "bean.h"
+#include "instancemanagerautodefault.h"
+
 /**
  * Lightweight abstract class to denote that a system is active,
  * and provide general information.
@@ -23,9 +25,10 @@
 class ConsistManager;
 class ResourceBundle;
 class Manager;
-class LIBPR3SHARED_EXPORT SystemConnectionMemo : public Bean
+class LIBPR3SHARED_EXPORT SystemConnectionMemo : public Bean//, public InstanceManagerAutoDefault
 {
- Q_OBJECT
+  Q_OBJECT
+  //Q_INTERFACES(InstanceManagerAutoDefault)
 public:
    SystemConnectionMemo(QObject * parent = 0) : Bean(parent) {}
 // explicit SystemConnectionMemo(QString Prefix= "I", QString userName= "Internal", QObject *parent = 0);

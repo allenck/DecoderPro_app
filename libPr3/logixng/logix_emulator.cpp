@@ -111,7 +111,7 @@
     } else if (socket == _actionSocket) {
         _actionSocketSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("Logix_Emulator: unknown socket");
     }
 }
 
@@ -123,7 +123,7 @@
     } else if (socket == _actionSocket) {
         _actionSocketSystemName = "null";
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("Logix_Emulator:unknown socket");
     }
 }
 

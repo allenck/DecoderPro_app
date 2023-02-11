@@ -91,7 +91,7 @@
         } else if (socket == _doActionSocket) {
             _doActionSocketSystemName = socket->getConnectedSocket()->getSystemName();
         } else {
-            throw new IllegalArgumentException("unkown socket");
+            throw new IllegalArgumentException("For: unknown socket");
         }
     }
 
@@ -106,7 +106,7 @@
         } else if (socket == _doActionSocket) {
             _doActionSocketSystemName = "";
         } else {
-            throw new IllegalArgumentException("unkown socket");
+            throw new IllegalArgumentException("For: unknown socket");
         }
     }
 

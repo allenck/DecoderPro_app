@@ -29,6 +29,7 @@
         AbstractMaleSocket* maleSocket = (AbstractMaleSocket*) o;
 
         QDomElement element = doc.createElement("AbstractMaleSocket");                     // NOI18N
+        QDomElement e2;
         element.setAttribute("enabled", maleSocket->isEnabled() ? "yes" : "no");  // NOI18N
         element.setAttribute("locked", maleSocket->isLocked() ? "yes" : "no");    // NOI18N
         element.setAttribute("system", maleSocket->isSystem() ? "yes" : "no");    // NOI18N
@@ -37,14 +38,14 @@
 
         // Only store error handling type of the inner most socket
         if (!qobject_cast<MaleSocket*>(maleSocket->getObject()->bself())) {
-            element.appendChild(doc.createElement("errorHandling").appendChild(doc.createTextNode(ErrorHandlingType::toString( maleSocket->getErrorHandlingType()))));  // NOI18N
+            element.appendChild(e2=doc.createElement("errorHandling")); e2.appendChild(doc.createTextNode(ErrorHandlingType::toString( maleSocket->getErrorHandlingType())));  // NOI18N
         }
 
         for (VariableData* data : maleSocket->getLocalVariables()) {
             QDomElement elementVariable = doc.createElement("LocalVariable");                                     // NOI18N
-            elementVariable.appendChild(doc.createElement("name").appendChild(doc.createTextNode(data->_name)));                     // NOI18N
-            elementVariable.appendChild(doc.createElement("type").appendChild(doc.createTextNode(InitialValueType::toString(data->_initalValueType))));   // NOI18N
-            elementVariable.appendChild(doc.createElement("data").appendChild(doc.createTextNode(data->_initialValueData)));         // NOI18N
+            elementVariable.appendChild(e2=doc.createElement("name")); e2.appendChild(doc.createTextNode(data->_name));                     // NOI18N
+            elementVariable.appendChild(e2=doc.createElement("type")); e2.appendChild(doc.createTextNode(InitialValueType::toString(data->_initalValueType)));   // NOI18N
+            elementVariable.appendChild(e2=doc.createElement("data")); e2.appendChild(doc.createTextNode(data->_initialValueData));         // NOI18N
             element.appendChild(elementVariable);
         }
 

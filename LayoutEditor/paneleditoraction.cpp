@@ -22,14 +22,14 @@
 //private static final long serialVersionUID = 1057276169969379561L;
 
 /*public*/ PanelEditorAction::PanelEditorAction(QString s, QObject *parent) :
-    QAction(s, parent)
+    AbstractAction(s, parent)
 {
  //super(s);
  common();
 }
 
 /*public*/ PanelEditorAction::PanelEditorAction(QObject *parent) :
-  QAction(tr("New Panel"), parent)
+  AbstractAction(tr("New Panel"), parent)
 {
  //this("New Panel");
  common();

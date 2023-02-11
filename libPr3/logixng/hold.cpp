@@ -84,7 +84,7 @@
         } else if (socket == _holdExpressionSocket) {
             _holdExpressionSocketSystemName = socket->getConnectedSocket()->getSystemName();
         } else {
-            throw new IllegalArgumentException("unkown socket");
+            throw new IllegalArgumentException("Hold: unknown socket");
         }
     }
 
@@ -95,7 +95,7 @@
         } else if (socket == _holdExpressionSocket) {
             _holdExpressionSocketSystemName = nullptr;
         } else {
-            throw new IllegalArgumentException("unkown socket");
+            throw new IllegalArgumentException("Hold: unknown socket");
         }
     }
 

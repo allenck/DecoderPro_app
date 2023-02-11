@@ -975,7 +975,7 @@ File userPrefsFile;*/
      else
      {
       bool loadStatus = adapter->load(item, item);
-      if (log->isDebugEnabled())
+      //if (log->isDebugEnabled())
        log->debug("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
 
       // if any adaptor load fails, then the entire load has failed

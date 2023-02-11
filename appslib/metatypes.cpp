@@ -364,6 +364,9 @@
 #include "throttleframemanager.h"
 #include "startuppausefactory.h"
 #include "filelocationspreferences.h"
+#include "checkforupdateaction.h"
+#include "paneleditoraction.h"
+#include "inputwindowaction.h"
 
 bool Metatypes::done = false;
 
@@ -743,6 +746,9 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<ThrottleFrameManager>("ThrottleFrameManager");
  qRegisterMetaType<StartupPauseFactory>("StartupPauseFactory");
  qRegisterMetaType<FileLocationsPreferences>("FileLocationsPreferences");
+ qRegisterMetaType<CheckForUpdateAction>("CheckForUpdateAction");
+ qRegisterMetaType<PanelEditorAction>("PanelEditorAction");
+ qRegisterMetaType<InputWindowAction>("InputWindowAction");
 
  Metatypes::done = true;
 }

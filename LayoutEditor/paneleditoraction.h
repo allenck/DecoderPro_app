@@ -1,17 +1,18 @@
 #ifndef PANELEDITORACTION_H
 #define PANELEDITORACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "actionevent.h"
 
 
-class PanelEditorAction : public QAction
+class PanelEditorAction : public AbstractAction
 {
  Q_OBJECT
 public:
- explicit PanelEditorAction(QObject *parent);
+ Q_INVOKABLE explicit PanelEditorAction(QObject *parent = nullptr);
  /*public*/ PanelEditorAction(QString s, QObject *parent);
-
+  ~PanelEditorAction() {}
+  PanelEditorAction(const PanelEditorAction&) : AbstractAction(){}
 
 signals:
 
@@ -20,5 +21,5 @@ public slots:
 private:
  void common();
 };
-
+Q_DECLARE_METATYPE(PanelEditorAction)
 #endif // PANELEDITORACTION_H

@@ -225,7 +225,7 @@
 //        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
 //            return ((AbstractMaleSocket*)getObject()->bself())->getListen();
  AbstractMaleSocket* obj = (AbstractMaleSocket*) getObject()->bself();
- if(static_cast<AbstractMaleSocket*>(obj))
+ if(qobject_cast<AbstractMaleSocket*>(obj))
   return ((AbstractMaleSocket*)obj)->getListen();
 //        }
     return _listen;

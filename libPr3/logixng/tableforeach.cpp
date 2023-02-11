@@ -398,7 +398,7 @@
         if (socket == _socket) {
             _socketSystemName = socket->getConnectedSocket()->getSystemName();
         } else {
-            throw new IllegalArgumentException("unkown socket");
+            throw new IllegalArgumentException("TableForEach: unknown socket");
         }
     }
 
@@ -407,7 +407,7 @@
         if (socket == _socket) {
             _socketSystemName = nullptr;
         } else {
-            throw new IllegalArgumentException("unkown socket");
+            throw new IllegalArgumentException("TableForEach: unknown socket");
         }
     }
 

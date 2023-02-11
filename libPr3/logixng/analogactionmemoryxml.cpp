@@ -27,7 +27,7 @@
         AnalogActionMemory* p = (AnalogActionMemory*) o;
 
         QDomElement element = doc.createElement("AnalogActionMemory");
-        element.setAttribute("class", ".jmri.jmrit.actions.configurexml.AnalogActionMemoryXml");
+        element.setAttribute("class", "jmri.jmrit.actions.configurexml.AnalogActionMemoryXml");
         QDomElement e1;
         element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 

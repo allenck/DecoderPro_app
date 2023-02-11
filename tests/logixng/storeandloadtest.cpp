@@ -1829,7 +1829,6 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(logix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0 // crashes
         DigitalBooleanMany* booleanMany =
                 new DigitalBooleanMany(digitalBooleanActionManager->getAutoSystemName(), "");
         maleSocket = digitalBooleanActionManager->registerAction(booleanMany);
@@ -1854,7 +1853,6 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         onChange->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalBooleanActionManager->registerAction(onChange);
         booleanMany->getChild(2)->_connect(maleSocket);
-#endif
 
         Actions::LogData* logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(logData);
@@ -3568,9 +3566,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
             QSet</*MaleDigitalBooleanActionSocket*/NamedBean*> digitalBooleanActionSet =QSet</*MaleDigitalBooleanActionSocket*/NamedBean*>(digitalBooleanActionManager->getNamedBeanSet());
             for (NamedBean* nb : digitalBooleanActionSet) {
-              //MaleDigitalBooleanActionSocket* aDigitalBooleanAction =   (DefaultMaleDigitalBooleanActionSocket*)nb->self();
-             AbstractDigitalBooleanAction* adba = (AbstractDigitalBooleanAction*)nb->self();
-             DefaultMaleDigitalBooleanActionSocket* aDigitalBooleanAction = (DefaultMaleDigitalBooleanActionSocket*)adba->getParent()->bself();
+              DefaultMaleDigitalBooleanActionSocket* aDigitalBooleanAction =   (DefaultMaleDigitalBooleanActionSocket*)nb->self();
+//             AbstractDigitalBooleanAction* adba = (AbstractDigitalBooleanAction*)nb->self();
+//             DefaultMaleDigitalBooleanActionSocket* aDigitalBooleanAction = (DefaultMaleDigitalBooleanActionSocket*)adba->getParent()->bself();
              digitalBooleanActionManager->deleteDigitalBooleanAction(aDigitalBooleanAction);
             }
 

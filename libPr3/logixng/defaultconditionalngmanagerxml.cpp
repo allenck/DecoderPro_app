@@ -39,23 +39,29 @@ DefaultConditionalNGManagerXml::DefaultConditionalNGManagerXml(QObject *parent)
     if (tm != nullptr) {
         if (lm->getNamedBeanSet().isEmpty()) return QDomElement();
         for (NamedBean* nb : lm->getNamedBeanSet()) {
-         LogixNG* logixNG = (DefaultLogixNG*)nb->self();
+         DefaultLogixNG* logixNG = (DefaultLogixNG*)nb->self();
             for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
-                ConditionalNG* conditionalNG = logixNG->getConditionalNG(i);
+                DefaultConditionalNG* conditionalNG = logixNG->getConditionalNG(i);
 
-                log->debug("ConditionalNG system name is " + conditionalNG->NamedBean::getSystemName());  // NOI18N
+                log->debug("ConditionalNG system name is " + nb->getSystemName());//((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName());  // NOI18N
                 bool enabled = conditionalNG->isEnabled();
                 QDomElement elem = doc.createElement("ConditionalNG");  // NOI18N
-                elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode((conditionalNG->NamedBean::getSystemName()))));  // NOI18N
+                QDomElement esn;
+                elem.appendChild(esn=doc.createElement("systemName"));
+                  esn.appendChild(doc.createTextNode(nb->getSystemName()));//(((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName()))));  // NOI18N
 
                 // store common part
-                storeCommon(conditionalNG, elem);
+                storeCommon(nb, elem);
 
-                elem.appendChild(doc.createElement("thread").appendChild(doc.createTextNode(
-                        QString::number(conditionalNG->getStartupThreadId()))));  // NOI18N
+                QDomElement ethr;
+                elem.appendChild(ethr=doc.createElement("thread"));
+                ethr.appendChild(doc.createTextNode(
+                        QString::number(conditionalNG->getStartupThreadId())));  // NOI18N
 
                 QDomElement e2 = doc.createElement("Socket");
-                e2.appendChild(doc.createElement("socketName").appendChild(doc.createTextNode(conditionalNG->getChild(0)->getName())));
+                QDomElement e2sn;
+                e2.appendChild(e2sn=doc.createElement("socketName"));
+                e2sn.appendChild(doc.createTextNode(conditionalNG->getChild(0)->getName()));
                 MaleSocket* socket = conditionalNG->getChild(0)->getConnectedSocket();
                 QString socketSystemName;
                 if (socket != nullptr) {
@@ -64,7 +70,9 @@ DefaultConditionalNGManagerXml::DefaultConditionalNGManagerXml(QObject *parent)
                     socketSystemName = ((DefaultConditionalNG*)conditionalNG->bself())->getSocketSystemName();
                 }
                 if (socketSystemName != "") {
-                    e2.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(socketSystemName)));
+                 QDomElement esn2;
+                    e2.appendChild(esn2 =doc.createElement("systemName"));
+                      esn2.appendChild(doc.createTextNode(socketSystemName));
                 }
                 elem.appendChild(e2);
 
@@ -85,7 +93,7 @@ DefaultConditionalNGManagerXml::DefaultConditionalNGManagerXml(QObject *parent)
  * @param logixngs The top-level element being created
  */
 /*public*/  void DefaultConditionalNGManagerXml::setStoreElementClass(QDomElement logixngs) {
-    logixngs.setAttribute("class", ".jmri.jmrit.logicng.implementation.configurexml.DefaultConditionalNGManagerXml");  // NOI18N
+    logixngs.setAttribute("class", "jmri.jmrit.logicng.implementation.configurexml.DefaultConditionalNGManagerXml");  // NOI18N
 }
 
 /**
@@ -183,7 +191,7 @@ DefaultConditionalNGManagerXml::DefaultConditionalNGManagerXml(QObject *parent)
  */
 /*protected*/ void DefaultConditionalNGManagerXml::replaceConditionalNGManager() {
     if (((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->getClassName()
-             == (".jmri.jmrit.logixng.implementation.DefaultConditionalNGManager")) {
+             == ("jmri.jmrit.logixng.implementation.DefaultConditionalNGManager")) {
         return;
     }
     // if old manager exists, remove it from configuration process

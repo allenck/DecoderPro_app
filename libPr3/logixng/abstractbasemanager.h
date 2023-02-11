@@ -20,7 +20,7 @@ class AbstractBaseManager : public AbstractManager, public virtual BaseManager
   /*public*/  void deregister(/*@Nonnull*/ NamedBean* s)override;
   /*public*/  /*final*/ NameValidity validSystemNameFormat(QString systemName)override;
   /*public*/  void Register(/*@Nonnull*/ NamedBean* s)override;
-  /*public*/  virtual AbstractMaleSocket *registerBean(/*@Nonnull*/ AbstractMaleSocket *s);
+  /*public*/  AbstractMaleSocket *registerBean(/*@Nonnull*/ AbstractMaleSocket *s)override;
   /*public*/  void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)override;
 
   //QObject* self() override {return (QObject*)this;}

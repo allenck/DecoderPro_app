@@ -7,9 +7,11 @@ class UserPreferencesManager;
 class JFrame;
 class InputWindowAction : public AbstractAction
 {
- Q_OBJECT
+  Q_OBJECT
 public:
- explicit InputWindowAction(QObject *parent );
+ Q_INVOKABLE explicit InputWindowAction(QObject *parent = nullptr);
+  ~InputWindowAction() {}
+  InputWindowAction(const InputWindowAction&) : AbstractAction() {}
  /*public*/ InputWindowAction(QString name, QObject *parent);
  /*public*/ JFrame* getFrame();
 
@@ -25,6 +27,8 @@ private :
  void closeEvent(QCloseEvent *);
  friend class IWWindowListener;
 };
+Q_DECLARE_METATYPE(InputWindowAction)
+
 class IWWindowListener : public WindowListener
 {
  Q_OBJECT

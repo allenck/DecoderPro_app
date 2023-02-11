@@ -260,7 +260,7 @@ private QString getVariables(SymbolTable* symbolTable) {
     if (socket == _socket) {
         _socketSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("ExecuteDelayed: unknown socket");
     }
 }
 
@@ -269,7 +269,7 @@ private QString getVariables(SymbolTable* symbolTable) {
     if (socket == _socket) {
         _socketSystemName = nullptr;
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("ExecuteDelayed: unknown socket");
     }
 }
 

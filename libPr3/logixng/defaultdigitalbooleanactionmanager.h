@@ -5,6 +5,7 @@
 #include "category.h"
 #include "digitalbooleanactionmanager.h"
 
+class DefaultMaleDigitalBooleanActionSocket;
 class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public DigitalBooleanActionManager
 {
   Q_OBJECT
@@ -22,7 +23,7 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
           Base* parent, FemaleSocketListener* listener, QString socketName)override;
   /*public*/  QHash<Category, QList<QString> > getActionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
-  /*public*/  void deleteDigitalBooleanAction(MaleDigitalBooleanActionSocket* x)override;
+  /*public*/  void deleteDigitalBooleanAction(DefaultMaleDigitalBooleanActionSocket *x)override;
   static /*public*/  DefaultDigitalBooleanActionManager* instance();
   /*public*/  /*Class<MaleDigitalBooleanActionSocket>*/QString getNamedBeanClass() const override;
   static /*volatile*/ DefaultDigitalBooleanActionManager* _instance;// = nullptr;

@@ -40,24 +40,27 @@
         if (tm != nullptr) {
             for (LogixNG_Thread* thread : LogixNG_Thread::getThreads()) {
                 QDomElement e = doc.createElement("Thread");  // NOI18N
-                e.appendChild(doc.createElement("id").appendChild(doc.createTextNode(QString::number(thread->getThreadId()))));
-                e.appendChild(doc.createElement("name").appendChild(doc.createTextNode(thread->getThreadName())));
+                QDomElement e1;
+                e.appendChild(e1=doc.createElement("id")); e1.appendChild(doc.createTextNode(QString::number(thread->getThreadId())));
+                e.appendChild(e1=doc.createElement("name")); e1.appendChild(doc.createTextNode(thread->getThreadName()));
                 logixNGs.appendChild(e);
             }
 
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             LogixNG* logixNG = (DefaultLogixNG*)nb->self();
-                log->debug("logixng system name is " + logixNG->Base::getSystemName());  // NOI18N
+             DefaultLogixNG* logixNG = (DefaultLogixNG*)nb->self();
+                log->debug("logixng system name is " + logixNG->getSystemName());  // NOI18N
                 bool enabled = logixNG->isEnabled();
-                QDomElement elem = doc.createElement("LogixNG");  // NOI18N
-                elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(logixNG->Base::getSystemName())));  // NOI18N
+                QDomElement elem = doc.createElement("LogixNG");
+                QDomElement esn;// NOI18N
+                elem.appendChild(esn=doc.createElement("systemName")); esn.appendChild(doc.createTextNode(nb->getSystemName()));  // NOI18N
 
                 // store common part
                 storeCommon((NamedBean*)nb, elem);
 
                 QDomElement e = doc.createElement("ConditionalNGs");
+                QDomElement e1;
                 for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
-                    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(logixNG->getConditionalNG(i)->Base::getSystemName())));
+                    e.appendChild(e1=doc.createElement("systemName"));  e1.appendChild(doc.createTextNode(logixNG->getConditionalNG(i)->AbstractNamedBean::getSystemName()));
                 }
                 elem.appendChild(e);
 
@@ -158,7 +161,7 @@
     /*public*/ void DefaultLogixNGManagerXml::loadLogixNGs(QDomElement sharedLogixNG) {
         QDomNodeList logixNGList = sharedLogixNG.elementsByTagName("LogixNG");  // NOI18N
         log->debug("Found " + QString::number(logixNGList.size()) + " logixngs");  // NOI18N
-        LogixNG_Manager* tm = (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
+        LogixNG_Manager* tm = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
 
         for (int i = 0; i < logixNGList.size(); i++) {
 
@@ -225,7 +228,7 @@
         for(int i=0; i < logixNGList.size(); i++)
         {
          QDomElement e = logixNGList.at(i).toElement();
-            LogixNG* logixNG = (LogixNG*)tm->getBySystemName(e.text().trimmed())->self();
+            LogixNG* logixNG = (DefaultLogixNG*)tm->getBySystemName(e.text().trimmed())->self();
             if (logixNG != nullptr) {
                 initializationManager->add(logixNG);
             } else {

@@ -41,7 +41,7 @@
  */
 ///*private*/ static final long serialVersionUID = 6207247759586108823L;
 
-/*public*/ /*final*/ /*static*/ QString BlockTableAction::BLOCK_METRIC_PREF = /*BlockTableAction.class.getName()*/".jmri.jmrit.beantable.BlockTableAction:LengthUnitMetric"; // NOI18N
+/*public*/ /*final*/ /*static*/ QString BlockTableAction::BLOCK_METRIC_PREF = /*BlockTableAction.class.getName()*/"jmri.jmrit.beantable.BlockTableAction:LengthUnitMetric"; // NOI18N
 
 /**
  * Create an action with a specific title.

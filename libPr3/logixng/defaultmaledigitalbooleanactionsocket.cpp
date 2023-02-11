@@ -81,7 +81,7 @@
      */
     //@Override
     /*public*/  void DefaultMaleDigitalBooleanActionSocket::unregisterListenersForThisClass() {
-        ((DigitalBooleanActionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
+        ((AbstractDigitalBooleanAction*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
     }
 
     //@Override

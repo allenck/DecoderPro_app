@@ -189,10 +189,7 @@ class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
 {
  public:
     IllegalArgumentException(QString s="", Throwable* throwable=nullptr);
-    ~IllegalArgumentException() throw()
-    {
-     name="IllegalArgumentException";
-    }
+    ~IllegalArgumentException() throw() {}
 };
 class JAVAQTSHARED_EXPORT NumberFormatException : public Exception
 {

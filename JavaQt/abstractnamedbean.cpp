@@ -30,17 +30,21 @@ void AbstractNamedBean::common(QString sys, QString user/*, QObject *parent*/)
  */
 //public abstract class AbstractNamedBean implements NamedBean, java.io.Serializable {
 
-AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : QObject(parent)
+AbstractNamedBean::AbstractNamedBean(/*@Nonnull*/ QString sys, QObject* parent) : QObject(parent)
 {
  //Q_ASSERT(!sys.isEmpty());
+ if(sys.isEmpty())
+  log->error("sysname is empty!");
  setObjectName(sys);
  common(sys, ""/*, parent*/ );
  setObjectName(sys);
 }
 
-AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : QObject(parent)
+AbstractNamedBean:: AbstractNamedBean(/*@Nonnull*/ QString sysName, QString user, QObject* parent) : QObject(parent)
 {
  //Q_ASSERT(!sysName.isEmpty());
+ if(sysName.isEmpty())
+  log->error("sysname is empty!");
  common(sysName, user/*, parent*/);
  //setUserName(user);
  setObjectName(sysName+"/"+user);

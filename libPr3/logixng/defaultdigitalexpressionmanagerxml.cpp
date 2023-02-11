@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "defaultdigitalexpressionmanagerxml.h"
-#include "digitalexpressionmanager.h"
+#include "defaultdigitalexpressionmanager.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalexpressionsocket.h"
 /**
@@ -25,35 +25,35 @@
      */
     //@Override
     /*public*/  QDomElement DefaultDigitalExpressionManagerXml::store(QObject* o) {
-        QDomElement expressions = doc.createElement("LogixNGDigitalExpressions");
-        setStoreElementClass(expressions);
-        DigitalExpressionManager* tm = (DigitalExpressionManager*) o;
-        if (tm != nullptr) {
-            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
-            for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleDigitalExpressionSocket* expression = (MaleDigitalExpressionSocket*)nb->self();
-                log->debug("action system name is " + expression->NamedBean::getSystemName());  // NOI18N
-                try {
-                    QList<QDomElement> elements = QList<QDomElement>();
-                    // The male socket may be embedded in other male sockets
-                    MaleDigitalExpressionSocket* a = expression;
-                    while (!(static_cast<DefaultMaleDigitalExpressionSocket*>(a))) {
-                        elements.append(storeMaleSocket(a));
-                        a = (MaleDigitalExpressionSocket*) a->getObject()->bself();
-                    }
-                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
-                    if (!e.isNull()) {
-                        for (QDomElement ee : elements) e.appendChild(ee);
-                        expressions.appendChild(e);
-                    } else {
-                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
-                    }
-                } catch (RuntimeException* e) {
-                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
-                }
-            }
+     QDomElement expressions = doc.createElement("LogixNGDigitalExpressions");
+     setStoreElementClass(expressions);
+     DigitalExpressionManager* tm = (DigitalExpressionManager*) o;
+     if (tm != nullptr) {
+      if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+      for (NamedBean* nb : tm->getNamedBeanSet()) {
+       AbstractMaleSocket* expression = (AbstractMaleSocket*)nb->self();
+       log->debug("action system name is " + expression->getSystemName());  // NOI18N
+       try {
+        QList<QDomElement> elements = QList<QDomElement>();
+        // The male socket may be embedded in other male sockets
+        AbstractMaleSocket* a = expression;
+        while (!(static_cast<DefaultMaleDigitalExpressionSocket*>(a))) {
+            elements.append(storeMaleSocket(a));
+            a = (AbstractMaleSocket*) a->getObject()->bself();
         }
-        return (expressions);
+        QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+        if (!e.isNull()) {
+            for (QDomElement ee : elements) e.appendChild(ee);
+            expressions.appendChild(e);
+        } else {
+            throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
+        }
+       } catch (RuntimeException* e) {
+           log->error(tr("Error storing action: %1").arg(e->toString()), e);
+       }
+      }
+     }
+     return (expressions);
     }
 
     /**
@@ -64,7 +64,7 @@
      * @param expressions The top-level element being created
      */
     /*public*/  void DefaultDigitalExpressionManagerXml::setStoreElementClass(QDomElement expressions) {
-        expressions.setAttribute("class", "jmri.jmrit.lohixng.implementation.configurexml.DefaultDigitalExpressionManagerXml");  // NOI18N
+        expressions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultDigitalExpressionManagerXml");  // NOI18N
     }
 
     /**
@@ -125,11 +125,11 @@
                     try {
                         AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket* oldLastItem = ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getLastRegisteredMaleSocket();
+                        AbstractMaleSocket* oldLastItem = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getLastRegisteredMaleSocket();
                         o->load(expressionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket* newLastItem = ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getLastRegisteredMaleSocket();
+                        AbstractMaleSocket* newLastItem = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getLastRegisteredMaleSocket();
                         if (newLastItem != oldLastItem) loadMaleSocket(expressionList.at(i).toElement(), newLastItem);
                         else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className()+", new class: "+className);
                     } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {

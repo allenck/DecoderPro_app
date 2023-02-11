@@ -27,7 +27,7 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
   /*public*/  void deleteStringExpression(DefaultMaleStringExpressionSocket *x)override;
   static /*public*/  DefaultStringExpressionManager* instance();
   /*public*/  /*Class<MaleStringExpressionSocket>*/QString getNamedBeanClass()const override;
-  QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultStringExpressionManager";}
+  QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultStringExpressionManager";}
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}

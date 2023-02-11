@@ -63,19 +63,23 @@ IllegalArgumentException::IllegalArgumentException(QString s, Throwable *throwab
 {
  msg = s;
  this->cause = throwable;
+ name="IllegalArgumentException";
 }
 
 NumberFormatException::NumberFormatException(QString s)
 {
     msg=s;
+    name = "NumberFormatException";
 }
 ProgrammerException::ProgrammerException(QString s)
 {
     msg=s;
+    name = "ProgrammerException";
 }
 TimebaseRateException::TimebaseRateException(QString s)
 {
     msg=s;
+    name = "TimebaseRateException";
 }
 
 UnsupportedCommOperationException::UnsupportedCommOperationException(QString s)
@@ -83,6 +87,7 @@ UnsupportedCommOperationException::UnsupportedCommOperationException(QString s)
  msg = s;
  name = "UnsupportedCommOperationException";
 }
+
 UnsupportedOperationException::UnsupportedOperationException(QString s)
 {
  msg = s;
@@ -99,7 +104,9 @@ UnsupportedOperationException::UnsupportedOperationException(QString s, Throwabl
 NoSuchPortException::NoSuchPortException(QString s)
 {
  msg = s;
+ name = "NoSuchPortException";
 }
+
 NullPointerException::NullPointerException(QString s)
 {
  msg = s;
@@ -108,10 +115,14 @@ NullPointerException::NullPointerException(QString s)
 DataConversionException::DataConversionException(QString s)
 {
  msg = s;
+ name = "DataConversionException";
+
 }
 TurnoutOperatorException::TurnoutOperatorException(QString s)
 {
  msg = s;
+ name = "TurnoutOperatorException";
+
 }
 //Throwable::Throwable(QString s) {msg = s;}
 JDOMException::JDOMException(QString s){msg = s;}

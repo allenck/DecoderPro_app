@@ -27,7 +27,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
   /*public*/  void deleteDigitalAction(MaleDigitalActionSocket* x)override;
   static /*public*/  DefaultDigitalActionManager* instance();
   /*public*/  /*Class<MaleDigitalActionSocket>*/QString getNamedBeanClass() const override;
-  QString getClassName() override {return ".jmri.jmrit.logixng.implementation.DefaultDigitalActionManager";}
+  QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultDigitalActionManager";}
 
   QObject* pself() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}

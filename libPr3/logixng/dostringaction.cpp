@@ -81,7 +81,7 @@
     } else if (socket == _stringActionSocket) {
         _stringActionSocketSystemName = socket->getConnectedSocket()->getSystemName();
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("DoStringAction: unknown socket");
     }
 }
 
@@ -92,7 +92,7 @@
     } else if (socket == _stringActionSocket) {
         _stringActionSocketSystemName = "";
     } else {
-        throw new IllegalArgumentException("unkown socket");
+        throw new IllegalArgumentException("DoStringAction: unknown socket");
     }
 }
 

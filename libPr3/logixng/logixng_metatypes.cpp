@@ -122,7 +122,7 @@
 #include "triggeronceswing.h"
 #include "triggeroncexml.h"
 #include "defaultmaledigitalactionsocketxml.h"
-
+#include "digitalbooleanonchangexml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -229,6 +229,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionEntryExitSwing>("ExpressionEntryExitSwing");
    qRegisterMetaType<TriggerOnceSwing>("TriggerOnceSwing");
    qRegisterMetaType<TriggerOnceXml>("TriggerOnceXml");
+   qRegisterMetaType<DigitalBooleanOnChangeXml>("DigitalBooleanOnChangeXml");
 
    // AbstractDigitalActionSwing
    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");

@@ -160,7 +160,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void DefaultDigitalBooleanActionManager::deleteDigitalBooleanAction(MaleDigitalBooleanActionSocket* x) {
+    /*public*/  void DefaultDigitalBooleanActionManager::deleteDigitalBooleanAction(DefaultMaleDigitalBooleanActionSocket* x) {
         // delete the MaleDigitalBooleanActionSocket
         deregister(x);
         x->NamedBean::dispose();

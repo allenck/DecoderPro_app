@@ -63,7 +63,7 @@
      * @param actions The top-level element being created
      */
     /*public*/  void DefaultDigitalBooleanActionManagerXml::setStoreElementClass(QDomElement actions) {
-        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultMaleDigitalBooleanActionSocket");  // NOI18N
+        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultMaleDigitalBooleanActionSocketXml");  // NOI18N
     }
 
     /**

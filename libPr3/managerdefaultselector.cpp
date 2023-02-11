@@ -51,8 +51,8 @@
  QList<QObject*>* list = InstanceManager::getList("SystemConnectionMemo");
  foreach(QObject* obj, *list)
  {
-  SystemConnectionMemo*memo = (SystemConnectionMemo*)obj;
-  //memo.addPropertyChangeListener(this.memoListener);
+  SystemConnectionMemo* memo = (SystemConnectionMemo*)obj;
+  memo->addPropertyChangeListener(this->memoListener);
   connect(memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)));
  }//);
 
