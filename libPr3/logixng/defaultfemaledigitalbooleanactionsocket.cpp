@@ -1,7 +1,7 @@
 #include "defaultfemaledigitalbooleanactionsocket.h"
 #include "instancemanager.h"
 #include "defaultdigitalbooleanactionmanager.h"
-
+#include "defaultmaledigitalbooleanactionsocket.h"
 /**
  * Default implementation of the Female Digital Boolean Action socket
  */
@@ -19,13 +19,13 @@
 
     //@Override
     /*public*/  bool DefaultFemaleDigitalBooleanActionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleDigitalBooleanActionSocket*>(socket->bself());
+        return qobject_cast<DefaultMaleDigitalBooleanActionSocket*>(socket->bself());
     }
 
     //@Override
     /*public*/  void DefaultFemaleDigitalBooleanActionSocket::execute(bool hasChangedToTrue, bool hasChangedToFalse) /*throws JmriException*/ {
         if (isConnected()) {
-            ((MaleDigitalBooleanActionSocket*)getConnectedSocket()->bself())
+            ((DefaultMaleDigitalBooleanActionSocket*)getConnectedSocket()->bself())
                     ->execute(hasChangedToTrue, hasChangedToFalse);
         }
     }

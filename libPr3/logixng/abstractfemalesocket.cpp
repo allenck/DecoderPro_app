@@ -139,7 +139,7 @@
     if (!ignoreDuplicateErrors && (_parent != nullptr)) {
         // Check that no other female socket of the parent has the same name
         for (int i=0; i < _parent->getChildCount(); i++) {
-            FemaleSocket* child = _parent->getChild(i);
+            FemaleSocket* child = (AbstractFemaleSocket*)_parent->getChild(i)->bself();
             if ((child != this) && name ==(child->getName())) return false;
         }
     }

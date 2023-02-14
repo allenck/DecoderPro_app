@@ -289,7 +289,9 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     list.removeAt(0);
 
     // next piece of code appears three times, should be refactored away during Log4J 2 migration
-    while ((evt->getLevel() == LogLevel::WARN) || (evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
+//    while ((evt->getLevel() == LogLevel::WARN) || (evt->getLevel() == LogLevel::INFO)
+//           || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
+    while(evt->getLevel() != LogLevel::ERROR)
     { // better in Log4J 2
         if (list.isEmpty()) {
             Assert::fail("Only debug/info messages present: " + msg,file, line);
@@ -309,7 +311,25 @@ void JUnitAppender::superappend(LoggingEvent* l) {
                  evt->getMessage() +
                 "\"", file, line);
     }
+    while(list.count() > 1 )
+    {
+     if(evt->getLevel() != LogLevel::ERROR)
+     {
+      evt = list.at(0);
+      list.removeAt(0);
+      continue;
+     }
 
+     if(!compare(evt, msg))
+     {
+      qDebug() << "not the message we are looking for: " << evt->getMessage();
+      evt = list.at(0);
+      list.removeAt(0);
+      continue;
+     }
+     else
+      return;
+    }
     if (!compare(evt, msg)) {
         Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt->getMessage() + "\"", file, line);
     }

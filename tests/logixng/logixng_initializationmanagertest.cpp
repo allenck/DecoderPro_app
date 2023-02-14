@@ -1,9 +1,9 @@
 #include "logixng_initializationmanagertest.h"
 #include "printwriter.h"
 #include "logixng_thread.h"
-#include "logixng.h"
+#include "defaultlogixng.h"
 #include "junitutil.h"
-#include "logixng_initializationmanager.h"
+#include "defaultlogixnginitializationmanager.h"
 #include "stringwriter.h"
 #include "defaultlogixngmanager.h"
 #include "instancemanager.h"
@@ -12,6 +12,8 @@
 #include "assert1.h"
 #include "sleeperthread.h"
 #include "defaultdigitalactionmanager.h"
+#include "joptionpane.h"
+
 
 /**
  * Test LogixNG_InitializationManager
@@ -53,17 +55,17 @@
         MyAction::getLogixNG("IQ8", "LogixNG* 8", getAB(), printWriter, 0, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);
         MyAction::getLogixNG("IQ3", "LogixNG* 3", getAB(), printWriter, 0, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);
 
-        LogixNG* l2 = (LogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ2")->self();
-        LogixNG* l7 = (LogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ7")->self();
-        LogixNG* l8 = (LogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ8")->self();
+        LogixNG* l2 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ2")->self();
+        LogixNG* l7 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ7")->self();
+        LogixNG* l8 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ8")->self();
 
-        LogixNG_InitializationManager* initManager = (LogixNG_InitializationManager*)
+        LogixNG_InitializationManager* initManager = (DefaultLogixNGInitializationManager*)
                 InstanceManager::getDefault("LogixNG_InitializationManager");
 
         initManager->add(l7);
         initManager->add(l2);
         initManager->add(l8);
-#if 1
+
         // No LogixNG* has been executed yet.
         Assert::assertEquals("Strings are equal", "", stringWriter->toString(), __FILE__, __LINE__);
 
@@ -83,8 +85,9 @@
                 "LogixNG* 2: end\n" \
                 "LogixNG* 8: start\n" \
                 "LogixNG* 8: end\n";
+        QString info = "expected = \n" + expectedResult +" result = \n" + stringWriter->toString();
         Assert::assertTrue(stringWriter->toString().startsWith(expectedResult), __FILE__, __LINE__);
- #endif
+        JOptionPane::showMessageDialog(nullptr, info);
     }
 
     // The minimal setup for log4J

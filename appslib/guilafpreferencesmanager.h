@@ -15,7 +15,7 @@ class GuiLafPreferencesManager : public Bean, public PreferencesManager, public 
 public:
  Q_INVOKABLE GuiLafPreferencesManager();
  ~GuiLafPreferencesManager() {}
- GuiLafPreferencesManager(const GuiLafPreferencesManager&) : PreferencesManager() {}
+ GuiLafPreferencesManager(const GuiLafPreferencesManager&) : Bean() {}
  /*public*/ static /*final*/ QString FONT_SIZE;// = "fontSize";
  /*public*/ static /*final*/ QString LOCALE;// = "locale";
  /*public*/ static /*final*/ QString LOOK_AND_FEEL;// = "lookAndFeel";

@@ -26,7 +26,7 @@ class Sequence : public AbstractDigitalAction, public FemaleSocketListener
               QList<QMap<QString, QString>>* actionSystemNames, QObject* parent = nullptr);
   /*public*/  QString getNewActionSocketName();
   /*public*/  QString getNewExpressionSocketName();
-  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/;
+  /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException*/override;
   /*public*/  Category getCategory() override;
   /*public*/  void execute() /*throws JmriException*/ override;
   /*public*/  bool getStartImmediately();

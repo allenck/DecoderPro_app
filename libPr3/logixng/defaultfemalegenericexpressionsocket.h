@@ -53,7 +53,7 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*private*/ /*final*/ FemaleAnalogExpressionSocket* _analogSocket;// = new DefaultFemaleAnalogExpressionSocket(this, this, "A");
   /*private*/ /*final*/ FemaleDigitalExpressionSocket* _digitalSocket;// = new DefaultFemaleDigitalExpressionSocket(this, this, "D");
   /*private*/ /*final*/ FemaleStringExpressionSocket* _stringSocket;// = new DefaultFemaleStringExpressionSocket(this, this, "S");
-  /*private*/ bool _do_i18n;
+  /*private*/ bool _do_i18n = false;
   /*private*/ void addClassesToMap(
     QHash<Category, QList</*Class<? extends Base>*/QString> > destinationClasses,
     QHash<Category, QList</*Class<? extends Base>*/QString> > sourceClasses);

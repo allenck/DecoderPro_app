@@ -23,7 +23,7 @@
          //MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(socket->bself());
      MaleDigitalActionSocket* mas = (DefaultMaleDigitalActionSocket*)(socket->bself());
 
-        return qobject_cast<DefaultMaleDigitalActionSocket*>(socket->bself());
+        return static_cast<DefaultMaleDigitalActionSocket*>(socket->bself());
     }
 
     //@Override

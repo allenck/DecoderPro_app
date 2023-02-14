@@ -4,6 +4,7 @@ DefaultMaleDigitalBooleanActionSocketXml::DefaultMaleDigitalBooleanActionSocketX
 {
 
 }
+
 /*public*/ QString DefaultMaleDigitalBooleanActionSocketXml::getClassName(){
  return "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleDigitalBooleanActionSocketXml";
 }

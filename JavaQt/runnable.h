@@ -43,7 +43,6 @@ class JAVAQTSHARED_EXPORT Runnable : public QThread
 public:
     //QMutex mutex;
     explicit Runnable(QObject* as = 0) : QThread(as) {}
-    void run() {}
     void dispatchToMainThread(std::function<void()> callback)
     {
         // any thread
@@ -58,6 +57,8 @@ public:
         });
         QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection, Q_ARG(int, 0));
     }
+ public slots:
+    void run() {}
 
  private:
   QObject* as;

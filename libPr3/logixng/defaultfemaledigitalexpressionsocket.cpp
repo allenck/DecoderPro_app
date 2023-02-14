@@ -26,7 +26,7 @@
     //@Override
     /*public*/  bool DefaultFemaleDigitalExpressionSocket::evaluate() /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
+            return ((DefaultMaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
                     ->evaluate();
         } else {
             return false;

@@ -79,11 +79,11 @@ class DefaultClipboard : public AbstractBase, public Clipboard
  }
 
  private:
-  /*private*/ ClipboardMany* _clipboardItems = new ClipboardMany("", nullptr);
+  /*private*/ ClipboardMany* _clipboardItems = nullptr; //new ClipboardMany("", nullptr);
   DefaultClipboard* defaultClipboard;
   /*public*/ void connected(FemaleSocket* socket) {
               // Do nothing
-          }
+  }
   //@Override
   /*public*/ void disconnected(FemaleSocket* socket) {
       // Do nothing

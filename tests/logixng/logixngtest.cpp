@@ -16,8 +16,29 @@
 ///*public*/  class LogixNGTest {
 
     //@Test
+    /*public*/  void LogixNGTest::testContains() {
+        QSet<LogixNG*> set = QSet<LogixNG*>();
+
+        DefaultLogixNG* logixNG1 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix1 for test");  // NOI18N
+        DefaultLogixNG* logixNG2 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix2 for test");  // NOI18N
+        LogixNG* logixNG3 = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix3 for test");  // NOI18N
+        DefaultLogixNG* logixNG4 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix4 for test");  // NOI18N
+        DefaultLogixNG* logixNG5 = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix5 for test");  // NOI18N
+
+        set.insert(logixNG1);
+        set.insert(logixNG3);
+        set.insert(logixNG5);
+        Assert::assertTrue("set size = 3", set.size() == 3,__FILE__, __LINE__);
+        Assert::assertTrue("contains is true", set.contains(logixNG1),__FILE__, __LINE__);
+        Assert::assertTrue("contains is true", set.contains(logixNG3),__FILE__, __LINE__);
+        Assert::assertTrue("contains is true", set.contains(logixNG5),__FILE__, __LINE__);
+        Assert::assertFalse("contains is false", set.contains(logixNG2),__FILE__, __LINE__);
+
+    }
+
+    //@Test
     /*public*/  void LogixNGTest::testSetParent() {
-        DefaultLogixNG* logixNG = (DefaultLogixNG*)(DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N
+        DefaultLogixNG* logixNG = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->createLogixNG("A new logix for test");  // NOI18N
         bool hasThrown = false;
         try {
             logixNG->setParent(nullptr);

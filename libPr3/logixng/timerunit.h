@@ -48,6 +48,15 @@ Q_OBJECT
      }
     }
 
+    /*public*/static VAL valueOf(QString s)
+    {
+     if(s== tr("Milliseconds")) return MilliSeconds;
+     if(s== tr("Seconds")) return Seconds;
+     if(s== tr("Minutes")) return Minutes;
+     if(s== tr("Hours")) return Hours;
+     throw  new IllegalArgumentException(s + " is invalid!");
+    }
+
     /*public*/static  QString getTimeWithUnit(VAL v, int delay) {
 
       switch (v) {
@@ -58,6 +67,9 @@ Q_OBJECT
       }
       //return MessageFormat.format(_timeText, time);
     }
-
+    static QList<VAL> values()
+    {
+     return {MilliSeconds, Seconds, Minutes, Hours};
+    }
 };
 #endif // TIMERUNIT_H

@@ -168,7 +168,13 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+ logixng/actions/act_logix.cpp \
  logixng/digitalbooleanonchangexml.cpp \
+ logixng/executedelayedswing.cpp \
+ logixng/executedelayedxml.cpp \
+ logixng/logixswing.cpp \
+ logixng/logixxml.cpp \
+ logixng/sequencexml.cpp \
  memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1547,7 +1553,13 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+ logixng/actions/act_logix.h \
  logixng/digitalbooleanonchangexml.h \
+ logixng/executedelayedswing.h \
+ logixng/executedelayedxml.h \
+ logixng/logixswing.h \
+ logixng/logixxml.h \
+ logixng/sequencexml.h \
  memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \

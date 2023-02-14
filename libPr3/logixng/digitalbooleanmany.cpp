@@ -18,9 +18,12 @@
         /*throws BadUserNameException, BadSystemNameException*/ {
     setObjectName("DigitalBooleanMany");
     //super(sys, user);
-    _actionEntries
-            .append(new ActionEntry(((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))
-                    ->createFemaleSocket(this, this, getNewSocketName())));
+//    _actionEntries
+//            .append(new ActionEntry(((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))
+//                    ->createFemaleSocket(this, this, getNewSocketName())));
+    ActionEntry* ae = new ActionEntry(((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))
+                                                           ->createFemaleSocket(this, this, getNewSocketName()));
+    _actionEntries.append(ae);
 }
 
 /*public*/  DigitalBooleanMany::DigitalBooleanMany(QString sys, QString user, QList<QMap<QString, QString>> actionSystemNames, QObject* parent)

@@ -22,12 +22,12 @@ signals:
 public slots:
 private:
  /*private*/ /*transient*/ QString message;
- LogLevel* logLevel;
- int level;
+ LogLevel* logLevel = nullptr;
+ int level =0;
  /*private*/ static qint64 startTime;
 
  /*private*/ /*transient*/ QString loggerName;
- Throwable* throwable;
+ Throwable* throwable = nullptr;
 };
 
 #endif // LOGGINGEVENT_H

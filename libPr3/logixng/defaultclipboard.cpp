@@ -38,6 +38,7 @@
         if (!_femaleSocket->setParentForAllChildren(new QList<QString>())) {
             throw new RuntimeException("Failed to set parent for all children");
         }
+        _clipboardItems = new ClipboardMany("IQClipboardMany", "");
         _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
     }
 

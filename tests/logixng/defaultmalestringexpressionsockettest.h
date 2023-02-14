@@ -39,69 +39,69 @@ public:
       QObject* bself() override {return (QObject*)this;}
    protected:
       //@Override
-      /*protected*/ void registerListenersForThisClass() {
+      /*protected*/ void registerListenersForThisClass() override{
           // Do nothing
       }
 
       //@Override
-      /*protected*/ void unregisterListenersForThisClass() {
+      /*protected*/ void unregisterListenersForThisClass()override {
           // Do nothing
       }
 
       //@Override
-      /*protected*/ void disposeMe() {
+      /*protected*/ void disposeMe() override{
           throw new UnsupportedOperationException("Not supported.");
       }
 public:
       //@Override
-      /*public*/  QString getShortDescription(QLocale locale) {
+      /*public*/  QString getShortDescription(QLocale /*locale*/) override{
           return "My short description";
       }
 
       //@Override
-      /*public*/  QString getLongDescription(QLocale locale) {
+      /*public*/  QString getLongDescription(QLocale /*locale*/)override{
           return "My long description";
       }
 
       //@Override
-      /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
+      /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ override{
           throw new UnsupportedOperationException("Not supported.");
       }
 
       //@Override
-      /*public*/  int getChildCount() {
+      /*public*/  int getChildCount() override{
           return 0;
       }
 
       //@Override
-      /*public*/  Category getCategory() {
+      /*public*/  Category getCategory() override{
           return Category::COMMON;
       }
 
       //@Override
-      /*public*/  void setup() {
+      /*public*/  void setup() override{
           throw new UnsupportedOperationException("Not supported.");
       }
 
       //@Override
-      /*public*/  QString evaluate() /*throws JmriException */{
+      /*public*/  QString evaluate() /*throws JmriException */override{
           if (je != nullptr) throw je;
           if (re != nullptr) throw re;
           return result;
       }
 //public slots:
       //@Override
-      /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ {
+      /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ override{
           if (_vetoChange) throw new PropertyVetoException("Veto change", evt);
       }
 public:
       //@Override
-      /*public*/  Base* getDeepCopy(QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException*/ {
+      /*public*/  Base* getDeepCopy(QMap<QString, QString>* /*map*/, QMap<QString, QString>* /*map1*/) /*throws JmriException*/override {
           throw new UnsupportedOperationException("Not supported");
       }
 
       //@Override
-      /*public*/  Base* deepCopyChildren(Base* base, QMap<QString, QString> map, QMap<QString, QString> map1) /*throws JmriException */{
+      /*public*/  Base* deepCopyChildren(Base* /*base*/, QMap<QString, QString>* /*map*/, QMap<QString, QString>* /*map1*/) /*throws JmriException */override{
           throw new UnsupportedOperationException("Not supported");
       }
 

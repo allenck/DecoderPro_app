@@ -27,13 +27,13 @@
 {
  if(objectName().isEmpty())
   setObjectName("AbstractMaleSocket");
- if(mSystemName.isEmpty())
+ if(object && mSystemName.isEmpty())
   mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
 
  _manager = manager;
- QObject* obj = object->bself();
- if(qobject_cast<AbstractMaleSocket*>(obj))
-  _object = (AbstractMaleSocket*) obj;
+ //QObject* obj = object->bself();
+ if(object && qobject_cast<AbstractMaleSocket*>(object->bself()))
+  _object = (AbstractMaleSocket*) object->bself();
  else
  _object = object;
 }
@@ -99,7 +99,9 @@
 
 //@Override
 /*public*/ /*final*/ int AbstractMaleSocket::getChildCount() {
-    return _object->getChildCount();
+ if(!_object)
+  return 0;
+ return _object->getChildCount();
 }
 
 //@Override

@@ -8,6 +8,7 @@
 class DefaultLogixNGInitializationManager : public QObject, public LogixNG_InitializationManager
 {
   Q_OBJECT
+  Q_INTERFACES(LogixNG_InitializationManager)
  public:
   DefaultLogixNGInitializationManager(QObject* parent = nullptr) : QObject(parent) {}
   /*public*/  void add(LogixNG* logixNG)override;

@@ -6,6 +6,7 @@
 class JCheckBox;
 class SequenceSwing : public AbstractDigitalActionSwing
 {
+  Q_OBJECT
  public:
   Q_INVOKABLE SequenceSwing(QObject* parent = nullptr) {}
   ~SequenceSwing() {}

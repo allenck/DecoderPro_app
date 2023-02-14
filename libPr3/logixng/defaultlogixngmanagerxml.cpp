@@ -1,5 +1,5 @@
 #include "defaultlogixngmanagerxml.h"
-#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 #include "logixng_thread.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
@@ -48,7 +48,7 @@
 
             for (NamedBean* nb : tm->getNamedBeanSet()) {
              DefaultLogixNG* logixNG = (DefaultLogixNG*)nb->self();
-                log->debug("logixng system name is " + logixNG->getSystemName());  // NOI18N
+                log->debug("logixng system name is " + nb->getSystemName());  // NOI18N
                 bool enabled = logixNG->isEnabled();
                 QDomElement elem = doc.createElement("LogixNG");
                 QDomElement esn;// NOI18N
@@ -73,7 +73,8 @@
             QDomElement elemInitializationTable = doc.createElement("InitializationTable");  // NOI18N
             for (LogixNG* logixNG : ((DefaultLogixNGInitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->getList()) {
                 QDomElement e = doc.createElement("LogixNG");
-                e.appendChild(doc.createTextNode(logixNG->Base::getSystemName()));   // NOI18N
+                QString sn = ((DefaultLogixNG*)logixNG->bself())->getSystemName();
+                e.appendChild(doc.createTextNode(/*logixNG->Base::getSystemName()*/sn));   // NOI18N
                 elemInitializationTable.appendChild(e);
             }
             logixNGs.appendChild(elemInitializationTable);
@@ -83,6 +84,7 @@
             Clipboard* clipboard = tm->getClipboard();
             if (clipboard->getFemaleSocket()->isConnected()) {
                 Base* rootObject = clipboard->getFemaleSocket()->getConnectedSocket()->getObject();
+                if(rootObject)
                 try {
                     QDomElement e = ConfigXmlManager::elementFromObject(rootObject->bself());
                     if (e != QDomElement()) {
@@ -214,7 +216,7 @@
     }
 
     /*public*/ void DefaultLogixNGManagerXml::loadInitializationTable(QDomElement sharedLogixNG) {
-        LogixNG_Manager* tm = (LogixNG_Manager*)
+        LogixNG_Manager* tm = (DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager");
 
         LogixNG_InitializationManager* initializationManager =(LogixNG_InitializationManager*)
@@ -228,7 +230,7 @@
         for(int i=0; i < logixNGList.size(); i++)
         {
          QDomElement e = logixNGList.at(i).toElement();
-            LogixNG* logixNG = (DefaultLogixNG*)tm->getBySystemName(e.text().trimmed())->self();
+            LogixNG* logixNG = (LogixNG*)tm->getBySystemName(e.text().trimmed());
             if (logixNG != nullptr) {
                 initializationManager->add(logixNG);
             } else {

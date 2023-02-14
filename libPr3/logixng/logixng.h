@@ -4,6 +4,7 @@
 #include "base.h"
 #include "abstractnamedbean.h"
 #include "defaultconditionalng.h"
+#include <QHash>
 
 /**
  * LogixNG.
@@ -132,5 +133,16 @@ public:
 
   QObject* self() override{return (QObject*)this;}
 };
+
+inline bool operator==(const LogixNG& e1, const LogixNG& e2)
+{
+ return (e2.NamedBean::getSystemName() == e1.NamedBean::getSystemName())
+   && (e2.NamedBean::getUserName() == e1.NamedBean::getUserName());
+}
+inline size_t qHash(const LogixNG &key, size_t seed)
+{
+    return qHash(key.NamedBean::getSystemName(), seed) ^ qHash(key.NamedBean::getUserName(), seed);
+}
+
 Q_DECLARE_INTERFACE(LogixNG, "LogixNG")
 #endif // LOGIXNG_H

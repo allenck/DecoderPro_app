@@ -62,7 +62,7 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
  private:
   static Logger* log;
   /*private*/ /*final*/ QMap<QString, Manager/*<? extends MaleSocket>*/*> _managers = QMap<QString, Manager*>();
-  /*private*/ /*final*/ DefaultClipboard* _clipboard = new DefaultClipboard();
+  /*private*/ /*final*/ DefaultClipboard* _clipboard= new DefaultClipboard();
   /*private*/ bool _isActive = false;
   static /*volatile*/ DefaultLogixNGManager* _instance;// = null;
   /*private*/ void checkItemsHaveParents();
@@ -75,11 +75,12 @@ Q_DECLARE_METATYPE(DefaultLogixNGManager)
 
 class DLMRunnable : public Runnable
 {
-  //Q_OBJECT
+  Q_OBJECT
   DefaultLogixNGManager* dlm;
  public:
   DLMRunnable(DefaultLogixNGManager* dlm) {this->dlm = dlm;}
-  void run();
+ public slots:
+  void run() override ;
 };
 
 #endif // DEFAULTLOGIXNGMANAGER_H

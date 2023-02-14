@@ -235,16 +235,16 @@
         bool exceptionThrown = false;
 
         AnalogExpressionMemory* analogExpression = new AnalogExpressionMemory("IQAE351", "");
-        MaleSocket* analogMaleSocket = ((DefaultAnalogExpressionManager*)
-                InstanceManager::getDefault("AnalogExpressionManager"))->registerExpression(analogExpression);
+        MaleSocket* analogMaleSocket = (AbstractMaleSocket*)((DefaultAnalogExpressionManager*)
+                InstanceManager::getDefault("AnalogExpressionManager"))->registerExpression(analogExpression)->bself();
 
         ExpressionMemory* digitalExpression = new ExpressionMemory("IQDE351", "");
-        MaleSocket* digitalMaleSocket = ((DefaultDigitalExpressionManager*)
-                InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(digitalExpression);
+        MaleSocket* digitalMaleSocket = (AbstractMaleSocket*)((DefaultDigitalExpressionManager*)
+                InstanceManager::getDefault("DigitalExpressionManager"))->registerExpression(digitalExpression)->bself();
 
         StringExpressionMemory* stringExpression = new StringExpressionMemory("IQSE351", "");
-        MaleSocket* stringMaleSocket = ((DefaultStringExpressionManager*)
-                InstanceManager::getDefault("StringExpressionManager"))->registerExpression(stringExpression);
+        MaleSocket* stringMaleSocket =(AbstractMaleSocket*) ((DefaultStringExpressionManager*)
+                InstanceManager::getDefault("StringExpressionManager"))->registerExpression(stringExpression)->bself();
 
         // This should work
         _femaleGenericSocket->setSocketType(FemaleGenericExpressionSocket::SocketType::ANALOG);
@@ -257,9 +257,9 @@
         exceptionThrown = false;
         try {
             _femaleGenericSocket->setSocketType(FemaleGenericExpressionSocket::SocketType::DIGITAL);
-        } catch (SocketAlreadyConnectedException e) {
+        } catch (SocketAlreadyConnectedException* e) {
             exceptionThrown = true;
-            Assert::assertEquals("Error message is correct", "Socket is already connected", e.getMessage(), __FILE__, __LINE__);
+            Assert::assertEquals("Error message is correct", "Socket is already connected", e->getMessage(), __FILE__, __LINE__);
         }
         Assert::assertTrue("Exception thrown", exceptionThrown, __FILE__, __LINE__);
         _femaleGenericSocket->_disconnect();
@@ -288,7 +288,7 @@
         _femaleGenericSocket->setSocketType(FemaleGenericExpressionSocket::SocketType::GENERIC);
         _femaleGenericSocket->setSocketType(FemaleGenericExpressionSocket::SocketType::GENERIC);   // Test calling setSocketType() twice
         Assert::assertEquals("Socket type is correct", FemaleGenericExpressionSocket::SocketType::GENERIC, _femaleGenericSocket->getSocketType(), __FILE__, __LINE__);
-        Assert::assertNull("Active socket is null", _femaleGenericSocket->getCurrentActiveSocket()->bself(), __FILE__, __LINE__);
+        Assert::assertNull("Active socket is null", (QObject*)_femaleGenericSocket->getCurrentActiveSocket(), __FILE__, __LINE__);
 
         // We can't change socket type if it's connected
         _femaleGenericSocket->_connect(stringMaleSocket);

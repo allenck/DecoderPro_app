@@ -56,4 +56,5 @@
      */
     /*public*/ virtual void printTree(QLocale locale, PrintWriter* writer, QString indent)=0;
 };
+Q_DECLARE_INTERFACE(LogixNG_InitializationManager, "LogixNG_InitializationManager")
 #endif // LOGIXNG_INITIALIZATIONMANAGER_H

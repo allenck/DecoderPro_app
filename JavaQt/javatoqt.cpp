@@ -26,5 +26,5 @@ JavaToQt::JavaToQt()
  {"jmri.jmrit.logixng.expressions.DigitalCallModuleSwing", "Expressions::DigitalCallModuleSwing"},
  {"jmri.jmrit.logixng.actions.StringFactory", "Actions::StringFactory"},
  {"jmri.jmrit.logixng.expressions.StringFactory", "Expressions::StringFactory"},
-
+ {"jmri.jmrit.logixng.actions.Logix", "Actions::Logix"},
   };

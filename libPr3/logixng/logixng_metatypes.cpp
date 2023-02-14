@@ -123,6 +123,11 @@
 #include "triggeroncexml.h"
 #include "defaultmaledigitalactionsocketxml.h"
 #include "digitalbooleanonchangexml.h"
+#include "executedelayedswing.h"
+#include "executedelayedxml.h"
+#include "sequencexml.h"
+#include "logixxml.h"
+#include "logixswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -249,6 +254,11 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
 //   qRegisterMetaType<ExpressionReporter>("ExpressionReporter");
    qRegisterMetaType<Actions::DigitalCallModuleSwing>("Actions::DigitalCallModuleSwing");
    qRegisterMetaType<DefaultMaleDigitalActionSocketXml>("DefaultMaleDigitalActionSocketXml");
+   qRegisterMetaType<ExecuteDelayedSwing>("ExecuteDelayedSwing");
+   qRegisterMetaType<ExecuteDelayedXml>("ExecuteDelayedXml");
+   qRegisterMetaType<SequenceXml>("SequenceXml");
+   qRegisterMetaType<LogixXml>("LogixXml");
+   qRegisterMetaType<LogixSwing>("LogixSwing");
 
 
    // AbstractStringExpressionSwing

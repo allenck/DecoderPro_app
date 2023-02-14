@@ -28,6 +28,7 @@ DigitalBooleanManyXml::DigitalBooleanManyXml(QObject *parent) : AbstractNamedBea
         QDomElement element = doc.createElement("DigitalBooleanMany");
         element.setAttribute("class", "jmri.jmrit.logixng.actions.configutexml.DigitalBooleanManyXml");
         QDomElement e1;
+        QString sn = p->AbstractNamedBean::getSystemName();
         element.appendChild(e1=doc.createElement("systemName")); e1.appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName()));
 
         storeCommon(p, element);

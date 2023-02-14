@@ -34,7 +34,10 @@ AbstractNamedBean::AbstractNamedBean(/*@Nonnull*/ QString sys, QObject* parent) 
 {
  //Q_ASSERT(!sys.isEmpty());
  if(sys.isEmpty())
+ {
   log->error("sysname is empty!");
+  throw new BadSystemNameException();
+ }
  setObjectName(sys);
  common(sys, ""/*, parent*/ );
  setObjectName(sys);
@@ -44,7 +47,10 @@ AbstractNamedBean:: AbstractNamedBean(/*@Nonnull*/ QString sysName, QString user
 {
  //Q_ASSERT(!sysName.isEmpty());
  if(sysName.isEmpty())
+ {
   log->error("sysname is empty!");
+  throw new BadSystemNameException();
+ }
  common(sysName, user/*, parent*/);
  //setUserName(user);
  setObjectName(sysName+"/"+user);

@@ -118,8 +118,8 @@
     // save in the maps
     MaleDigitalActionSocket* maleSocket = createMaleActionSocket(action);
     //return (MaleDigitalActionSocket*)registerBean(maleSocket);
-    registerBean((AbstractMaleSocket*)maleSocket->msself());
-    return maleSocket;
+    AbstractMaleSocket* ms = registerBean((AbstractMaleSocket*)maleSocket->msself());
+    return (MaleDigitalActionSocket*)ms;
 }
 
 //@Override

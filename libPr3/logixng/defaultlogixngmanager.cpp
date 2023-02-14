@@ -26,7 +26,8 @@
 //        implements LogixNG_Manager {
 
 
-/*public*/ DefaultLogixNGManager::DefaultLogixNGManager(QObject* parent) : AbstractManager(parent) {
+/*public*/ DefaultLogixNGManager::DefaultLogixNGManager(QObject* parent)
+ : AbstractManager(parent) {
    setObjectName("DefaultLogixNGManager");
  // The LogixNGPreferences class may load plugins so we must ensure
     // it's loaded here.
@@ -286,12 +287,13 @@
 //            });
 //        };
     Runnable* runnable = new DLMRunnable(this);
-#if 0 // TODO:
+#if 1 // TODO:
     if (runOnSeparateThread) //new Thread(runnable)->start();
     {
      //QThreadPool::globalInstance()->start(runnable);
      QThread* newThread = new QThread();
      runnable->moveToThread(newThread);
+     connect(newThread, &QThread::started, [=]{ runnable->run();});
      newThread->start();
     }
     else runnable->run();
@@ -300,22 +302,23 @@
 
 void DLMRunnable::run()
 {
-QSet<LogixNG*> activeLogixNGs = QSet<LogixNG*>();
+ QSet<LogixNG*> activeLogixNGs = QSet<LogixNG*>();
 
-// Activate and execute the initialization LogixNGs first.
-QList<LogixNG*> initLogixNGs =
+ // Activate and execute the initialization LogixNGs first.
+ QList<LogixNG*> initLogixNGs =
      ((DefaultLogixNGInitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))
              ->getList();
 
-for (LogixNG* logixNG : initLogixNGs) {
- if (logixNG->isActive()) {
-     logixNG->registerListeners();
-     logixNG->execute(false);
-     activeLogixNGs.insert(logixNG);
- } else {
-     logixNG->unregisterListeners();
+ for (LogixNG* logixNG : initLogixNGs) {
+  //DefaultLogixNG* logixNG = (DefaultLogixNG*)lNG->bself();
+  if (logixNG->isActive()) {
+      logixNG->registerListeners();
+      logixNG->execute(false);
+      activeLogixNGs.insert(logixNG);
+  } else {
+      logixNG->unregisterListeners();
+  }
  }
-}
 
 // Activate and execute all the rest of the LogixNGs.
 // _tsys.values().stream()
@@ -324,8 +327,20 @@ for (LogixNG* logixNG : initLogixNGs) {
 //         .forEachOrdered((logixNG) -> {
  foreach(NamedBean* nb, dlm->_tsys->values())
  {
-  LogixNG* logixNG = (LogixNG*)nb->self();
-  if(!(activeLogixNGs.contains(logixNG)))
+  LogixNG* logixNG = (DefaultLogixNG*)nb->self();
+
+  bool found = false;
+  for(LogixNG* l1 : activeLogixNGs)
+  {
+   if (logixNG->NamedBean::getSystemName() == l1->NamedBean::getSystemName())
+   {
+    found = true;
+    break;
+   }
+  }
+
+//  if(!(activeLogixNGs.contains(logixNG)))
+  if(!found)
   {
    if (logixNG->isActive()) {
        logixNG->registerListeners();
@@ -336,6 +351,7 @@ for (LogixNG* logixNG : initLogixNGs) {
   }
  }
 }
+
 /** {@inheritDoc} */
 //@Override
 /*public*/ void DefaultLogixNGManager::deActivateAllLogixNGs() {

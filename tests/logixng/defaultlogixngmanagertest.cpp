@@ -33,6 +33,7 @@
 #include "digitalbooleanonchange.h"
 #include "lastresultofdigitalexpression.h"
 #include "abstractdebuggermalesocket.h"
+#include "defaultmaledigitalactionsocket.h"
 
 /**
  * Test DefaultLogixNG
@@ -81,7 +82,7 @@
 
         // Correct system name
         LogixNG* logixNG = manager->createLogixNG("IQ1", "Some name");
-        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
         LogixNG* logixNG_2 = manager->getLogixNG("IQ1");
         Assert::assertEquals("logixNGs are the same", logixNG, logixNG_2, __FILE__, __LINE__);
         logixNG_2 = (LogixNG*)manager->getBySystemName("IQ1")->self();
@@ -91,19 +92,19 @@
         logixNG_2 = (LogixNG*)manager->getByUserName("Some name")->self();
         Assert::assertEquals("logixNGs are the same", logixNG, logixNG_2, __FILE__, __LINE__);
         logixNG_2 = manager->getLogixNG("Some other name");
-        Assert::assertNull("logixNG not found", logixNG_2->self(), __FILE__, __LINE__);
+        Assert::assertNull("logixNG not found", logixNG_2?logixNG_2->self():nullptr, __FILE__, __LINE__);
 
         // Correct system name. Neither system name or user name exists already
         logixNG = manager->createLogixNG("IQ2", "Other LogixNG");
-        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
 
         // System name exists
         logixNG = manager->createLogixNG("IQ1", "Another name");
-        Assert::assertNull("cannot create new", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertNull("cannot create new", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
 
         // User name exists
         logixNG = manager->createLogixNG("IQ3", "Other LogixNG");
-        Assert::assertNull("cannot create new", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertNull("cannot create new", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
 
         // Bad system name
         bool thrown = false;
@@ -117,8 +118,8 @@
 
         // Create LogixNG with user name
         logixNG = manager->createLogixNG("Only user name");
-        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
-        Assert::assertEquals("user name is correct", "Only user name", logixNG->NamedBean::getUserName(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
+        Assert::assertEquals("user name is correct", "Only user name", ((DefaultLogixNG*)logixNG)->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
 
 }
 
@@ -127,15 +128,15 @@
             DefaultDigitalActionManager* digitalActionManager = (DefaultDigitalActionManager*)
                     InstanceManager::getDefault("DigitalActionManager");
 
-            FemaleSocket* femaleSocket = conditionalNG->getFemaleSocket();
-            MaleDigitalActionSocket* actionManySocket = ((DefaultDigitalActionManager*)
+            AbstractFemaleSocket* femaleSocket = (AbstractFemaleSocket*)conditionalNG->getFemaleSocket()->bself();
+            DefaultMaleDigitalActionSocket* actionManySocket = (DefaultMaleDigitalActionSocket*)((DefaultDigitalActionManager*)
                     InstanceManager::getDefault("DigitalActionManager"))
                             ->registerAction(new DigitalMany(digitalActionManager->AbstractManager::getAutoSystemName(), nullptr));
             femaleSocket->_connect(actionManySocket);
 //            femaleSocket->setLock(Base.Lock.HARD_LOCK);
 
             //femaleSocket = actionManySocket->getChild(0);
-            femaleSocket = ((AbstractMaleSocket*)(actionManySocket)->bself())->getChild(0);
+            femaleSocket = (AbstractFemaleSocket*)(actionManySocket)->getChild(0)->bself();
             MaleDigitalActionSocket* actionIfThenSocket = (MaleDigitalActionSocket*)((DefaultDigitalActionManager*)
                     InstanceManager::getDefault("DigitalActionManager"))
                             ->registerAction(new IfThenElse(digitalActionManager->AbstractManager::getAutoSystemName(), nullptr));
@@ -149,13 +150,13 @@
     //@Test
     /*public*/  void DefaultLogixNGManagerTest::testSetupInitialConditionalNGTree() {
         // Correct system name
-        LogixNG* logixNG = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))
+        DefaultLogixNG* logixNG = (DefaultLogixNG*)((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))
                 ->createLogixNG("IQ1", "Some name");
-        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
 
-        ConditionalNG* conditionalNG = (DefaultConditionalNG*)((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
+        DefaultConditionalNG* conditionalNG = (DefaultConditionalNG*)((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))
                 ->createConditionalNG(logixNG, "A conditionalNG");  // NOI18N
-        Assert::assertNotNull("exists", conditionalNG->self(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", conditionalNG?conditionalNG->self():nullptr, __FILE__, __LINE__);
         setupInitialConditionalNGTree(conditionalNG);
 
         FemaleSocket* child = conditionalNG->getChild(0);
@@ -192,7 +193,7 @@
         StringExpressionManager* stringExpressionManager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
 
         LogixNG* logixNG = logixNG_Manager->createLogixNG("IQ1", "Some name");
-        Assert::assertNotNull("exists", logixNG->self(), __FILE__, __LINE__);
+        Assert::assertNotNull("exists", logixNG?logixNG->self():nullptr, __FILE__, __LINE__);
 
         ConditionalNG* conditionalNG = conditionalNG_Manager
                 ->createConditionalNG(logixNG, "A conditionalNG");  // NOI18N

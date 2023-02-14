@@ -16,6 +16,7 @@ void LogixNGTestAction::actionPerformed()
  try
  {
   QStringList testList = QStringList()
+    << "testContains"
     << "testSetParent"
     << "testGetParent"
     << "testState"

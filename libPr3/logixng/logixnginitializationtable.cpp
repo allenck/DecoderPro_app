@@ -241,10 +241,10 @@
     }
 
     //@Override
-    /*public*/  bool InitializationTableModel::setData(const QModelIndex &index, const QVariant &value, int role){
+    /*public*/  bool InitializationTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
     {
      int row = index.row();
-     if(role == Qt::EditRole)
+     if(role == Qt::EditRole){
         if (row > _logixNGs.size()) {
             return false;
         }
@@ -265,5 +265,7 @@
             default:
                 throw new IllegalArgumentException("Unknown column");
         }
+        return true;
     }
-  };
+    return false;
+  }

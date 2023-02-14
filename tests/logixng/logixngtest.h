@@ -15,6 +15,7 @@ class LogixNGTest : public QObject
 
 
  public slots:
+  /*public*/  void testContains();
   /*public*/  void testSetParent();
   /*public*/  void testGetParent();
   /*public*/  void testState() /*throws JmriException*/;
