@@ -28,13 +28,13 @@ public:
     /*public*/ QString getSystemPrefix() const override;
     /*public*/ DefaultIdTag *provideIdTag(QString name)override;
     /*public*/ DefaultIdTag *getIdTag(QString name)override;
-    /*public*/ DefaultIdTag *getBySystemName(QString name) override;
-    /*public*/ DefaultIdTag* getByUserName(QString key) override;
+    /*public*/ DefaultIdTag *getBySystemName(QString name) const override;
+    /*public*/ DefaultIdTag* getByUserName(QString key) const override;
     /*public*/ DefaultIdTag* getByTagID(QString tagID)override;
     /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName)override;
     /*public*/ void Register(NamedBean* s) override;
     /*public*/ void deregister(NamedBean* s)   override;
-    /*public*/ virtual void writeIdTagDetails() ;// /*throw (IOException)*/;
+    /*public*/ virtual void writeIdTagDetails() const;// /*throw (IOException)*/;
     /*public*/ virtual void readIdTagDetails();
     /*public*/ void setStateStored(bool state)override;
     /*public*/ bool isStateStored()override;
@@ -71,7 +71,7 @@ private:
  /*protected*/ void registerSelf();
  /*protected*/ virtual NamedBean *createNewIdTag(QString systemName, QString userName);
  /*protected*/ bool dirty = false;
- /*protected*/ void initShutdownTask();
+ /*protected*/ void initShutdownTask() ;
  friend class DefaultIdTagShutdownTask;
 };
 
@@ -124,10 +124,12 @@ friend class DefaultIdTagManager;
 class DefaultIdTagShutdownTask : public Runnable
 {
   Q_OBJECT
-  DefaultIdTagManager* mgr;
+  const DefaultIdTagManager* mgr;
  public:
-    DefaultIdTagShutdownTask(DefaultIdTagManager* mgr)
+    DefaultIdTagShutdownTask(const DefaultIdTagManager* mgr)
     { this->mgr = mgr;}
+    ~DefaultIdTagShutdownTask() {}
+    DefaultIdTagShutdownTask(const DefaultIdTagShutdownTask&) : Runnable() {}
 
     /*public*/ void run()
     {

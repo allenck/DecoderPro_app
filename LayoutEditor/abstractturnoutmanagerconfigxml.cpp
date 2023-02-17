@@ -71,7 +71,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    QString sname = iter.next();
    if (sname==nullptr) log->error("System name nullptr during store");
    log->debug("system name is "+sname);
-   Turnout* t = (Turnout*)((AbstractTurnoutManager*)tm)->getBySystemName(sname);
+   Turnout* t = (Turnout*)((AbstractTurnoutManager*)tm)->getBySystemName(sname)->self();
    QDomElement elem = doc.createElement("turnout");
    //elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
    QDomElement e3;
@@ -262,7 +262,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    break;
   }
   QString userName = getUserName(elem);
-  if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==nullptr?"<nullptr>":userName)+")");
+  if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName.isEmpty()?"<null>":userName)+")");
   Turnout* t = nullptr;
   NamedBean* nb = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(sysName);
   if(nb)

@@ -53,8 +53,8 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         lnis->sendTestMessage(m2);
 
         // try to get turnouts to see if they exist
-        Assert::assertNotNull(l->getBySystemName("LT21"), __FILE__, __LINE__);
-        Assert::assertNotNull(l->getBySystemName("LT22"), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT21"), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT22"), __FILE__, __LINE__);
 
         // check the list
         QStringList testList = QStringList();
@@ -68,8 +68,8 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         // Turnout LT61 () Switch input is Closed (input off).
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3C<< 0x70<< 0x02);
         lnis->sendTestMessage(m);
-        Assert::assertNotNull(l->getBySystemName("LT61"), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::CLOSED, ((Turnout*)l->getBySystemName("LT61"))->getKnownState(), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT61"), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::CLOSED, ((Turnout*)l->getBySystemName("LT61")->self())->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -77,8 +77,8 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         // Turnout LT62 () Switch input is Thrown (input on).
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3D<< 0x60<< 0x13);
         lnis->sendTestMessage(m);
-        Assert::assertNotNull(l->getBySystemName("LT62"), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::THROWN, ((Turnout*)l->getBySystemName("LT62"))->getKnownState(), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT62"), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::THROWN, ((Turnout*)l->getBySystemName("LT62")->self())->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -86,9 +86,9 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         // Turnout LT63 () Aux input is Thrown (input ).
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3E<< 0x40<< 0x30);
         lnis->sendTestMessage(m);
-        Assert::assertNotNull(l->getBySystemName("LT63"), __FILE__, __LINE__);
-        Assert::assertEquals("EXACT", ((Turnout*)l->getBySystemName("LT63"))->getFeedbackModeName(), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::INCONSISTENT, ((Turnout*)l->getBySystemName("LT63"))->getKnownState(), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT63"), __FILE__, __LINE__);
+        Assert::assertEquals("EXACT", ((Turnout*)l->getBySystemName("LT63")->self())->getFeedbackModeName(), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::INCONSISTENT, ((Turnout*)l->getBySystemName("LT63")->self())->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -96,9 +96,9 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         // Turnout LT64 () Aux input is Closed (input off).
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3F<< 0x50<< 0x21);
         lnis->sendTestMessage(m);
-        Assert::assertNotNull(l->getBySystemName("LT64"), __FILE__, __LINE__);
-        Assert::assertEquals("EXACT", ((Turnout*)l->getBySystemName("LT64"))->getFeedbackModeName(), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::THROWN,((Turnout*) l->getBySystemName("LT64"))->getKnownState(), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT64"), __FILE__, __LINE__);
+        Assert::assertEquals("EXACT", ((Turnout*)l->getBySystemName("LT64")->self())->getFeedbackModeName(), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::THROWN,((Turnout*) l->getBySystemName("LT64")->self())->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -117,8 +117,8 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
             log->debug(tr("by user name:   %1").arg(l->getByUserName("my name")->getDisplayName()));
         }
 
-        Assert::assertNotNull(l->getBySystemName("LT21"), __FILE__, __LINE__);
-        Assert::assertNotNull(l->getByUserName("my name")->self(), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("LT21"), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getByUserName("my name"), __FILE__, __LINE__);
     }
 
         //@Test

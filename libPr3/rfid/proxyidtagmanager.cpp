@@ -118,7 +118,7 @@
      * @return requested IdTag object or null if none exists
      */
     //@Override
-    /*public*/ DefaultIdTag *ProxyIdTagManager::getBySystemName(QString systemName) {
+    /*public*/ DefaultIdTag *ProxyIdTagManager::getBySystemName(QString systemName)const {
         return (DefaultIdTag *)AbstractProxyManager::getBeanBySystemName(systemName)->self();
     }
 
@@ -129,7 +129,7 @@
      * @return requested Turnout object or null if none exists
      */
     //@Override
-    /*public*/ DefaultIdTag *ProxyIdTagManager::getByUserName(QString userName)  {
+    /*public*/ DefaultIdTag *ProxyIdTagManager::getByUserName(QString userName) const {
         return (DefaultIdTag*)AbstractProxyManager::getBeanByUserName(userName)->self();
     }
 

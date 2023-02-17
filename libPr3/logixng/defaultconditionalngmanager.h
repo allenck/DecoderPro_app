@@ -23,13 +23,13 @@ class DefaultConditionalNGManager : public AbstractManager, public ConditionalNG
   /*public*/  ConditionalNG* createConditionalNG(LogixNG* logixNG, QString userName) /*throws IllegalArgumentException*/ override;
   /*public*/  ConditionalNG* createConditionalNG(LogixNG* logixNG, QString userName, int threadID) /*throws IllegalArgumentException*/override;
   /*public*/  ConditionalNG* getConditionalNG(LogixNG* logixNG, QString name) override;
-  /*public*/  LogixNG* getParentLogixNG(QString systemName)override;
+  /*public*/  LogixNG* getParentLogixNG(QString systemName) const override;
   /*public*/  DefaultConditionalNG *getByUserName(LogixNG* logixNG, QString name) override;
-  /*public*/  NamedBean* getByUserName(QString name) override
+  /*public*/  NamedBean* getByUserName(QString name)const override
   {
    return  AbstractManager::getByUserName(name);
   }
-  /*public*/  ConditionalNG *getBySystemName(QString name)override;
+  /*public*/  ConditionalNG *getBySystemName(QString name)const override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  void deleteConditionalNG(ConditionalNG* x)override;
   /*public*/  void setLoadDisabled(bool s)override;

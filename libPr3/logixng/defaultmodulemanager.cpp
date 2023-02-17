@@ -96,7 +96,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  DefaultModule* DefaultModuleManager::getByUserName(QString name) {
+    /*public*/  DefaultModule* DefaultModuleManager::getByUserName(QString name)const {
 //        return (Module*)_tuser->value(name)->self();
      if(_tuser->value(name))
       return (DefaultModule*)_tuser->value(name)->self();
@@ -105,7 +105,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Module* DefaultModuleManager::getBySystemName(QString name) {
+    /*public*/  Module* DefaultModuleManager::getBySystemName(QString name) const{
         //return (Module*)_tsys->value(name)->self();
      if(_tsys->value(name))
       return (DefaultModule*)_tsys->value(name)->self();

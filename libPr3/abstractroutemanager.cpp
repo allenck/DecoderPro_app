@@ -6,10 +6,16 @@ AbstractRouteManager::AbstractRouteManager(SystemConnectionMemo *memo, QObject *
 
 }
 
-/*public*/ Route* AbstractRouteManager::getBySystemName(QString name) {
-    return (Route*)_tsys->value(name)->self();
+/*public*/ Route* AbstractRouteManager::getBySystemName(QString name)const {
+    NamedBean* nb = _tsys->value(name);
+    if(nb)
+     return (Route*)nb->self();
+    return nullptr;
 }
 
-/*public*/ Route* AbstractRouteManager::getByUserName(QString key) {
-    return (Route*)_tuser->value(key)->self();
+/*public*/ Route* AbstractRouteManager::getByUserName(QString key) const{
+    NamedBean* nb = _tuser->value(key);
+    if(nb)
+     return (Route*)nb->self();
+    return nullptr;
 }

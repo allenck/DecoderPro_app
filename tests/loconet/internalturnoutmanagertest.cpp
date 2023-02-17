@@ -29,8 +29,8 @@
         Assert::assertNotNull(tl, __FILE__, __LINE__);
 
         // make sure loaded into tables
-        Assert::assertNotNull(l->getBySystemName("IT21"), __FILE__, __LINE__);
-        Assert::assertNotNull(l->getByUserName("my name")->self(), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getBySystemName("IT21"), __FILE__, __LINE__);
+        Assert::assertNotNull((QObject*)l->getByUserName("my name"), __FILE__, __LINE__);
     }
 
     //@test

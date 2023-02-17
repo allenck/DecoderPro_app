@@ -29,7 +29,7 @@ class DefaultMaleDigitalExpressionSocket : public AbstractMaleSocket, public Mal
           return config;
       }
   };
-  /*public*/  void notifyChangedResult(bool oldResult, bool newResult);
+  /*public*/  void notifyChangedResult(bool oldResult, bool newResult)override;
   /*public*/  bool evaluate() /*throws JmriException*/override;
   /*public*/  bool getLastResult()override;
   /*public*/  int getState()override;
@@ -51,10 +51,10 @@ class DefaultMaleDigitalExpressionSocket : public AbstractMaleSocket, public Mal
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  QString getDisplayName()override;
-  /*public*/ QString getClassName() override {return "jmri.jmrit.logixng.implentation.DefaultMaleDigitalExpressionSocket";}
+  /*public*/  QString getClassName() override {return "jmri.jmrit.logixng.implentation.DefaultMaleDigitalExpressionSocket";}
 
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* self() override {return this;}
 
  private:
   static Logger* log;

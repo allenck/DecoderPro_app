@@ -15,6 +15,7 @@
 #include "defaultnamedtablemanager.h"
 #include "defaultlogixnginitializationmanager.h"
 #include "defaultlogixngmanager.h"
+#include "defaultconditionalngmanager.h"
 
 /**
  * Class providing the basic logic of the LogixNG_Manager interface.
@@ -123,12 +124,12 @@
 }
 
 //@Override
-/*public*/ NamedBean* DefaultLogixNGManager::getByUserName(QString name) {
+/*public*/ NamedBean* DefaultLogixNGManager::getByUserName(QString name) const{
     return _tuser->value(name);
 }
 
 //@Override
-/*public*/ NamedBean* DefaultLogixNGManager::getBySystemName(QString name) {
+/*public*/ NamedBean* DefaultLogixNGManager::getBySystemName(QString name)const {
     return _tsys->value(name);
 }
 
@@ -482,10 +483,10 @@ void DLMRunnable::run()
 //@Override
 //    @OverridingMethodsMustInvokeSuper
 /*public*/ /*final*/ void DefaultLogixNGManager::deleteBean(/*@Nonnull*/ /*LogixNG*/ NamedBean* nb, /*@Nonnull*/  QString property) /*throw new PropertyVetoException*/ {
- LogixNG*  logixNG =  (LogixNG*)nb->self();
+ LogixNG*  logixNG =  (DefaultLogixNG*)nb->self();
  for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
         ConditionalNG* child = logixNG->getConditionalNG(i);
-        ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean((NamedBean*)child, property);
+        ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean((AbstractNamedBean*)child->self(), property);
     }
 
     // throws PropertyVetoException if vetoed

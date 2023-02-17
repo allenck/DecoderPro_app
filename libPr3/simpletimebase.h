@@ -16,7 +16,7 @@ public:
     explicit SimpleTimebase(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     ~SimpleTimebase();
     /*public*/ QString getBeanType() override;
-    /*public*/ virtual QDateTime getTime();
+    /*public*/ virtual QDateTime getTime()override;
     /*public*/ void setTime(QDateTime d) override;
     /*public*/ void userSetTime(QDateTime d) override;
     /*public*/ void setRun(bool run) override;
@@ -27,7 +27,7 @@ public:
     /*public*/ double userGetRate() override;
     /*public*/ void setInternalMaster(bool master, bool update) override;
     /*public*/ bool getInternalMaster() override;
-    /*public*/ void setMasterName(QString name);
+    /*public*/ void setMasterName(QString name)override;
     /*public*/ QString getMasterName() override;
     /*public*/ void setSynchronize(bool synchronize, bool update) override;
     /*public*/ virtual bool getSynchronize() override;
@@ -38,10 +38,10 @@ public:
     /*public*/ void setStartStopped(bool stopped) override;
     /*public*/ bool getStartStopped() override;
     /*public*/ void setStartSetTime(bool set, QDateTime time) override;
-    /*public*/ void setStartRate(double factor);
-    /*public*/ double getStartRate();
-    /*public*/ void setSetRateAtStart(bool set);
-    /*public*/ bool getSetRateAtStart();
+    /*public*/ void setStartRate(double factor)override;
+    /*public*/ double getStartRate()override;
+    /*public*/ void setSetRateAtStart(bool set)override;
+    /*public*/ bool getSetRateAtStart()override;
     /*public*/ bool getStartSetTime() override;
     /*public*/ QDateTime getStartTime() override;
     /*public*/ void setStartClockOption(int option) override;
@@ -64,7 +64,7 @@ public:
     /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 
 signals:
-    void minuteTick();
+    void minuteTick()override;
 
 public slots:
     void handleAlarm();
@@ -126,6 +126,6 @@ public:
  QObject* pself() override{return (QObject*)this;}
 
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*)override;
 };
 #endif // SIMPLETIMEBASE_H

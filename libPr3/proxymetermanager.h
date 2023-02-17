@@ -15,8 +15,8 @@ class ProxyMeterManager :  public AbstractProxyManager, public MeterManager
   /*public*/ int getXMLOrder() const override;
   /*public*/ QString getBeanTypeHandled(bool plural);
   /*public*/ QString getNamedBeanClass();
-  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) override;
-  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) override;
+  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName)const override;
+  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName)const override;
   /*public*/ void dispose()override;
   /*public*/ QString getNamedBeanClass() const override {return "jmri.managers.ProxyMeterManager";}
   QObject* mself() override{return (QObject*)this;}

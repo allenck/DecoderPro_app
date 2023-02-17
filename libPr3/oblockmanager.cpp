@@ -110,14 +110,14 @@ OBlockManager::OBlockManager(QObject *parent) :
 /*public*/ NamedBean *OBlockManager::getBySystemName(QString name) const {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
-    return (OBlock*)_tsys->value(key)->self();
+    return _tsys->value(key);
 }
 
-/*public*/ NamedBean *OBlockManager::getByUserName(QString key)  {
+/*public*/ NamedBean *OBlockManager::getByUserName(QString key) const {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     //return (OBlock*)_tuser->value(key)->self();
     if(_tuser->value(key))
-     return (OBlock*)_tuser->value(key)->self();
+     return _tuser->value(key);
     return nullptr;
 }
 //@Override

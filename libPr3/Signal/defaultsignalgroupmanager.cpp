@@ -50,11 +50,17 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMem
 }
 
 /*public*/ SignalGroup* DefaultSignalGroupManager::getBySystemName(QString key) const {
-    return (SignalGroup*)_tsys->value(key)->self();
+    NamedBean* nb = _tsys->value(key);
+    if(nb)
+     return (SignalGroup*)nb->self();
+    return nullptr;
 }
 
 /*public*/ SignalGroup* DefaultSignalGroupManager::getByUserName(QString key) const{
-    return (SignalGroup*)_tuser->value(key)->self();
+    NamedBean* nb = _tuser->value(key);
+    if(nb)
+     return (SignalGroup*)nb->self();
+    return nullptr;
 }
 
 /*public*/ SignalGroup* DefaultSignalGroupManager::provideSignalGroup(QString systemName, QString userName) {

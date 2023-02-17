@@ -261,7 +261,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
  int col = index.column();
  int row = index.row();
  QString name = sysNameList.at(row);
- SignalHead* s = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+ SignalHead* s = (SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name)->self();
 
  if(role == Qt::DisplayRole)
  {
@@ -295,7 +295,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
  int col = index.column();
  int row = index.row();
  QString name = sysNameList.at(row);
- SignalHead* s = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+ SignalHead* s = (SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name)->self();
  if (s==nullptr) return false;  // device is going away anyway
  if(role == Qt::CheckStateRole)
  {
@@ -326,7 +326,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
 
 /*public*/ QString SHBeanTableDataModel::getValue(QString name) const
 {
-    SignalHead* s =(SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+    SignalHead* s =(SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name)->self();
     if (s==nullptr) return "<lost>"; // if due to race condition, the device is going away
     QString val = "";
     try {
@@ -1005,7 +1005,7 @@ bool SignalHeadTableAction::checkBeforeCreating(QString sysName)
         }
     }
     // check for pre-existing signal head with same system name
-    SignalHead* s = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sName);
+    SignalHead* s = (SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sName)->self();
     // return true if signal head does not exist
     if (s==nullptr){
         //Need to check that the Systemname doesn't already exists as a UserName
@@ -1471,7 +1471,7 @@ void SignalHeadTableAction::makeEditSignalWindow()
 
  editSysName = eSName;
  editingHead = true;
- curS = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(editSysName);
+ curS = (SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(editSysName)->self();
  if (editFrame == nullptr)
  {
   eto1 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);

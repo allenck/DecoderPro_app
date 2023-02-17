@@ -848,7 +848,7 @@ Maintenance::Maintenance(QObject *parent) :
             log->error("Error getting Route  - "+sName);
             break;
         }
-        QString uName = ((DefaultRoute*)r)->getUserName();
+        QString uName = ((DefaultRoute*)r)->AbstractNamedBean::getUserName();
         QString line1 = tr("%1%2: \"%3\" (%4)\n").arg(" ").arg(tr("Route")).arg(uName).arg(sName);
         for (int i=0; i<Route::MAX_CONTROL_SENSORS; i++)
         {

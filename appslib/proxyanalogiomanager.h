@@ -16,8 +16,8 @@ class ProxyAnalogIOManager : public AbstractProxyManager, public AnalogIOManager
   /*public*/  int getXMLOrder() const override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  /*Class<AnalogIO>*/QString getNamedBeanClass() const override;
-  /*public*/  /*AnalogIO*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName)override;
-  /*public*/  NamedBean* getByUserName(/*@Nonnull*/ QString userName)override;
+  /*public*/  /*AnalogIO*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName)const override;
+  /*public*/  NamedBean* getByUserName(/*@Nonnull*/ QString userName)const override;
   /*public*/  void dispose()override;
   /*public*/  void addBeanType(/*Class<? extends AnalogIO>*/QString clazz, Manager/*<? extends NamedBean>*/* manager);
   /*public*/  void removeBeanType(/*Class<? extends AnalogIO>*/QString clazz, Manager/*<? extends NamedBean>*/* manager);

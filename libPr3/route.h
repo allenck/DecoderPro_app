@@ -44,14 +44,13 @@
  *
  * @version			$Revision: 19003 $
  */
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT Route : public  AbstractNamedBean
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT Route : public  NamedBean
 {
  //Q_OBJECT
+  Q_INTERFACES(NamedBean)
 public:
- Route(QString systemName, QString userName = "", QObject* parent = 0) : AbstractNamedBean(systemName, userName, parent) {}
     /*public*/ static /*final*/ const int TOGGLE = 0x08;
     static /*final*/ const int MAX_CONTROL_SENSORS = 3;
-
     /**
      * Set enabled status.
      */
@@ -206,17 +205,17 @@ public:
 
     enum ACTIONS
     {
-    /*static*/ /*final*/ /*const int */ONACTIVE = 0,    // route fires if sensor goes active
-    /*static*/ /*final*/ /*const int */ONINACTIVE = 1,  // route fires if sensor goes inactive
-    /*static*/ /*final*/ /*const int*/ VETOACTIVE = 2,  // sensor must be active for route to fire
-    /*static*/ /*final*/ /*const int*/ VETOINACTIVE = 3,  // sensor must be inactive for route to fire
+     ONACTIVE = 0,    // route fires if sensor goes active
+     ONINACTIVE = 1,  // route fires if sensor goes inactive
+     VETOACTIVE = 2,  // sensor must be active for route to fire
+     VETOINACTIVE = 3,  // sensor must be inactive for route to fire
 
-    /*static*/ /*final*/ /*const int*/ ONCHANGE = 32,   // route fires if turnout or sensor changes
+     ONCHANGE = 32,   // route fires if turnout or sensor changes
 
-    /*static*/ /*final*/ /*const int*/ ONCLOSED = 2,    // route fires if turnout goes closed
-    /*static*/ /*final*/ /*const int*/ ONTHROWN = 4,  // route fires if turnout goes thrown
-    /*static*/ /*final*/ /*const int*/ VETOCLOSED = 8,  // turnout must be closed for route to fire
-    /*static*/ /*final*/ /*const int*/ VETOTHROWN = 16  // turnout must be thrown for route to fire
+     ONCLOSED = 2,    // route fires if turnout goes closed
+     ONTHROWN = 4,  // route fires if turnout goes thrown
+     VETOCLOSED = 8,  // turnout must be closed for route to fire
+     VETOTHROWN = 16  // turnout must be thrown for route to fire
     };
     //Q_ENUM(ACTIONS)
     /**

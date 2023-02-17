@@ -7145,8 +7145,8 @@ void LayoutEditor::addSensor()
  }
 
  SignalHead* LayoutEditor::getSignalHead(QString name) {
-     SignalHead* sh = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
-     if (sh == nullptr) sh = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
+     SignalHead* sh = (SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name)->self();
+     if (sh == nullptr) sh = (SignalHead*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name)->self();
      if (sh == nullptr) log->warn("did not find a SignalHead named "+name);
      return sh;
  }

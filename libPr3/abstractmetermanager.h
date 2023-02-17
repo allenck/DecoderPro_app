@@ -13,15 +13,15 @@ class AbstractMeterManager : public AbstractManager,  public MeterManager
   /*public*/ QChar typeLetter() const override;
   /*public*/ QString getBeanTypeHandled(bool plural) const override;
   /*public*/ QString getNamedBeanClass() const override {return "jmri.managers.AbstractMeterManager";}
-//  /*public*/ NamedBean *getBySystemName(QString name)  override;
-//  /*public*/ NamedBean* getByUserName(QString key) override;
+//  /*public*/ NamedBean *getBySystemName(QString name) const override;
+//  /*public*/ NamedBean* getByUserName(QString key)const override;
 
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override { return (QObject*)this;}
   QObject* pself() override{return (QObject*)this;}
 
-  /*public*/ NamedBean* getBySystemName(QString name) override{return AbstractManager::getBySystemName(name);}
-  /*public*/ NamedBean* getByUserName(QString name) override{return AbstractManager::getByUserName(name);}
+  /*public*/ NamedBean* getBySystemName(QString name)const override{return AbstractManager::getBySystemName(name);}
+  /*public*/ NamedBean* getByUserName(QString name)const override{return AbstractManager::getByUserName(name);}
 
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 

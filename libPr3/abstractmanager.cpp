@@ -160,14 +160,15 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) {
+/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
+ if(systemName.isEmpty()) throw new NullPointerException("name is null!");
     return (NamedBean*)_tsys->value(systemName, nullptr);
 }
 
 /** {@inheritDoc} */
 //@Override
 //@CheckForNull
-/*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) {
+/*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) const{
     QString normalizedUserName = NamedBean::normalizeUserName(userName);
     return normalizedUserName != nullptr ? _tuser->value(normalizedUserName) : nullptr;
 }

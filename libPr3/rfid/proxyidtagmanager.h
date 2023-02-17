@@ -21,8 +21,8 @@ public:
  /*public*/ /*SortedSet<IdTag>*/QSet<NamedBean*> getNamedBeanSet() override;
  /*public*/ DefaultIdTag* provide(/*@Nonnull */QString name) /*throw (IllegalArgumentException)*/ override;
  /*public*/ DefaultIdTag* provideIdTag(QString name) throw (IllegalArgumentException) override;
- /*public*/ DefaultIdTag* getBySystemName(QString systemName) override;
- /*public*/ DefaultIdTag* getByUserName(QString userName) override;
+ /*public*/ DefaultIdTag* getBySystemName(QString systemName)const override;
+ /*public*/ DefaultIdTag* getByUserName(QString userName)const override;
  /*public*/ DefaultIdTag* newIdTag(QString systemName, QString userName) override;
  /*public*/ DefaultIdTag *getByTagID(QString tagID) override;
  /*public*/ QString getEntryToolTip() override;

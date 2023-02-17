@@ -85,7 +85,10 @@ public:
 
  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
  /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
- ///*public*/ Sensor* getBySystemName(QString name) override {return (Sensor*)AbstractProxyManager::getBySystemName(name)->self();}
+ /*public*/ NamedBean* getBySystemName(QString name)const override {
+  return AbstractProxyManager::getBySystemName(name);}
+ /*public*/ NamedBean* getByUserName(QString name)const override {
+  return AbstractProxyManager::getBySystemName(name);}
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 

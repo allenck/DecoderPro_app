@@ -102,7 +102,7 @@
 /*public*/  MaleDigitalActionSocket* DefaultDigitalActionManager::registerAction(/*@Nonnull*/ DigitalActionBean* action)
         /*throws IllegalArgumentException*/ {
 
-    if (qobject_cast<MaleDigitalActionSocket*>(action->bself())) {
+    if (qobject_cast<DefaultMaleDigitalActionSocket*>(action->bself())) {
         throw new IllegalArgumentException("registerAction() cannot register a MaleDigitalActionSocket. Use the method register() instead.");
     }
 

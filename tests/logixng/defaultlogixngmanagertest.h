@@ -19,6 +19,10 @@ public slots:
     /*public*/  void testCreateNewLogixNG();
     /*public*/  void testSetupInitialConditionalNGTree();
     /*public*/  void testDeleteLogixNG() /*throws SocketAlreadyConnectedException, PropertyVetoException*/;
+    /*public*/  void testDeleteConditionalNG() /*throws SocketAlreadyConnectedException, PropertyVetoException*/;
+    /*public*/  void testDeleteModule() /*throws SocketAlreadyConnectedException, PropertyVetoException*/;
+    /*public*/  void testDeleteAction() /*throws SocketAlreadyConnectedException, PropertyVetoException*/;
+    /*public*/  void testDeleteTable() /*throws SocketAlreadyConnectedException*/;
 
 signals:
 

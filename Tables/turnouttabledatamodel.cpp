@@ -195,8 +195,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
  int row = index.row();
  int col = index.column();
  if(row < 0)
-     return 0;
- Turnout* t = turnoutManager->getBySystemName(sysNameList.at(row));
+     return Qt::ItemFlag::NoItemFlags;
+ Turnout* t = (Turnout*)turnoutManager->getBySystemName(sysNameList.at(row))->self();
  Qt::ItemFlags editable = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
  Qt::ItemFlags noteditable = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
@@ -472,7 +472,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
  if(qobject_cast<ProxyTurnoutManager*>(manager->mself())!= NULL)
   t = (AbstractTurnout*)((ProxyTurnoutManager*)manager)->AbstractProxyManager::getBySystemName(name)->self();
  else
-  t = (AbstractTurnout*)((AbstractTurnoutManager*) manager)->getBySystemName(name);
+  t = (AbstractTurnout*)((AbstractTurnoutManager*) manager)->getBySystemName(name)->self();
 
  if(role == Qt::CheckStateRole)
  {
@@ -678,7 +678,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
  if(qobject_cast<AbstractProxyManager*>(manager->mself())!= NULL)
   t= (Turnout*)((ProxyTurnoutManager*)manager->mself())->AbstractProxyManager::getBySystemName(name)->self();
  else
-  t= (Turnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+  t= (Turnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name)->self();
 
  int val = t->getCommandedState();
  switch (val)
@@ -729,7 +729,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 {
  QObject* o = turnoutManager->mself();
  if(QString(o->metaObject()->className()) == "ProxyTurnoutManager")
-  return (Turnout*)((ProxyTurnoutManager*)o)->getBySystemName(name);
+  return (Turnout*)((ProxyTurnoutManager*)o)->getBySystemName(name)->self();
  else
   return (Turnout*) ((AbstractManager*)o)->getBySystemName(name)->self();
 
@@ -1090,7 +1090,7 @@ QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVie
  if(qobject_cast<AbstractProxyManager*>(manager->mself()))
   t = (AbstractTurnout*)((AbstractProxyManager*)manager->mself())->getBeanBySystemName(name)->self();
  else
-  t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->mself())->getBySystemName(name);
+  t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->mself())->getBySystemName(name)->self();
  if (t == NULL)
  {
   TurnoutTableAction::log->debug("error NULL turnout!");
@@ -1132,7 +1132,7 @@ void TTComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
    if(qobject_cast<AbstractProxyManager*>(manager->mself()))
     t = (AbstractTurnout*)((AbstractProxyManager*)manager->mself())->getBeanBySystemName(name)->self();
    else
-    t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->mself())->getBySystemName(name);
+    t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->mself())->getBySystemName(name)->self();
 
    ((TurnoutTableDataModel*)index.model())->setTurnoutOperation(t, comboBox);
    ((TurnoutTableDataModel*)index.model())->fireTableRowsUpdated(row,row);

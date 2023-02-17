@@ -1,6 +1,7 @@
 #ifndef VETOABLECHANGEPROVIDER_H
 #define VETOABLECHANGEPROVIDER_H
 #include <QList>
+#include <QObject>
 
 /**
  * A set of methods that would need to be implemented to ensure the implementing

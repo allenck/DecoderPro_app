@@ -216,10 +216,20 @@ return _statusNameMap.value(str);
  }
  else
  {
-  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName)->self();
+  NamedBean* nb =  ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
+          AbstractProxyManager::getByUserName(pName);
+  if(nb)
+  {
+   sensor = (Sensor*)nb->self();
+  }
   if (sensor == NULL)
   {
-   sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName)->self();
+   nb = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
+              AbstractProxyManager::getBySystemName(pName);
+   if(nb)
+   {
+    sensor = (Sensor*)nb->self();
+   }
   }
   if (sensor == NULL)
   {

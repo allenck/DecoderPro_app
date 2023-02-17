@@ -15,7 +15,7 @@ public:
  /*public*/ Light* getLight(QString name)override;
  /*public*/ Light* provideLight(QString name)override;
 // /*public*/ NamedBean* getBySystemName(QString systemName) const override;
- /*public*/ NamedBean* getByUserName(QString userName) override;
+ /*public*/ NamedBean* getByUserName(QString userName) const override;
  /*public*/ Light* newLight(QString systemName, QString userName)override;
 // /*public*/ NameValidity validSystemNameFormat(QString systemName);
  /*public*/ bool validSystemNameConfig(QString systemName) override;
@@ -40,7 +40,7 @@ public:
 
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
   /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
-  /*public*/ Light* getBySystemName(QString name) override {
+  /*public*/ Light* getBySystemName(QString name)const override {
     if(AbstractProxyManager::getBySystemName(name))
      return (Light*)AbstractProxyManager::getBySystemName(name)->self();
     else return nullptr;

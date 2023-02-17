@@ -10,7 +10,7 @@
         :  public DigitalExpressionBean, public virtual MaleSocket {
   //Q_OBJECT
  public:
-  Q_INTERFACES(MaleSocket )
+  Q_INTERFACES(DigitalExpressionBean MaleSocket )
     /**
      * {@inheritDoc}
      * <P>

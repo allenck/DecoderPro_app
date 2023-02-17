@@ -48,11 +48,11 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(InternalSystemConnectionMem
  {
   return NULL;
  }
- SignalHead* t = (SignalHead*)AbstractSignalHeadManager::getByUserName(name);
- if (t!=NULL)
-  return t;
+ NamedBean* nb = AbstractSignalHeadManager::getByUserName(name);
+ if (nb!=NULL)
+  return (SignalHead*)nb->self();
 
- return (SignalHead*)AbstractSignalHeadManager::getBySystemName(name);
+ return (SignalHead*)AbstractSignalHeadManager::getBySystemName(name)->self();
 }
 
 /** {@inheritDoc} */

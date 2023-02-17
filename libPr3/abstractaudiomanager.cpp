@@ -64,11 +64,9 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 /*public*/ Audio* AbstractAudioManager::getBySystemName(QString key) const
 {
  //return (Audio)_tsys.get(key);
- NamedBean* bean = _tsys->value(key);
+ NamedBean* bean = _tsys->value(key.toUpper());
  if (bean == NULL)
- {
-  bean = _tsys->value(key.toUpper());
- }
+  return nullptr;
  return (Audio*)bean->self();
 }
 
@@ -80,7 +78,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
     }
     NamedBean* rv =  _tuser->value(key);
     if (rv == NULL) {
-        rv = this->getBySystemName(key);
+        return nullptr;
     }
     return (Audio*)rv->self();
 }

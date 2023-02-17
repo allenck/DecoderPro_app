@@ -162,8 +162,8 @@
     Add a new signalhead to the group
 */
 /*public*/ void DefaultSignalGroup::addSignalHead(QString pName){
-    SignalHead* mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
-    if (mHead == NULL) mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
+    SignalHead* mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName)->self();
+    if (mHead == NULL) mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName)->self();
     if (mHead == NULL) log->warn("did not find a SignalHead named "+pName);
     else {
         addSignalHead(new NamedBeanHandle<SignalHead*>(pName, mHead));
@@ -171,6 +171,7 @@
 }
 
 /*public*/ void DefaultSignalGroup::addSignalHead(SignalHead* mHead){
+    if(!mHead) throw new NullPointerException(tr("signal head null"));
     addSignalHead(new NamedBeanHandle<SignalHead*>(mHead->getDisplayName(), mHead));
 }
 

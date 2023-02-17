@@ -8,9 +8,10 @@
 
 class ShutDownTask;
 class CatalogTree;
-class LIBLAYOUTEDITORSHARED_EXPORT DefaultCatalogTreeManager : public CatalogTreeManager
+class LIBLAYOUTEDITORSHARED_EXPORT DefaultCatalogTreeManager : public AbstractManager, public CatalogTreeManager
 {
     Q_OBJECT
+    Q_INTERFACES(CatalogTreeManager)
 public:
     explicit DefaultCatalogTreeManager(QObject *parent = 0);
     ~DefaultCatalogTreeManager(){}
@@ -54,8 +55,10 @@ public:
             set->insert("CatalogTreeManager");
             return set;
         }
-
     };
+    QObject* vself() override {return this;}
+    QObject* pself() override {return this;}
+
 signals:
 
 public slots:

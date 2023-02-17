@@ -1565,10 +1565,10 @@ SignalGroupTableAction::SignalGroupSignalHead::SignalGroupSignalHead(QString sys
  _onState = 0x00;
  _offState = 0x00;
 
- SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
+ SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName)->self();
  if (QString(head->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);
+  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName)->self();
   _onState = signal->getOnAppearance();
   _offState = signal->getOffAppearance();
   _signal = (SignalHead*)signal;

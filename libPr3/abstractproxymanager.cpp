@@ -46,7 +46,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      * {@inheritDoc}
      */
     //@Override
-    /*public*/  QList<AbstractManager *> AbstractProxyManager::getManagerList()    {
+    /*public*/  QList<AbstractManager *> AbstractProxyManager::getManagerList() const   {
         // make sure internal present
         initInternal();
         return QList<AbstractManager*>(mgrs.toList());
@@ -169,7 +169,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@Override
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/  /*E*/NamedBean* AbstractProxyManager::getBySystemName(/*@Nonnull*/ QString systemName)  {
+    /*public*/  /*E*/NamedBean* AbstractProxyManager::getBySystemName(/*@Nonnull*/ QString systemName) const  {
         AbstractManager/*<E>*/* m = getManager(systemName);
         if (m == nullptr) {
             log->debug(QString("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName));
@@ -182,7 +182,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@Override
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/  /*E*/NamedBean* AbstractProxyManager::getByUserName(/*@Nonnull*/ QString userName) {
+    /*public*/  /*E*/NamedBean* AbstractProxyManager::getByUserName(/*@Nonnull*/ QString userName) const{
         for (Manager/*<E>*/* m : this->mgrs) {
             /*E*/NamedBean* b = ((AbstractManager*)m->mself())->getByUserName(userName);
             if (b != nullptr) {
@@ -241,7 +241,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      * @return the requested manager or null if there is no matching manager
      */
     //@CheckForNull
-    /*protected*/ AbstractManager/*<E>*/* AbstractProxyManager::getManager(/*@Nonnull*/ QString systemName)   {
+    /*protected*/ AbstractManager/*<E>*/* AbstractProxyManager::getManager(/*@Nonnull*/ QString systemName) const  {
         // make sure internal present
         initInternal();
         for (AbstractManager/*<E>*/* m : getManagerList()) {

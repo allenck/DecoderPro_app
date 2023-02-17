@@ -22,8 +22,8 @@ public:
     /*public*/ QChar typeLetter() const override;
     /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name) override;
-    /*public*/ NamedBean* getByUserName(QString key) override;
+    /*public*/ NamedBean* getBySystemName(QString name)const override;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
     /*public*/ Warrant* provideWarrant(QString name) ;
     /*public*/ bool isAssignableFromType() {return true;}
     /*public*/ QString getNamedBeanClass()const override {

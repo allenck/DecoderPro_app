@@ -18,7 +18,7 @@ public:
     Turnout* provideTurnout(QString name) override;
     Turnout* getTurnout(QString name) override;
     Turnout* newTurnout(QString systemName, QString userName) override;
-    Turnout* getBySystemName(QString name) override;
+    NamedBean* getBySystemName(QString name)const  override;
     //Turnout* getByUserName(QString key)  override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ QString getNamedBeanClass() const override;

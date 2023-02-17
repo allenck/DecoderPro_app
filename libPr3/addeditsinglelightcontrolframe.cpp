@@ -483,8 +483,8 @@
                         getByUserName(turnoutName)->self();
                 if (t == nullptr) {
                     // not user name, try system name
-                    t = InstanceManager::turnoutManagerInstance()->
-                            getBySystemName(turnoutName);
+                    t = (Turnout*)InstanceManager::turnoutManagerInstance()->
+                            getBySystemName(turnoutName)->self();
                     if (t != nullptr) {
                         // update turnout system name in case it changed
                         turnoutName = t->getSystemName();

@@ -166,7 +166,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
   {
    bb = BlockBossLogic::getStoppedObject(block.attribute("signal"));
   }
-  catch (IllegalArgumentException e)
+  catch (IllegalArgumentException* e)
   {
    log->error("An error occured trying to find the signal for the signal elements for " + block.attribute("signal"));
    result = false;
@@ -208,7 +208,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     if (sl.size()>=4 && !sl.at(3).toElement().isNull()) bb->setSensor4(sl.at(3).toElement().attribute("systemName"));
     if (sl.size()>=5 && !sl.at(4).toElement().isNull()) bb->setSensor5(sl.at(4).toElement().attribute("systemName"));
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured loading the sensors list in the SSL");
     result = false;
@@ -229,7 +229,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
    {
     if (sl.size()>=2 && !sl.at(1).toElement().isNull()) bb->setSensor2(sl.at(1).toElement().text());
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured loading the sensor2 list in the SSL for " + bb->getDrivenSignal());
     result = false;
@@ -249,7 +249,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
    {
     if (sl.size()>=4 && !sl.at(3).toElement().isNull()) bb->setSensor4(sl.at(3).toElement().text());
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured loading the sensor4 list in the SSL for " + bb->getDrivenSignal());
     result = false;
@@ -259,7 +259,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
    {
     if (sl.size()>=5 && !sl.at(4).toElement().isNull()) bb->setSensor5(sl.at(4).toElement().text());
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured loading the sensor5 list in the SSL for " + bb->getDrivenSignal());
     result = false;
@@ -279,7 +279,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
      if (block.attribute("watchedturnout")!=NULL)
       bb->setTurnout(block.attribute("watchedturnout"));
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched turnout ("+ block.attribute("watchedturnout") + ")element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -291,7 +291,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
      bb->setWatchedSignal1(block.attribute("watchedsignal1"),
                                 block.attribute("useflashyellow")=="true");
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched signal 1 ("+ block.attribute("watchedsignal1") + ")element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -302,7 +302,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     if (block.attribute("watchedsignal1alt")!=NULL)
      bb->setWatchedSignal1Alt(block.attribute("watchedsignal1alt"));
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched signal 1 alt ("+ block.attribute("watchedsignal1alt") + ")element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -314,7 +314,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
             bb->setWatchedSignal2(block.attribute("watchedsignal2"));
 
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched signal 2 ("+ block.attribute("watchedsignal2") + ")element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -325,7 +325,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     if (block.attribute("watchedsignal2alt")!=NULL)
             bb->setWatchedSignal2Alt(block.attribute("watchedsignal2alt"));
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched signal 2 alt ("+ block.attribute("watchedsignal2alt") + ") element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -335,7 +335,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
    {
     if (block.attribute("watchedsensor1")!=NULL)
             bb->setWatchedSensor1(block.attribute("watchedsensor1"));
-   } catch (IllegalArgumentException e)
+   } catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched sensor 1 ("+ block.attribute("watchedsensor1") + ") element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -346,7 +346,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     if (block.attribute("watchedsensor1alt")!=NULL)
             bb->setWatchedSensor1Alt(block.attribute("watchedsensor1alt"));
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched sensor 1 alt ("+ block.attribute("watchedsensor1alt") + ") element attribute list for " + bb->getDrivenSignal());
     result = false;
@@ -366,7 +366,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     if (block.attribute("watchedsensor2alt")!=NULL)
       bb->setWatchedSensor2Alt(block.attribute("watchedsensor2alt"));
    }
-   catch (IllegalArgumentException e)
+   catch (IllegalArgumentException* e)
    {
     log->error("An error occured in retrieving the watched sensor 2 alt ("+ block.attribute("watchedsensor2alt") + ")element attribute list for " + bb->getDrivenSignal());
         result = false;

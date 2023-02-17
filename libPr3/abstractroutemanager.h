@@ -7,8 +7,8 @@ class AbstractRouteManager : public RouteManager
   Q_OBJECT
  public:
   AbstractRouteManager(SystemConnectionMemo* memo = nullptr, QObject* parent = nullptr);
-  /*public*/ Route* getBySystemName(QString name)  override;
-  /*public*/ Route* getByUserName(QString key)  override;
+  /*public*/ Route* getBySystemName(QString name)const  override;
+  /*public*/ Route* getByUserName(QString key)const  override;
   QString getNamedBeanClass() const override {return "RouteManager";}
   /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Routes":"Route");}
 

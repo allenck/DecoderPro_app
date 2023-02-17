@@ -36,8 +36,8 @@ class DefaultNamedTableManager : public AbstractManager, public NamedTableManage
           /*@Nonnull*/ File* file)
           /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException */override;
   /*public*/  NamedTable* getNamedTable(QString name)override;
-  /*public*/  NamedTable* getByUserName(QString name) override;
-  /*public*/  NamedTable* getBySystemName(QString name)override;
+  /*public*/  NamedTable* getByUserName(QString name)const override;
+  /*public*/  NamedTable* getBySystemName(QString name)const override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   /*public*/  void deleteNamedTable(NamedTable* x)override;
   /*public*/  void printTree(PrintWriter* writer, QString indent)override;

@@ -66,7 +66,7 @@ public:
     /*public*/ void removeDataListener(Manager::ManagerDataListener*)override;
 
     ///*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
-    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+    /*public*/ NamedBean* getBySystemName(QString name) const override {return AbstractManager::getBySystemName(name);}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 

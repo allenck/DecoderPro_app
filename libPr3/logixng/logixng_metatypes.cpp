@@ -128,6 +128,8 @@
 #include "sequencexml.h"
 #include "logixxml.h"
 #include "logixswing.h"
+#include "actionmemoryswing.h"
+#include "actionmemoryxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -259,7 +261,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<SequenceXml>("SequenceXml");
    qRegisterMetaType<LogixXml>("LogixXml");
    qRegisterMetaType<LogixSwing>("LogixSwing");
-
+   qRegisterMetaType<ActionMemorySwing>("ActionMemorySwing");
+   qRegisterMetaType<ActionMemoryXml>("ActionMemoryXml");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

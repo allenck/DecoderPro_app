@@ -39,11 +39,11 @@ public:
     /**
      * Locate a Light by its system name
      */
-    /*public*/ Light *getBySystemName(QString name)  override;
+    /*public*/ Light *getBySystemName(QString name) const override;
     /**
      * Locate a Light by its user name
      */
-    /*public*/ Light *getByUserName(QString name)  override;
+    /*public*/ Light *getByUserName(QString name) const override;
 
     /**
      * Return an instance with the specified system and user names.

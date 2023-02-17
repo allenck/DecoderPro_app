@@ -19,8 +19,8 @@ public:
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* createNewOBlock(/*@Nonnull*/ QString userName);
     /*public*/ OBlock* getOBlock(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name)const ;
-    /*public*/ NamedBean* getByUserName(QString key) override;
+    /*public*/ NamedBean* getBySystemName(QString name)const  override;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
     /*public*/ OBlock* provideOBlock(QString name) ;
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();
@@ -39,7 +39,7 @@ public:
 
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
-    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+//    /*public*/ NamedBean* getBySystemName(QString name)const override {return AbstractManager::getBySystemName(name)->self();}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 

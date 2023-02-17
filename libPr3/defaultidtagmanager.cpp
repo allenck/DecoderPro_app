@@ -133,14 +133,14 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ DefaultIdTag* DefaultIdTagManager::getBySystemName(QString name) {
-    if (!_initialised && !_loading) init();
+/*public*/ DefaultIdTag* DefaultIdTagManager::getBySystemName(QString name) const{
+//    if (!_initialised && !_loading) init();
     return (DefaultIdTag*)_tsys->value(name)->self();
 }
 
 //@Override
-/*public*/ DefaultIdTag *DefaultIdTagManager::getByUserName(QString key)  {
-    if (!_initialised && !_loading) init();
+/*public*/ DefaultIdTag *DefaultIdTagManager::getByUserName(QString key) const {
+//    if (!_initialised && !_loading) init();
     return (DefaultIdTag*)_tuser->value(key)->self();
 }
 
@@ -223,7 +223,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
     IdTagManagerXml::instance()->setDirty(true);
 }
 
-/*public*/ void DefaultIdTagManager::writeIdTagDetails()  ///*throw (IOException)*/
+/*public*/ void DefaultIdTagManager::writeIdTagDetails() const ///*throw (IOException)*/
 {
     IdTagManagerXml::instance()->store();
     log->debug("...done writing IdTag details");

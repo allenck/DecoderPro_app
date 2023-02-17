@@ -118,8 +118,10 @@ namespace Actions {
    /*public*/  Base* getDeepCopy(QMap<QString, QString> *systemNames, QMap<QString, QString> *userNames) /*throws ParserException*/override;
    /*public*/  void setLogToLog(bool logToLog);
    /*public*/  bool getLogToLog();
+#ifdef ENABLE_SCRIPTING
    /*public*/  void setLogToScriptOutput(bool logToScriptOutput);
    /*public*/  bool getLogToScriptOutput();
+#endif
    /*public*/  void setFormatType(FormatType::FORMATTYPE formatType);
    /*public*/  FormatType::FORMATTYPE getFormatType() ;
    /*public*/  void setFormat(QString format);

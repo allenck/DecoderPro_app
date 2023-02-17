@@ -52,7 +52,7 @@ DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QOb
  // Route does not exist, create a new route
  r = new DefaultRoute(systemName,userName);
  // save in the maps
- AbstractManager::Register((NamedBean*)r);
+ AbstractManager::Register((AbstractNamedBean*)r);
 
  updateAutoNumber(systemName);
 

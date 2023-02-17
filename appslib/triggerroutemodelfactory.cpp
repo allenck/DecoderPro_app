@@ -55,7 +55,7 @@ TriggerRouteModelFactory::TriggerRouteModelFactory()
   {
       Route* r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(systemName)->self();
       if (r != NULL) {
-          QString userName = ((DefaultRoute*)r)->getUserName();
+          QString userName = ((DefaultRoute*)r)->AbstractNamedBean::getUserName();
           if (userName != NULL && !userName.isEmpty()) {
               userNames.append(userName);
           }

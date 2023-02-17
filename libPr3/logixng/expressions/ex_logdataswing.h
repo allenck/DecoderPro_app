@@ -25,7 +25,9 @@ namespace Expressions {
 
   private:
    /*private*/ JCheckBox* _logToLogCheckBox;
+#ifdef ENABLE_SCRIPTING
    /*private*/ JCheckBox* _logToScriptOutputCheckBox;
+#endif
    /*private*/ JComboBox/*<LogData.FormatType> */* _formatType;
    /*private*/ JTextField* _format;
    /*private*/ JTable* _logDataTable;

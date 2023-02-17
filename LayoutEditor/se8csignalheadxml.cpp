@@ -110,7 +110,7 @@ NamedBeanHandle<Turnout*>* SE8cSignalHeadXml::loadTurnout(QDomElement e)
   }
   else
   {
-   t = (Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(name);
+   t = (Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(name)->self();
   }
         return ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);
     } else {

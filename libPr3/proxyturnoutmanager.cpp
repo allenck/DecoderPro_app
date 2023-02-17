@@ -64,7 +64,10 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 }
 
 /*public*/ Turnout * ProxyTurnoutManager::provideTurnout(QString name)  {
- return (Turnout*)AbstractProvidingProxyManager::provideNamedBean(name)->self();
+ NamedBean* nb = AbstractProvidingProxyManager::provideNamedBean(name);
+ if(nb)
+  return (Turnout*)nb->self();
+ else return nullptr;
 }
 //@Override
 /** {@inheritDoc} */

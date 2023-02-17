@@ -30,13 +30,13 @@
 ///*public*/ class DefaultRoute extends AbstractNamedBean
 //    implements Route, java.io.Serializable {
 
-/*public*/ DefaultRoute::DefaultRoute(QString systemName, QString userName,QObject *parent) : Route(systemName.toUpper(), userName, parent)
+/*public*/ DefaultRoute::DefaultRoute(QString systemName, QString userName,QObject *parent) : AbstractNamedBean(systemName.toUpper(), userName, parent)
 {
  //super(systemName.toUpperCase(), userName);
  init();
 }
 
-/*public*/ DefaultRoute::DefaultRoute(QString systemName,QObject *parent) : Route(systemName.toUpper(), "", parent)
+/*public*/ DefaultRoute::DefaultRoute(QString systemName,QObject *parent) : AbstractNamedBean(systemName.toUpper(), "", parent)
 {
  //super(systemName.toUpperCase());
  init();
@@ -349,7 +349,7 @@ void DefaultRoute::init()
  * Method to set turnouts aligned sensor
  */
 /*public*/ void DefaultRoute::setTurnoutsAlignedSensor(QString sensorName){
-    if (log->isDebugEnabled()) log->debug("setTurnoutsAlignedSensor "+getSystemName()+" "+sensorName);
+    if (log->isDebugEnabled()) log->debug("setTurnoutsAlignedSensor "+AbstractNamedBean::getSystemName()+" "+sensorName);
 
     mTurnoutsAlignedSensor = sensorName;
     if( mTurnoutsAlignedSensor.isEmpty() || mTurnoutsAlignedSensor==("")){
@@ -383,7 +383,7 @@ void DefaultRoute::init()
         if(s!=NULL)
            mTurnoutsAlignedNamedSensor = nbhm->getNamedBeanHandle(mTurnoutsAlignedSensor, s);
         else {
-            log->error("Unable to create Turnout aligned Sensor " + mTurnoutsAlignedSensor + " for Route " + getDisplayName());
+            log->error("Unable to create Turnout aligned Sensor " + mTurnoutsAlignedSensor + " for Route " + AbstractNamedBean::getDisplayName());
             return NULL;
         }
     }
@@ -406,10 +406,10 @@ void DefaultRoute::init()
 /*public*/ bool DefaultRoute::addSensorToRoute(QString sensorName, int mode) {
     if (_controlSensorList->size() >= Route::MAX_CONTROL_SENSORS) {
         // reached maximum
-        log->warn("Reached maximum number of control Sensors for Route: "+ getSystemName() );
+        log->warn("Reached maximum number of control Sensors for Route: "+ AbstractNamedBean::getSystemName() );
     }
     ControlSensor* sensor = new ControlSensor(sensorName,this);
-    if (log->isDebugEnabled()) log->debug("addSensorToRoute "+getSystemName()+" "+sensorName);
+    if (log->isDebugEnabled()) log->debug("addSensorToRoute "+AbstractNamedBean::getSystemName()+" "+sensorName);
     if (!sensor->setState(mode) )
     {
         return false;
@@ -502,7 +502,7 @@ void DefaultRoute::init()
         if(t!=NULL)
            mControlNamedTurnout = nbhm->getNamedBeanHandle(mControlTurnout, t);
         else {
-            log->error("Unable to create control turnout " + mControlTurnout + " for Route " + getDisplayName());
+            log->error("Unable to create control turnout " + mControlTurnout + " for Route " + AbstractNamedBean::getDisplayName());
             return NULL;
         }
     }
@@ -543,7 +543,7 @@ void DefaultRoute::init()
         if(t!=NULL)
            mLockControlNamedTurnout = nbhm->getNamedBeanHandle(mLockControlTurnout, t);
         else {
-            log->error("Unable to create Lock control turnout " + mLockControlTurnout + " for Route " + getDisplayName());
+            log->error("Unable to create Lock control turnout " + mLockControlTurnout + " for Route " + AbstractNamedBean::getDisplayName());
             return NULL;
         }
     }
@@ -659,7 +659,7 @@ void DefaultRoute::init()
     if (isVetoed()) return; // don't fire
 
     QString name = sensor->getSystemName();
-    if (log->isDebugEnabled()) log->debug("check Sensor "+name+" for "+getSystemName());
+    if (log->isDebugEnabled()) log->debug("check Sensor "+name+" for "+AbstractNamedBean::getSystemName());
     bool fire = false;  // dont fire unless we find something
     for (int i=0; i<_controlSensorList->size(); i++) {
         if (getRouteSensor(i)==(sensor)) {
@@ -683,7 +683,7 @@ void DefaultRoute::init()
     if (!fire) return;
 
     // and finally set the route
-    if (log->isDebugEnabled()) log->debug("call setRoute for "+getSystemName());
+    if (log->isDebugEnabled()) log->debug("call setRoute for "+AbstractNamedBean::getSystemName());
     setRoute();
 }
 
@@ -810,7 +810,7 @@ void DefaultRoute::init()
 //                    }
 //                }
 //            }, getControlTurnout(), "Route " + getDisplayName());
-     ctl->addPropertyChangeListener(mTurnoutListener =new MTurnoutListener(this), getControlTurnout(), "Route " + getDisplayName());
+     ctl->addPropertyChangeListener(mTurnoutListener =new MTurnoutListener(this), getControlTurnout(), "Route " + AbstractNamedBean::getDisplayName());
     }
 
     Turnout* lockCtl = getLockCtlTurnout();
@@ -823,7 +823,7 @@ void DefaultRoute::init()
 //            }
 //        };
      mLockTurnoutListener = new MLockTurnoutListener(this);
-        lockCtl->addPropertyChangeListener(mLockTurnoutListener, getLockControlTurnout(), "Route " + getDisplayName());
+        lockCtl->addPropertyChangeListener(mLockTurnoutListener, getLockControlTurnout(), "Route " + AbstractNamedBean::getDisplayName());
     }
 
     checkTurnoutAlignment();

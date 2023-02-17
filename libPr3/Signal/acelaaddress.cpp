@@ -320,7 +320,7 @@
     } // check for a turnout
     else if (systemName.at(prefix.length() + 1) == 'T') {
         Turnout* t = nullptr;
-        t = (Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(systemName);
+        t = (Turnout*)(Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(systemName)->self();
         if (t != nullptr) {
             return t->getUserName();
         } else {

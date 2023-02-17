@@ -117,13 +117,13 @@ WarrantManager::WarrantManager(QObject *parent) :
  return nullptr;
 }
 
-/*public*/ NamedBean *WarrantManager::getBySystemName(QString name) {
+/*public*/ NamedBean *WarrantManager::getBySystemName(QString name)const {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (NamedBean*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *WarrantManager::getByUserName(QString key){
+/*public*/ NamedBean *WarrantManager::getByUserName(QString key)const{
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return (NamedBean*)_tuser->value(key);
 }

@@ -1,14 +1,14 @@
 #include "catalogtreemanager.h"
 #include "catalogtree.h"
 
-CatalogTreeManager::CatalogTreeManager(QObject *parent) :
-    QObject(parent)
-{
- setObjectName("CatalogTreeManager");
- setProperty("JavaClassName", "jmri.CatalogTreeManager");
+//CatalogTreeManager::CatalogTreeManager(QObject *parent) :
+//    QObject(parent)
+//{
+// setObjectName("CatalogTreeManager");
+// setProperty("JavaClassName", "jmri.CatalogTreeManager");
 
- //registerSelf();
-}
+// //registerSelf();
+//}
 
 /**
  * Locate a CatalogTree object representing some specific information.

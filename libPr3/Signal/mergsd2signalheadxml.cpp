@@ -167,7 +167,7 @@ QDomElement MergSD2SignalHeadXml::addSingleTurnoutElement(Turnout* to) {
     loadCommon(h, shared);
 
     SignalHead* existingBean = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))
-                    ->getBySystemName(sys);
+                    ->getBySystemName(sys)->self();
 
     if ((existingBean != nullptr) && (existingBean != h)) {
         log->error(tr("systemName is already registered: %1").arg(sys));
@@ -189,7 +189,7 @@ NamedBeanHandle<Turnout*>* MergSD2SignalHeadXml::loadTurnout(QDomNode o) {
             name = e.attribute("userName");
             t = InstanceManager::turnoutManagerInstance()->getTurnout(name);
         } else {
-            t = InstanceManager::turnoutManagerInstance()->getBySystemName(name);
+            t = (Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(name)->self();
         }
         if (t != nullptr) {
             return ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);

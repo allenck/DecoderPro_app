@@ -343,7 +343,7 @@ void ControllerFilterFrame::on_save()
          return QVariant();
      }
 
-     Turnout* t = (Turnout*)mgr->getBySystemName(sysNameList.at(index.row()));
+     Turnout* t = (Turnout*)mgr->getBySystemName(sysNameList.at(index.row()))->self();
      if(role == Qt::CheckStateRole)
      {
         switch (index.column())
@@ -451,7 +451,7 @@ void ControllerFilterFrame::on_save()
          if (rt == nullptr) {
              return QVariant();
          }
-         QVariant o = ((DefaultRoute*)rt)->getProperty("WifiControllable");
+         QVariant o = ((DefaultRoute*)rt)->AbstractNamedBean::getProperty("WifiControllable");
          if ((!o.isNull()) && (o.toString().toLower()=="false")) {
              return Qt::CheckState::Unchecked;
          }
@@ -472,7 +472,7 @@ void ControllerFilterFrame::on_save()
              if (rt!=nullptr) {
                  return QVariant();
              }
-             return ((DefaultRoute*)rt)->getUserName();
+             return ((DefaultRoute*)rt)->AbstractNamedBean::getUserName();
          default:
              break;
       }
@@ -488,7 +488,7 @@ void ControllerFilterFrame::on_save()
             case INCLUDECOL:
                 Route* rt = (Route*)mgr->getBySystemName(sysNameList.at(index.row()))->self();
                 if (rt != NULL) {
-                    ((DefaultRoute*)rt)->setProperty("WifiControllable", type);
+                    ((DefaultRoute*)rt)->AbstractNamedBean::setProperty("WifiControllable", type);
                     if (!isDirty) {
                         this->fireTableChanged(new TableModelEvent(this));
                         isDirty = true;
@@ -505,7 +505,7 @@ void ControllerFilterFrame::on_save()
         for (QString sysName : sysNameList) {
             Route* rt = (Route*)mgr->getBySystemName(sysName)->self();
             if (rt != nullptr) {
-                ((DefaultRoute*)rt)->setProperty("WifiControllable", value);
+                ((DefaultRoute*)rt)->AbstractNamedBean::setProperty("WifiControllable", value);
             }
         }
         fireTableDataChanged();

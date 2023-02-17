@@ -314,7 +314,7 @@ void ItemPalette::changeEvent(QEvent * e)
             }
             QDomNodeList families = typeList.at(i).toElement().childNodes();
             loadFamilies(itemType, families, ed);
-            static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"))->indexChanged(true);
+            qobject_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"))->indexChanged(true);
         }
     } catch (JDOMException* e) {
         log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e->getMessage());

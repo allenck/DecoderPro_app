@@ -1001,7 +1001,7 @@ QString ConditionalEditBase::validateTurnoutReference(QString name) {
                 return name;
             }
         }
-        t = (Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(name);
+        t = (Turnout*)InstanceManager::turnoutManagerInstance()->getBySystemName(name)->self();
     }
     if (t == NULL) {
         messageInvalidActionItemName(name, "Turnout"); // NOI18N
@@ -1023,12 +1023,12 @@ QString ConditionalEditBase::validateSignalHeadReference(QString name) {
     SignalHead* h = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            h = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
+            h = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name)->self();
             if (h != NULL) {
                 return name;
             }
         }
-        h = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+        h = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name)->self();
     }
     if (h == NULL) {
         messageInvalidActionItemName(name, "SignalHead"); // NOI18N

@@ -181,8 +181,9 @@ namespace Expressions
          }
 
          if (_logToLog) log->warn(str);
+#ifdef ENABLE_SCRIPTING
          if (_logToScriptOutput) ScriptOutput::getDefault()->getOutputArea()->append(str+"\n");
-
+#endif
          return _result;
      }
 

@@ -138,7 +138,7 @@ void LnTurnoutManager::message(LocoNetMessage* l)
  }
  // reach here for loconet switch command; make sure we know about this one
  QString s = prefix+"T"+QString("%1").arg(addr);
- LnTurnout* lnT = (LnTurnout*) getBySystemName(s);
+ LnTurnout* lnT = (LnTurnout*) getBySystemName(s)->self();
  if (lnT == nullptr) {
      // no turnout with this address, is there a light?
      QString sx = prefix + "L" + addr; // NOI18N

@@ -128,8 +128,8 @@ public:
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
     QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
     QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/;
-    /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName)  override;
-    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName)  override;
+    /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
+    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
 
  signals:
 //    void beanDeleted(NamedBean* s);

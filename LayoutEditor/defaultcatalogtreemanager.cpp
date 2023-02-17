@@ -14,7 +14,7 @@
 /*private*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::_instance = nullptr;
 
 DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
-    CatalogTreeManager(parent)
+    AbstractManager(parent)
 {
  _tsys = new QMap<QString, NamedBean*>();
  _tuser = new QMap<QString, CatalogTree*>();

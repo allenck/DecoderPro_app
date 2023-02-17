@@ -23,8 +23,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   /*public*/ LogixNG* createLogixNG(QString systemName, QString userName) /*throw (IllegalArgumentException)*/ override;
   /*public*/ LogixNG* createLogixNG(QString userName) /*throw (IllegalArgumentException)*/ override;
   /*public*/ LogixNG* getLogixNG(QString name) override;
-  /*public*/ NamedBean* getByUserName(QString name) override;
-  /*public*/ NamedBean* getBySystemName(QString name)  override;
+  /*public*/ NamedBean* getByUserName(QString name)const override;
+  /*public*/ NamedBean* getBySystemName(QString name)const  override;
   /*public*/ QString getBeanTypeHandled(bool plural=false) const override;
   /*public*/ void setupAllLogixNGs() override;
   /*public*/ void activateAllLogixNGs()override;

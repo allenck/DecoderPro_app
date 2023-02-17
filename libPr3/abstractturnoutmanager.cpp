@@ -67,13 +67,16 @@ Turnout* AbstractTurnoutManager::provideTurnout(QString name)
 //@Override
 //@CheckForNull
 Turnout* AbstractTurnoutManager::getTurnout(QString name)  {
-    Turnout* t = (AbstractTurnout*)getByUserName(name)->self();
+    Turnout* t = nullptr;
+    NamedBean* nb = getByUserName(name);
+    if(nb)
+     t = (AbstractTurnout*)nb->self();
     if (t!=nullptr) return t;
 
-    return (Turnout*)getBySystemName(name);
+    return (Turnout*)getBySystemName(name)->self();
 }
 
-Turnout* AbstractTurnoutManager::getBySystemName(QString name)
+NamedBean* AbstractTurnoutManager::getBySystemName(QString name) const
 {
  NamedBean* bean = _tsys->value(name);
  if(!bean)
@@ -106,20 +109,20 @@ Turnout* AbstractTurnoutManager::newTurnout(/*@Nonnull*/ QString systemName, QSt
  }
 
  // return existing if there is one
- Turnout* t=nullptr;
+ Turnout* t = nullptr;
  NamedBean* nb = getByUserName(userName);
  if(nb)
   t = (AbstractTurnout*)nb->self();
- if ( (userName!=nullptr) && ((t /*= (AbstractTurnout*)getByUserName(userName)->self()*/) != nullptr))
+ if ( (userName!="") && ((t /*= (AbstractTurnout*)getByUserName(userName)->self()*/) != nullptr))
  {
-  if (getBySystemName(systemName)!=t)
+  if (getBySystemName(systemName)!=nb)
    log->error(QString("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(systemName).arg(t->getSystemName()));
   return t;
  }
- if ( (t = (Turnout*)getBySystemName(systemName)) != nullptr)
+ if ( (nb = getBySystemName(systemName)) != nullptr)
  {
-  if ((t->getUserName() == nullptr) && (userName != QString()))
-   t->setUserName(userName);
+  if ((nb->getUserName() == "") && (userName != QString()))
+   nb->setUserName(userName);
   else if (userName != QString()) log->warn(QString("Found turnout via system name (%1) with non-nullptr user name (%2)").arg(systemName).arg(userName));
   return t;
  }
@@ -271,7 +274,7 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
   return QString();
  }
 
- Turnout* t = (Turnout*)getBySystemName(tmpSName);
+ Turnout* t = (Turnout*)getBySystemName(tmpSName)->self();
  if(t==nullptr)
  {
   return curAddress;
@@ -292,13 +295,13 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
  iName = iName + t->getNumberOutputBits();
  //Check to determine if the systemName is in use, return nullptr if it is,
  //otherwise return the next valid address.
- t = (Turnout*)getBySystemName(prefix+typeLetter()+iName);
+ t = (Turnout*)getBySystemName(prefix+typeLetter()+iName)->self();
  if(t!=nullptr)
  {
   for(int x = 1; x<10; x++)
   {
    iName = iName + t->getNumberOutputBits();
-   t = (Turnout*)getBySystemName(prefix+typeLetter()+iName);
+   t = (Turnout*)getBySystemName(prefix+typeLetter()+iName)->self();
    if(t==nullptr)
        return QString("%1").arg(iName);
   }

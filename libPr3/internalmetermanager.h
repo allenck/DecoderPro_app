@@ -13,8 +13,8 @@ class InternalMeterManager : public AbstractMeterManager
 
   QObject* mself() override{return (QObject*)this;}
 
-  /*public*/ NamedBean* getBySystemName(QString name) override{return AbstractManager::getBySystemName(name);}
-  /*public*/ NamedBean* getByUserName(QString name) override{return AbstractManager::getByUserName(name);}
+  /*public*/ NamedBean* getBySystemName(QString name)const override{return AbstractManager::getBySystemName(name);}
+  /*public*/ NamedBean* getByUserName(QString name)const override{return AbstractManager::getByUserName(name);}
 
   QObject* vself() override { return (QObject*)this;}
   QObject* pself() override{return (QObject*)this;}

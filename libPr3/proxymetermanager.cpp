@@ -49,7 +49,7 @@
     //@Override
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName)   {
+    /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName) const  {
         NamedBean* meter = AbstractProxyManager::getBySystemName(systemName);
         if (meter == nullptr) {
             meter =  initInternal()->getBySystemName(systemName);
@@ -60,7 +60,7 @@
     /** {@inheritDoc} */
     //@Override
     //@CheckForNull
-    /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName)  {
+    /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName) const {
         NamedBean* meter = AbstractProxyManager::getByUserName(userName);
         if (meter == nullptr) {
             meter = initInternal()->getByUserName(userName);

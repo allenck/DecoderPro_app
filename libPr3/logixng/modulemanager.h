@@ -50,11 +50,11 @@ class MutableInt;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ virtual Module* getByUserName(QString name)override=0;
+    /*public*/ virtual Module* getByUserName(QString name) const override=0;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Module* getBySystemName(QString name)  override =0;
+    /*public*/ Module* getBySystemName(QString name) const override =0;
 
     /**
      * Create a new system name for a Module.

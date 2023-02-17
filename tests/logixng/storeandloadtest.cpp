@@ -1862,7 +1862,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
         logData->setLogToLog(true);
+#ifdef ENABLE_SCRIPTING
         logData->setLogToScriptOutput(true);
+#endif
         logData->setFormat("Some text");
         logData->setFormatType(Actions::LogData::FormatType::OnlyText);
         logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::LocalVariable, "MyVar"));
@@ -1872,7 +1874,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
         logData->setLogToLog(true);
+#ifdef ENABLE_SCRIPTING
         logData->setLogToScriptOutput(true);
+#endif
         logData->setFormat("");
         logData->setFormatType(Actions::LogData::FormatType::CommaSeparatedList);
         logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Memory, "IM1"));
@@ -1882,7 +1886,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
         logData->setLogToLog(true);
+#ifdef ENABLE_SCRIPTING
         logData->setLogToScriptOutput(true);
+#endif
         logData->setFormat("MyVar has the value %s");
         logData->setFormatType(Actions::LogData::FormatType::StringFormat);
         logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Reference, "{MyVar}"));
@@ -1892,7 +1898,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logData = new Actions::LogData(digitalActionManager->getAutoSystemName(), "");
         logData->AbstractNamedBean::setComment("A comment");
         logData->setLogToLog(true);
+#ifdef ENABLE_SCRIPTING
         logData->setLogToScriptOutput(true);
+#endif
         logData->setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
         logData->setFormatType(Actions::LogData::FormatType::StringFormat);
         logData->getDataList()->append(Actions::LogData::Data(Actions::LogData::DataType::Formula, "str(10)"));
@@ -3126,7 +3134,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
         logDataExpr->setLogToLog(true);
-        logDataExpr->setLogToScriptOutput(true);
+#ifdef ENABLE_SCRIPTING
+        logData->setLogToScriptOutput(true);
+#endif
         logDataExpr->setFormat("Some text");
         logDataExpr->setFormatType(Expressions::LogData::FormatType::OnlyText);
         logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::LocalVariable, "MyVar"));
@@ -3136,7 +3146,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
         logDataExpr->setLogToLog(true);
-        logDataExpr->setLogToScriptOutput(true);
+#ifdef ENABLE_SCRIPTING
+        logData->setLogToScriptOutput(true);
+#endif
         logDataExpr->setFormat("");
         logDataExpr->setFormatType(Expressions::LogData::FormatType::CommaSeparatedList);
         logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Memory, "IM1"));
@@ -3146,7 +3158,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
         logDataExpr->setLogToLog(true);
-        logDataExpr->setLogToScriptOutput(true);
+#ifdef ENABLE_SCRIPTING
+        logData->setLogToScriptOutput(true);
+#endif
         logDataExpr->setFormat("MyVar has the value %s");
         logDataExpr->setFormatType(Expressions::LogData::FormatType::StringFormat);
         logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Reference, "{MyVar}"));
@@ -3156,7 +3170,9 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         logDataExpr = new Expressions::LogData(digitalExpressionManager->getAutoSystemName(), "");
         logDataExpr->AbstractNamedBean::setComment("A comment");
         logDataExpr->setLogToLog(true);
-        logDataExpr->setLogToScriptOutput(true);
+#ifdef ENABLE_SCRIPTING
+        logData->setLogToScriptOutput(true);
+#endif
         logDataExpr->setFormat("str(10): %s, 25: %d, IM1: %s, MyVar: %s");
         logDataExpr->setFormatType(Expressions::LogData::FormatType::StringFormat);
         logDataExpr->getDataList().append( Expressions::LogData::Data(Expressions::LogData::DataType::Formula, "str(10)"));

@@ -103,12 +103,13 @@ public:
      return "LayoutBlock";
  }
  /*public*/ QString getBeanTypeHandled(bool plural)const override;
- /*public*/ NamedBean *getBySystemName(QString name)  override;
- /*public*/ NamedBean *getByUserName(QString key) override;
+ /*public*/ NamedBean *getBySystemName(QString name) const override;
+ /*public*/ NamedBean *getByUserName(QString key)const override;
 
  QObject* self() override{return (QObject*)this;}
  QObject* vself() override {return (QObject*)this;}
-QObject* pself() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
+
 signals:
  void propertyChange(PropertyChangeEvent *e) override;
 

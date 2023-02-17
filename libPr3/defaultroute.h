@@ -5,16 +5,15 @@
 #include "instancemanager.h"
 #include "route.h"
 #include "abstractsensor.h"
-#include "namedbean.h"
 
 class ControlSensor;
 class OutputSensor;
 class OutputTurnout;
 class InstanceManager;
-class LIBPR3SHARED_EXPORT DefaultRoute : public Route, public VetoableChangeListener
+class LIBPR3SHARED_EXPORT DefaultRoute : public AbstractNamedBean, public Route, public VetoableChangeListener
 {
     Q_OBJECT
-  Q_INTERFACES(VetoableChangeListener)
+  Q_INTERFACES(Route VetoableChangeListener)
 public:
     //explicit DefaultRoute(QObject *parent = 0);
     /*public*/ DefaultRoute(QString systemName, QString userName,QObject *parent = 0) ;
@@ -76,8 +75,9 @@ public:
     /*public*/ bool isRouteBusy();
     /*public*/ int getState() override ;
     /*public*/ void setState(int state) override ;
-    /*public*/ QObject* self() override {return (QObject*)this;}
     /*public*/ QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean);
+
+    /*public*/ QObject* self() override {return (QObject*)this;}
 
 signals:
 

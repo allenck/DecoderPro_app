@@ -22,6 +22,10 @@ void DefaultLogixNGManagerTestAction::actionPerformed()
     << "testCreateNewLogixNG"
     << "testSetupInitialConditionalNGTree"
     << "testDeleteLogixNG"
+    << "testDeleteConditionalNG"
+    << "testDeleteModule"
+    << "testDeleteAction"
+    << "testDeleteTable"
        ;
 
  JUnitUtil::runTests(test, testList);

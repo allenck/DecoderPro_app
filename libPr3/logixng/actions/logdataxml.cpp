@@ -34,7 +34,9 @@ namespace Actions
         storeCommon(p, element);
 
         element.appendChild(doc.createElement("logToLog").appendChild(doc.createTextNode(p->getLogToLog() ? "yes" : "no")));
+#ifdef ENABLE_SCRIPTING
         element.appendChild(doc.createElement("logToScriptOutput").appendChild(doc.createTextNode(p->getLogToScriptOutput() ? "yes" : "no")));
+#endif
         element.appendChild(doc.createElement("formatType").appendChild(doc.createTextNode(LogData::FormatType::toString(p->getFormatType()))));
         element.appendChild(doc.createElement("format").appendChild(doc.createTextNode(p->getFormat())));
 
@@ -62,8 +64,9 @@ namespace Actions
         h->setLogToLog((!elem.isNull()) ? elem.text().trimmed() == ("yes") : false);  // NOI18N
 
         elem = shared.firstChildElement("logToScriptOutput");  // NOI18N
+#ifdef ENABLE_SCRIPTING
         h->setLogToScriptOutput((!elem.isNull()) ? elem.text().trimmed() == ("yes") : false);  // NOI18N
-
+#endif
         elem = shared.firstChildElement("formatType");  // NOI18N
         h->setFormatType((!elem.isNull()) ? LogData::FormatType::fromString(elem.text().trimmed()) : LogData::FormatType::OnlyText);
 

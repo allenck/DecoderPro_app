@@ -206,7 +206,7 @@ return (settingRouteColor == QColor() ? false : true);
     return ENTRYEXIT;
 }
 
-/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName)
+/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName)const
 {
  foreach(Source* e,   nxpair.values())
  {
@@ -219,7 +219,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) {
+/*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName)const {
  if(userName=="")
   throw new NullPointerException(tr("userName is marked NonNull but is null"));
 

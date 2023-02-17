@@ -120,7 +120,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  LogixNG*  DefaultConditionalNGManager::getParentLogixNG(QString systemName) {
+    /*public*/  LogixNG*  DefaultConditionalNGManager::getParentLogixNG(QString systemName) const {
         if (systemName == "" || systemName.isEmpty()) {
             return nullptr;
         }
@@ -154,7 +154,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  ConditionalNG *DefaultConditionalNGManager::getBySystemName(QString name) {
+    /*public*/  ConditionalNG *DefaultConditionalNGManager::getBySystemName(QString name) const{
+     if(name.isEmpty()) throw new NullPointerException("name is null!");
         LogixNG* logixNG = getParentLogixNG(name);
         if (logixNG != nullptr) {
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {
@@ -248,7 +249,7 @@
     //@Override
 //    @OverridingMethodsMustInvokeSuper
     /*public*/  /*final*/ void  DefaultConditionalNGManager::deleteBean(/*@Nonnull*/ /*ConditionalNG*/NamedBean* nb, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/ {
-     ConditionalNG* conditionalNG = (ConditionalNG*)nb->self();
+     ConditionalNG* conditionalNG = (DefaultConditionalNG*)nb->self();
      for (int i=0; i < conditionalNG->getChildCount(); i++) {
             FemaleSocket* child = conditionalNG->getChild(i);
             if (child->isConnected()) {

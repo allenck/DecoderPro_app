@@ -6,8 +6,10 @@
 #include "../conditionalng.h"
 #include "../defaultmemorymanager.h"
 #include "../referenceutil.h"
-#include "scriptoutput.h"
 #include "jtextarea.h"
+#ifdef ENABLE_SCRIPTING
+#include "scriptoutput.h"
+#endif
 
 /**
  * This action logs some data.
@@ -34,7 +36,9 @@ namespace Actions
          LogData* copy = new LogData(sysName, userName);
          copy->AbstractNamedBean::setComment(AbstractNamedBean::getComment());
          copy->setLogToLog(_logToLog);
+#ifdef ENABLE_SCRIPTING
          copy->setLogToScriptOutput(_logToScriptOutput);
+#endif
          copy->setFormat(_format);
          copy->setFormatType(_formatType);
          for (Data data : *_dataList) {
@@ -50,7 +54,7 @@ namespace Actions
      /*public*/  bool LogData::getLogToLog() {
          return _logToLog;
      }
-
+#ifdef ENABLE_SCRIPTING
      /*public*/  void LogData::setLogToScriptOutput(bool logToScriptOutput) {
          _logToScriptOutput = logToScriptOutput;
      }
@@ -58,7 +62,7 @@ namespace Actions
      /*public*/  bool LogData::getLogToScriptOutput() {
          return _logToScriptOutput;
      }
-
+#endif
      /*public*/  void LogData::setFormatType(FormatType::FORMATTYPE formatType) {
          _formatType = formatType;
      }
@@ -173,8 +177,9 @@ namespace Actions
          }
 
          if (_logToLog) log->warn(str);
+#ifdef ENABLE_SCRIPTING
          if (_logToScriptOutput) ScriptOutput::getDefault()->getOutputArea()->append(str+"\n");
-
+#endif
      }
 
      //@Override

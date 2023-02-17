@@ -38,12 +38,23 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
      switch (t) {
      case SetToNull: return tr("Null");
      case SetToString: return tr("Constant");
-     case CopyVariableToMemory: return tr("");
+     case CopyVariableToMemory: return tr("Variable");
      case CopyMemoryToMemory: return tr("Memory");
      case CopyTableCellToMemory: return  tr("Table");
      case CalculateFormula: return tr("Formula");
      }
    }
+
+    /*public*/static  TYPE valueOf(QString s) {
+     if(s=="Null") return SetToNull;
+     if(s=="Constant") return SetToString;
+     if(s=="Variable") return CopyVariableToMemory;
+     if(s=="Memory") return CopyMemoryToMemory;
+     if(s=="Table") return CopyTableCellToMemory;
+     if(s=="Formula") return CalculateFormula;
+     throw new IllegalArgumentException();
+   }
+
 
   };
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;

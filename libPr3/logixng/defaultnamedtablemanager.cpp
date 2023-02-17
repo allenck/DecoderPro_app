@@ -184,7 +184,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable* DefaultNamedTableManager::getByUserName(QString name) {
+/*public*/  NamedTable* DefaultNamedTableManager::getByUserName(QString name) const{
  if(_tuser->value(name))
     return (NamedTable*)_tuser->value(name)->self();
  return nullptr;
@@ -194,7 +194,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable* DefaultNamedTableManager::getBySystemName(QString name) {
+/*public*/  NamedTable* DefaultNamedTableManager::getBySystemName(QString name)const {
  if(_tsys->value(name))
     return (NamedTable*)_tsys->value(name)->self();
  return nullptr;

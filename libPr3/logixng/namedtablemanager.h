@@ -99,11 +99,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ virtual NamedBean* getByUserName(QString name)override=0; // NamedTable
+    /*public*/ virtual NamedBean* getByUserName(QString name)const override=0; // NamedTable
 
     /** {@inheritDoc} */
     //@Override
-    virtual /*public*/ NamedBean* getBySystemName(QString name)=0;// NamedTable
+    virtual /*public*/ NamedBean* getBySystemName(QString name)const override =0;// NamedTable
 
     /**
      * Create a new system name for a LogixNG.

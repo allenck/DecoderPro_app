@@ -60,7 +60,7 @@
 //@Override
 //@CheckReturnValue
 //@CheckForNull
-/*public*/  NamedBean* ProxyAnalogIOManager::getBySystemName(/*@Nonnull*/ QString systemName) {
+/*public*/  NamedBean* ProxyAnalogIOManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
     NamedBean* analogIO = AbstractProxyManager::getBySystemName(systemName);
     if (analogIO == nullptr) {
         analogIO = initInternal()->getBySystemName(systemName);
@@ -71,7 +71,7 @@
 /** {@inheritDoc} */
 //@Override
 //@CheckForNull
-/*public*/  NamedBean* ProxyAnalogIOManager::getByUserName(/*@Nonnull*/ QString userName) {
+/*public*/  NamedBean* ProxyAnalogIOManager::getByUserName(/*@Nonnull*/ QString userName) const {
     NamedBean* analogIO = AbstractProxyManager::getByUserName(userName);
     if (analogIO == nullptr) {
         analogIO = initInternal()->getByUserName(userName);

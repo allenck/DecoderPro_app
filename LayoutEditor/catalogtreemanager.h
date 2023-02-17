@@ -4,14 +4,14 @@
 #include "liblayouteditor_global.h"
 
 class CatalogTree;
-class LIBLAYOUTEDITORSHARED_EXPORT CatalogTreeManager : public QObject, public Manager//AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT CatalogTreeManager :/* public QObject,*/ public Manager//AbstractManager
 {
-    Q_OBJECT
+    //Q_OBJECT
   Q_INTERFACES(Manager)
 public:
-    explicit CatalogTreeManager(QObject *parent = 0);
-    ~CatalogTreeManager() override{}
-    CatalogTreeManager(const CatalogTreeManager&) : QObject() {}
+//    explicit CatalogTreeManager(QObject *parent = 0);
+//    ~CatalogTreeManager() override{}
+//    CatalogTreeManager(const CatalogTreeManager&) : QObject() {}
     static /*final*/ QStringList IMAGE_FILTER;// = {"gif", "jpg", "jpeg", "png"};
     static /*final*/ QStringList SOUND_FILTER;// = {"wav"};
     static /*final*/ QStringList SCRIPT_FILTER;// = {"py", "scpt"};
@@ -22,7 +22,7 @@ public:
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
+    /*public*/  NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
@@ -84,5 +84,5 @@ public slots:
 private:
 
 };
-Q_DECLARE_METATYPE(CatalogTreeManager)
+Q_DECLARE_INTERFACE(CatalogTreeManager, "CatalogTreeManager")
 #endif // CATALOGTREEMANAGER_H

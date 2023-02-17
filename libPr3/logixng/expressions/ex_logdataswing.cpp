@@ -34,10 +34,10 @@ namespace Expressions {
 
         _logToLogCheckBox = new JCheckBox(tr("Log to the log"));
         panel->layout()->addWidget(_logToLogCheckBox);
-
+#ifdef ENABLE_SCRIPTING
         _logToScriptOutputCheckBox = new JCheckBox(tr("Log to the Script Output"));
         panel->layout()->addWidget(_logToScriptOutputCheckBox);
-
+#endif
 
         JPanel* formatTypePanel = new JPanel(new FlowLayout);
         _formatType = new JComboBox();
@@ -57,7 +57,9 @@ namespace Expressions {
 
         if (logData != nullptr) {
             _logToLogCheckBox->setSelected(logData->getLogToLog());
+#ifdef ENABLE_SCRIPTING
             _logToScriptOutputCheckBox->setSelected(logData->getLogToScriptOutput());
+#endif
             _formatType->setSelectedItem(logData->getFormatType());
             _format->setText(logData->getFormat());
         }
@@ -151,10 +153,10 @@ namespace Expressions {
         }
         LogData* logData = (LogData*)object->bself();
 
-
+#ifdef ENABLE_SCRIPTING
         logData->setLogToLog(_logToLogCheckBox->isSelected());
         logData->setLogToScriptOutput(_logToScriptOutputCheckBox->isSelected());
-
+#endif
         logData->setFormatType((LogData::FormatType::FORMATTYPE)_formatType->getItemAt(_formatType->getSelectedIndex()).toUInt());
         logData->setFormat(_format->text());
 

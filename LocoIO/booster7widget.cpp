@@ -37,7 +37,7 @@ Booster7Widget::Booster7Widget(LocoIOData* data, int port, /*LnPacketizer* packe
 #endif
     ui->edStatus->setStyleSheet("QLineEdit { background-color : yellow; }");
 
-    Turnout* t =(Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->TurnoutManager::getBySystemName("LT"+QString::number(data->getAddr(channel)));
+    Turnout* t =(Turnout*)((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->TurnoutManager::getBySystemName("LT"+QString::number(data->getAddr(channel)))->self();
     if(t)
     {
      switch(t->getKnownState())

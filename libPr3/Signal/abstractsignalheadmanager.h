@@ -17,13 +17,13 @@ public:
 //    /*public*/ QString getSystemPrefix()const override;
     /*public*/ QChar typeLetter() const override ;
     /*public*/ SignalHead* getSignalHead(QString name) override;
-    /*public*/ SignalHead* getBySystemName(QString name) override
+    /*public*/ NamedBean* getBySystemName(QString name) const override
     {
      if(AbstractManager::getBeanBySystemName(name))
       return (SignalHead*) AbstractManager::getBeanBySystemName(name)->self();
      return nullptr;
     }
-    /*public*/ SignalHead* getByUserName(QString key) override
+    /*public*/ NamedBean* getByUserName(QString key)const override
     {
      if(AbstractManager::getByUserName(key))
       return (SignalHead*) AbstractManager::getByUserName(key)->self();
@@ -43,7 +43,7 @@ public:
     QObject* pself() override{return (QObject*)this;}
 
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
-//    /*public*/ SignalHead* getBySystemName(QString name) override {return (SignalHead*)AbstractManager::getBySystemName(name);}
+//    /*public*/ SignalHead* getBySystemName(QString name) const override {return (SignalHead*)AbstractManager::getBySystemName(name)->self();}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 

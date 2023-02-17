@@ -99,9 +99,9 @@ QDomElement LsDecSignalHeadXml::addTurnoutElement(QString name, int s) {
 
     loadCommon(h, shared);
 
-    SignalHead* existingBean =
+    SignalHead* existingBean = (SignalHead*)
             ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))
-                    ->getBySystemName(sys);
+                    ->getBySystemName(sys)->self();
 
     if ((existingBean != nullptr) && (existingBean != h)) {
         log->error(tr("systemName is already registered: %1").arg(sys));

@@ -46,8 +46,8 @@ public:
          */
         virtual SignalHead* getSignalHead(QString name) = 0;
 
-        virtual SignalHead* getByUserName(QString /*s*/)  = 0;
-        virtual SignalHead* getBySystemName(QString /*s*/)  = 0;
+//        virtual SignalHead* getByUserName(QString /*s*/)  = 0;
+//        virtual SignalHead* getBySystemName(QString /*s*/)  = 0;
 
         /**
          * Get a list of all SignalHead system names.

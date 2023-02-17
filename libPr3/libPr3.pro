@@ -168,14 +168,9 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
- logixng/actions/act_logix.cpp \
- logixng/digitalbooleanonchangexml.cpp \
- logixng/executedelayedswing.cpp \
- logixng/executedelayedxml.cpp \
- logixng/logixswing.cpp \
- logixng/logixxml.cpp \
- logixng/sequencexml.cpp \
- memoryframeaction.cpp \
+ logixng/actionmemoryswing.cpp \
+ logixng/actionmemoryxml.cpp \
+    memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1148,6 +1143,13 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+    logixng/actions/act_logix.cpp \
+    logixng/digitalbooleanonchangexml.cpp \
+    logixng/executedelayedswing.cpp \
+    logixng/executedelayedxml.cpp \
+    logixng/logixswing.cpp \
+    logixng/logixxml.cpp \
+    logixng/sequencexml.cpp \
     logixng/actions/stringfactory.cpp \
     logixng/expressions/ex_stringfactory.cpp \
     logixng/expressionturnoutswing.cpp \
@@ -1553,13 +1555,8 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- logixng/actions/act_logix.h \
- logixng/digitalbooleanonchangexml.h \
- logixng/executedelayedswing.h \
- logixng/executedelayedxml.h \
- logixng/logixswing.h \
- logixng/logixxml.h \
- logixng/sequencexml.h \
+ logixng/actionmemoryswing.h \
+ logixng/actionmemoryxml.h \
  memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
@@ -2646,6 +2643,13 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actions/act_logix.h \
+    logixng/digitalbooleanonchangexml.h \
+    logixng/executedelayedswing.h \
+    logixng/executedelayedxml.h \
+    logixng/logixswing.h \
+    logixng/logixxml.h \
+    logixng/sequencexml.h \
     logixng/actions/stringfactory.h \
     logixng/expressions/ex_stringfactory.h \
     logixng/expressionturnoutswing.h \

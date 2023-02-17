@@ -143,7 +143,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
      foreach(NamedBeanUsageReport* report, *((DefaultRoute*)route)->getUsageReport(bean))
      {
             if (report->usageKey.startsWith("Route")) {  // NOI18N
-                QString name = ((DefaultRoute*)route)->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
+                QString name = ((DefaultRoute*)route)->AbstractNamedBean::getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
                 sb.append(tr("\n%1	").arg(name));  // NOI18N
             }
         }//);

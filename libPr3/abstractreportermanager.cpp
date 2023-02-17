@@ -50,12 +50,12 @@ Reporter* AbstractReporterManager::getReporter(QString name)  {
 }
 
 #if 1
-NamedBean *AbstractReporterManager::getBySystemName(QString name)
+NamedBean *AbstractReporterManager::getBySystemName(QString name) const
 {
     return /*(Reporter*)*/_tsys->value(name);
 }
 
-NamedBean *AbstractReporterManager::getByUserName(QString key){
+NamedBean *AbstractReporterManager::getByUserName(QString key) const{
     return _tuser->value(key);
 }
 #endif

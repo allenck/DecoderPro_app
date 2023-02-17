@@ -497,10 +497,10 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
 }
 
 /*public*/ void BlockBossLogic::setWatchedSensor1Alt(QString name) {
-    if (name == NULL || name==("")) {
+ if (name == NULL || name==("")) {
         watchedSensor1Alt = NULL;
         return;
-    }
+ }
  watchedSensor1Alt = nbhm->getNamedBeanHandle(name, ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(name));
  if (watchedSensor1Alt == NULL || watchedSensor1Alt->getBean() == NULL) log->warn(tr("Sensor1Alt_")+name+tr("_was not found!"));
  else

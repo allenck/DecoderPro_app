@@ -104,8 +104,8 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
   /*public*/ QString toString()override;
 
-  QObject* bself() override {return (QObject*)this;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return this;}
+  QObject* self() override {return this;}
   QObject* msself() override {return this;}
 
 

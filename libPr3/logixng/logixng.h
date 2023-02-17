@@ -2,7 +2,6 @@
 #define LOGIXNG_H
 #include "namedbean.h"
 #include "base.h"
-#include "abstractnamedbean.h"
 #include "defaultconditionalng.h"
 #include <QHash>
 

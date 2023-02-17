@@ -15,14 +15,14 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     Q_INTERFACES( ProxyManager PropertyChangeListener Manager::ManagerDataListener VetoableChangeListener)
  public:
     AbstractProxyManager(QObject* parent = nullptr );
-    /*public*/  QList<AbstractManager/*<E>*/*> getManagerList() override;
+    /*public*/  QList<AbstractManager/*<E>*/*> getManagerList() const override;
     /*public*/  QList<AbstractManager/*<E>*/*> getDisplayOrderManagerList() override;
     /*public*/  AbstractManager *getInternalManager() const; //not override!
     /*public*/  AbstractManager *getDefaultManager() const override;
     /*public*/  void addManager(/*@Nonnull*/ AbstractManager *m) override;
     /*public*/  /*E*/NamedBean* getNamedBean(/*@Nonnull*/ QString name) override;
-    /*public*/  /*E*/NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) override;
-    /*public*/  /*E*/NamedBean* getByUserName(/*@Nonnull*/ QString userName)  override;
+    /*public*/  /*E*/NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
+    /*public*/  /*E*/NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
     /*public*/  QString validateSystemNameFormat(/*@Nonnull*/ QString systemName, /*@Nonnull*/ QLocale locale) override;
     /*public*/  Manager::NameValidity validSystemNameFormat(/*@Nonnull*/ QString systemName) override;
     /*public*/  void dispose()override;
@@ -89,7 +89,7 @@ protected:
     /*protected*/ AbstractManager/*<E>*/* initInternal() const; // no override!
     /*protected*/ mutable AbstractManager/*<E>*/* defaultManager = nullptr;
     /*abstract*/virtual /*protected*/ AbstractManager/*<E>*/* makeInternalManager()  const {return nullptr;}
-    /*protected*/ AbstractManager *getManager(/*@Nonnull*/ QString systemName) ; // not override!
+    /*protected*/ AbstractManager *getManager(/*@Nonnull*/ QString systemName) const ; // not override!
     /*protected*/ AbstractManager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);
     virtual /*protected*/ AbstractManager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) ;
     /*protected*/ void recomputeNamedBeanSet() const;

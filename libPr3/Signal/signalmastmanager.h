@@ -62,11 +62,11 @@ public:
                                         QStringList /*heads*/)  {return NULL;}
 
 //    /*public*/ virtual SignalMast* getBySystemName(QString /*s*/)   override =0;
-    /*public*/ virtual SignalMast* getByUserName(QString /*s*/)   override = 0;
+    /*public*/ virtual SignalMast* getByUserName(QString /*s*/) const  override = 0;
     virtual /*public*/ SignalMast* provide(QString name) /*throw (IllegalArgumentException)*/=0;
  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 // /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
- /*public*/ SignalMast* getBySystemName(QString name) override {return (SignalMast*)AbstractManager::getBySystemName(name)->self();}
+ /*public*/ SignalMast* getBySystemName(QString name) const override {return (SignalMast*)AbstractManager::getBySystemName(name)->self();}
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 

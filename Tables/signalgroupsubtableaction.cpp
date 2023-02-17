@@ -252,7 +252,7 @@ if (addFrame==NULL)
  contentPaneLayout->addLayout(pFlowLayout);
  if (QString(curSignalHead->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal);
+  SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal)->self();
   if ((((DefaultSignalGroup*)g)->getHeadOnState(curSignalHead)==0x00) && (((DefaultSignalGroup*)g)->getHeadOffState(curSignalHead)==0x00)){
             ((DefaultSignalGroup*)g)->setHeadOnState(curSignalHead, Signal->getOnAppearance());
             ((DefaultSignalGroup*)g)->setHeadOffState(curSignalHead, Signal->getOffAppearance());

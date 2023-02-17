@@ -232,7 +232,7 @@ Section* SectionManager::createNewSection(QString userName) {
     QStringList signalList = shManager->getSystemNameList();
     for (int j=0; j<signalList.size(); j++)
     {
-     SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)shManager)->getBySystemName(signalList.at(j));
+     SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)shManager)->getBySystemName(signalList.at(j))->self();
      if (!cUtil->removeSensorsFromSignalHeadLogic(&sensorList,	sh)) numErrors ++;
  }
  return numErrors;

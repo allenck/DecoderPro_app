@@ -80,7 +80,7 @@ public:
      * @param systemName system name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual IdTag* getBySystemName(QString /*systemName*/)  override{return NULL;}
+    /*public*/ virtual IdTag* getBySystemName(QString /*systemName*/) const override{return NULL;}
 
     /**
      * Locate an instance based on a user name.  Returns null if no
@@ -88,7 +88,7 @@ public:
      * @param userName user name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual IdTag* getByUserName(QString /*userName*/) {return nullptr;}
+    /*public*/ virtual IdTag* getByUserName(QString /*userName*/)const override {return nullptr;}
 
     /**
      * Locate an instance based on a tag ID.  Returns null if no
@@ -169,7 +169,7 @@ public:
     /**
      * Perform initialisation
      */
-    /*public*/ virtual void init()  {}
+    /*public*/ virtual void init() = 0;
 
     /**
      * Determines if the manager has been initialised

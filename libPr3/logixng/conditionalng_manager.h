@@ -75,7 +75,7 @@
      * @param systemName The ConditionalNG system name.
      * @return the parent LogixNG or null if none found.
      */
-    /*public*/ virtual LogixNG* getParentLogixNG(QString systemName)=0;
+    /*public*/ virtual LogixNG* getParentLogixNG(QString systemName) const =0;
 
     /**
      * Find the ConditionalNG which is a member of the LogixNG with the supplied user name.
@@ -87,11 +87,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ virtual NamedBean* getByUserName(QString name) override {return nullptr;}
+    /*public*/ virtual NamedBean* getByUserName(QString name)const override =0;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*ConditionalNG*/NamedBean* getBySystemName(QString name) override =0;
+    /*public*/ /*ConditionalNG*/NamedBean* getBySystemName(QString name)const override =0;
 
     /**
      * {@inheritDoc}

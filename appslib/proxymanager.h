@@ -40,7 +40,7 @@ public:
      *
      * @return the list of managers
      */
- /*public*/ virtual QList<AbstractManager*> getManagerList()  =0;
+ /*public*/ virtual QList<AbstractManager*> getManagerList() const =0;
 
     /**
      * Get a list of all managers, with the default as the first item and internal
