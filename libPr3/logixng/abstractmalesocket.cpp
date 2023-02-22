@@ -27,14 +27,14 @@
 {
  if(objectName().isEmpty())
   setObjectName("AbstractMaleSocket");
- if(object && mSystemName.isEmpty())
-  mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
+// if(object && mSystemName.isEmpty())
+//  mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
 
  _manager = manager;
  //QObject* obj = object->bself();
- if(object && qobject_cast<AbstractMaleSocket*>(object->bself()))
-  _object = (AbstractMaleSocket*) object->bself();
- else
+// if(object && qobject_cast<AbstractMaleSocket*>(object->bself()))
+//  _object = (AbstractMaleSocket*) object->bself();
+// else
  _object = object;
 }
 
@@ -135,7 +135,9 @@
 
 //@Override
 /*public*/ /*final*/ QString AbstractMaleSocket::getSystemName() const{
- QString sys = ((AbstractMaleSocket*)_object->bself())->AbstractNamedBean::getSystemName();
+ Base* o = _object;
+ QString sys = ((AbstractNamedBean*)_object->bself())->getSystemName();
+ //QString sys = _object->getSystemName();
  if(sys.isEmpty())
     return _object->getSystemName();
 // QObject* obj = (QObject*)_object;

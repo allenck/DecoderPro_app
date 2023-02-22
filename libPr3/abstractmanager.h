@@ -5,8 +5,6 @@
 #include "manager.h"
 //#include "swingpropertychangesupport.h"
 #include "libPr3_global.h"
-#include "propertyvetoexception.h"
-#include "namedbeancomparator.h"
 #include <QAtomicInteger>
 #include "decimalformat.h"
 #include "vetoablechangelistener.h"

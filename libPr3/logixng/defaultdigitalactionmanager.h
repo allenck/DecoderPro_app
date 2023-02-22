@@ -6,6 +6,7 @@
 #include "digitalactionmanager.h"
 #include "category.h"
 #include "abstractmalesocket.h"
+#include "abstractaction.h"
 
 class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalActionManager
 {
@@ -15,8 +16,8 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
   explicit DefaultDigitalActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  AbstractMaleSocket *getLastRegisteredMaleSocket()override;
-  /*public*/  AbstractMaleSocket *registerBean(/*MaleDigitalActionSocket*/AbstractMaleSocket *maleSocket)override;
-  /*public*/  MaleDigitalActionSocket* registerAction(/*@Nonnull*/ DigitalActionBean* action)
+  /*public*/  AbstractMaleSocket *registerBean(/*MaleDigitalActionSocket*/AbstractMaleSocket *maleSocket) override;
+  /*public*/  MaleDigitalActionSocket* registerAction(/*@Nonnull*/ NamedBean* action)
           /*throws IllegalArgumentException*/ override;
   /*public*/  int getXMLOrder() const override;
   /*public*/  QChar typeLetter() const override;

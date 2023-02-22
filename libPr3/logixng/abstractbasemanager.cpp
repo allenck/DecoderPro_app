@@ -91,13 +91,15 @@
         // this, we search for the registered bean with the system name and
         // then deregister the bean we have found.
      QObject* obj = s->self();
-     QString sn = ((AbstractMaleSocket*)obj)->getSystemName();
-        NamedBean*bean = AbstractBaseManager::getBySystemName(((AbstractNamedBean*)s->self())->getSystemName());
-        if (bean == nullptr) {
-            // This should never happen.
-            throw new IllegalArgumentException(((AbstractNamedBean*)s->self())->getSystemName() + " is not registered in manager");
-        }
-        AbstractManager::deregister(bean);
+     //QString sn = ((AbstractMaleSocket*)obj)->getSystemName();
+     QString sn = s->getSystemName();
+//        NamedBean*bean = AbstractBaseManager::getBySystemName(((AbstractNamedBean*)s->self())->getSystemName());
+//        if (bean == nullptr) {
+//            // This should never happen.
+//            throw new IllegalArgumentException(((AbstractNamedBean*)s->self())->getSystemName() + " is not registered in manager");
+//        }
+//        AbstractManager::deregister(bean);
+     AbstractManager::deregister(s);
     }
 
     /**
@@ -134,8 +136,8 @@
          throw new NullPointerException("required bean is null!");
         //AbstractMaleSocket* ams = (AbstractMaleSocket*)bean->bself();
 //        /*QString*/ sys = ((AbstractMaleSocket*)bean->bself())->getSystemName();
-        NamedBean* nb2 = ((AbstractNamedBean*)(s->getObject()->bself()));
-        QString sys2 = nb2->getSystemName();
+//        NamedBean* nb2 = ((AbstractNamedBean*)(s->getObject()->bself()));
+//        QString sys2 = nb2->getSystemName();
         //AbstractManager::Register(nb2);
         AbstractManager::Register(bean);
         return bean;

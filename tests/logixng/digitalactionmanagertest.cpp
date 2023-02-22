@@ -5,7 +5,7 @@
 #include "maledigitalactionsocket.h"
 #include "junitappender.h"
 #include "defaultdigitalactionmanager.h"
-#include "analogactionmemory.h"
+#include "defaultmaledigitalactionsocket.h"
 #include "actionmemory.h"
 #include "logixng_thread.h"
 
@@ -34,7 +34,8 @@
         // We need a male socket to test with, so we register the action and then unregister the socket
         DigitalActionBean* action = new ActionMemory("IQDA321", "");
         MaleDigitalActionSocket* maleSocket = _m->registerAction(action);
-        _m->deregister(maleSocket);
+        NamedBean* nb = (NamedBean*)maleSocket;
+        _m->deregister((NamedBean*)maleSocket);
 
         hasThrown = false;
         try {

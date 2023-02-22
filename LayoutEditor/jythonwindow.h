@@ -1,7 +1,6 @@
 #ifndef JYTHONWINDOW_H
 #define JYTHONWINDOW_H
 #include "abstractaction.h"
-#include "/home/allen/Projects/PythonQt/pythonqt-code/extensions/PythonQt_QtAll/PythonQt_QtAll.h"
 #include "windowlistener.h"
 
 class JTextArea;

@@ -265,7 +265,10 @@ public:
       */
      //@CheckReturnValue
      //@CheckForNull
-     virtual/*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString /*systemName*/) const  =0;
+     virtual/*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString /*systemName*/) const  //=0;
+ {
+  throw new IllegalArgumentException();
+ }
      /**
       * Locate an existing instance based on a user name.
       *

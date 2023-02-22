@@ -3,10 +3,7 @@
 #include "file.h"
 #include "fileutil.h"
 #include "jfilechooser.h"
-#include "../../../../PythonQt/pythonqt-code/src/PythonQt.h"
-#include "PythonQt_QtAll.h"
-#include "jframe.h"
-#include "pythonwrappers.h"
+#include "PythonQt.h"
 
 RunJythonScript::RunJythonScript(QObject *parent) :
   JmriAbstractAction(tr("Run Jython Script"),parent)

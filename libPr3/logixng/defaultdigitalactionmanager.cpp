@@ -1,4 +1,5 @@
 #include "defaultdigitalactionmanager.h"
+#include "abstractaction.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "defaultlogixngmanager.h"
@@ -99,10 +100,10 @@
  * @param action the bean
  */
 //@Override
-/*public*/  MaleDigitalActionSocket* DefaultDigitalActionManager::registerAction(/*@Nonnull*/ DigitalActionBean* action)
+/*public*/  MaleDigitalActionSocket* DefaultDigitalActionManager::registerAction(/*@Nonnull*/ /*DigitalActionBean*/NamedBean *action)
         /*throws IllegalArgumentException*/ {
 
-    if (qobject_cast<DefaultMaleDigitalActionSocket*>(action->bself())) {
+    if (qobject_cast<DefaultMaleDigitalActionSocket*>(action->self())) {
         throw new IllegalArgumentException("registerAction() cannot register a MaleDigitalActionSocket. Use the method register() instead.");
     }
 
@@ -116,7 +117,7 @@
     updateAutoNumber(((AbstractNamedBean*)action->self())->getSystemName());
 
     // save in the maps
-    MaleDigitalActionSocket* maleSocket = createMaleActionSocket(action);
+    MaleDigitalActionSocket* maleSocket = createMaleActionSocket((DigitalActionBean*)action->self());
     //return (MaleDigitalActionSocket*)registerBean(maleSocket);
     AbstractMaleSocket* ms = registerBean((AbstractMaleSocket*)maleSocket->msself());
     return (MaleDigitalActionSocket*)ms;

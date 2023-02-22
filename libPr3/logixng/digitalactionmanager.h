@@ -5,6 +5,7 @@
 #include "femaledigitalactionsocket.h"
 #include "femalesocketlistener.h"
 #include "category.h"
+#include "abstractaction.h"
 
 /**
  * Manager for DigitalActionBean
@@ -23,7 +24,7 @@
      * @return the male socket for this action
      * @throws IllegalArgumentException if the action has an invalid system name
      */
-    /*public*/ virtual MaleDigitalActionSocket* registerAction(/*@Nonnull*/ DigitalActionBean* action)
+    /*public*/ virtual MaleDigitalActionSocket* registerAction(/*@Nonnull*/ NamedBean* action)
             /*throws IllegalArgumentException*/=0;
 
     /**

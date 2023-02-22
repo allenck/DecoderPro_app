@@ -478,10 +478,11 @@ DEPENDPATH += $$PWD/../JavaQt
 win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
 else:unix: LIBS += -L/usr/local/lib/ -lquazip
 
-unix: {
-INCLUDEPATH += /usr/local/include/quazip
-DEPENDPATH += /usr/local/include/quazip
-}
+unix:!macx: LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/ -lquazip
+
+INCLUDEPATH += $$PWD/../../../../quazip-0.7.2/quazip
+DEPENDPATH += $$PWD/../../../../quazip-0.7.2/quazip
+
 win32: {
 INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (x86)\GnuWin32\include"
 DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
@@ -503,4 +504,5 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/ -ltestsd
 
 INCLUDEPATH += $$PWD/../tests
 DEPENDPATH += $$PWD/../tests
+
 

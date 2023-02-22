@@ -3190,11 +3190,11 @@ DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrot
 INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web rfid
 
 win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
-else:unix: LIBS += -L/usr/local/lib/ -lquazip
+else:unix: LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/ -lquazip
 
 unix: {
-INCLUDEPATH += /usr/local/include/quazip
-DEPENDPATH += /usr/local/include/quazip
+INCLUDEPATH += $$PWD/../../../../quazip-0.7.2/quazip
+DEPENDPATH += $$PWD/../../../../quazip-0.7.2/quazip
 }
 win32: {
 INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (x86)\GnuWin32\include"
@@ -3276,7 +3276,9 @@ DISTFILES += \
 DEFINES += QZEROCONF_STATIC
 
 
-unix|win32: LIBS += -L$$PROJ_DIR/QtZeroConf-master/ -lQtZeroConf
+win32:CONFIG(release, debug|release): LIBS += -L$$PROJ_DIR/QtZeroConf-master/release/ -lQtZeroConf
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PROJ_DIR/QtZeroConf-master/debug/ -lQtZeroConf
+else:unix: LIBS += -L$$PROJ_DIR/QtZeroConf-master/ -lQtZeroConf
 
 INCLUDEPATH += $$PROJ_DIR/QtZeroConf-master
 DEPENDPATH += $$PROJ_DIR/QtZeroConf-master
@@ -3336,3 +3338,4 @@ else:unix: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
 
 INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
 DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp
+
