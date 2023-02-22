@@ -2,12 +2,16 @@
 #define QUERYCVDIALOG_H
 
 #include <QWidget>
-#include "../../LocoIO/locoiodialog.h"
+#include "addressvalidator.h"
 #include "libPr3_global.h"
+#include "locobufferadapter.h"
+#include "locoiodata.h"
+#include "qlineedit.h"
 
 namespace Ui {
 class QueryCvDialog;
 }
+class LocoBufferAdapter;
 class LIBPR3SHARED_EXPORT QueryCvDialog : public QWidget
 {
   Q_OBJECT

@@ -1,4 +1,5 @@
 #include "specialport.h"
+#include "lntrafficcontroller.h"
 #include "ui_specialport.h"
 #include "lnconstants.h"
 #include "instancemanager.h"

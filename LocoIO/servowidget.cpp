@@ -1,4 +1,5 @@
 #include "servowidget.h"
+#include "lntrafficcontroller.h"
 #include "ui_servowidget.h"
 #include <QSignalMapper>
 

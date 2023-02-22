@@ -1,4 +1,6 @@
 #include "turnoutdlg.h"
+#include "locoiomode.h"
+#include "locoiomodelist.h"
 #include "ui_turnoutdlg.h"
 
 TurnoutDlg::TurnoutDlg(LocoIOData* data, int channel, QWidget *parent) :

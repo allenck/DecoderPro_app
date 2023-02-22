@@ -1,4 +1,5 @@
 #include "commentsdialog.h"
+#include "locoiomode.h"
 #include "ui_commentsdialog.h"
 #include "QSqlField"
 

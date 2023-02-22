@@ -1,4 +1,6 @@
 #include "outputwidget.h"
+#include "locoiomode.h"
+#include "locoiomodelist.h"
 #include "ui_outputwidget.h"
 #include "lnpacketizer.h"
 #include "instancemanager.h"

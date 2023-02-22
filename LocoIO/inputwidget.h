@@ -4,7 +4,6 @@
 #include <QWidget>
 #include "locoiodata.h"
 #include "QButtonGroup"
-#include "lnpacketizer.h"
 
 namespace Ui {
 class InputWidget;

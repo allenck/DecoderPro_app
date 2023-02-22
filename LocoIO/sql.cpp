@@ -1,4 +1,5 @@
 #include "sql.h"
+#include "locoiomode.h"
 #include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>

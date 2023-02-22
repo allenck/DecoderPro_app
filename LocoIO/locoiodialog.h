@@ -2,17 +2,13 @@
 #define LOCOIODIALOG_H
 
 #include <QDialog>
-#include "locoio.h"
-#include "pr3adapter.h"
 #include "locoiodata.h"
 #include "saverestoredialog.h"
 #include <QLineEdit>
-#include "inputwidget.h"
 #include "outputwidget.h"
 #include "registerswidget.h"
 #include "inportdefinitionwidget.h"
 #include "addressportdefinitionwidget.h"
-#include "outportdefinitionwidget.h"
 #include "extraopcodewidget.h"
 #include "extraopcodedefinitionwidget.h"
 #include "servowidget.h"
@@ -20,7 +16,6 @@
 #include <QRegExpValidator>
 #include "boosterinputwidget.h"
 #include "boosteroutputwidget.h"
-#include "boosterpanel.h"
 #include "sql.h"
 #include "locoio_global.h"
 #include "addressvalidator.h"
@@ -30,7 +25,7 @@ class LocoIODialog;
 }
 
 
-
+class LnTrafficController;
 class UserPreferencesManager;
 class LocoIOModules;
 class LocoIOAddress;

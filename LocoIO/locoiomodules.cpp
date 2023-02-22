@@ -4,7 +4,6 @@
 //#include "locoiodata.h"
 #include <QMenu>
 #include "locoiodata.h"
-#include "../LocoIO/locoiodialog.h"
 #include "../LocoIO/sql.h"
 #include "logger.h"
 #include "locoioframe.h"

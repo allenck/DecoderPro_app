@@ -3,6 +3,7 @@
 #include "loconetmessageinterpret.h"
 #include "instancemanager.h"
 #include "proxysensormanager.h"
+#include "lntrafficcontroller.h"
 
 BoosterInputWidget::BoosterInputWidget(LocoIOData* data, int port, /*LnPacketizer* packetizer*/LnTrafficController* tc,QWidget *parent) :
     QWidget(parent),

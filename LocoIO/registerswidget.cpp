@@ -1,14 +1,13 @@
 #include "registerswidget.h"
+#include "locoiomode.h"
+#include "locoiomodelist.h"
 #include "ui_registerswidget.h"
-//#include <QColorGroup>
 #include <QList>
-#include "locoiodialog.h"
 #include "turnoutdlg.h"
 #include "proxysensormanager.h"
 #include <QListWidget>
 #include "instancemanager.h"
 #include "proxylightmanager.h"
-#include "abstractlightmanager.h"
 
 RegistersWidget::RegistersWidget(LocoIOData* data, int port, portType type, QWidget *parent) :
     QWidget(parent),

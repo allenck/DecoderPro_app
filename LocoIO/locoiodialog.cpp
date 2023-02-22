@@ -1,4 +1,8 @@
 #include "locoiodialog.h"
+#include "boosterpanel.h"
+#include "inputwidget.h"
+#include "locoiomode.h"
+#include "outportdefinitionwidget.h"
 #include "ui_locoiodialog.h"
 #include <QComboBox>
 #include <QCheckBox>
@@ -9,8 +13,9 @@
 #include <QMenu>
 #include "commentsdialog.h"
 #include "locoiomodules.h"
-#include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
+#include "userpreferencesmanager.h"
+#include "locoio.h"
 
 LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool /*bHex*/, Sql* sql, QWidget *parent) :
     QDialog(parent),

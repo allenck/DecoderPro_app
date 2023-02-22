@@ -3,6 +3,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include "jtextfield.h"
+#include "locoiomodelist.h"
 #include "loconetsystemconnectionmemo.h"
 #include "locoiodata.h"
 #include "tablecolumnmodel.h"

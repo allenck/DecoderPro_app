@@ -1,4 +1,5 @@
 #include "locoioframe.h"
+#include "locoiomode.h"
 #include "ui_locoioframe.h"
 #include <QComboBox>
 #include <QCheckBox>

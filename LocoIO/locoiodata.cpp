@@ -1,7 +1,7 @@
 #include "locoiodata.h"
 #include "locoio.h"
-#include "llnmon.h"
 #include <QtAlgorithms>   // for qSort()
+#include "locoiomodelist.h"
 #include "sleeperthread.h"
 #include "loconetmessageinterpret.h"
 

@@ -1,6 +1,7 @@
 #include "boosterbuttons.h"
 #include "ui_boosterbuttons.h"
 #include <QPushButton>
+#include "lntrafficcontroller.h"
 
 BoosterButtons::BoosterButtons(LocoIOData* data, int port, /*LnPacketizer* packetizer*/LnTrafficController* tc, QWidget *parent) :
     QWidget(parent),

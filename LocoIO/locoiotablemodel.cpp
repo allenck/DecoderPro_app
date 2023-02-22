@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include "lnconstants.h"
 #include "jtable.h"
+#include "locoiomodelist.h"
 #include "loggerfactory.h"
 
 //LocoIOTableModel::LocoIOTableModel(QObject *parent) :

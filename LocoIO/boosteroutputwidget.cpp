@@ -1,4 +1,5 @@
 #include "boosteroutputwidget.h"
+#include "lntrafficcontroller.h"
 #include "ui_boosteroutputwidget.h"
 
 BoosterOutputWidget::BoosterOutputWidget(LocoIOData* data, int port, /*LnPacketizer* packetizer*/LnTrafficController* tc, QWidget *parent) :

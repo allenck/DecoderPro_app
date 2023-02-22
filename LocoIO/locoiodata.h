@@ -1,8 +1,5 @@
 #ifndef LOCOIODATA_H
 #define LOCOIODATA_H
-#include "lnpacketizer.h"
-#include "locoiomode.h"
-#include "locoiomodelist.h"
 #include <QObject>
 #include <QVector>
 #include <QPalette>
@@ -10,8 +7,10 @@
 #include "locoio_global.h"
 #include "locoioaddress.h"
 #include "propertychangelistener.h"
+#include "loconetmessage.h"
+#include <QMutex>
 
-
+class LnTrafficController;
 class LocoIOAddress;
 class SwingPropertyChangeSupport;
 /* CV usage
