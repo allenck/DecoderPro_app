@@ -46,9 +46,10 @@ ExpressionPowerSwing::ExpressionPowerSwing(QObject *parent) : AbstractDigitalExp
             _stateComboBox};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Power %1 %2"), components);
+                tr("Power "
+                   "{1} {2}"), components);
 
-        for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
+        for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
     }
 
     /** {@inheritDoc} */

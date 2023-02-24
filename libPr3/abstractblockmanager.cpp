@@ -5,18 +5,18 @@ AbstractBlockManager::AbstractBlockManager(QObject *parent) : AbstractManager(pa
 
 }
 
-/*public*/ Block* AbstractBlockManager::getBySystemName(QString name) const
-{
- return  (Block*)_tsys->value(name)->self();
-}
+///*public*/ Block* AbstractBlockManager::getBySystemName(QString name) const
+//{
+// return  (Block*)_tsys->value(name)->self();
+//}
 
-/*public*/ Block* AbstractBlockManager::getByUserName(QString userName)const
-{
- QString normalizedUserName = NamedBean::normalizeUserName(userName);
- //return normalizedUserName != "" ? static_cast<Block*>(_tuser->value(normalizedUserName)) : nullptr;
- NamedBean* bean = _tuser->value(normalizedUserName);
- if(bean == nullptr)
-  return nullptr;
- Block* b = (Block*)bean->self();
- return b;
-}
+///*public*/ Block* AbstractBlockManager::getByUserName(QString userName)const
+//{
+// QString normalizedUserName = NamedBean::normalizeUserName(userName);
+// //return normalizedUserName != "" ? static_cast<Block*>(_tuser->value(normalizedUserName)) : nullptr;
+// NamedBean* bean = _tuser->value(normalizedUserName);
+// if(bean == nullptr)
+//  return nullptr;
+// Block* b = (Block*)bean->self();
+// return b;
+//}

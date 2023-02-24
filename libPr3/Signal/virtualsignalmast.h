@@ -12,7 +12,7 @@ public:
     void configureFromName(QString systemName) ;
     /*public*/ void setAspect(QString aspect) override;
     /*public*/ static int getLastRef();
-    /*public*/ QString className()override;
+    /*public*/ QString className();
 
 signals:
 

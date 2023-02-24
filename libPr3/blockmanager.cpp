@@ -41,7 +41,7 @@
 //    implements java.beans.PropertyChangeListener {
 
 BlockManager::BlockManager(QObject *parent) :
-    AbstractManager(parent)
+    AbstractBlockManager(parent)
 {
  setObjectName("BlockManager");
  setProperty("JavaClassName", "jmri.BlockManager");

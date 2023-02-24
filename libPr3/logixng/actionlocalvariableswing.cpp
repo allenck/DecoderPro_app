@@ -96,7 +96,7 @@ ActionLocalVariableSwing::ActionLocalVariableSwing(QObject *parent) : AbstractDi
         };
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set the local variable %1 to %2"), components);
+                tr("Set the local variable {1} to {2}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }

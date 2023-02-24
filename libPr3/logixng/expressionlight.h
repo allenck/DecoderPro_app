@@ -61,7 +61,10 @@ class ExpressionLight : public AbstractDigitalExpression, public PropertyChangeL
             return tr("Other");
            }
           }
-
+    static QList<VALS> values()
+    {
+        return {Off, On, Other};
+    }
       };
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setLight(/*@Nonnull*/ QString lightName) ;

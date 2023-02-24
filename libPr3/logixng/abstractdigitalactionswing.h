@@ -20,6 +20,8 @@ class AbstractDigitalActionSwing : public AbstractSwingConfigurator
   /*public*/ QString getExampleSystemName()override;
   /*public*/ QString getAutoSystemName()override;
 
+
+  QObject* sself() override {return this;}
  private:
   static Logger* log;
  protected:

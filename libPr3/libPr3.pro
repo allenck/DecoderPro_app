@@ -168,8 +168,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
- logixng/actionmemoryswing.cpp \
- logixng/actionmemoryxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1142,7 +1140,18 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
- #logixng/manager.cpp\
+    logixng/expressionblock.cpp \
+    logixng/expressionblockswing.cpp \
+    logixng/expressionblockxml.cpp \
+    logixng/expressionlightswing.cpp \
+    logixng/expressionsignalmast.cpp \
+    logixng/expressionsignalmastswing.cpp \
+    logixng/expressionsignalmastxml.cpp \
+    logixng/actionmemoryswing.cpp \
+    logixng/actionmemoryxml.cpp \
+    logixng/actionsignalmast.cpp \
+    logixng/actionsignalmastswing.cpp \
+    logixng/actionsignalmastxml.cpp \
     logixng/actions/act_logix.cpp \
     logixng/digitalbooleanonchangexml.cpp \
     logixng/executedelayedswing.cpp \
@@ -1514,50 +1523,48 @@ DEFINES -= HAVE_LOGIXNG
     SOURCES +=
  }
 HEADERS += \
- Signal/abstractmrnodetrafficcontroller.h \
- Signal/abstractnode.h \
- Signal/acelaaddress.h \
- Signal/acelaconnectiontypelist.h \
- Signal/acelalistener.h \
- Signal/acelamessage.h \
- Signal/acelanode.h \
- Signal/acelareply.h \
- Signal/acelasignalhead.h \
- Signal/acelasystemconnectionmemo.h \
- Signal/acelatrafficcontroller.h \
- Signal/lsdecsignalhead.h \
- Signal/lsdecsignalheadxml.h \
- Signal/mergsd2signalhead.h \
- Signal/mergsd2signalheadxml.h \
- #Signal/serialsignalhead.h \
- abstractanalogiomanager.h \
- abstractprovidingproxymanager.h \
- abstractproxymanager.h \
- acelasignalheadxml.h \
- addeditsinglelightcontrolframe.h \
- analogiomanager.h \
- collectingReporter.h \
- defaultlightcontrol.h \
- digitalio.h \
-# direct/defaultthrottle.h \
-# direct/defaultthrottlemanager.h \
-# direct/directcomponentfactory.h \
-# direct/directmenu.h \
-# direct/directsystemconnectionmemo.h \
-# direct/portcontroller.h \
-# direct/serialdriveradapter.h \
-# direct/trafficcontroller.h \
- internalanalogiomanager.h \
- lightcontrolpane.h \
- lightcontroltablemodel.h \
- lighteditaction.h \
- lightintensitypane.h \
+     Signal/abstractmrnodetrafficcontroller.h \
+     Signal/abstractnode.h \
+     Signal/acelaaddress.h \
+     Signal/acelaconnectiontypelist.h \
+     Signal/acelalistener.h \
+     Signal/acelamessage.h \
+     Signal/acelanode.h \
+     Signal/acelareply.h \
+     Signal/acelasignalhead.h \
+     Signal/acelasystemconnectionmemo.h \
+     Signal/acelatrafficcontroller.h \
+     Signal/lsdecsignalhead.h \
+     Signal/lsdecsignalheadxml.h \
+     Signal/mergsd2signalhead.h \
+     Signal/mergsd2signalheadxml.h \
+     #Signal/serialsignalhead.h \
+     abstractanalogiomanager.h \
+     abstractprovidingproxymanager.h \
+     abstractproxymanager.h \
+     acelasignalheadxml.h \
+     addeditsinglelightcontrolframe.h \
+     analogiomanager.h \
+     collectingReporter.h \
+     defaultlightcontrol.h \
+     digitalio.h \
+    # direct/defaultthrottle.h \
+    # direct/defaultthrottlemanager.h \
+    # direct/directcomponentfactory.h \
+    # direct/directmenu.h \
+    # direct/directsystemconnectionmemo.h \
+    # direct/portcontroller.h \
+    # direct/serialdriveradapter.h \
+    # direct/trafficcontroller.h \
+     internalanalogiomanager.h \
+     lightcontrolpane.h \
+     lightcontroltablemodel.h \
+     lighteditaction.h \
+     lightintensitypane.h \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- logixng/actionmemoryswing.h \
- logixng/actionmemoryxml.h \
- memoryframeaction.h \
+    memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2643,6 +2650,18 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/expressionblock.h \
+    logixng/expressionblockswing.h \
+    logixng/expressionblockxml.h \
+    logixng/expressionlightswing.h \
+    logixng/expressionsignalmast.h \
+    logixng/expressionsignalmastswing.h \
+    logixng/expressionsignalmastxml.h \
+    logixng/actionmemoryswing.h \
+    logixng/actionmemoryxml.h \
+    logixng/actionsignalmast.h \
+    logixng/actionsignalmastswing.h \
+    logixng/actionsignalmastxml.h \
     logixng/actions/act_logix.h \
     logixng/digitalbooleanonchangexml.h \
     logixng/executedelayedswing.h \

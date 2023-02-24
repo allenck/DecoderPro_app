@@ -129,8 +129,7 @@
             (JComponent*)_tabbedPanePositionableState};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-//                tr("For panel %1, set positionable %2 to %3").arg(components[0]->toString(), components[1]->toString(),components[2]->toString()));
-        tr("For panel %1, set positionable %2 to %3"), components);
+                tr("For panel {1}, set positionable {2} to {3}"),components);
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }
 

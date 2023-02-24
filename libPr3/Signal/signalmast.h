@@ -131,7 +131,7 @@ public:
 
     /*public*/ virtual bool isAspectDisabled(QString /*aspect*/) {return false;}
 
-    /*public*/ virtual QString className() =0;
+    /*public*/ QString className() {return "jmri.jmrit.beantable.SignalMast";}
 
     friend class SignalMastIcon;
     friend class DefaultSignalMastLogic;

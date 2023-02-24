@@ -131,9 +131,9 @@ ActionMemorySwing::ActionMemorySwing(QObject* parent) :AbstractDigitalActionSwin
         };
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set the memory %1 to %2").arg(_tabbedPaneMemory->toString(),_tabbedPaneMemoryOperation->toString() ),components);
+                tr("Set the memory {1} to {2}").arg(_tabbedPaneMemory->toString(),_tabbedPaneMemoryOperation->toString() ),components);
 
-        for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c);
+        for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
     }
 
     /** {@inheritDoc} */

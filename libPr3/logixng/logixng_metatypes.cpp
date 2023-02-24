@@ -9,7 +9,6 @@
 #include "analogformulaswing.h"
 #include "analogexpressionanalogioswing.h"
 #include "analogexpressionconstantswing.h"
-#include "abstractanalogexpressionswing.h"
 #include "analogexpressionmemoryswing.h"
 #include "timesincemidnightswing.h"
 #include "analogmanyswing.h"
@@ -40,7 +39,6 @@
 #include "stringformulaswing.h"
 #include "andswing.h"
 #include "notswing.h"
-#include "falsexml.h"
 #include "expressionsensorxml.h"
 #include "orxml.h"
 #include "andxml.h"
@@ -111,7 +109,6 @@
 #include "expressions/ex_logdataswing.h"
 #include "expressions/ex_logdataxml.h"
 #include "defaultanalogexpressionmanagerxml.h"
-#include "expressionreporter.h"
 #include "expressionreporterswing.h"
 #include "expressionreporterxml.h"
 #include "sequenceswing.h"
@@ -130,6 +127,13 @@
 #include "logixswing.h"
 #include "actionmemoryswing.h"
 #include "actionmemoryxml.h"
+#include "actionsignalmastswing.h"
+#include "actionsignalmastxml.h"
+#include "expressionsignalmastswing.h"
+#include "expressionsignalmastxml.h"
+#include "expressionlightswing.h"
+#include "expressionblockswing.h"
+#include "expressionblockxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -253,7 +257,6 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionLightSwing>("ActionLightSwing");
    qRegisterMetaType<Actions::LogData>("Actions::LogData");
    qRegisterMetaType<DefaultAnalogExpressionManagerXml>("DefaultAnalogExpressionManagerXml");
-//   qRegisterMetaType<ExpressionReporter>("ExpressionReporter");
    qRegisterMetaType<Actions::DigitalCallModuleSwing>("Actions::DigitalCallModuleSwing");
    qRegisterMetaType<DefaultMaleDigitalActionSocketXml>("DefaultMaleDigitalActionSocketXml");
    qRegisterMetaType<ExecuteDelayedSwing>("ExecuteDelayedSwing");
@@ -263,6 +266,11 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<LogixSwing>("LogixSwing");
    qRegisterMetaType<ActionMemorySwing>("ActionMemorySwing");
    qRegisterMetaType<ActionMemoryXml>("ActionMemoryXml");
+   qRegisterMetaType<ActionSignalMastSwing>("ActionSignalMastSwing");
+   qRegisterMetaType<ActionSignalMastXml>("ActionSignalMastXml");
+   qRegisterMetaType<Actions::LogDataSwing>("Actions::LogDataSwing");
+   qRegisterMetaType<Actions::LogDataXml>("Actions::LogDataXml");
+
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
@@ -274,6 +282,12 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionReporterXml>("ExpressionReporterXml");
    qRegisterMetaType<ExpressionReporterSwing>("ExpressionReporterSwing");
    qRegisterMetaType<ExpressionEntryExitXml>("ExpressionEntryExitXml");
+   qRegisterMetaType<ExpressionSignalMastSwing>("ExpressionSignalMastSwing");
+   qRegisterMetaType<ExpressionSignalMastXml>("ExpressionSignalMastXml");
+   qRegisterMetaType<ExpressionLightSwing>("ExpressionLightSwing");
+   qRegisterMetaType<ExpressionBlockSwing>("ExpressionBlockSwing");
+   qRegisterMetaType<ExpressionBlockXml>("ExpressionBlockXml");
+
 
    LogixNG_Metatypes::ng_done = true;
 }

@@ -36,9 +36,8 @@
 
     QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
             tr("Minutes since midnight by {0}"), components);
-#if 0 // TODO
-    for (JComponent* c : componentList) panel->layout()->addWidget(c);
-#endif
+     for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
+
 }
 
 /** {@inheritDoc} */

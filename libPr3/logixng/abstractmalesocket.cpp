@@ -25,17 +25,13 @@
  //: AbstractNamedBean(object->getSystemName(), object->getUserName(), parent)
  : AbstractBase(parent)
 {
- if(objectName().isEmpty())
-  setObjectName("AbstractMaleSocket");
-// if(object && mSystemName.isEmpty())
-//  mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
+    if(objectName().isEmpty())
+     setObjectName("AbstractMaleSocket");
+    _manager = manager;
+    _object = object;
 
- _manager = manager;
- //QObject* obj = object->bself();
-// if(object && qobject_cast<AbstractMaleSocket*>(object->bself()))
-//  _object = (AbstractMaleSocket*) object->bself();
-// else
- _object = object;
+ if(object && mSystemName.isEmpty())
+  mSystemName = ((AbstractBase*)object->bself())->AbstractNamedBean::getSystemName();
 }
 
 /** {@inheritDoc} */

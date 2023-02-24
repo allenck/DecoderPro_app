@@ -123,18 +123,16 @@
         }
 
         //JComponent[] components = new JComponent[]{
-        QList<QWidget*> components = {
+        QList<JComponent*> components = {
             _reporterBeanPanel,
             _reporterValuePanel,
             operationAndCasePanel,
             _tabbedPane
         };
-#if 0 // TODO:
-        QList<QWidget*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Reporter %1 %2 %3 %4").arg(components.at(0),components.at(1),components.at(2),components.at(3)));
+        QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
+                tr("Reporter {1} {2} {3} {4}"),components);
 
-        for (QWidget* c : componentList) panel->layout()->addWidget(c);
-#endif
+        for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
         enableDisableCompareTo();
     }
 

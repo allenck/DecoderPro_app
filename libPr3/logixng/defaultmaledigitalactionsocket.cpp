@@ -17,7 +17,7 @@
 
 
 /*public*/  DefaultMaleDigitalActionSocket::DefaultMaleDigitalActionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
-                       /*@Nonnull*/ DigitalActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (Base*)action, parent){
+                       /*@Nonnull*/ DigitalActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (AbstractBase*)action->bself(), parent){
     //super(manager, action);
  setObjectName("DefaultMaleDigitalActionSocket");
 }

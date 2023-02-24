@@ -4,7 +4,6 @@
 #include "abstractnamedbean.h"
 #include "sensor.h"
 #include "namedbeanhandle.h"
-#include "exceptions.h"
 #include "physicallocationreporter.h"
 
 

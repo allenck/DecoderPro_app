@@ -78,14 +78,14 @@ ExecuteDelayedSwing::ExecuteDelayedSwing(QObject* parent)
             _delayFormulaTextField->setText(action->getDelayFormula());
         }
 
-        QList<QWidget*> components = {
+        QList<JComponent*> components = {
             _tabbedPaneDelay};
 
-//        QList<QWidget*> componentList = SwingConfiguratorInterface::parseMessage(
-//                tr("Execute delay %1").arg(_tabbedPaneDelay));
+        QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
+                tr("Execute delay {1}"),components);
 
         JPanel* delayPanel = new JPanel(new FlowLayout);
-        for (QWidget* c : /*componentList*/components) delayPanel->layout()->addWidget(c);
+        for (JComponent* c : /*componentList*/components) delayPanel->layout()->addWidget((QWidget*)c->jself());
 
         panel->layout()->addWidget(delayPanel);
 

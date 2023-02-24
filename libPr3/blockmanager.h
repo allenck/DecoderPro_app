@@ -9,17 +9,17 @@
 #include "instancemanagerautodefault.h"
 #include "propertyvetoexception.h"
 #include "providingmanager.h"
-#include "abstractmanager.h"
+#include "abstractblockmanager.h"
 
 class RosterEntry;
-class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager, public ProvidingManager, public InstanceManagerAutoDefault
+class LIBPR3SHARED_EXPORT BlockManager : public AbstractBlockManager, public ProvidingManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
   Q_INTERFACES(ProvidingManager InstanceManagerAutoDefault )
 public:
     Q_INVOKABLE explicit BlockManager(QObject *parent = 0);
     ~BlockManager() {}
-    BlockManager(const BlockManager&) : AbstractManager() {}
+    BlockManager(const BlockManager&) : AbstractBlockManager() {}
     /*public*/ void dispose() override;
     /*public*/ int getXMLOrder() const override;
     /*public*/ QString getSystemPrefix() const override;

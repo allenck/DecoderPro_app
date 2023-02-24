@@ -175,7 +175,7 @@ setObjectName("ActionBlockSwing");
             _tabbedPaneData};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set block \"%1\" to %2"), components);
+                tr("Set block {1} to {2}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }

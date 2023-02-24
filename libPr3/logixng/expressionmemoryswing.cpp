@@ -121,9 +121,9 @@ ExpressionMemorySwing::ExpressionMemorySwing(QObject *parent) : AbstractDigitalE
         };
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Memory %1 %2 %3"), components);
+                tr("Memory {1} {2} {3}"), components);
 
-        for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
+        for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
 
         enableDisableCompareTo();
     }

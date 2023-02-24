@@ -1,4 +1,5 @@
 #include "storeandloadtest.h"
+#include "actionsignalmast.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
 #include "junitappender.h"
@@ -236,12 +237,12 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         module->addParameter("result", false, true);
         module->addLocalVariable("temp1", InitialValueType::None, nullptr);
         module->addLocalVariable("temp2", InitialValueType::None, nullptr);
-
+#if 0
         DigitalMany* many901 = new DigitalMany("IQDA901", "");
         MaleSocket* manySocket901 = ((DefaultDigitalActionManager*)
-                InstanceManager::getDefault("DigitalActionManager"))->registerAction(many901);
+                InstanceManager::getDefault("DigitalActionManager"))->registerAction((AbstractNamedBean*)many901);
         module->getRootSocket()->_connect(manySocket901);
-
+#endif
 
 
 
@@ -319,7 +320,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionAudio.setLocalVariable("index");
         actionAudio.setReference("{IM1}");
         actionAudio.setOperationAddressing(NamedBeanAddressing::LocalVariable);
-        actionAudio.setOperationFormula("\"IT\"+index2");
+        actionAudio.setOperationFormula("\"IT\"+QString::number(index2)");
         actionAudio.setOperationLocalVariable("index2");
         actionAudio.setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionAudio);
@@ -334,7 +335,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionAudio.setLocalVariable("index");
         actionAudio.setReference("{IM1}");
         actionAudio.setOperationAddressing(NamedBeanAddressing::Formula);
-        actionAudio.setOperationFormula("\"IT\"+index2");
+        actionAudio.setOperationFormula("\"IT\"+QString::number(index2"));
         actionAudio.setOperationLocalVariable("index2");
         actionAudio.setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(actionAudio);
@@ -1190,90 +1191,89 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionSignalHead);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ActionSignalMast actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
+        ActionSignalMast* actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionSignalMast);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
         actionSignalMast->AbstractNamedBean::setComment("A comment");
-        actionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        actionSignalMast.setAddressing(NamedBeanAddressing::Direct);
-        actionSignalMast.setFormula("\"IT\"+index");
-        actionSignalMast.setLocalVariable("index");
-        actionSignalMast.setReference("{IM1}");
-        actionSignalMast.setOperationAddressing(NamedBeanAddressing::LocalVariable);
-        actionSignalMast.setOperationFormula("\"IT\"+index2");
-        actionSignalMast.setOperationLocalVariable("index2");
-        actionSignalMast.setOperationReference("{IM2}");
-        actionSignalMast.setAspectAddressing(NamedBeanAddressing::Formula);
-        actionSignalMast.setAspect("Medium Approach Slow");
-        actionSignalMast.setAspectFormula("\"IT\"+index3");
-        actionSignalMast.setAspectLocalVariable("index3");
-        actionSignalMast.setAspectReference("{IM3}");
-        actionSignalMast.setExampleSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        actionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        actionSignalMast->setAddressing(NamedBeanAddressing::Direct);
+        actionSignalMast->setFormula("\"IT\"+index");
+        actionSignalMast->setLocalVariable("index");
+        actionSignalMast->setReference("{IM1}");
+        actionSignalMast->setOperationAddressing(NamedBeanAddressing::LocalVariable);
+        actionSignalMast->setOperationFormula("\"IT\"+index2");
+        actionSignalMast->setOperationLocalVariable("index2");
+        actionSignalMast->setOperationReference("{IM2}");
+        actionSignalMast->setAspectAddressing(NamedBeanAddressing::Formula);
+        actionSignalMast->setAspect("Medium Approach Slow");
+        actionSignalMast->setAspectFormula("\"IT\"+index3");
+        actionSignalMast->setAspectLocalVariable("index3");
+        actionSignalMast->setAspectReference("{IM3}");
+        actionSignalMast->setExampleSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
         maleSocket = digitalActionManager->registerAction(actionSignalMast);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
         actionSignalMast->AbstractNamedBean::setComment("A comment");
-        actionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        actionSignalMast.setAddressing(NamedBeanAddressing::LocalVariable);
-        actionSignalMast.setFormula("\"IT\"+index");
-        actionSignalMast.setLocalVariable("index");
-        actionSignalMast.setReference("{IM1}");
-        actionSignalMast.setOperationAddressing(NamedBeanAddressing::Formula);
-        actionSignalMast.setOperationFormula("\"IT\"+index2");
-        actionSignalMast.setOperationLocalVariable("index2");
-        actionSignalMast.setOperationReference("{IM2}");
-        actionSignalMast.setAspectAddressing(NamedBeanAddressing::Reference);
-        actionSignalMast.setAspect("Medium Approach");
-        actionSignalMast.setAspectFormula("\"IT\"+index3");
-        actionSignalMast.setAspectLocalVariable("index3");
-        actionSignalMast.setAspectReference("{IM3}");
+        actionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        actionSignalMast->setAddressing(NamedBeanAddressing::LocalVariable);
+        actionSignalMast->setFormula("\"IT\"+index");
+        actionSignalMast->setLocalVariable("index");
+        actionSignalMast->setReference("{IM1}");
+        actionSignalMast->setOperationAddressing(NamedBeanAddressing::Formula);
+        actionSignalMast->setOperationFormula("\"IT\"+index2");
+        actionSignalMast->setOperationLocalVariable("index2");
+        actionSignalMast->setOperationReference("{IM2}");
+        actionSignalMast->setAspectAddressing(NamedBeanAddressing::Reference);
+        actionSignalMast->setAspect("Medium Approach");
+        actionSignalMast->setAspectFormula("\"IT\"+index3");
+        actionSignalMast->setAspectLocalVariable("index3");
+        actionSignalMast->setAspectReference("{IM3}");
         maleSocket = digitalActionManager->registerAction(actionSignalMast);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
         actionSignalMast->AbstractNamedBean::setComment("A comment");
-        actionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        actionSignalMast.setAddressing(NamedBeanAddressing::Formula);
-        actionSignalMast.setFormula("\"IT\"+index");
-        actionSignalMast.setLocalVariable("index");
-        actionSignalMast.setReference("{IM1}");
-        actionSignalMast.setOperationAddressing(NamedBeanAddressing::Reference);
-        actionSignalMast.setOperationFormula("\"IT\"+index2");
-        actionSignalMast.setOperationLocalVariable("index2");
-        actionSignalMast.setOperationReference("{IM2}");
-        actionSignalMast.setAspectAddressing(NamedBeanAddressing::Direct);
-        actionSignalMast.setAspect("Approach");
-        actionSignalMast.setAspectFormula("\"IT\"+index3");
-        actionSignalMast.setAspectLocalVariable("index3");
-        actionSignalMast.setAspectReference("{IM3}");
+        actionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        actionSignalMast->setAddressing(NamedBeanAddressing::Formula);
+        actionSignalMast->setFormula("\"IT\"+index");
+        actionSignalMast->setLocalVariable("index");
+        actionSignalMast->setReference("{IM1}");
+        actionSignalMast->setOperationAddressing(NamedBeanAddressing::Reference);
+        actionSignalMast->setOperationFormula("\"IT\"+index2");
+        actionSignalMast->setOperationLocalVariable("index2");
+        actionSignalMast->setOperationReference("{IM2}");
+        actionSignalMast->setAspectAddressing(NamedBeanAddressing::Direct);
+        actionSignalMast->setAspect("Approach");
+        actionSignalMast->setAspectFormula("\"IT\"+index3");
+        actionSignalMast->setAspectLocalVariable("index3");
+        actionSignalMast->setAspectReference("{IM3}");
         maleSocket = digitalActionManager->registerAction(actionSignalMast);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionSignalMast = new ActionSignalMast(digitalActionManager->getAutoSystemName(), "");
         actionSignalMast->AbstractNamedBean::setComment("A comment");
-        actionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        actionSignalMast.setAddressing(NamedBeanAddressing::Reference);
-        actionSignalMast.setFormula("\"IT\"+index");
-        actionSignalMast.setLocalVariable("index");
-        actionSignalMast.setReference("{IM1}");
-        actionSignalMast.setOperationAddressing(NamedBeanAddressing::Direct);
-        actionSignalMast.setOperationFormula("\"IT\"+index2");
-        actionSignalMast.setOperationLocalVariable("index2");
-        actionSignalMast.setOperationReference("{IM2}");
-        actionSignalMast.setAspectAddressing(NamedBeanAddressing::LocalVariable);
-        actionSignalMast.setAspect("Medium Approach Slow");
-        actionSignalMast.setAspectFormula("\"IT\"+index3");
-        actionSignalMast.setAspectLocalVariable("index3");
-        actionSignalMast.setAspectReference("{IM3}");
+        actionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        actionSignalMast->setAddressing(NamedBeanAddressing::Reference);
+        actionSignalMast->setFormula("\"IT\"+index");
+        actionSignalMast->setLocalVariable("index");
+        actionSignalMast->setReference("{IM1}");
+        actionSignalMast->setOperationAddressing(NamedBeanAddressing::Direct);
+        actionSignalMast->setOperationFormula("\"IT\"+index2");
+        actionSignalMast->setOperationLocalVariable("index2");
+        actionSignalMast->setOperationReference("{IM2}");
+        actionSignalMast->setAspectAddressing(NamedBeanAddressing::LocalVariable);
+        actionSignalMast->setAspect("Medium Approach Slow");
+        actionSignalMast->setAspectFormula("\"IT\"+index3");
+        actionSignalMast->setAspectLocalVariable("index3");
+        actionSignalMast->setAspectReference("{IM3}");
         maleSocket = digitalActionManager->registerAction(actionSignalMast);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0 // not yet implemented
         ActionSound simpleSound = new ActionSound(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(simpleSound);
         maleSocket->setEnabled(false);

@@ -50,10 +50,10 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
- loconet/internalturnoutmanagertest.cpp \
- loconet/internalturnoutmanagertestaction.cpp \
- misc/vetoablechangesupporttest.cpp \
- misc/vetoablechangesupporttestaction.cpp \
+        loconet/internalturnoutmanagertest.cpp \
+        loconet/internalturnoutmanagertestaction.cpp \
+        misc/vetoablechangesupporttest.cpp \
+        misc/vetoablechangesupporttestaction.cpp \
         powermanagerscaffold.cpp \
         tests.cpp \
         logix/defaultconditionalmanagertest.cpp \
@@ -299,6 +299,8 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/swingconfiguratorinterfacetest.cpp \
+    logixng/swingconfiguratorinterfacetestactionaction.cpp \
     logixng/analogexpressionconstanttest.cpp \
     logixng/analogexpressionconstanttestaction.cpp \
     logixng/analogexpressionmemorytest.cpp \
@@ -406,10 +408,10 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
- loconet/internalturnoutmanagertest.h \
- loconet/internalturnoutmanagertestaction.h \
- misc/vetoablechangesupporttest.h \
- misc/vetoablechangesupporttestaction.h \
+         loconet/internalturnoutmanagertest.h \
+         loconet/internalturnoutmanagertestaction.h \
+         misc/vetoablechangesupporttest.h \
+         misc/vetoablechangesupporttestaction.h \
         powermanagerscaffold.h \
         tests.h \
         tests_global.h \
@@ -656,6 +658,8 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/swingconfiguratorinterfacetest.h \
+    logixng/swingconfiguratorinterfacetestactionaction.h \
     logixng/analogexpressionconstanttest.h \
     logixng/analogexpressionconstanttestaction.h \
     logixng/analogexpressionmemorytest.h \

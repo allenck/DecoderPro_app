@@ -8,8 +8,8 @@ class AbstractBlockManager : public AbstractManager
   Q_OBJECT
  public:
   AbstractBlockManager(QObject* parent = nullptr);
-  /*public*/ Block* getBySystemName(QString name) const ;
-  /*public*/ Block *getByUserName(QString key)const ;
+//  /*public*/ Block* getBySystemName(QString name) const ;
+//  /*public*/ Block *getByUserName(QString key)const ;
 
 };
 

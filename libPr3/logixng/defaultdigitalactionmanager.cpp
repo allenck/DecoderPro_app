@@ -8,6 +8,7 @@
 #include "actions/digitalfactory.h"
 #include "digitalactionmanager.h"
 #include "debuggermaledigitalactionsocketfactory.h"
+#include "logixng/abstractdigitalaction.h"
 #include "threadingutil.h"
 #include "loggingutil.h"
 #include "defaultmaledigitalactionsocket.h"
@@ -117,7 +118,7 @@
     updateAutoNumber(((AbstractNamedBean*)action->self())->getSystemName());
 
     // save in the maps
-    MaleDigitalActionSocket* maleSocket = createMaleActionSocket((DigitalActionBean*)action->self());
+    MaleDigitalActionSocket* maleSocket = createMaleActionSocket((AbstractDigitalAction*)((AbstractNamedBean*)action->self()));
     //return (MaleDigitalActionSocket*)registerBean(maleSocket);
     AbstractMaleSocket* ms = registerBean((AbstractMaleSocket*)maleSocket->msself());
     return (MaleDigitalActionSocket*)ms;

@@ -136,15 +136,15 @@ ExpressionTurnoutSwing::ExpressionTurnoutSwing(QObject* parent)
             _turnoutStateFormulaTextField->setText(expression->getStateFormula());
         }
 
-        QList<QWidget*> components = QList<QWidget*>{
+        QList<JComponent*> components = QList<JComponent*>{
             _tabbedPaneTurnout,
             _is_IsNot_ComboBox,
             _tabbedPaneTurnoutState};
 
-//        QList<QWidget*> componentList = SwingConfiguratorInterface::parseMessage(
-//                tr("Turnout %1 %2 %3"), components);
+        QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
+                tr("Turnout {1} {2} {3}"), components);
 
-        for (QWidget* c : /*componentList*/components) panel->layout()->addWidget(c);
+        for (JComponent* c : /*componentList*/components) panel->layout()->addWidget((QWidget*)c->jself());
     }
 
     /** {@inheritDoc} */
