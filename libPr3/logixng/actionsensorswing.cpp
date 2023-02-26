@@ -122,7 +122,7 @@ ActionSensorSwing::ActionSensorSwing(QObject *parent) : AbstractDigitalActionSwi
             _tabbedPaneSensorState};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set sensor {1} to {2}"),components);
+                tr("Set sensor {0} to {1}"),components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }

@@ -82,7 +82,7 @@ ExecuteDelayedSwing::ExecuteDelayedSwing(QObject* parent)
             _tabbedPaneDelay};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Execute delay {1}"),components);
+                tr("Execute delay {0}"),components);
 
         JPanel* delayPanel = new JPanel(new FlowLayout);
         for (JComponent* c : /*componentList*/components) delayPanel->layout()->addWidget((QWidget*)c->jself());

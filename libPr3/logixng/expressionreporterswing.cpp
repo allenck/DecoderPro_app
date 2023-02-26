@@ -130,7 +130,7 @@
             _tabbedPane
         };
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Reporter {1} {2} {3} {4}"),components);
+                tr("Reporter {0} {1} {2} {3}"),components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
         enableDisableCompareTo();

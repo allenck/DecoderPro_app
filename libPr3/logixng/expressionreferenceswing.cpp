@@ -52,7 +52,7 @@ ExpressionReferenceSwing::ExpressionReferenceSwing(QObject *parent) : AbstractDi
             _stateComboBox};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Reference {1} {2} {3}"), components);
+                tr("Reference {0} {1} {2}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
     }

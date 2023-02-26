@@ -253,7 +253,7 @@ ExpressionSignalMastSwing::ExpressionSignalMastSwing(QObject *parent)
         };
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set signal mast {1} to {2} {3}"),
+                tr("Set signal mast {0} to {1} {2}"),
                     components);
 
         for (JComponent* c : componentList) expressionPanel->layout()->addWidget((QWidget*)c->jself());

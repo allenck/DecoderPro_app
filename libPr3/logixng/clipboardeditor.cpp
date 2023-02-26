@@ -23,7 +23,7 @@
               parent){
 
 
-        this->setTitle(tr("ClipboardEditor"));
+        this->setTitle(tr("Clipboard"));
 
         this->setRootVisible(false);
     }

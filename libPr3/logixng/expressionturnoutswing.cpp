@@ -142,7 +142,7 @@ ExpressionTurnoutSwing::ExpressionTurnoutSwing(QObject* parent)
             _tabbedPaneTurnoutState};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Turnout {1} {2} {3}"), components);
+                tr("Turnout {0} {1} {2}"), components);
 
         for (JComponent* c : /*componentList*/components) panel->layout()->addWidget((QWidget*)c->jself());
     }

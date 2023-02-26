@@ -127,7 +127,7 @@
         _tabbedPaneSensorState};
 
     QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-            tr("Sensor {1} {2} {3}"), components);
+            tr("Sensor {0} {1} {2}"), components);
 
     if(panel->layout())
     for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());

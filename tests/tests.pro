@@ -299,6 +299,9 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/actionsensorswingtest.cpp \
+    logixng/actionsensorswingtestaction.cpp \
+    logixng/swingconfiguratorinterfacetestbase.cpp \
     logixng/swingconfiguratorinterfacetest.cpp \
     logixng/swingconfiguratorinterfacetestactionaction.cpp \
     logixng/analogexpressionconstanttest.cpp \
@@ -658,6 +661,9 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/actionsensorswingtest.h \
+    logixng/actionsensorswingtestaction.h \
+    logixng/swingconfiguratorinterfacetestbase.h \
     logixng/swingconfiguratorinterfacetest.h \
     logixng/swingconfiguratorinterfacetestactionaction.h \
     logixng/analogexpressionconstanttest.h \

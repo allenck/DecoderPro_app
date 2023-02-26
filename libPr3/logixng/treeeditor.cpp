@@ -1,4 +1,5 @@
 #include "treeeditor.h"
+#include "jmriuserpreferencesmanager.h"
 #include "loggerfactory.h"
 #include "jmenuitem.h"
 #include <QMenuBar>
@@ -9,7 +10,6 @@
 #include "conditionalng.h"
 #include "threadingutil.h"
 #include "femalesocketoperation.h"
-#include "clipboard.h"
 #include "defaultlogixngmanager.h"
 #include "joptionpane.h"
 #include "swingtools.h"
@@ -19,7 +19,6 @@
 #include "box.h"
 #include "treepath.h"
 #include "treemodellistener.h"
-#include "treemodel.h"
 #include "treepane.h"
 #include "editcommentdialog.h"
 #include "functionshelpdialog.h"
@@ -34,6 +33,7 @@
 #include "basemanager.h"
 #include "abstractmalesocket.h"
 #include "itemevent.h"
+
 /**
  * Base class for LogixNG editors
  *

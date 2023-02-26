@@ -23,7 +23,6 @@ public:
     /*public*/ NamedBean* getBySystemName(QString key) const override;
     /*public*/ NamedBean* getByUserName(QString key) const override;
     /*public*/ CatalogTree* newCatalogTree(QString sysName, QString userName)override;
-    /*public*/ static DefaultCatalogTreeManager* instance();
     /*public*/  QStringList getSystemNameList()override;
     /*public*/ QString getBeanTypeHandled() const override;
     /*public*/ void storeImageIndex() override;
@@ -63,7 +62,6 @@ signals:
 
 public slots:
 private:
-    /*private*/ static DefaultCatalogTreeManager* _instance;
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("DefaultCatalogTreeManager");
     void Register(CatalogTree * tree);
     bool _indexChanged;

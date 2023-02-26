@@ -33,6 +33,7 @@ private:
 
 friend class JMenuUtil;
 friend class JToolBarUtil;
+friend class JTreeUtil;
 
 };
 /*static*/ class CallingAbstractAction : public  AbstractAction

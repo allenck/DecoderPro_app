@@ -6,6 +6,7 @@
 #include "jdialog.h"
 #include <QDebug>
 #include "sleeperthread.h"
+#include "treemodel.h"
 
 JFrameOperator::JFrameOperator(QObject *parent) : QObject()
 {
@@ -591,6 +592,39 @@ JTableOperator::JTableOperator(QObject *parent)
 
 }
 void JTableOperator::clickOnCell(int r, int col)
+{
+
+}
+JTreeOperator::JTreeOperator(QObject *parent)
+    : QObject{parent}
+{
+ this->treeframe = nullptr;
+ this->_tree = nullptr;
+}
+
+JTreeOperator::JTreeOperator(JFrameOperator* treeframe, QObject* parent)
+{
+ this->treeframe = treeframe;
+ _frame = treeframe->getFrame();
+ QList<JTree*> allTrees = _frame->findChildren<JTree *>();
+ if(allTrees.count()> 0)
+     _tree = allTrees.at(0);
+ else throw new Exception("tree frame not found");
+
+ QAbstractItemModel* _model = _tree->model();
+ if(qobject_cast<TreeModel*>(_model))
+     _treeModel = (TreeModel*)_model;
+ else throw new Exception("tree model not found");
+
+}
+
+TreePath* JTreeOperator::getPathForRow(int row)
+{
+
+  return _tree->getPathForRow(row);
+}
+
+QMenu* JTreeOperator::callPopupOnPath(TreePath* tp)
 {
 
 }

@@ -5,7 +5,6 @@
 #include "javaqt_global.h"
 #include "treepath.h"
 #include "defaulttreeselectionmodel.h"
-#include "propertychangelistener.h"
 #include "treeexpansionevent.h"
 #include <QStack>
 #include "exceptions.h"

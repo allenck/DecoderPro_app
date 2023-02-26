@@ -59,7 +59,7 @@ ActionClockSwing::ActionClockSwing(QObject *parent) : AbstractDigitalActionSwing
             container};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("{1}"), components);
+                tr("{0}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }

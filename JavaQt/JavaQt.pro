@@ -40,6 +40,7 @@ SOURCES += javaqt.cpp \
     #changelistenermap.cpp \
     csvformat.cpp \
     csvprinter.cpp \
+    defaulttreemodel1.cpp \
     exceptioncontext.cpp \
     exceptiondisplayframe.cpp \
     files.cpp \
@@ -57,6 +58,7 @@ SOURCES += javaqt.cpp \
     jscrollpane.cpp \
     jtextpane.cpp \
     jtitledseparator.cpp \
+    jtreeutil.cpp \
     jvetoablechangesupport.cpp \
     loconetexception.cpp \
     loggerfactory.cpp \
@@ -179,7 +181,6 @@ SOURCES += javaqt.cpp \
     jmrilocalentityresolver.cpp \
     inputsource.cpp \
     catalogtreemodel.cpp \
-    defaulttreemodel1.cpp \
     vetoablechangelistener.cpp \
     colorutil.cpp \
     filenameextensionfilter.cpp \
@@ -306,6 +307,7 @@ HEADERS += javaqt.h\
  comparablet.h \
  csvformat.h \
  csvprinter.h \
+    defaulttreemodel1.h \
  exceptioncontext.h \
  exceptiondisplayframe.h \
  files.h \
@@ -331,6 +333,7 @@ HEADERS += javaqt.h\
     abstractaction.h \
  jtextpane.h \
  jtitledseparator.h \
+    jtreeutil.h \
  jvetoablechangesupport.h \
  loconetexception.h \
     logger.h \
@@ -493,7 +496,6 @@ HEADERS += javaqt.h\
     loggerfactory.h \
     loggerbase.h \
     catalogtreemodel.h \
-    defaulttreemodel1.h \
     vetoablechangelistener.h \
     propertychangeprovider.h \
     consumer.h \

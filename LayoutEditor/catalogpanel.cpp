@@ -12,10 +12,8 @@
 #include "catalogtreenode.h"
 #include "imageindexeditor.h"
 #include <QVBoxLayout>
-#include "catalogtreemodel.h"
 #include "fileutil.h"
 #include "borderlayout.h"
-#include "catalogtreemodel.h"
 #include "gridbagconstraints.h"
 #include "namedicon.h"
 #include "jlabel.h"
@@ -875,7 +873,7 @@ void CatalogPanel::onBgColorBox(int index)
 {
  CatalogPanel* catalog = new CatalogPanel(tr("Catalogues:"), tr("Select a directory to view its images"), addButtonPanel);
  catalog->init(treeDrop, dragIcon);
- CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
+ CatalogTreeManager* manager = (DefaultCatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  QStringList sysNames = manager->getSystemNameList();
  if (!sysNames .isEmpty())
  {

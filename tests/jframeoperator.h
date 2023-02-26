@@ -16,9 +16,10 @@
 #include "jtextfield.h"
 #include "functionbutton.h"
 #include "jcombobox.h"
-#include "jcheckbox.h"
 #include "jtabbedpane.h"
 #include "jtable.h"
+#include "jtree.h"
+#include "treepath.h"
 
 class JDialogOperator;
 class NameComponentChooser;
@@ -281,4 +282,17 @@ class JTableOperator :public QObject
   void clickOnCell(int r, int col);
 };
 
+class JTreeOperator : public QObject
+{
+    Q_OBJECT
+    JFrameOperator* treeframe;
+    JTree* _tree;
+    JmriJFrame* _frame;
+    TreeModel* _treeModel = nullptr;
+public:
+    explicit JTreeOperator(QObject *parent = nullptr);
+    JTreeOperator(JFrameOperator* treeframe, QObject* parent =nullptr);
+    TreePath* getPathForRow(int row);
+    QMenu* callPopupOnPath(TreePath* tp);
+};
 #endif // JFRAMEOPERATOR_H

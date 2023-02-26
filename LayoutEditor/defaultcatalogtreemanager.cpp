@@ -11,7 +11,6 @@
 #include "defaultcatalogtreemanagerxml.h"
 #include "instancemanager.h"
 
-/*private*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::_instance = nullptr;
 
 DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     AbstractManager(parent)
@@ -191,10 +190,6 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     }
 #endif
     return nullptr;
-}
-
-/*public*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::instance() {
- return static_cast<DefaultCatalogTreeManager*>(InstanceManager::getDefault("DefaultCatalogTreeManager"));
 }
 
 //@Override

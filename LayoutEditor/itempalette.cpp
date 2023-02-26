@@ -167,7 +167,7 @@ void ItemPalette::changeEvent(QEvent * e)
 /*static*/ bool ItemPalette::loadSavedIcons(Editor* ed)
 {
  log->setDebugEnabled(true);
- CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
+ CatalogTreeManager* manager = (DefaultCatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  CatalogTree* tree = (CatalogTree*)((DefaultCatalogTreeManager*)manager)->getBySystemName("NXPI");
  if (tree != NULL)
  {
@@ -514,11 +514,11 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     itemPanel = new BackgroundItemPanel(palette, "Background", editor, palette);
     addItemTab(itemPanel, "Background", tr("Background"));
     itemPanel->init();
-
+#if 0
     itemPanel = new TextItemPanel(palette, "Text", editor);
     addItemTab(itemPanel, "Text", tr("Text"));
     itemPanel->init();
-
+#endif
     itemPanel = new RPSItemPanel(palette, "RPSReporter", NULL, editor);
     addItemTab(itemPanel, "RPSReporter", tr("RPSReporter"));
     itemPanel->init();

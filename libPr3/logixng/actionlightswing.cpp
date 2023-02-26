@@ -174,7 +174,7 @@ ActionLightSwing::ActionLightSwing(QObject *parent) : AbstractDigitalActionSwing
             _tabbedPaneData};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set light {1} to {2} {3}"), components);
+                tr("Set light {0} to {1} {2}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }

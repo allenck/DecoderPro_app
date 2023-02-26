@@ -37,7 +37,7 @@
                 EnableRootPopup::EnableRootPopup,
                 EnableExecuteEvaluate::EnableExecuteEvaluate
         , parent){
-
+        setObjectName("ConditionalNGEditor");
         _conditionalNG = nullptr;
     }
 
@@ -56,15 +56,15 @@
 
         _conditionalNG = conditionalNG;
 
-        if (_conditionalNG->NamedBean::getUserName() == nullptr) {
+        if (_conditionalNG->AbstractNamedBean::getUserName() == nullptr) {
             this->setTitle(
                     tr("Edit ConditionalNG %1").arg(
-                            _conditionalNG->NamedBean::getSystemName()));
+                            _conditionalNG->AbstractNamedBean::getSystemName()));
         } else {
             this->setTitle(
                    tr("Edit ConditionalNG %1 - %2").arg(
-                            _conditionalNG->NamedBean::getSystemName(),
-                            _conditionalNG->NamedBean::getUserName()));
+                            _conditionalNG->AbstractNamedBean::getSystemName(),
+                            _conditionalNG->AbstractNamedBean::getUserName()));
         }
     }
 
@@ -72,7 +72,7 @@
     //@Override
     /*public*/  void ConditionalNGEditor::closeEvent(QCloseEvent *e) {
         logixNGData.clear();
-        logixNGData.insert("Finish", _conditionalNG->NamedBean::getSystemName());  // NOI18N
+        logixNGData.insert("Finish", _conditionalNG->AbstractNamedBean::getSystemName());  // NOI18N
         fireLogixNGEvent();
     }
 

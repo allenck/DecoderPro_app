@@ -40,7 +40,7 @@ ActionPowerSwing::ActionPowerSwing(QObject *parent) : AbstractDigitalActionSwing
             _stateComboBox};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Turn power {1}"), components);
+                tr("Turn power {0}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }

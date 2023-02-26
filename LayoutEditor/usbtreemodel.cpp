@@ -4,7 +4,6 @@
 #include "usb_device.h"
 #include "jtextarea.h"
 //#include "defaultmutabletreenode.h"
-#include "vptr.h"
 #include <QDebug>
 
 UsbTreeItem::UsbTreeItem(const QList<QVariant> &data, DeviceFilter f, DefaultTreeItem *parent) : DefaultTreeItem(data, QVariant(), parent)
@@ -23,8 +22,14 @@ void UsbTreeItem::clear()
 bool UsbTreeItem::removeChild(DefaultTreeItem * item)
 {
  DeviceFilter f = item->userData.value<DeviceFilter>();
- UsbTreeModel::itemHash->remove(DevKey(f.bus,f.address).key());
+ if(UsbTreeModel::itemHash->contains(DevKey(f.bus,f.address).key()))
+ {
+     UsbTreeModel::itemHash->remove(DevKey(f.bus,f.address).key());
+     return true;
+ }
+ return false;
 }
+
 
 /*static*/ QHash<int, UsbTreeItem*>* UsbTreeModel::itemHash = new QHash<int, UsbTreeItem*>();
 

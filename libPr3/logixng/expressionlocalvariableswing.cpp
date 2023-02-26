@@ -123,7 +123,7 @@ ExpressionLocalVariableSwing::ExpressionLocalVariableSwing(QObject *parent) : Ab
         };
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Local variable{1} {2} %{3}"), components);
+                tr("Local variable{0} {1} %{2}"), components);
 
         for (JComponent* c : componentList) panel->layout()->addWidget((QWidget*)c->jself());
 

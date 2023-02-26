@@ -6,16 +6,14 @@
 #include "jtree.h"
 #include "femalesocket.h"
 #include "treemodellistener.h"
-#include "treemodel.h"
 #include "imageicon.h"
 #include "treecellrenderer.h"
 #include "defaulttreemodel.h"
 #include "threadingutil.h"
 #include "abstractfemalesocket.h"
-#include "treeeditor.h"
-#include "treenode.h"
 #include "defaultmutabletreenode.h"
 
+class TreeEditor;
 class FemaleSocketDecorator;
 class FemaleSocketTreeModel;
 class TreePane : public JPanel, public PropertyChangeListener
@@ -115,7 +113,7 @@ class TreePane_FemaleSocketTreeNode : public DefaultMutableTreeNode
 
 /*public*/  /*static*/ class FemaleSocketTreeModel : public DefaultTreeModel //, public TreeNode
 {
-Q_OBJECT
+ Q_OBJECT
 //Q_INTERFACES(TreeNode)
     /*private*/ /*final*/ AbstractFemaleSocket* _root;
     public:
@@ -154,7 +152,6 @@ Q_OBJECT
    }
    return QVariant();
   }
-
 
   //QObject* tself() override {return (QObject*)this;}
 
@@ -210,6 +207,7 @@ class TreePane_FemaleSocketDecorator : public QObject,public FemaleSocketDecorat
   JPanel* panel;
  public:
   TreePane_FemaleSocketDecorator(FemaleSocket* femaleSocket, JPanel* panel) {
+      setObjectName("TreePane_FemaleSocketDecorator");
    this->femaleSocket = femaleSocket;
    this->panel = panel;
   }

@@ -1,9 +1,10 @@
 #include "defaulttreemodel1.h"
 #include <QDir>
 #include <QMimeData>
-#include "fileutil.h"
 #include "file.h"
 #include "jtree.h"
+
+// Note: used by UsbTreeModel
 
 DefaultTreeItem::DefaultTreeItem(const QList<QVariant> &data, QVariant userData, DefaultTreeItem *parent) : QObject()
 {

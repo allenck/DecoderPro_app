@@ -1,22 +1,18 @@
 #include "treepane.h"
+#include "logixng/defaultlogixngpreferences.h"
 #include "vptr.h"
 #include <QList>
 #include "runtimeexception.h"
 #include "abstractfemalesocket.h"
 #include "threadingutil.h"
-#include "logixngpreferences.h"
-#include "instancemanager.h"
 #include "jlabel.h"
 #include "box.h"
 #include "fileutil.h"
-#include "borderfactory.h"
 #include "symboltable.h"
 #include "femalesocket.h"
-#include "abstractbase.h"
-#include "treenode.h"
 #include "abstractfemalesocket.h"
-#include "defaultdigitalactionmanager.h"
-#include "ifthenelse.h"
+#include "instancemanager.h"
+#include "emptyborder.h"
 
 /**
  * Show the action/expression tree.
@@ -238,7 +234,7 @@
           : DefaultTreeModel(new TreePane_FemaleSocketTreeNode(root), parent) {
           setObjectName("FemaleSocketTreeModel");
             this->_root = root;
-          nodeStructureChanged((MutableTreeNode*)root);
+          //nodeStructureChanged((MutableTreeNode*)root);
         }
 
         //@Override

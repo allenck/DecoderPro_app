@@ -39,7 +39,7 @@ class ConditionalNGEditor : public TreeEditor
   void contextMenuEvent(QContextMenuEvent* evt);
 
  protected:
-  /*protected*/ /*final*/ ConditionalNG* _conditionalNG;
+  /*protected*/ /*final*/ DefaultConditionalNG* _conditionalNG;
   friend class ConditionalNGEventListener;
   friend class LogixNGEventListenerImpl;
 };

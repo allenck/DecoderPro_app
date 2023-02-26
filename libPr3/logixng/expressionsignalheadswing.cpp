@@ -256,7 +256,7 @@ used to tell JMRI which %2 the indirect addressed signal %1 may show.</html>").a
         };
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("Set signal head %1 to %2 %3"), components);
+                tr("Set signal head {0} to {1} {2}"), components);
 
         for (JComponent* c : componentList) expressionPanel->layout()->addWidget(c->jself());
 

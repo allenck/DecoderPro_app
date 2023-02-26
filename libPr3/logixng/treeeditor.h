@@ -23,8 +23,6 @@
 #include "threadingutil.h"
 #include "runtimeexception.h"
 #include "treepane.h"
-#include "treemodelevent.h"
-#include "jmriuserpreferencesmanager.h"
 //#include "treepane.h"
 
 
