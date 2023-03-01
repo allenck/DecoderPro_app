@@ -1,5 +1,6 @@
 #include "storeandloadtest.h"
 #include "actionsignalmast.h"
+#include "enablelogix.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
 #include "junitappender.h"
@@ -1622,73 +1623,72 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(doStringAction);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        EnableLogix enableLogix = new EnableLogix(digitalActionManager->getAutoSystemName(), "");
+        EnableLogix* enableLogix = new EnableLogix(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(enableLogix);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         enableLogix = new EnableLogix(digitalActionManager->getAutoSystemName(), "");
         enableLogix->AbstractNamedBean::setComment("A comment");
-        enableLogix.setLogix(logixIX1);
-        enableLogix.setOperationDirect(EnableLogix.Operation.Enable);
-        enableLogix.setAddressing(NamedBeanAddressing::Direct);
-        enableLogix.setFormula("\"IT\"+index");
-        enableLogix.setLocalVariable("index");
-        enableLogix.setReference("{IM1}");
-        enableLogix.setOperationAddressing(NamedBeanAddressing::LocalVariable);
-        enableLogix.setOperationFormula("\"IT\"+index2");
-        enableLogix.setOperationLocalVariable("index2");
-        enableLogix.setOperationReference("{IM2}");
+        enableLogix->setLogix(logixIX1);
+        enableLogix->setOperationDirect(EnableLogix::Operation::Enable);
+        enableLogix->setAddressing(NamedBeanAddressing::Direct);
+        enableLogix->setFormula("\"IT\"+index");
+        enableLogix->setLocalVariable("index");
+        enableLogix->setReference("{IM1}");
+        enableLogix->setOperationAddressing(NamedBeanAddressing::LocalVariable);
+        enableLogix->setOperationFormula("\"IT\"+index2");
+        enableLogix->setOperationLocalVariable("index2");
+        enableLogix->setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(enableLogix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         enableLogix = new EnableLogix(digitalActionManager->getAutoSystemName(), "");
         enableLogix->AbstractNamedBean::setComment("A comment");
-        enableLogix.setLogix(logixIX1);
-        enableLogix.setOperationDirect(EnableLogix.Operation.Disable);
-        enableLogix.setAddressing(NamedBeanAddressing::LocalVariable);
-        enableLogix.setFormula("\"IT\"+index");
-        enableLogix.setLocalVariable("index");
-        enableLogix.setReference("{IM1}");
-        enableLogix.setOperationAddressing(NamedBeanAddressing::Formula);
-        enableLogix.setOperationFormula("\"IT\"+index2");
-        enableLogix.setOperationLocalVariable("index2");
-        enableLogix.setOperationReference("{IM2}");
+        enableLogix->setLogix(logixIX1);
+        enableLogix->setOperationDirect(EnableLogix::Operation::Disable);
+        enableLogix->setAddressing(NamedBeanAddressing::LocalVariable);
+        enableLogix->setFormula("\"IT\"+index");
+        enableLogix->setLocalVariable("index");
+        enableLogix->setReference("{IM1}");
+        enableLogix->setOperationAddressing(NamedBeanAddressing::Formula);
+        enableLogix->setOperationFormula("\"IT\"+index2");
+        enableLogix->setOperationLocalVariable("index2");
+        enableLogix->setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(enableLogix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         enableLogix = new EnableLogix(digitalActionManager->getAutoSystemName(), "");
         enableLogix->AbstractNamedBean::setComment("A comment");
-        enableLogix.setLogix(logixIX1);
-        enableLogix.setOperationDirect(EnableLogix.Operation.Enable);
-        enableLogix.setAddressing(NamedBeanAddressing::Formula);
-        enableLogix.setFormula("\"IT\"+index");
-        enableLogix.setLocalVariable("index");
-        enableLogix.setReference("{IM1}");
-        enableLogix.setOperationAddressing(NamedBeanAddressing::Reference);
-        enableLogix.setOperationFormula("\"IT\"+index2");
-        enableLogix.setOperationLocalVariable("index2");
-        enableLogix.setOperationReference("{IM2}");
+        enableLogix->setLogix(logixIX1);
+        enableLogix->setOperationDirect(EnableLogix::Operation::Enable);
+        enableLogix->setAddressing(NamedBeanAddressing::Formula);
+        enableLogix->setFormula("\"IT\"+index");
+        enableLogix->setLocalVariable("index");
+        enableLogix->setReference("{IM1}");
+        enableLogix->setOperationAddressing(NamedBeanAddressing::Reference);
+        enableLogix->setOperationFormula("\"IT\"+index2");
+        enableLogix->setOperationLocalVariable("index2");
+        enableLogix->setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(enableLogix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         enableLogix = new EnableLogix(digitalActionManager->getAutoSystemName(), "");
         enableLogix->AbstractNamedBean::setComment("A comment");
-        enableLogix.setLogix(logixIX1);
-        enableLogix.setOperationDirect(EnableLogix.Operation.Enable);
-        enableLogix.setAddressing(NamedBeanAddressing::Reference);
-        enableLogix.setFormula("\"IT\"+index");
-        enableLogix.setLocalVariable("index");
-        enableLogix.setReference("{IM1}");
-        enableLogix.setOperationAddressing(NamedBeanAddressing::Direct);
-        enableLogix.setOperationFormula("\"IT\"+index2");
-        enableLogix.setOperationLocalVariable("index2");
-        enableLogix.setOperationReference("{IM2}");
+        enableLogix->setLogix(logixIX1);
+        enableLogix->setOperationDirect(EnableLogix::Operation::Enable);
+        enableLogix->setAddressing(NamedBeanAddressing::Reference);
+        enableLogix->setFormula("\"IT\"+index");
+        enableLogix->setLocalVariable("index");
+        enableLogix->setReference("{IM1}");
+        enableLogix->setOperationAddressing(NamedBeanAddressing::Direct);
+        enableLogix->setOperationFormula("\"IT\"+index2");
+        enableLogix->setOperationLocalVariable("index2");
+        enableLogix->setOperationReference("{IM2}");
         maleSocket = digitalActionManager->registerAction(enableLogix);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
+#if 0
         ActionEntryExit entryExit = new ActionEntryExit(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(entryExit);
         maleSocket->setEnabled(false);

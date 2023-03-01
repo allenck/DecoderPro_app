@@ -3,10 +3,12 @@
 
 #include "abstractswingconfigurator.h"
 #include "joptionpane.h"
+#include "logixng/conditionalng.h"
 #include "threadingutil.h"
-#include "defaultconditionalng.h"
 #include "digitalaction.h"
 #include "runtimeexception.h"
+#include "jmriexception.h"
+
 
 class AbstractDigitalActionSwing : public AbstractSwingConfigurator
 {
@@ -22,6 +24,7 @@ class AbstractDigitalActionSwing : public AbstractSwingConfigurator
 
 
   QObject* sself() override {return this;}
+
  private:
   static Logger* log;
  protected:
