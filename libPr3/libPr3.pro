@@ -1140,6 +1140,9 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionthrottle.cpp \
+    logixng/actionthrottleswing.cpp \
+    logixng/actionthrottlexml.cpp \
     logixng/actiontimerswing.cpp \
     logixng/actiontimerxml.cpp \
     logixng/actionturnoutlockswing.cpp \
@@ -2663,6 +2666,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionthrottle.h \
+    logixng/actionthrottleswing.h \
+    logixng/actionthrottlexml.h \
     logixng/actiontimerswing.h \
     logixng/actiontimerxml.h \
     logixng/actionturnoutlockswing.h \

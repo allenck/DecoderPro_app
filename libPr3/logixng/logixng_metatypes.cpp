@@ -138,6 +138,10 @@
 #include "expressionconditionalxml.h"
 #include "actionturnoutlockswing.h"
 #include "actionturnoutlockxml.h"
+#include "enablelogixswing.h"
+#include "enablelogixxml.h"
+#include "actionthrottlexml.h"
+#include "actionthrottleswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -276,7 +280,10 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<Actions::LogDataXml>("Actions::LogDataXml");
    qRegisterMetaType<ActionTurnoutLockSwing>("ActionTurnoutLockSwing");
    qRegisterMetaType<ActionTurnoutLockXml>("ActionTurnoutLockXml");
-
+    qRegisterMetaType<EnableLogixSwing>("EnableLogixSwing");
+    qRegisterMetaType<EnableLogixXml>("EnableLogixXml");
+    qRegisterMetaType<ActionThrottleXml>("ActionThrottleXml");
+    qRegisterMetaType<ActionThrottleSwing>("ActionThrottleSwing");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

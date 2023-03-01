@@ -40,9 +40,9 @@ class Conditional;
 {
  Q_OBJECT
 public:
- Logix(QObject* parent) : AbstractNamedBean(parent) {}
- Logix(QString sysName, QObject* parent) : AbstractNamedBean(sysName, parent) {}
- Logix(QString sysName, QString userName, QObject* parent) : AbstractNamedBean(sysName, userName, parent) {}
+ Logix(QObject* parent) : AbstractNamedBean(parent) {setObjectName("Logix");}
+ Logix(QString sysName, QObject* parent) : AbstractNamedBean(sysName, parent) {setObjectName("Logix");}
+ Logix(QString sysName, QString userName, QObject* parent) : AbstractNamedBean(sysName, userName, parent) {setObjectName("Logix");}
  enum LISTENERS
  {
     LISTENER_TYPE_SENSOR = 1,

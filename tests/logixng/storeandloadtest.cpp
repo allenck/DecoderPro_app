@@ -1,5 +1,6 @@
 #include "storeandloadtest.h"
 #include "actionsignalmast.h"
+#include "actionthrottle.h"
 #include "enablelogix.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
@@ -1336,8 +1337,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(simpleSound);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-
-        ActionThrottle actionThrottle = new ActionThrottle(digitalActionManager->getAutoSystemName(), "");
+#endif
+        ActionThrottle* actionThrottle = new ActionThrottle(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionThrottle);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
@@ -1347,7 +1348,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionThrottle);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#endif
+
 
         ActionTimer* actionTimer = new ActionTimer(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionTimer);

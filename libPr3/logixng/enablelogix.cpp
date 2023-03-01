@@ -56,15 +56,16 @@
     }
 
     /*public*/ void EnableLogix::setLogix(/*@Nonnull*/ NamedBeanHandle<Logix*>* handle) {
+     if(!handle) throw new NullPointerException("null logixhandle");
         assertListenersAreNotRegistered(log, "setLogix");
         _logixHandle = handle;
         ((DefaultLogixManager*)InstanceManager::getDefault("LogixManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
     }
 
     /*public*/ void EnableLogix::setLogix(/*@Nonnull*/ Logix* logix) {
+     if(!logix) throw new NullPointerException("null logix");
         assertListenersAreNotRegistered(log, "setLogix");
-        setLogix(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->
-                 getNamedBeanHandle(logix->getDisplayName(), logix));
+        setLogix(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(logix->getDisplayName(), logix));
     }
 
     /*public*/ void EnableLogix::removeLogix() {
@@ -324,9 +325,10 @@
         {
                 QString logixName;
                 if (_logixHandle != nullptr) {
+                    Logix* bean = _logixHandle->getBean();
                     logixName = _logixHandle->getBean()->getDisplayName();
                 } else {
-                    logixName = tr(/*locale,*/ "BeanNotSelected");
+                    logixName = tr(/*locale,*/ "");
                 }
                 namedBean = tr(/*locale,*/ "%1").arg(logixName);
                 break;
