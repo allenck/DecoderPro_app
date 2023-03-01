@@ -168,6 +168,16 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+    logixng/actiontimerswing.cpp \
+    logixng/actiontimerxml.cpp \
+    logixng/actionturnoutlockswing.cpp \
+    logixng/actionturnoutlockxml.cpp \
+    logixng/actionupdateslots.cpp \
+    logixng/actionupdateslotsswing.cpp \
+    logixng/actionupdateslotsxml.cpp \
+    logixng/expressionconditional.cpp \
+    logixng/expressionconditionalswing.cpp \
+    logixng/expressionconditionalxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1564,6 +1574,16 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+    logixng/actiontimerswing.h \
+    logixng/actiontimerxml.h \
+    logixng/actionturnoutlockswing.h \
+    logixng/actionturnoutlockxml.h \
+    logixng/actionupdateslots.h \
+    logixng/actionupdateslotsswing.h \
+    logixng/actionupdateslotsxml.h \
+    logixng/expressionconditional.h \
+    logixng/expressionconditionalswing.h \
+    logixng/expressionconditionalxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \

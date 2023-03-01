@@ -2,7 +2,6 @@
 #define DEFAULTMUTABLETREENODE_H
 #include "mutabletreenode.h"
 #include <QStack>
-#include "exceptions.h"
 #include <QVariant>
 #include <QQueue>
 #include "javaqt_global.h"

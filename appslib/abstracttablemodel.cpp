@@ -2,7 +2,6 @@
 //#include "tablemodelevent.h"
 #include "jtable.h"
 #include "pushbuttondelegate.h"
-#include "buttoncolumndelegate.h"
 #include <QPushButton>
 #include "tabledelegates.h"
 

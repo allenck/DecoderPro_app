@@ -81,7 +81,7 @@
 
         QMenu* toolsMenu = new QMenu(tr("Tools"));
         if (_enableClipboard) {
-            JMenuItem* openClipboardItem = new JMenuItem(tr("OpenClipboard"),this);
+            JMenuItem* openClipboardItem = new JMenuItem(tr("Open clipboard"),this);
             connect(openClipboardItem, &JMenuItem::triggered, [=] {
                 openClipboard();
             });

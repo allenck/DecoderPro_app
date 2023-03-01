@@ -45,6 +45,10 @@ class ActionTurnoutLock : public AbstractDigitalAction, public VetoableChangeLis
      if(s == tr("Toggle")) return Toggle;
      throw new IllegalArgumentException();
     }
+    static QList<ACT> values()
+    {
+        return {Lock, Unlock, Toggle};
+    }
   };
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setTurnout(/*@Nonnull*/ QString turnoutName);

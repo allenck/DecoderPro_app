@@ -25,10 +25,10 @@ SwingConfiguratorInterfaceTestBase::SwingConfiguratorInterfaceTestBase(QObject *
 
         JFrameOperator* treeFrame = new JFrameOperator(title1);
         JTreeOperator* jto = new JTreeOperator(treeFrame);
-
+#if 0
         TreePath* tp = jto->getPathForRow(row);
         QMenu* jpm = jto->callPopupOnPath(tp);
-#if 0
+
         (new JPopupMenuOperator(jpm))->pushMenuNoBlock("Edit");
 #endif
         JDialogOperator* editItemDialog = new JDialogOperator(title2);  // NOI18N

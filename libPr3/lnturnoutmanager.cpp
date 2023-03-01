@@ -138,8 +138,9 @@ void LnTurnoutManager::message(LocoNetMessage* l)
  }
  // reach here for loconet switch command; make sure we know about this one
  QString s = prefix+"T"+QString("%1").arg(addr);
- LnTurnout* lnT = (LnTurnout*) getBySystemName(s)->self();
- if (lnT == nullptr) {
+ NamedBean* nb = getBySystemName(s);
+ LnTurnout* lnT = nullptr;
+ if (nb == nullptr) {
      // no turnout with this address, is there a light?
      QString sx = prefix + "L" + addr; // NOI18N
      if (InstanceManager::lightManagerInstance()->getBySystemName(sx) == nullptr) {
@@ -150,6 +151,7 @@ void LnTurnoutManager::message(LocoNetMessage* l)
          t->messageFromManager(l);
      }
  } else {
+  lnT = (LnTurnout*)nb->self();
      lnT->messageFromManager(l);
  }
 }

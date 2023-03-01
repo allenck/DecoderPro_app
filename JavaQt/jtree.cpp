@@ -67,7 +67,7 @@ JTree::JTree(TreeModel* tree,QWidget *parent) :
 {
  common();
  this->tree = tree;
- setModel((QAbstractItemModel*)tree);
+ QTreeView::setModel((QAbstractItemModel*)tree);
 }
 
 void JTree::common()
@@ -757,7 +757,16 @@ void JTree::rowExpanded(const QModelIndex index)
 }
 
 /*public*/ int  JTree::getRowCount(){
-    return model()->rowCount();
+    TreeModel* dm = nullptr;
+    int c = 0;
+    TreeModel* m =  model();
+    if(qobject_cast<DefaultTreeModel*>(m))
+    {
+        dm = (DefaultTreeModel*)m;
+        c = dm->rowCount(QModelIndex());
+        return c;}
+    c = m->rowCount(QModelIndex());
+    return c;
 }
 
 /*public*/ void JTree::setCellRenderer(TreeCellRenderer* r)
@@ -765,3 +774,16 @@ void JTree::rowExpanded(const QModelIndex index)
  _treeCellRenderer = r;
 }
 
+/*public*/ void JTree::setModel(TreeModel* m)
+{
+ QTreeView::setModel(m);
+ if(qobject_cast<DefaultTreeModel*>(m))
+     tree = (DefaultTreeModel*)m;
+}
+
+/*public*/ TreeModel *JTree::model()
+{
+  if(tree)
+      return tree;
+  return nullptr;
+}

@@ -1775,19 +1775,27 @@ public:
         /**
          * Request a call-back when the bound KnownState property changes.
          */
-        virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
+//        virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) =0;
 
         /**
          * Remove a request for a call-back when a bound property changes.
          */
-        virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
+//        virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) =0;
 
         /**
          * Remove references to and from this object, so that it can
          * eventually be garbage-collected.
          */
-        virtual void dispose() {}  // remove _all_ connections!
+        virtual void dispose() override{}  // remove _all_ connections!
 
+        void addPropertyChangeListener(QString property, PropertyChangeListener* l) override
+        {
+            AbstractNamedBean::addPropertyChangeListener(property, l);
+        }
+        void removePropertyChangeListener(QString property, PropertyChangeListener* l) override
+        {
+            AbstractNamedBean::addPropertyChangeListener(property, l);
+        }
 signals:
     
 public slots:

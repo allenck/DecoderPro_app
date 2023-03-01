@@ -19,7 +19,7 @@ public:
    ~ExpandVetoException() throw() {}
 };
 
-//class EmptySelectionModel;
+class DefaultTreeModel;
 class TreeSelectionListener;
 class SwingPropertyChangeSupport;
 class TreeSelectionModel;
@@ -100,6 +100,8 @@ public:
  /*public*/ void addTreeExpansionListener(TreeExpansionListener* tel);
  /*public*/ int  getRowCount();
  /*public*/ void setCellRenderer(TreeCellRenderer*);
+ /*public*/ void setModel(TreeModel *m);
+ /*public*/ TreeModel *model();
 
 signals:
  void treeCollapsed(TreeExpansionEvent*);
@@ -112,7 +114,7 @@ public slots:
 
 private:
  void common();
- TreeModel* tree;
+ TreeModel* tree = nullptr;
  TreeSelectionModel* selectionModel;
  //TreeSelectionListener* _TSL; // note: only one listener supported at this time.
  SwingPropertyChangeSupport* pcs;

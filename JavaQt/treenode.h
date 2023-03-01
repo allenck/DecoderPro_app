@@ -39,7 +39,7 @@ public:
      * Returns the number of children <code>TreeNode</code>s the receiver
      * contains.
      */
-    virtual int getChildCount() {return 0;}
+    virtual int getChildCount() =0; //{return 0;}
 
     /**
      * Returns the parent <code>TreeNode</code> of the receiver.

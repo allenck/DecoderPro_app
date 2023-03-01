@@ -2,6 +2,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include "jtable.h"
+#include "logixng/defaultlogixng.h"
 #include "tablecolumnmodel.h"
 #include "tablecolumn.h"
 #include "beanselectpanel.h"
@@ -25,9 +26,9 @@
     JmriJFrame::initComponents();
     setWindowTitle(tr("LogixNG Initialization Table "));
     // build menu
-   QMenuBar* menuBar = new QMenuBar();
-   setMenuBar(menuBar);
-   addHelpMenu("package.jmri.jmrit.logixng.LogixNGInitializationTable", true); // NOI18N
+    QMenuBar* menuBar = new QMenuBar();
+    setMenuBar(menuBar);
+    addHelpMenu("package.jmri.jmrit.logixng.LogixNGInitializationTable", true); // NOI18N
 
     QWidget* contentPane = this->getContentPane();
     contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
@@ -96,7 +97,7 @@
     panel5->layout()->addWidget(addLogixNG);
     connect(addLogixNG, &JButton::clicked, [=]{
      if(logixNG_SelectPanel->getNamedBean()){
-        LogixNG* logixNG = (LogixNG*)logixNG_SelectPanel->getNamedBean()->self();
+        LogixNG* logixNG = (DefaultLogixNG*)logixNG_SelectPanel->getNamedBean()->self();
         if (logixNG == nullptr) {
             JOptionPane::showMessageDialog(this,
                     tr("No LogixNG is selected"),

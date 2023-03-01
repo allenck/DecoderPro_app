@@ -443,9 +443,9 @@ TreePane_FemaleSocketTreeNode::TreePane_FemaleSocketTreeNode(AbstractFemaleSocke
  this->femaleSocket = femaleSocket;
 }
 
-int TreePane_FemaleSocketTreeNode::getChildCount()
-{
- return this->femaleSocket->getChildCount();
-}
+//int TreePane_FemaleSocketTreeNode::getChildCount()
+//{
+// return this->femaleSocket->getChildCount();
+//}
 
 //    private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TreeViewer.class);

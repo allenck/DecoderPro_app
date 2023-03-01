@@ -4427,14 +4427,14 @@ void ConditionalListEdit::actionSignalMastNameListener() // SLOT[]
      sNam = ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(i);
      c = ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(sNam);
      if (c != NULL)
-         ((DefaultConditional*)c)->removePropertyChangeListener((PropertyChangeListener*)this);
+         ((DefaultConditional*)c)->removePropertyChangeListener("",this);
  }
  // and add them back in
  for (int i = 0; i < _self->_numConditionals; i++) {
      sNam = ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(i);
      c = ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(sNam);
      if (c != NULL)
-         ((DefaultConditional*)c)->addPropertyChangeListener((PropertyChangeListener*)this);
+         ((DefaultConditional*)c)->addPropertyChangeListener("",this);
      connect(((DefaultConditional*)c)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }

@@ -236,7 +236,7 @@ void DefaultMutableTreeNode::common(QVariant userObject, bool allowsChildren)
  */
 /*public*/ int DefaultMutableTreeNode::getChildCount()
 {
- if (_children == NULL)
+    if (_children == NULL)
  {
   return 0;
  }

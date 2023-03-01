@@ -620,7 +620,6 @@ JTreeOperator::JTreeOperator(JFrameOperator* treeframe, QObject* parent)
 
 TreePath* JTreeOperator::getPathForRow(int row)
 {
-
   return _tree->getPathForRow(row);
 }
 

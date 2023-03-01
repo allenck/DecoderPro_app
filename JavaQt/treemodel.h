@@ -138,6 +138,7 @@ public:
      * @param   l       the listener to remove
      */
     virtual void removeTreeModelListener(TreeModelListener* /*l*/) {}
+
  friend class ItemPalette;
  friend class CatalogPanel;
 };

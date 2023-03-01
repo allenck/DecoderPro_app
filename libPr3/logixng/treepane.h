@@ -108,7 +108,7 @@ class TreePane_FemaleSocketTreeNode : public DefaultMutableTreeNode
   AbstractFemaleSocket* femaleSocket;
  public:
   TreePane_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent = nullptr);
-  int getChildCount() override;
+//  int getChildCount() override;
 };
 
 /*public*/  /*static*/ class FemaleSocketTreeModel : public DefaultTreeModel //, public TreeNode
@@ -127,7 +127,7 @@ class TreePane_FemaleSocketTreeNode : public DefaultMutableTreeNode
     /*public*/  void valueForPathChanged(TreePath* path, QVariant newvalue)override;
     /*public*/  void addTreeModelListener(TreeModelListener* l)override;
     /*public*/  void removeTreeModelListener(TreeModelListener* l) override;
-
+#if 0
   int rowCount(const QModelIndex &parent) const override
   {
   // if(QString(metaObject()->className()) == "DefaultTreeModel")
@@ -152,7 +152,7 @@ class TreePane_FemaleSocketTreeNode : public DefaultMutableTreeNode
    }
    return QVariant();
   }
-
+#endif
   //QObject* tself() override {return (QObject*)this;}
 
 protected:

@@ -345,7 +345,7 @@ void UsbTreeView::rowsInserted(const QModelIndex &parent, int start, int end)
  UsbTreeView* tree = new UsbTreeView();
  Usb_Bus* rootBus = new Usb_Bus();
  treeModel = new UsbTreeModel(rootBus, jPropertiesArea,tree);
- tree->setModel( treeModel);
+ ((QTreeView*)tree)->setModel((QAbstractItemModel*) treeModel);
  tree->setShowsRootHandles(true);
  tree->setRootIsDecorated(true);
  tree->setColumnWidth(0,150);

@@ -99,7 +99,7 @@
 
     contentPanel->layout()->addWidget(Box::createRigidArea(QSize(0, 15)));    // vertical space.
 
-    layout()->addWidget(new JTitledSeparator(tr("Warning")));
+    contentPanel->layout()->addWidget(new JTitledSeparator(tr("Warning")));
 
     JLabel* warning = new JLabel(tr("<html><table width=\"600\">                     \
 The import tool will do its best to import the requested                    \

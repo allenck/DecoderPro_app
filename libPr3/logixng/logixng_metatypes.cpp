@@ -134,6 +134,10 @@
 #include "expressionlightswing.h"
 #include "expressionblockswing.h"
 #include "expressionblockxml.h"
+#include "expressionconditionalswing.h"
+#include "expressionconditionalxml.h"
+#include "actionturnoutlockswing.h"
+#include "actionturnoutlockxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -270,6 +274,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionSignalMastXml>("ActionSignalMastXml");
    qRegisterMetaType<Actions::LogDataSwing>("Actions::LogDataSwing");
    qRegisterMetaType<Actions::LogDataXml>("Actions::LogDataXml");
+   qRegisterMetaType<ActionTurnoutLockSwing>("ActionTurnoutLockSwing");
+   qRegisterMetaType<ActionTurnoutLockXml>("ActionTurnoutLockXml");
 
 
    // AbstractStringExpressionSwing
@@ -287,6 +293,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionLightSwing>("ExpressionLightSwing");
    qRegisterMetaType<ExpressionBlockSwing>("ExpressionBlockSwing");
    qRegisterMetaType<ExpressionBlockXml>("ExpressionBlockXml");
+   qRegisterMetaType<ExpressionConditionalSwing>("ExpressionConditionalSwing");
+   qRegisterMetaType<ExpressionConditionalXml>("ExpressionConditionalXml");
 
 
    LogixNG_Metatypes::ng_done = true;
