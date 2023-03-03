@@ -124,6 +124,7 @@
 #include "expressionentryexit.h"
 #include "expressionoblock.h"
 #include "expressionclock.h"
+#include "shutdowncomputer.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -1990,8 +1991,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(andTemp);
         sequence->getChild(6)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ShutdownComputer shutdownComputer =
+        ShutdownComputer* shutdownComputer =
                 new ShutdownComputer(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
         maleSocket->setEnabled(false);
@@ -1999,29 +1999,28 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         shutdownComputer = new ShutdownComputer(digitalActionManager->getAutoSystemName(), "");
         shutdownComputer->AbstractNamedBean::setComment("A comment");
-        shutdownComputer.setOperation(ShutdownComputer.Operation.ShutdownComputer);
+        shutdownComputer->setOperation(ShutdownComputer::Operation::ShutdownComputer);
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         shutdownComputer = new ShutdownComputer(digitalActionManager->getAutoSystemName(), "");
         shutdownComputer->AbstractNamedBean::setComment("A comment");
-        shutdownComputer.setOperation(ShutdownComputer.Operation.RebootComputer);
+        shutdownComputer->setOperation(ShutdownComputer::Operation::RebootComputer);
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         shutdownComputer = new ShutdownComputer(digitalActionManager->getAutoSystemName(), "");
         shutdownComputer->AbstractNamedBean::setComment("A comment");
-        shutdownComputer.setOperation(ShutdownComputer.Operation.ShutdownJMRI);
+        shutdownComputer->setOperation(ShutdownComputer::Operation::ShutdownJMRI);
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         shutdownComputer = new ShutdownComputer(digitalActionManager->getAutoSystemName(), "");
         shutdownComputer->AbstractNamedBean::setComment("A comment");
-        shutdownComputer.setOperation(ShutdownComputer.Operation.RebootJMRI);
+        shutdownComputer->setOperation(ShutdownComputer::Operation::RebootJMRI);
         maleSocket = digitalActionManager->registerAction(shutdownComputer);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#endif
         TableForEach* tableForEach = new TableForEach(digitalActionManager->getAutoSystemName(), "");
         tableForEach->setRowOrColumn(TableRowOrColumn::Column);
         maleSocket = digitalActionManager->registerAction(tableForEach);

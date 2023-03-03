@@ -145,6 +145,8 @@
 #include "actionoblockxml.h"
 #include "actionentryexitxml.h"
 #include "expressionoblockxml.h"
+#include "shutdowncomputerxml.h"
+#include "shutdowncomputerswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 

@@ -168,6 +168,9 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+    logixng/shutdowncomputer.cpp \
+    logixng/shutdowncomputerswing.cpp \
+    logixng/shutdowncomputerxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1589,6 +1592,9 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+    logixng/shutdowncomputer.h \
+    logixng/shutdowncomputerswing.h \
+    logixng/shutdowncomputerxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
