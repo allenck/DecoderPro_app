@@ -1140,6 +1140,9 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/expressionclock.cpp \
+    logixng/expressionclockswing.cpp \
+    logixng/expressionclockxml.cpp \
     logixng/actionentryexit.cpp \
     logixng/expressionoblock.cpp \
     logixng/expressionoblockxml.cpp \
@@ -2672,6 +2675,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/expressionclock.h \
+    logixng/expressionclockswing.h \
+    logixng/expressionclockxml.h \
     logixng/actionentryexit.h \
     logixng/expressionoblock.h \
     logixng/expressionoblockxml.h \

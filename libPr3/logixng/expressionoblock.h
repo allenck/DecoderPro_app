@@ -80,7 +80,7 @@ public slots:
 private:
      static Logger* log;
     /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-    /*private*/ NamedBeanHandle<OBlock*>* _oblockHandle;
+    /*private*/ NamedBeanHandle<OBlock*>* _oblockHandle= nullptr;
     /*private*/ QString _reference = "";
     /*private*/ QString _localVariable = "";
     /*private*/ QString _formula = "";

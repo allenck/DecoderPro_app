@@ -2,11 +2,12 @@
 #define ABSTRACTDIGITALEXPRESSIONSWING_H
 
 #include "abstractswingconfigurator.h"
+#include "logixng/conditionalng.h"
 #include "threadingutil.h"
 #include "joptionpane.h"
-#include "defaultconditionalng.h"
 #include "symboltable.h"
 #include "digitalexpression.h"
+#include "jmriexception.h"
 
 class AbstractDigitalExpressionSwing : public AbstractSwingConfigurator
 {

@@ -107,7 +107,7 @@ class JAVAQTSHARED_EXPORT IOException : public Exception
 {
 public:
     IOException(QString msg = "");
-    ~IOException() throw() {}
+    ~IOException()  {}
 
 QString getMessage();
     QString msg;
@@ -116,8 +116,7 @@ class JAVAQTSHARED_EXPORT IIOException : public Exception
 {
 public:
     IIOException(QString msg = "");
-    ~IIOException() throw()
-    {}
+    ~IIOException() {}
 QString getMessage();
     QString msg;
 };
@@ -126,14 +125,14 @@ class JAVAQTSHARED_EXPORT LocoNetMessageException : public Exception
 {
 public:
     LocoNetMessageException(QString s = "");
-    ~LocoNetMessageException() throw() {}
+    ~LocoNetMessageException() {}
 };
 
 class JAVAQTSHARED_EXPORT NoSuchElementException : public Exception
 {
 public:
     NoSuchElementException(QString s = "");
-    ~NoSuchElementException() throw() {}
+    ~NoSuchElementException()  {}
 
 };
 
@@ -141,31 +140,31 @@ class JAVAQTSHARED_EXPORT UnsupportedCommOperationException : public Exception
 {
 public:
     UnsupportedCommOperationException(QString s = "");
-    ~UnsupportedCommOperationException() throw() {}
+    ~UnsupportedCommOperationException() {}
 };
 class JAVAQTSHARED_EXPORT PortInUseException : public Exception
 {
 public:
     PortInUseException(QString s="");
-    ~PortInUseException() throw() {}
+    ~PortInUseException() {}
 };
 class JAVAQTSHARED_EXPORT NoSuchPortException : public Exception
 {
 public:
     NoSuchPortException(QString s="");
-    ~NoSuchPortException() throw() {}
+    ~NoSuchPortException() {}
 };
 class JAVAQTSHARED_EXPORT InterruptedException : public Exception
 {
  public:
     InterruptedException();
-    ~InterruptedException() throw() {}
+    ~InterruptedException() {}
 };
 //class JAVAQTSHARED_EXPORT JmriException : public Exception
 //{
 //public:
 //    JmriException();
-//    ~JmriException() throw() {}
+//    ~JmriException() {}
 //    JmriException(QString s);
 //    JmriException(Exception ex) : Exception(ex) {}
 //    QString toString();
@@ -189,25 +188,25 @@ class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
 {
  public:
     IllegalArgumentException(QString s="", Throwable* throwable=nullptr);
-    ~IllegalArgumentException() throw() {}
+    ~IllegalArgumentException() {}
 };
 class JAVAQTSHARED_EXPORT NumberFormatException : public Exception
 {
  public:
     NumberFormatException(QString s ="");
-    ~NumberFormatException() throw() {}
+    ~NumberFormatException() {}
 };
 class JAVAQTSHARED_EXPORT ProgrammerException : public Exception
 {
  public:
     ProgrammerException(QString s ="");
-    ~ProgrammerException() throw() {}
+    ~ProgrammerException() {}
 };
 class JAVAQTSHARED_EXPORT TimebaseRateException : public Exception
 {
  public:
     TimebaseRateException(QString s ="");
-    ~TimebaseRateException() throw() {}
+    ~TimebaseRateException() {}
 };
 
 class JAVAQTSHARED_EXPORT UnsupportedOperationException : public Exception
@@ -215,19 +214,19 @@ class JAVAQTSHARED_EXPORT UnsupportedOperationException : public Exception
  public:
     UnsupportedOperationException(QString s ="");
     UnsupportedOperationException(QString s , Throwable* cause );
-    ~UnsupportedOperationException() throw() {}
+    ~UnsupportedOperationException() {}
 };
 class JAVAQTSHARED_EXPORT NullPointerException : public Exception
 {
  public:
     NullPointerException(QString s ="");
-    ~NullPointerException() throw() {}
+    ~NullPointerException() {}
 };
 class JAVAQTSHARED_EXPORT TurnoutOperatorException : public Exception
 {
  public:
     TurnoutOperatorException(QString s ="");
-    ~TurnoutOperatorException() throw() {}
+    ~TurnoutOperatorException() {}
 };
 //class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public JmriException
 //{
@@ -235,161 +234,161 @@ class JAVAQTSHARED_EXPORT TurnoutOperatorException : public Exception
 // public:
 //    JmriConfigureXmlException(QString s ="");
 //    JmriConfigureXmlException(QString s, Throwable e);
-//    ~JmriConfigureXmlException() throw() {}
+//    ~JmriConfigureXmlException() {}
 //};
 class JAVAQTSHARED_EXPORT DataConversionException : public Exception
 {
  public:
     DataConversionException(QString s ="");
-    ~DataConversionException() throw() {}
+    ~DataConversionException() {}
 };
 //class JAVAQTSHARED_EXPORT Throwable : public Exception
 //{
 // public:
 //    Throwable(QString s ="");
-//    ~Throwable() throw() {}
+//    ~Throwable() {}
 //};
 class JAVAQTSHARED_EXPORT JDOMException : public Exception
 {
  public:
     JDOMException(QString s = "");
-    ~JDOMException() throw() {}
+    ~JDOMException() {}
 };
 class JAVAQTSHARED_EXPORT FileNotFoundException : public Exception
 {
  public:
     FileNotFoundException(QString s = "");
-    ~FileNotFoundException() throw() {}
+    ~FileNotFoundException() {}
 };
 class JAVAQTSHARED_EXPORT ParseException : public Exception
 {
  public:
     ParseException(QString s = "");
-    ~ParseException() throw() {}
+    ~ParseException() {}
 };
 class JAVAQTSHARED_EXPORT ClassNotFoundException : public Exception
 {
  public:
     ClassNotFoundException(QString s = "");
-    ~ClassNotFoundException() throw() {name = "ClassNotFoundException";}
+    ~ClassNotFoundException() {name = "ClassNotFoundException";}
 };
 class JAVAQTSHARED_EXPORT NoClassDefFoundError : public Exception
 {
  public:
     NoClassDefFoundError(QString s = "");
-    ~NoClassDefFoundError() throw() {}
+    ~NoClassDefFoundError() {}
 };
 class JAVAQTSHARED_EXPORT IllegalAccessException : public Exception
 {
  public:
     IllegalAccessException(QString s = "");
-    ~IllegalAccessException() throw() {}
+    ~IllegalAccessException() {}
 };
 class JAVAQTSHARED_EXPORT InstantiationException : public Exception
 {
  public:
     InstantiationException(QString s = "");
-    ~InstantiationException() throw() {}
+    ~InstantiationException() {}
 };
 class JAVAQTSHARED_EXPORT MalformedURLException : public Exception
 {
  public:
     MalformedURLException(QString s = "");
-    ~MalformedURLException() throw() {}
+    ~MalformedURLException() {}
 };
 class JAVAQTSHARED_EXPORT IndexOutOfBoundsException : public Exception
 {
  public:
     IndexOutOfBoundsException(QString s = "");
-    ~IndexOutOfBoundsException() throw() {}
+    ~IndexOutOfBoundsException() {}
 };
 class JAVAQTSHARED_EXPORT MissingResourceException : public Exception
 {
  public:
     MissingResourceException(QString s = "");
-    ~MissingResourceException() throw() {}
+    ~MissingResourceException() {}
 };
 class JAVAQTSHARED_EXPORT IllegalStateException : public Exception
 {
  public:
     IllegalStateException(QString s = "");
-    ~IllegalStateException() throw() {}
+    ~IllegalStateException() {}
 };
 class JAVAQTSHARED_EXPORT ArrayIndexOutOfBoundsException : public Exception
 {
  public:
     ArrayIndexOutOfBoundsException(QString s = "");
-    ~ArrayIndexOutOfBoundsException() throw() {}
+    ~ArrayIndexOutOfBoundsException() {}
 };
 class JAVAQTSHARED_EXPORT EmptyStackException : public Exception
 {
  public:
     EmptyStackException(QString s = "");
-    ~EmptyStackException() throw() {}
+    ~EmptyStackException() {}
 };
 class JAVAQTSHARED_EXPORT Error : public Exception
 {
  public:
     Error(QString s = "");
-    ~Error() throw() {}
+    ~Error() {}
 };
 class JAVAQTSHARED_EXPORT CloneNotSupportedException : public Exception
 {
  public:
     CloneNotSupportedException(QString s = "");
-    ~CloneNotSupportedException() throw() {}
+    ~CloneNotSupportedException() {}
 };
 class JAVAQTSHARED_EXPORT NegativeArraySizeException : public Exception
 {
  public:
     NegativeArraySizeException(QString s = "");
-    ~NegativeArraySizeException() throw() {}
+    ~NegativeArraySizeException() {}
 };
 class JAVAQTSHARED_EXPORT UnsupportedFlavorException : public Exception
 {
  public:
     UnsupportedFlavorException(QString s = "");
-    ~UnsupportedFlavorException() throw() {}
+    ~UnsupportedFlavorException() {}
 };
 class JAVAQTSHARED_EXPORT MimeTypeParseException : public Exception
 {
  public:
     MimeTypeParseException(QString s = "");
-    ~MimeTypeParseException() throw() {}
+    ~MimeTypeParseException() {}
 };
 class JAVAQTSHARED_EXPORT InvalidDnDOperationException : public Exception
 {
 public:
    InvalidDnDOperationException(QString s = "");
-   ~InvalidDnDOperationException() throw() {}
+   ~InvalidDnDOperationException() {}
 
 };
 class JAVAQTSHARED_EXPORT HeadlessException : public Exception
 {
 public:
    HeadlessException(QString s = "");
-   ~HeadlessException() throw() {}
+   ~HeadlessException() {}
 
 };
 class JAVAQTSHARED_EXPORT TooManyListenersException : public Exception
 {
 public:
    TooManyListenersException(QString s = "");
-   ~TooManyListenersException() throw() {}
+   ~TooManyListenersException() {}
 
 };
 class JAVAQTSHARED_EXPORT PrinterException : public Exception
 {
 public:
    PrinterException(QString s = "");
-   ~PrinterException() throw() {}
+   ~PrinterException() {}
 
 };
 class JAVAQTSHARED_EXPORT AudioException : public Exception
 {
 public:
    AudioException(QString s = "");
-   ~AudioException() throw() {}
+   ~AudioException() {}
 
 };
 
@@ -408,43 +407,43 @@ public:
   this->localMsg = cause->getLocalizedMessage();
  }
 
- ~InitializationException() throw() {}
+ ~InitializationException() {}
 };
 class JAVAQTSHARED_EXPORT SAXException : public Exception
 {
 public:
    SAXException(QString s = "");
-   ~SAXException() throw() {}
+   ~SAXException() {}
 };
 class JAVAQTSHARED_EXPORT UnsatisfiedLinkError : public Exception
 {
 public:
    UnsatisfiedLinkError(QString s = "");
-   ~UnsatisfiedLinkError() throw() {}
+   ~UnsatisfiedLinkError() {}
 };
 class JAVAQTSHARED_EXPORT BackingStoreException : public Exception
 {
 public:
    BackingStoreException(QString s = "");
-   ~BackingStoreException() throw() {}
+   ~BackingStoreException() {}
 };
 class JAVAQTSHARED_EXPORT NoSuchMethodException : public Exception
 {
 public:
    NoSuchMethodException(QString s = "");
-   ~NoSuchMethodException() throw() {}
+   ~NoSuchMethodException() {}
 };
 class JAVAQTSHARED_EXPORT InvocationTargetException : public Exception
 {
 public:
    InvocationTargetException(QString s = "");
-   ~InvocationTargetException() throw() {name = "InvocationTargetException";}
+   ~InvocationTargetException() {name = "InvocationTargetException";}
 };
 class JAVAQTSHARED_EXPORT TransformerFactoryConfigurationError : public Exception
 {
 public:
    TransformerFactoryConfigurationError(QString s = "");
-   ~TransformerFactoryConfigurationError() throw() {}
+   ~TransformerFactoryConfigurationError() {}
 };
 
 //Q_DECLARE_INTERFACE(InitializationException, "InitializationException")

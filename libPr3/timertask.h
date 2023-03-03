@@ -67,6 +67,7 @@ private:
      * A value of 0 indicates a non-repeating task.
      */
     long period = 0;
+    friend class ExpressionClock;
 };
 
 #endif // TIMERTASK_H

@@ -1,8 +1,6 @@
 #ifndef BASE_H
 #define BASE_H
 #include "propertychangeprovider.h"
-#include "exceptions.h"
-#include "propertyvetoexception.h"
 #include "namedbean.h"
 //#include "femalesocket.h"
 #include "femalesocketoperation.h"
@@ -523,9 +521,10 @@ class Base;
     /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
                                                       QString name, QString listenerRef)=0;
 
-  /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName)=0;
+    /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName)=0;
 
-  /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/=0;
+    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throws PropertyVetoException*/=0;
+
 
     /**
      * Get the textual reference for the specific listener

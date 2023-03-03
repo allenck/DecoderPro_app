@@ -40,6 +40,7 @@ SOURCES += javaqt.cpp \
     #changelistenermap.cpp \
     csvformat.cpp \
     csvprinter.cpp \
+    datetimeparseexception.cpp \
     defaulttreemodel1.cpp \
     exceptioncontext.cpp \
     exceptiondisplayframe.cpp \
@@ -307,6 +308,7 @@ HEADERS += javaqt.h\
  comparablet.h \
  csvformat.h \
  csvprinter.h \
+    datetimeparseexception.h \
     defaulttreemodel1.h \
  exceptioncontext.h \
  exceptiondisplayframe.h \

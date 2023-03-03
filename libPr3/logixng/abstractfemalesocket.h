@@ -72,7 +72,7 @@ class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
   /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener, QString name, QString listenerRef)override;
   /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener, QString name, QString listenerRef)override;
   /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName)override;
-  /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ ;
   /*public*/ QString getListenerRef(PropertyChangeListener* l) override;
   /*public*/ QList<QString> getListenerRefs()override;
   /*public*/ int getNumPropertyChangeListeners()override;

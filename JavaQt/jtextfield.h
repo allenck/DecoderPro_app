@@ -27,6 +27,8 @@ public:
     /*public*/ JTextField(int columns, QWidget *parent = 0);
     /*public*/ JTextField(QString text, int columns, QWidget *parent = 0);
     /*public*/ JTextField(Document* doc, QString text, int columns, QWidget *parent = 0);
+    ~JTextField() {}
+    JTextField(const JTextField&) :QLineEdit() {}
     /*public*/ void setDocument(Document* doc);
     /*public*/ int getColumns();
     /*public*/ void setColumns(int columns);

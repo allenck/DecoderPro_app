@@ -122,7 +122,8 @@
 #include "actionoblock.h"
 #include "expressionblock.h"
 #include "expressionentryexit.h"
-
+#include "expressionoblock.h"
+#include "expressionclock.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -2263,23 +2264,21 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionBlock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ExpressionClock expressionClock = new ExpressionClock(digitalExpressionManager->getAutoSystemName(), "");
-        expressionClock.setType(ExpressionClock.Type.SystemClock);
-        expressionClock.set_Is_IsNot(Is_IsNot_Enum.Is);
+        ExpressionClock* expressionClock = new ExpressionClock(digitalExpressionManager->getAutoSystemName(), "");
+        expressionClock->setType(ExpressionClock::Type::SystemClock);
+        expressionClock->set_Is_IsNot(Is_IsNot_Enum::Is);
         maleSocket = digitalExpressionManager->registerExpression(expressionClock);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionClock = new ExpressionClock(digitalExpressionManager->getAutoSystemName(), "");
         expressionClock->AbstractNamedBean::setComment("A comment");
-        expressionClock.setRange(10, 20);
-        expressionClock.setType(ExpressionClock.Type.FastClock);
-        expressionClock.set_Is_IsNot(Is_IsNot_Enum.IsNot);
+        expressionClock->setRange(10, 20);
+        expressionClock->setType(ExpressionClock::Type::FastClock);
+        expressionClock->set_Is_IsNot(Is_IsNot_Enum::IsNot);
         maleSocket = digitalExpressionManager->registerExpression(expressionClock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#endif
         ExpressionConditional* expressionConditional = new ExpressionConditional(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionConditional);
         maleSocket->setEnabled(false);
@@ -2576,73 +2575,73 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionMemory);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ExpressionOBlock expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
+#if 1 // not yet implemented
+        ExpressionOBlock* expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
         expressionOBlock->AbstractNamedBean::setComment("A comment");
-        expressionOBlock.setOBlock("OB99");
-        expressionOBlock.setBeanState(OBlock.OBlockStatus.Dark);
-        expressionOBlock.setAddressing(NamedBeanAddressing::Direct);
-        expressionOBlock.setFormula("\"IT\"+index");
-        expressionOBlock.setLocalVariable("index");
-        expressionOBlock.setReference("{IM1}");
-        expressionOBlock.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionOBlock.setStateAddressing(NamedBeanAddressing::LocalVariable);
-        expressionOBlock.setStateFormula("\"IT\"+index2");
-        expressionOBlock.setStateLocalVariable("index2");
-        expressionOBlock.setStateReference("{IM2}");
+        expressionOBlock->setOBlock("OB99");
+        expressionOBlock->setBeanState(OBlock::OBlockStatus::Dark);
+        expressionOBlock->setAddressing(NamedBeanAddressing::Direct);
+        expressionOBlock->setFormula("\"IT\"+index");
+        expressionOBlock->setLocalVariable("index");
+        expressionOBlock->setReference("{IM1}");
+        expressionOBlock->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionOBlock->setStateAddressing(NamedBeanAddressing::LocalVariable);
+        expressionOBlock->setStateFormula("\"IT\"+index2");
+        expressionOBlock->setStateLocalVariable("index2");
+        expressionOBlock->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
         expressionOBlock->AbstractNamedBean::setComment("A comment");
-        expressionOBlock.setOBlock("OB99");
-        expressionOBlock.setBeanState(OBlock.OBlockStatus.Allocated);
-        expressionOBlock.setAddressing(NamedBeanAddressing::LocalVariable);
-        expressionOBlock.setFormula("\"IT\"+index");
-        expressionOBlock.setLocalVariable("index");
-        expressionOBlock.setReference("{IM1}");
-        expressionOBlock.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionOBlock.setStateAddressing(NamedBeanAddressing::Formula);
-        expressionOBlock.setStateFormula("\"IT\"+index2");
-        expressionOBlock.setStateLocalVariable("index2");
-        expressionOBlock.setStateReference("{IM2}");
+        expressionOBlock->setOBlock("OB99");
+        expressionOBlock->setBeanState(OBlock::OBlockStatus::Allocated);
+        expressionOBlock->setAddressing(NamedBeanAddressing::LocalVariable);
+        expressionOBlock->setFormula("\"IT\"+index");
+        expressionOBlock->setLocalVariable("index");
+        expressionOBlock->setReference("{IM1}");
+        expressionOBlock->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionOBlock->setStateAddressing(NamedBeanAddressing::Formula);
+        expressionOBlock->setStateFormula("\"IT\"+index2");
+        expressionOBlock->setStateLocalVariable("index2");
+        expressionOBlock->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
         expressionOBlock->AbstractNamedBean::setComment("A comment");
-        expressionOBlock.setOBlock("OB99");
-        expressionOBlock.setBeanState(OBlock.OBlockStatus.Occupied);
-        expressionOBlock.setAddressing(NamedBeanAddressing::Formula);
-        expressionOBlock.setFormula("\"IT\"+index");
-        expressionOBlock.setLocalVariable("index");
-        expressionOBlock.setReference("{IM1}");
-        expressionOBlock.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionOBlock.setStateAddressing(NamedBeanAddressing::Reference);
-        expressionOBlock.setStateFormula("\"IT\"+index2");
-        expressionOBlock.setStateLocalVariable("index2");
-        expressionOBlock.setStateReference("{IM2}");
+        expressionOBlock->setOBlock("OB99");
+        expressionOBlock->setBeanState(OBlock::OBlockStatus::Occupied);
+        expressionOBlock->setAddressing(NamedBeanAddressing::Formula);
+        expressionOBlock->setFormula("\"IT\"+index");
+        expressionOBlock->setLocalVariable("index");
+        expressionOBlock->setReference("{IM1}");
+        expressionOBlock->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionOBlock->setStateAddressing(NamedBeanAddressing::Reference);
+        expressionOBlock->setStateFormula("\"IT\"+index2");
+        expressionOBlock->setStateLocalVariable("index2");
+        expressionOBlock->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionOBlock = new ExpressionOBlock(digitalExpressionManager->getAutoSystemName(), "");
         expressionOBlock->AbstractNamedBean::setComment("A comment");
-        expressionOBlock.setOBlock("OB99");
-        expressionOBlock.setBeanState(OBlock.OBlockStatus.OutOfService);
-        expressionOBlock.setAddressing(NamedBeanAddressing::Reference);
-        expressionOBlock.setFormula("\"IT\"+index");
-        expressionOBlock.setLocalVariable("index");
-        expressionOBlock.setReference("{IM1}");
-        expressionOBlock.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionOBlock.setStateAddressing(NamedBeanAddressing::Direct);
-        expressionOBlock.setStateFormula("\"IT\"+index2");
-        expressionOBlock.setStateLocalVariable("index2");
-        expressionOBlock.setStateReference("{IM2}");
+        expressionOBlock->setOBlock("OB99");
+        expressionOBlock->setBeanState(OBlock::OBlockStatus::OutOfService);
+        expressionOBlock->setAddressing(NamedBeanAddressing::Reference);
+        expressionOBlock->setFormula("\"IT\"+index");
+        expressionOBlock->setLocalVariable("index");
+        expressionOBlock->setReference("{IM1}");
+        expressionOBlock->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionOBlock->setStateAddressing(NamedBeanAddressing::Direct);
+        expressionOBlock->setStateFormula("\"IT\"+index2");
+        expressionOBlock->setStateLocalVariable("index2");
+        expressionOBlock->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionOBlock);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 #endif
