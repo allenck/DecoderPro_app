@@ -118,7 +118,7 @@ public:
 private:
     static Logger* log;
     /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-    /*private*/ NamedBeanHandle<Conditional*>* _conditionalHandle;
+    /*private*/ NamedBeanHandle<Conditional*>* _conditionalHandle = nullptr;
     /*private*/ QString _reference = "";
     /*private*/ QString _localVariable = "";
     /*private*/ QString _formula = "";

@@ -16,7 +16,6 @@ public:
     static QHash<QString, int> initOldStatusMap();
     static QHash<QString, int> initStatusMap();
     static QHash<QString, QString> initStatusNameMap();
-
     /*
     * Block states.
     * NamedBean.UNKNOWN                 = 0x01;
@@ -33,6 +32,60 @@ public:
      OUT_OF_SERVICE = 0x40,     // Block that running train has reached
      DARK = 0x01,        // Block has no Sensor, same as UNKNOWN
      TRACK_ERROR = 0x80 // Block has Error
+    };
+    class OBlockStatus
+    {
+    public:
+        enum STATES {Unoccupied, Occupied, Allocated, Running, OutOfService, Dark, TrackError};
+
+        static QString toString(STATES s){
+            switch (s)
+            {
+            case Unoccupied: return tr("unoccupied");
+            case Occupied: return tr("occupied");
+            case Allocated: return tr("allocated");
+            case Running: return tr("running");
+            case OutOfService: return tr("out of service");
+            case Dark: return tr("dark");
+            case TrackError: return tr("power error");
+            }
+        }
+        static STATES getByDescription(QString s)
+        {
+            if(s == tr("unoccupied")) return Unoccupied;
+            if(s == tr("occupied")) return Occupied;
+            if(s == tr("allocated")) return Allocated;
+            if(s == tr("running")) return Running;
+            if(s == tr("out of service")) return OutOfService;
+            if(s == tr("dark")) return Dark;
+            if(s == tr("power error")) return TrackError;
+            throw new IllegalArgumentException();
+
+        }
+        static STATES valueOf(QString s)
+        {
+            if(s == tr("unoccupied")) return Unoccupied;
+            if(s == tr("occupied")) return Occupied;
+            if(s == tr("allocated")) return Allocated;
+            if(s == tr("running")) return Running;
+            if(s == tr("out of service")) return OutOfService;
+            if(s == tr("dark")) return Dark;
+            if(s == tr("power error")) return TrackError;
+            throw new IllegalArgumentException();
+        }
+        static int getStatus(STATES s)
+        {
+            switch (s) {
+            case Unoccupied: return Unoccupied;
+            case Occupied: return Occupied;
+            case Allocated: return Allocated;
+            case Running: return Running;
+            case OutOfService: return OutOfService;
+            case Dark: return Dark;
+            case TrackError: return TrackError;
+            }
+            return Unoccupied;
+        }
     };
     static /*final*/ QHash<QString, int> _oldstatusMap;// = new Hashtable<String, Integer>();
     static /*final*/ QHash<QString, int> _statusMap;// = new Hashtable<String, Integer>();

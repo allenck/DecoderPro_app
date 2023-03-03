@@ -101,7 +101,7 @@ class ExpressionEntryExit : public AbstractDigitalExpression, public PropertyCha
  private:
   static Logger* log;
   /*private*/ NamedBeanAddressing::TYPE _addressing = NamedBeanAddressing::Direct;
-  /*private*/ NamedBeanHandle<DestinationPoints*>* _entryDestinationPoints;
+  /*private*/ NamedBeanHandle<DestinationPoints*>* _entryDestinationPoints = nullptr;
   /*private*/ QString _reference = "";
   /*private*/ QString _localVariable = "";
   /*private*/ QString _formula = "";

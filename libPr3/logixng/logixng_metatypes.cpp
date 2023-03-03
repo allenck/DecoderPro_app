@@ -142,6 +142,9 @@
 #include "enablelogixxml.h"
 #include "actionthrottlexml.h"
 #include "actionthrottleswing.h"
+#include "actionoblockxml.h"
+#include "actionentryexitxml.h"
+#include "expressionoblockxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -250,40 +253,42 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<TriggerOnceXml>("TriggerOnceXml");
    qRegisterMetaType<DigitalBooleanOnChangeXml>("DigitalBooleanOnChangeXml");
 
-   // AbstractDigitalActionSwing
-   qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
-   qRegisterMetaType<IfThenElseSwing>("IfThenElseSwing");
-   qRegisterMetaType<ActionPositionableSwing>("ActionPositionableSwing");
-   qRegisterMetaType<DigitalManySwing>("DigitalManySwing");
-   qRegisterMetaType<ActionSensorSwing>("ActionSensorSwing");
-   qRegisterMetaType<ActionBlockSwing>("ActionBlockSwing");
-   qRegisterMetaType<ActionClockSwing>("ActionClockSwing");
-   qRegisterMetaType<ActionListenOnBeansSwing>("ActionListenOnBeansSwing");
-   qRegisterMetaType<ActionLocalVariableSwing>("ActionLocalVariableSwing");
-   qRegisterMetaType<ActionSignalHeadSwing>("ActionSignalHeadSwing");
-   qRegisterMetaType<ActionPowerSwing>("ActionPowerSwing");
-   qRegisterMetaType<ActionLightSwing>("ActionLightSwing");
-   qRegisterMetaType<Actions::LogData>("Actions::LogData");
-   qRegisterMetaType<DefaultAnalogExpressionManagerXml>("DefaultAnalogExpressionManagerXml");
-   qRegisterMetaType<Actions::DigitalCallModuleSwing>("Actions::DigitalCallModuleSwing");
-   qRegisterMetaType<DefaultMaleDigitalActionSocketXml>("DefaultMaleDigitalActionSocketXml");
-   qRegisterMetaType<ExecuteDelayedSwing>("ExecuteDelayedSwing");
-   qRegisterMetaType<ExecuteDelayedXml>("ExecuteDelayedXml");
-   qRegisterMetaType<SequenceXml>("SequenceXml");
-   qRegisterMetaType<LogixXml>("LogixXml");
-   qRegisterMetaType<LogixSwing>("LogixSwing");
-   qRegisterMetaType<ActionMemorySwing>("ActionMemorySwing");
-   qRegisterMetaType<ActionMemoryXml>("ActionMemoryXml");
-   qRegisterMetaType<ActionSignalMastSwing>("ActionSignalMastSwing");
-   qRegisterMetaType<ActionSignalMastXml>("ActionSignalMastXml");
-   qRegisterMetaType<Actions::LogDataSwing>("Actions::LogDataSwing");
-   qRegisterMetaType<Actions::LogDataXml>("Actions::LogDataXml");
-   qRegisterMetaType<ActionTurnoutLockSwing>("ActionTurnoutLockSwing");
-   qRegisterMetaType<ActionTurnoutLockXml>("ActionTurnoutLockXml");
+    // AbstractDigitalActionSwing
+    qRegisterMetaType<TableForEachSwing>("TableForEachSwing");
+    qRegisterMetaType<IfThenElseSwing>("IfThenElseSwing");
+    qRegisterMetaType<ActionPositionableSwing>("ActionPositionableSwing");
+    qRegisterMetaType<DigitalManySwing>("DigitalManySwing");
+    qRegisterMetaType<ActionSensorSwing>("ActionSensorSwing");
+    qRegisterMetaType<ActionBlockSwing>("ActionBlockSwing");
+    qRegisterMetaType<ActionClockSwing>("ActionClockSwing");
+    qRegisterMetaType<ActionListenOnBeansSwing>("ActionListenOnBeansSwing");
+    qRegisterMetaType<ActionLocalVariableSwing>("ActionLocalVariableSwing");
+    qRegisterMetaType<ActionSignalHeadSwing>("ActionSignalHeadSwing");
+    qRegisterMetaType<ActionPowerSwing>("ActionPowerSwing");
+    qRegisterMetaType<ActionLightSwing>("ActionLightSwing");
+    qRegisterMetaType<Actions::LogData>("Actions::LogData");
+    qRegisterMetaType<DefaultAnalogExpressionManagerXml>("DefaultAnalogExpressionManagerXml");
+    qRegisterMetaType<Actions::DigitalCallModuleSwing>("Actions::DigitalCallModuleSwing");
+    qRegisterMetaType<DefaultMaleDigitalActionSocketXml>("DefaultMaleDigitalActionSocketXml");
+    qRegisterMetaType<ExecuteDelayedSwing>("ExecuteDelayedSwing");
+    qRegisterMetaType<ExecuteDelayedXml>("ExecuteDelayedXml");
+    qRegisterMetaType<SequenceXml>("SequenceXml");
+    qRegisterMetaType<LogixXml>("LogixXml");
+    qRegisterMetaType<LogixSwing>("LogixSwing");
+    qRegisterMetaType<ActionMemorySwing>("ActionMemorySwing");
+    qRegisterMetaType<ActionMemoryXml>("ActionMemoryXml");
+    qRegisterMetaType<ActionSignalMastSwing>("ActionSignalMastSwing");
+    qRegisterMetaType<ActionSignalMastXml>("ActionSignalMastXml");
+    qRegisterMetaType<Actions::LogDataSwing>("Actions::LogDataSwing");
+    qRegisterMetaType<Actions::LogDataXml>("Actions::LogDataXml");
+    qRegisterMetaType<ActionTurnoutLockSwing>("ActionTurnoutLockSwing");
+    qRegisterMetaType<ActionTurnoutLockXml>("ActionTurnoutLockXml");
     qRegisterMetaType<EnableLogixSwing>("EnableLogixSwing");
     qRegisterMetaType<EnableLogixXml>("EnableLogixXml");
     qRegisterMetaType<ActionThrottleXml>("ActionThrottleXml");
     qRegisterMetaType<ActionThrottleSwing>("ActionThrottleSwing");
+    qRegisterMetaType<ActionOBlockXml>("ActionOBlockXml");
+    qRegisterMetaType<ActionEntryExitXml>("ActionEntryExitXml");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
@@ -302,7 +307,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionBlockXml>("ExpressionBlockXml");
    qRegisterMetaType<ExpressionConditionalSwing>("ExpressionConditionalSwing");
    qRegisterMetaType<ExpressionConditionalXml>("ExpressionConditionalXml");
-
+   qRegisterMetaType<ExpressionOBlockXml>("ExpressionOBlockXml");
 
    LogixNG_Metatypes::ng_done = true;
 }

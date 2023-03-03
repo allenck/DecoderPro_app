@@ -1140,6 +1140,12 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionentryexit.cpp \
+    logixng/expressionoblock.cpp \
+    logixng/expressionoblockxml.cpp \
+    logixng/actionoblock.cpp \
+    logixng/actionoblockswing.cpp \
+    logixng/actionoblockxml.cpp \
     logixng/actionthrottle.cpp \
     logixng/actionthrottleswing.cpp \
     logixng/actionthrottlexml.cpp \
@@ -2666,6 +2672,12 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionentryexit.h \
+    logixng/expressionoblock.h \
+    logixng/expressionoblockxml.h \
+    logixng/actionoblock.h \
+    logixng/actionoblockswing.h \
+    logixng/actionoblockxml.h \
     logixng/actionthrottle.h \
     logixng/actionthrottleswing.h \
     logixng/actionthrottlexml.h \
