@@ -52,7 +52,6 @@ equals(ENABLE_LOGIXNG, "Y") {
 SOURCES += \
         loconet/internalturnoutmanagertest.cpp \
         loconet/internalturnoutmanagertestaction.cpp \
-    logixng/actionentryexitxml.cpp \
         misc/vetoablechangesupporttest.cpp \
         misc/vetoablechangesupporttestaction.cpp \
         powermanagerscaffold.cpp \
@@ -414,7 +413,6 @@ SOURCES += \
 HEADERS += \
          loconet/internalturnoutmanagertest.h \
          loconet/internalturnoutmanagertestaction.h \
-    logixng/actionentryexitxml.h \
          misc/vetoablechangesupporttest.h \
          misc/vetoablechangesupporttestaction.h \
         powermanagerscaffold.h \
