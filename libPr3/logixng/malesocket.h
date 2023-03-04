@@ -162,14 +162,14 @@ public:
 
     /*public*/ virtual void addLocalVariable(
             QString name,
-            InitialValueType::TYPES initialValueType,
+            SymbolTable::InitialValueType::TYPES initialValueType,
     QString initialValueData){}
 
-  /*public*/ virtual void addLocalVariable(VariableData* variableData) {}
+  /*public*/ virtual void addLocalVariable(SymbolTable::VariableData* variableData) {}
 
   /*public*/ virtual void clearLocalVariables() {}
 
-  /*public*/ virtual QSet<VariableData*> getLocalVariables() =0;//{return QSet<VariableData*>();}
+  /*public*/ virtual QSet<SymbolTable::VariableData*> getLocalVariables() =0;//{return QSet<VariableData*>();}
 
     /**
      * Get the error handling type for this socket.

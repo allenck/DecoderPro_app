@@ -35,7 +35,7 @@ namespace Expressions
    /*public*/  void disposeMe()override;
    /*public*/  void addParameter(
            QString name,
-           InitialValueType::TYPES initialValueType,
+           SymbolTable::InitialValueType::TYPES initialValueType,
            QString initialValueData,
            ReturnValueType::TYPES returnValueType,
            QString returnValueData);
@@ -64,7 +64,7 @@ namespace Expressions
   private:
    static Logger* log;
    /*private*/ NamedBeanHandle<Module*>* _moduleHandle=nullptr;
-   /*private*/ QSet<VariableData*> dataSet(QList<Module::ParameterData *> *list);
+   /*private*/ QSet<SymbolTable::VariableData *> dataSet(QList<Module::ParameterData *> *list);
    /*final*/ QList<Module::ParameterData*>* _parameterData = new QList<Module::ParameterData*>();
 
  };

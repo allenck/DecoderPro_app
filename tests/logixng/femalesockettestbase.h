@@ -284,12 +284,12 @@ private:
         }
 
         //@Override
-        /*public*/  void addLocalVariable(QString name, InitialValueType::TYPES initialValueType, QString initialValueData) override {
+        /*public*/  void addLocalVariable(QString name, SymbolTable::InitialValueType::TYPES initialValueType, QString initialValueData) override {
             throw new UnsupportedOperationException("Not supported.");
         }
 
         //@Override
-        /*public*/  void addLocalVariable(VariableData* variableData) override{
+        /*public*/  void addLocalVariable(SymbolTable::VariableData* variableData) override{
             throw new UnsupportedOperationException("Not supported.");
         }
 
@@ -299,7 +299,7 @@ private:
         }
 
         //@Override
-        /*public*/  QSet<VariableData*> getLocalVariables()override {
+        /*public*/  QSet<SymbolTable::VariableData*> getLocalVariables()override {
             throw new UnsupportedOperationException("Not supported.");
         }
 

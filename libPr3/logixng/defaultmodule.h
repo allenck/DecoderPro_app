@@ -51,10 +51,10 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
   /*public*/  void addParameter(Module::Parameter* parameter)override;
   /*public*/  void addLocalVariable(
           QString name,
-          InitialValueType::TYPES initialValueType,
+          SymbolTable::InitialValueType::TYPES initialValueType,
           QString initialValueData)override;
   /*public*/  QSet<Parameter*> getParameters()override;
-  /*public*/  QSet<VariableData *> getLocalVariables()override;
+  /*public*/  QSet<SymbolTable::VariableData *> getLocalVariables()override;
   /*public*/  void connected(FemaleSocket* socket)override;
   /*public*/  void disconnected(FemaleSocket* socket)override;
   /*public*/  void setSocketSystemName(QString systemName);
@@ -89,7 +89,7 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
   /*private*/ /*final*/ FemaleSocket* _femaleRootSocket;
   /*private*/ QString _socketSystemName = "";
   /*private*/ /*final*/ QSet<Parameter*> _parameters = QSet<Parameter*>();
-  /*private*/ /*final*/ QSet<VariableData*> _localVariables = QSet<VariableData*>();
+  /*private*/ /*final*/ QSet<SymbolTable::VariableData*> _localVariables = QSet<SymbolTable::VariableData*>();
   /*private*/ /*final*/ QMap<QThread*, ConditionalNG*> _currentConditionalNG = QMap<QThread*, ConditionalNG*>();
   static Logger* log;
 

@@ -68,16 +68,16 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QMap<QString, Symbol *> DefaultSymbolTable::getSymbols() {
+    /*public*/  QMap<QString, SymbolTable::Symbol *> DefaultSymbolTable::getSymbols() {
         //return Collections.unmodifiableMap(_symbols);
-         return QMap<QString, Symbol*>(_symbols);
+         return QMap<QString, SymbolTable::Symbol*>(_symbols);
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  QMap<QString, QVariant> DefaultSymbolTable::getSymbolValues() {
         QMap<QString, QVariant> symbolValues = QMap<QString, QVariant>();
-        for (Symbol* symbol : _symbols.values()) {
+        for (SymbolTable::Symbol* symbol : _symbols.values()) {
             QVariant value = _stack->getValueAtIndex(_firstSymbolIndex + symbol->getIndex());
             symbolValues.insert(symbol->getName(), value);
         }
@@ -141,18 +141,18 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void DefaultSymbolTable::createSymbols(/*Collection<? extends SymbolTable.*/QSet<VariableData*> symbolDefinitions) /*throws JmriException*/ {
+    /*public*/  void DefaultSymbolTable::createSymbols(/*Collection<? extends SymbolTable.*/QSet<SymbolTable::VariableData*> symbolDefinitions) /*throws JmriException*/ {
         createSymbols(this, symbolDefinitions);
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  void DefaultSymbolTable::createSymbols(SymbolTable* symbolTable,
-            /*Collection<? extends SymbolTable.*/QSet<VariableData*> symbolDefinitions)
+            /*Collection<? extends SymbolTable.*/QSet<SymbolTable::VariableData*> symbolDefinitions)
             /*throws JmriException */{
 
-        for (VariableData* variable : symbolDefinitions) {
-            Symbol* symbol = new DefaultSymbol(variable->getName(), _stack->getCount() - _firstSymbolIndex);
+        for (SymbolTable::VariableData* variable : symbolDefinitions) {
+            SymbolTable::Symbol* symbol = new DefaultSymbol(variable->getName(), _stack->getCount() - _firstSymbolIndex);
             QVariant initialValue = QVariant();
 
             if (_symbols.contains(symbol->getName())) {

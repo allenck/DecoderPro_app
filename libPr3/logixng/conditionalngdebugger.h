@@ -136,9 +136,9 @@ class CDRun2 : public ThreadAction
   ConditionalNGDebugger* cb;
   AtomicBoolean* enableMenuItems;
   QString infStr;
-  QMap<QString, Symbol*>symbols;
+  QMap<QString, SymbolTable::Symbol*>symbols;
  public:
-  CDRun2(AtomicBoolean* enableMenuItem, QString infStr, QMap<QString, Symbol*>symbols, ConditionalNGDebugger* cb) {
+  CDRun2(AtomicBoolean* enableMenuItem, QString infStr, QMap<QString, SymbolTable::Symbol*>symbols, ConditionalNGDebugger* cb) {
    this->cb = cb;
    this->enableMenuItems = enableMenuItems;
    this->infStr = infStr;

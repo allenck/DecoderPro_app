@@ -35,7 +35,7 @@ ShutdownComputerSwing::ShutdownComputerSwing(QObject *parent)
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ bool validate(/*@Nonnull*/ QList<QString>* errorMessages) {
+    /*public*/ bool ShutdownComputerSwing::validate(/*@Nonnull*/ QList<QString>* errorMessages) {
         return true;
     }
 

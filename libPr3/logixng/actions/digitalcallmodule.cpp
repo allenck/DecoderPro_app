@@ -174,11 +174,11 @@ namespace Actions
 
  }
 
- /*private*/ QSet<VariableData*> DigitalCallModule::dataSet(QList<Module::ParameterData*>* list)
+ /*private*/ QSet<SymbolTable::VariableData*> DigitalCallModule::dataSet(QList<Module::ParameterData*>* list)
  {
-  QSet<VariableData*> set = QSet<VariableData*>();
+  QSet<SymbolTable::VariableData*> set = QSet<SymbolTable::VariableData*>();
   for(Module::ParameterData* p : *list)
-   set.insert((VariableData*)p);
+   set.insert((SymbolTable::VariableData*)p);
   return set;
  }
 
@@ -235,7 +235,7 @@ namespace Actions
 
  /*public*/  void DigitalCallModule::addParameter(
          QString name,
-         InitialValueType::TYPES initialValueType,
+         SymbolTable::InitialValueType::TYPES initialValueType,
          QString initialValueData,
          ReturnValueType::TYPES returnValueType,
          QString returnValueData) {

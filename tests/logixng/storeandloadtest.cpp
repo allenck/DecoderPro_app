@@ -244,8 +244,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         module->addParameter("other", true, true);
         module->addParameter("n", true, false);
         module->addParameter("result", false, true);
-        module->addLocalVariable("temp1", InitialValueType::None, nullptr);
-        module->addLocalVariable("temp2", InitialValueType::None, nullptr);
+        module->addLocalVariable("temp1", SymbolTable::InitialValueType::None, nullptr);
+        module->addLocalVariable("temp2", SymbolTable::InitialValueType::None, nullptr);
 #if 0
         DigitalMany* many901 = new DigitalMany("IQDA901", "");
         MaleSocket* manySocket901 = ((DefaultDigitalActionManager*)
@@ -1596,14 +1596,14 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         callModule = new Actions::DigitalCallModule(digitalActionManager->getAutoSystemName(), "");
         callModule->AbstractNamedBean::setComment("A comment");
         callModule->setModule("IQM1");
-        callModule->addParameter("Abc", InitialValueType::FloatingNumber, "12.32", ReturnValueType::LocalVariable, "SomeVar");
-        callModule->addParameter("Def", InitialValueType::Formula, "12 + 32", ReturnValueType::Memory, "M1");
-        callModule->addParameter("Ghi", InitialValueType::Integer, "21", ReturnValueType::None, "");
-        callModule->addParameter("Jkl", InitialValueType::LocalVariable, "MyVar", ReturnValueType::Memory, "M34");
-        callModule->addParameter("Mno", InitialValueType::Memory, "M2", ReturnValueType::LocalVariable, "SomeVar");
-        callModule->addParameter("Pqr", InitialValueType::None, "", ReturnValueType::LocalVariable, "SomeVar");
-        callModule->addParameter("Stu", InitialValueType::Reference, "{MyVar}", ReturnValueType::LocalVariable, "SomeVar");
-        callModule->addParameter("Vxy", InitialValueType::String, "Some string", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Abc", SymbolTable::InitialValueType::FloatingNumber, "12.32", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Def", SymbolTable::InitialValueType::Formula, "12 + 32", ReturnValueType::Memory, "M1");
+        callModule->addParameter("Ghi", SymbolTable::InitialValueType::Integer, "21", ReturnValueType::None, "");
+        callModule->addParameter("Jkl", SymbolTable::InitialValueType::LocalVariable, "MyVar", ReturnValueType::Memory, "M34");
+        callModule->addParameter("Mno", SymbolTable::InitialValueType::Memory, "M2", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Pqr", SymbolTable::InitialValueType::None, "", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Stu", SymbolTable::InitialValueType::Reference, "{MyVar}", ReturnValueType::LocalVariable, "SomeVar");
+        callModule->addParameter("Vxy", SymbolTable::InitialValueType::String, "Some string", ReturnValueType::LocalVariable, "SomeVar");
         maleSocket = digitalActionManager->registerAction(callModule);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
@@ -2155,14 +2155,14 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         expressionCallModule = new Expressions::DigitalCallModule(digitalExpressionManager->getAutoSystemName(), "");
         expressionCallModule->AbstractNamedBean::setComment("A comment");
         expressionCallModule->setModule("IQM1");
-        expressionCallModule->addParameter("Abc", InitialValueType::FloatingNumber, "12.32", ReturnValueType::LocalVariable, "SomeVar");
-        expressionCallModule->addParameter("Def", InitialValueType::Formula, "12 + 32", ReturnValueType::Memory, "M1");
-        expressionCallModule->addParameter("Ghi", InitialValueType::Integer, "21", ReturnValueType::None, "");
-        expressionCallModule->addParameter("Jkl", InitialValueType::LocalVariable, "MyVar", ReturnValueType::Memory, "M34");
-        expressionCallModule->addParameter("Mno", InitialValueType::Memory, "M2", ReturnValueType::LocalVariable, "SomeVar");
-        expressionCallModule->addParameter("Pqr", InitialValueType::None, "", ReturnValueType::LocalVariable, "SomeVar");
-        expressionCallModule->addParameter("Stu", InitialValueType::Reference, "{MyVar}", ReturnValueType::LocalVariable, "SomeVar");
-        expressionCallModule->addParameter("Vxy", InitialValueType::String, "Some string", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule->addParameter("Abc", SymbolTable::InitialValueType::FloatingNumber, "12.32", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule->addParameter("Def", SymbolTable::InitialValueType::Formula, "12 + 32", ReturnValueType::Memory, "M1");
+        expressionCallModule->addParameter("Ghi", SymbolTable::InitialValueType::Integer, "21", ReturnValueType::None, "");
+        expressionCallModule->addParameter("Jkl", SymbolTable::InitialValueType::LocalVariable, "MyVar", ReturnValueType::Memory, "M34");
+        expressionCallModule->addParameter("Mno", SymbolTable::InitialValueType::Memory, "M2", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule->addParameter("Pqr", SymbolTable::InitialValueType::None, "", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule->addParameter("Stu", SymbolTable::InitialValueType::Reference, "{MyVar}", ReturnValueType::LocalVariable, "SomeVar");
+        expressionCallModule->addParameter("Vxy", SymbolTable::InitialValueType::String, "Some string", ReturnValueType::LocalVariable, "SomeVar");
         maleSocket = digitalExpressionManager->registerExpression(expressionCallModule);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
@@ -3801,7 +3801,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
     /*private*/ void StoreAndLoadTest::addVariables(MaleSocket* maleSocket) {
         int i = 0;
-        for (InitialValueType::TYPES type : InitialValueType::values()) {
+        for (SymbolTable::InitialValueType::TYPES type : SymbolTable::InitialValueType::values()) {
             maleSocket->addLocalVariable(QString("A%d").arg(i+1), type, initValues[i]);
             i++;
         }

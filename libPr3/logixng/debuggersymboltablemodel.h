@@ -12,7 +12,7 @@ class DebuggerSymbolTableModel : public AbstractTableModel
   explicit DebuggerSymbolTableModel(ConditionalNG* conditionalNG, QObject *parent = nullptr);
   /*public*/  static /*final*/const int COLUMN_NAME = 0;
   /*public*/  static /*final*/const int COLUMN_VALUE = 1;
-  /*public*/  void update(QMap<QString, Symbol*> symbols);
+  /*public*/  void update(QMap<QString, SymbolTable::Symbol*> symbols);
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   Qt::ItemFlags flags(const QModelIndex &index) const override;
   bool setData(const QModelIndex &index, const QVariant &value, int role) override;
@@ -24,7 +24,7 @@ class DebuggerSymbolTableModel : public AbstractTableModel
 
  private:
   /*private*/ /*final*/ ConditionalNG* _conditionalNG;
-  /*private*/ /*final*/ QList<Symbol*> _symbols = QList<Symbol*>();
+  /*private*/ /*final*/ QList<SymbolTable::Symbol*> _symbols = QList<SymbolTable::Symbol*>();
 
 };
 

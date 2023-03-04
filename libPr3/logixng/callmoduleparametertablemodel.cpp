@@ -20,7 +20,7 @@
           _parameterData->append(parameterDataMap.value(p->getName()));
       } else {
           _parameterData->append(new Module::ParameterData(
-                  p->getName(), InitialValueType::None, "",
+                  p->getName(), SymbolTable::InitialValueType::None, "",
                   ReturnValueType::None, ""));
       }
   }
@@ -157,7 +157,7 @@
 
 /*public*/  void CallModuleParameterTableModel::add() {
     int row = _parameterData->size();
-    _parameterData->append(new Module::ParameterData("", InitialValueType::None, "", ReturnValueType::None, ""));
+    _parameterData->append(new Module::ParameterData("", SymbolTable::InitialValueType::None, "", ReturnValueType::None, ""));
     fireTableRowsInserted(row, row);
 }
 

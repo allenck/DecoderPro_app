@@ -233,9 +233,9 @@
         actionSensor->setReference("{IM1}");    // Points to "IS102"
         actionSensor->setLocalVariable("mySensor");
         actionSensor->setFormula("\"IS10\" + str(index)");
-        _baseMaleSocket->addLocalVariable("refSensor", InitialValueType::String, "IS103");
-        _baseMaleSocket->addLocalVariable("mySensor", InitialValueType::String, "IS104");
-        _baseMaleSocket->addLocalVariable("index", InitialValueType::Integer, "5");
+        _baseMaleSocket->addLocalVariable("refSensor", SymbolTable::InitialValueType::String, "IS103");
+        _baseMaleSocket->addLocalVariable("mySensor", SymbolTable::InitialValueType::String, "IS104");
+        _baseMaleSocket->addLocalVariable("index", SymbolTable::InitialValueType::Integer, "5");
 
         // Test direct addressing
         actionSensor->setAddressing(NamedBeanAddressing::Direct);
@@ -370,7 +370,7 @@
         actionSensor->setStateReference("{refVariable}");
         // Test Inactive
         _baseMaleSocket->clearLocalVariables();
-        _baseMaleSocket->addLocalVariable("refVariable", InitialValueType::String, "Inactive");
+        _baseMaleSocket->addLocalVariable("refVariable", SymbolTable::InitialValueType::String, "Inactive");
         sensor->setState(Sensor::ACTIVE);
         // Execute the conditional
         conditionalNG->execute();
@@ -378,7 +378,7 @@
         Assert::assertEquals(Sensor::INACTIVE, sensor->getCommandedState(), __FILE__, __LINE__);
         // Test Active
         _baseMaleSocket->clearLocalVariables();
-        _baseMaleSocket->addLocalVariable("refVariable", InitialValueType::String, "Active");
+        _baseMaleSocket->addLocalVariable("refVariable", SymbolTable::InitialValueType::String, "Active");
         sensor->setState(Sensor::INACTIVE);
         // Execute the conditional
         conditionalNG->execute();
@@ -391,7 +391,7 @@
         actionSensor->setStateLocalVariable("myVariable");
         // Test Inactive
         _baseMaleSocket->clearLocalVariables();
-        _baseMaleSocket->addLocalVariable("refVariable", InitialValueType::String, "Inactive");
+        _baseMaleSocket->addLocalVariable("refVariable", SymbolTable::InitialValueType::String, "Inactive");
         sensor->setState(Sensor::ACTIVE);
         // Execute the conditional
         conditionalNG->execute();
@@ -399,7 +399,7 @@
         Assert::assertEquals(Sensor::INACTIVE, sensor->getCommandedState(), __FILE__, __LINE__);
         // Test Active
         _baseMaleSocket->clearLocalVariables();
-        _baseMaleSocket->addLocalVariable("refVariable", InitialValueType::String, "Active");
+        _baseMaleSocket->addLocalVariable("refVariable", SymbolTable::InitialValueType::String, "Active");
         sensor->setState(Sensor::INACTIVE);
         // Execute the conditional
         conditionalNG->execute();
@@ -412,8 +412,8 @@
         actionSensor->setStateFormula("refVariable + myVariable");
         // Test Inactive
         _baseMaleSocket->clearLocalVariables();
-        _baseMaleSocket->addLocalVariable("refVariable", InitialValueType::String, "Ina");
-        _baseMaleSocket->addLocalVariable("myVariable", InitialValueType::String, "ctive");
+        _baseMaleSocket->addLocalVariable("refVariable", SymbolTable::InitialValueType::String, "Ina");
+        _baseMaleSocket->addLocalVariable("myVariable", SymbolTable::InitialValueType::String, "ctive");
         sensor->setState(Sensor::ACTIVE);
         // Execute the conditional
         conditionalNG->execute();
@@ -421,8 +421,8 @@
         Assert::assertEquals(Sensor::INACTIVE, sensor->getCommandedState(), __FILE__, __LINE__);
         // Test Active
         _baseMaleSocket->clearLocalVariables();
-        _baseMaleSocket->addLocalVariable("refVariable", InitialValueType::String, "Act");
-        _baseMaleSocket->addLocalVariable("myVariable", InitialValueType::String, "ive");
+        _baseMaleSocket->addLocalVariable("refVariable", SymbolTable::InitialValueType::String, "Act");
+        _baseMaleSocket->addLocalVariable("myVariable", SymbolTable::InitialValueType::String, "ive");
         sensor->setState(Sensor::INACTIVE);
         // Execute the conditional
         conditionalNG->execute();

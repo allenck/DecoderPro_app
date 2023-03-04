@@ -53,11 +53,11 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*public*/ bool getCatchAbortExecution()override;
   /*public*/ void setCatchAbortExecution(bool catchAbortExecution)override;
   /*public*/ void addLocalVariable(QString name,
-          InitialValueType::TYPES initialValueType,
+                                   SymbolTable::InitialValueType::TYPES initialValueType,
           QString initialValueData)override;
-  /*public*/ void addLocalVariable(VariableData* variableData)override;
+  /*public*/ void addLocalVariable(SymbolTable::VariableData* variableData)override;
   /*public*/ void clearLocalVariables()override;
-  /*public*/ QSet<VariableData *> getLocalVariables() override;
+  /*public*/ QSet<SymbolTable::VariableData *> getLocalVariables() override;
   /*public*/ Base* getParent() const override;
   /*public*/ void setParent(Base* parent)override;
   /*public*/ /*final*/ ConditionalNG* getConditionalNG()override;
@@ -124,7 +124,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
   /*private*/ bool _listen = true;     // By default, actions and expressions listen
 
  protected:
-  /*protected*/ /*final*/ QSet<VariableData*> _localVariables = QSet<VariableData*>();
+  /*protected*/ /*final*/ QSet<SymbolTable::VariableData*> _localVariables = QSet<SymbolTable::VariableData*>();
   /*abstract*/virtual /*protected*/ void registerListenersForThisClass()=0;
   /*protected*/ void printTreeRow(PrintTreeSettings* settings,
           QLocale locale,
@@ -136,7 +136,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
           PrintWriter* writer,
           QString currentIndent,
           /*MutableInt*/int *lineNumber,
-          VariableData* localVariable);
+          SymbolTable::VariableData* localVariable);
   /*abstract*/ /*protected*/virtual void unregisterListenersForThisClass()=0;
   /*abstract*/ /*protected*/ virtual void disposeMe()=0;
 };

@@ -416,11 +416,11 @@
 
                 mainPanel->setToolTip(connectedSocket->getShortDescription());
 
-                for (VariableData* variableData : connectedSocket->getLocalVariables()) {
+                for (SymbolTable::VariableData* variableData : connectedSocket->getLocalVariables()) {
                     JLabel* variableLabel = new JLabel(tr(
                             "Local variable \"%1\", init to %2 \"%3\"").arg(
                             variableData->_name,
-                            InitialValueType::toString(variableData->_initalValueType),
+                            SymbolTable::InitialValueType::toString(variableData->_initalValueType),
                             variableData->_initialValueData));
                     variableLabel->setAlignmentX(Qt::AlignLeft);
                     if (((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getTreeEditorHighlightRow()) {

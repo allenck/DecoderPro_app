@@ -17,8 +17,8 @@
 
     /*public*/  LocalVariableTableModel::LocalVariableTableModel(MaleSocket* maleSocket, QObject *parent) {
         if (maleSocket != nullptr) {
-            for (VariableData* v : maleSocket->getLocalVariables()) {
-                _variables.append(new VariableData(v));
+            for (SymbolTable::VariableData* v : maleSocket->getLocalVariables()) {
+                _variables.append(new SymbolTable::VariableData(v));
             }
         }
     }
@@ -81,7 +81,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool LocalVariableTableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-        VariableData* variable = _variables.at(index.row());
+        SymbolTable::VariableData* variable = _variables.at(index.row());
         if(role == Qt::EditRole)
         {
           switch (index.column()) {
@@ -89,7 +89,7 @@
                 variable->_name = value.toString();
                 break;
             case COLUMN_TYPE:
-                variable->_initalValueType = (InitialValueType::toType(value.toString()));
+                variable->_initalValueType = (SymbolTable::InitialValueType::toType(value.toString()));
                 break;
             case COLUMN_DATA:
                 variable->_initialValueData =  value.toString();
@@ -145,7 +145,7 @@
             case COLUMN_NAME:
                 return _variables.value(index.row())->getName();
             case COLUMN_TYPE:
-                return InitialValueType::toString(_variables.value(index.row())->getInitalValueType());
+                return SymbolTable::InitialValueType::toString(_variables.value(index.row())->getInitalValueType());
             case COLUMN_DATA:
                 return _variables.value(index.row())->getInitialValueData();
             case COLUMN_MENU:
@@ -166,11 +166,11 @@
 
     /*public*/  void LocalVariableTableModel::add() {
         int row = _variables.size();
-        _variables.append(new VariableData("", InitialValueType::None, ""));
+        _variables.append(new SymbolTable::VariableData("", SymbolTable::InitialValueType::None, ""));
         fireTableRowsInserted(row, row);
     }
 
-    /*public*/  QList<VariableData*> LocalVariableTableModel::getVariables() {
+    /*public*/  QList<SymbolTable::VariableData*> LocalVariableTableModel::getVariables() {
         return _variables;
     }
 

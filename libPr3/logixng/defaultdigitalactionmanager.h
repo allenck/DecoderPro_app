@@ -6,7 +6,6 @@
 #include "digitalactionmanager.h"
 #include "category.h"
 #include "abstractmalesocket.h"
-#include "abstractaction.h"
 
 class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalActionManager
 {

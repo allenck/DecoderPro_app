@@ -35,7 +35,7 @@ namespace Actions
    /*public*/  void disposeMe()override;
    /*public*/  void addParameter(
            QString name,
-           InitialValueType::TYPES initialValueType,
+           SymbolTable::InitialValueType::TYPES initialValueType,
            QString initialValueData,
            ReturnValueType::TYPES returnValueType,
            QString returnValueData);
@@ -67,7 +67,7 @@ namespace Actions
    static Logger* log;
    /*private*/ NamedBeanHandle<Module*>* _moduleHandle=nullptr;
    /*private*/ /*final*/ QList<Module::ParameterData*>* _parameterData = new QList<Module::ParameterData*>();
-   /*private*/ QSet<VariableData*> dataSet(QList<Module::ParameterData *> *list);
+   /*private*/ QSet<SymbolTable::VariableData *> dataSet(QList<Module::ParameterData *> *list);
 
 
  };

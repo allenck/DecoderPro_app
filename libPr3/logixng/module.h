@@ -88,14 +88,14 @@
 
     /*public*/virtual void addLocalVariable(
             QString name,
-            InitialValueType::TYPES initialValueType,
+            SymbolTable::InitialValueType::TYPES initialValueType,
             QString initialValueData)=0;
 
 //    public void removeLocalVariable(String name);
 
     /*public*/ virtual QSet<Parameter*> getParameters()=0;
 
-    /*public*/ virtual QSet<VariableData*> getLocalVariables()=0;
+    /*public*/ virtual QSet<SymbolTable::VariableData*> getLocalVariables()=0;
 
 
 
@@ -106,7 +106,7 @@
     /**
      * Data for a parameter.
      */
-    /*public*/ /*static*/ class ParameterData : public VariableData
+    /*public*/ /*static*/ class ParameterData : public SymbolTable::VariableData
     {
      public:
         /*public*/ ReturnValueType::TYPES _returnValueType = ReturnValueType::TYPES::None;
@@ -115,10 +115,10 @@
 
         /*public*/ ParameterData(
                 QString name,
-                InitialValueType::TYPES initalValueType,
+                SymbolTable::InitialValueType::TYPES initalValueType,
                 QString initialValueData,
                 ReturnValueType::TYPES returnValueType,
-                QString returnValueData) : VariableData(name, initalValueType, initialValueData){
+                QString returnValueData) : SymbolTable::VariableData(name, initalValueType, initialValueData){
 
             //super(name, initalValueType, initialValueData);
 
@@ -126,7 +126,7 @@
             _returnValueData = returnValueData;
         }
 
-        /*public*/ ParameterData(ParameterData* data) : VariableData(data->_name, data->_initalValueType, data->_initialValueData){
+        /*public*/ ParameterData(ParameterData* data) : SymbolTable::VariableData(data->_name, data->_initalValueType, data->_initialValueData){
             //super(data._name, data._initalValueType, data._initialValueData);
             _returnValueType = data->_returnValueType;
             _returnValueData = data->_returnValueData;

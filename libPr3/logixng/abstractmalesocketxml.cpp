@@ -41,10 +41,10 @@
             element.appendChild(e2=doc.createElement("errorHandling")); e2.appendChild(doc.createTextNode(ErrorHandlingType::toString( maleSocket->getErrorHandlingType())));  // NOI18N
         }
 
-        for (VariableData* data : maleSocket->getLocalVariables()) {
+        for (SymbolTable::VariableData* data : maleSocket->getLocalVariables()) {
             QDomElement elementVariable = doc.createElement("LocalVariable");                                     // NOI18N
             elementVariable.appendChild(e2=doc.createElement("name")); e2.appendChild(doc.createTextNode(data->_name));                     // NOI18N
-            elementVariable.appendChild(e2=doc.createElement("type")); e2.appendChild(doc.createTextNode(InitialValueType::toString(data->_initalValueType)));   // NOI18N
+            elementVariable.appendChild(e2=doc.createElement("type")); e2.appendChild(doc.createTextNode(SymbolTable::InitialValueType::toString(data->_initalValueType)));   // NOI18N
             elementVariable.appendChild(e2=doc.createElement("data")); e2.appendChild(doc.createTextNode(data->_initialValueData));         // NOI18N
             element.appendChild(elementVariable);
         }
@@ -101,16 +101,16 @@
          QDomElement e = localVariableList.at(i).toElement();
             QDomElement elementName = e.firstChildElement("name");   // NOI18N
 
-            InitialValueType::TYPES type = InitialValueType::None;
+            SymbolTable::InitialValueType::TYPES type = SymbolTable::InitialValueType::None;
             QDomElement elementType = e.firstChildElement("type");   // NOI18N
             if (!elementType.isNull()) {
-                type = InitialValueType::toType(elementType.text().trimmed());
+                type = SymbolTable::InitialValueType::toType(elementType.text().trimmed());
             }
 
             QDomElement elementData = e.firstChildElement("data");   // NOI18N
 
             if (elementName.isNull()) throw new IllegalArgumentException("QDomElement 'name' does not exists");  // NOI18N
-            if (type == InitialValueType::None) throw new IllegalArgumentException("QDomElement 'type' does not exists");         // NOI18N
+            if (type == SymbolTable::InitialValueType::None) throw new IllegalArgumentException("QDomElement 'type' does not exists");         // NOI18N
             if (elementData.isNull()) throw new IllegalArgumentException("QDomElement 'data' does not exists");  // NOI18N
 
             maleSocket->addLocalVariable(elementName.text().trimmed(), type, elementData.text().trimmed());

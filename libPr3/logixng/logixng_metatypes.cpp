@@ -147,6 +147,9 @@
 #include "expressionoblockxml.h"
 #include "shutdowncomputerxml.h"
 #include "shutdowncomputerswing.h"
+#include "loglocalvariablesswing.h"
+#include "loglocalvariablesxml.h"
+
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -291,6 +294,12 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<ActionThrottleSwing>("ActionThrottleSwing");
     qRegisterMetaType<ActionOBlockXml>("ActionOBlockXml");
     qRegisterMetaType<ActionEntryExitXml>("ActionEntryExitXml");
+    qRegisterMetaType<ShutdownComputerSwing>("ShutdownComputerSwing");
+    qRegisterMetaType<ShutdownComputerXml>("ShutdownComputerXml");
+    qRegisterMetaType<LogLocalVariablesSwing>("LogLocalVariablesSwing");
+    qRegisterMetaType<LogLocalVariablesXml>("LogLocalVariablesXml");
+
+
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

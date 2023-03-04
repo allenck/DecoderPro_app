@@ -212,7 +212,7 @@
     //@Test
     /*public*/  void TableForEachTest::testExecute() /*throws IOException */{
 
-        _maleSocket->addLocalVariable("MyVariable", InitialValueType::None, nullptr);
+        _maleSocket->addLocalVariable("MyVariable", SymbolTable::InitialValueType::None, nullptr);
 
         _logixNG->setEnabled(false);
 

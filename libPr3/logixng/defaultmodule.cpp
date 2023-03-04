@@ -238,9 +238,9 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
 //@Override
 /*public*/  void DefaultModule::addLocalVariable(
         QString name,
-        InitialValueType::TYPES initialValueType,
+        SymbolTable::InitialValueType::TYPES initialValueType,
         QString initialValueData) {
-            _localVariables.insert(new VariableData(
+            _localVariables.insert(new SymbolTable::VariableData(
             name,
             initialValueType,
             initialValueData));
@@ -257,7 +257,7 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
 }
 
 //@Override
-/*public*/  QSet<VariableData*> DefaultModule::getLocalVariables() {
+/*public*/  QSet<SymbolTable::VariableData*> DefaultModule::getLocalVariables() {
     return _localVariables;
 }
 

@@ -7,23 +7,7 @@
 #include <QMetaEnum>
 class Stack;
 class VariableData;
-/*public*/ /*interface*/class Symbol  : public QObject{
-  Q_OBJECT
- public:
-  Symbol(QObject* parent = nullptr) : QObject(parent) {}
-    /**
-     * The name of the symbol
-     * @return the name
-     */
-    /*public*/ virtual QString getName()=0;
 
-    /**
-     * The index on the stack for this symbol
-     * @return the index
-     */
-    /*public*/ virtual int getIndex()=0;
-
-};
 /**
  * A symbol table
  *
@@ -32,7 +16,134 @@ class VariableData;
 /*public*/ /*interface*/ class SymbolTable  : public QObject{
  Q_OBJECT
  public:
-  SymbolTable(QObject* parent = nullptr) : QObject(parent) {}
+    /*public*/ /*interface*/class Symbol  : public QObject{
+      //Q_OBJECT
+     public:
+      Symbol(QObject* parent = nullptr) : QObject(parent) {}
+        /**
+         * The name of the symbol
+         * @return the name
+         */
+        /*public*/ virtual QString getName()=0;
+
+        /**
+         * The index on the stack for this symbol
+         * @return the index
+         */
+        /*public*/ virtual int getIndex()=0;
+
+    }; // Symbol
+
+    /**
+     * An enum that defines the types of initial value.
+     */
+    /*public*/ /*enum*/class InitialValueType  : public QObject{
+      //Q_OBJECT
+    public:
+        enum TYPES {None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
+//        Q_ENUM(TYPES)
+    //        None(Bundle.getMessage("InitialValueType_None")),
+    //        Integer(Bundle.getMessage("InitialValueType_Integer")),
+    //        FloatingNumber(Bundle.getMessage("InitialValueType_FloatingNumber")),
+    //        String(Bundle.getMessage("InitialValueType_String")),
+    //        LocalVariable(Bundle.getMessage("InitialValueType_LocalVariable")),
+    //        Memory(Bundle.getMessage("InitialValueType_Memory")),
+    //        Reference(Bundle.getMessage("InitialValueType_Reference")),
+    //        Formula(Bundle.getMessage("InitialValueType_Formula"));
+    private:
+        /*private*/ /*final*/ QString _descr;
+        TYPES t;
+        QMap<QString, TYPES> map = {
+         {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
+         {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
+        };
+        /*private*/ InitialValueType(QString descr) {
+            _descr = descr;
+            t=map.value(descr);
+        }
+    public:
+        //@Override
+        /*public*/ static QString toString(TYPES t) {
+           switch(t)
+           {
+            case None:
+              return tr("None");
+           case Integer:
+            return tr("Integer");
+           case FloatingNumber:
+            return tr("FloatigNumber");
+           case String:
+            return tr("String");
+           case LocalVariable:
+            return tr("Local variable");
+           case Memory:
+            return tr("Memory");
+           case Reference:
+            return tr("Reference");
+           case Formula:
+            return tr("Formula");
+           default:
+            return "??";
+           }
+        }
+     /*public*/ static TYPES toType(QString s)
+        {
+         QMap<QString, TYPES> map = {
+          {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
+          {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
+         };
+         return map.value(s);
+        }
+        /*public*/ static QList<TYPES> values()
+        {
+         return QList<TYPES>{None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
+        }
+  }; // InitiaValueType
+
+
+    /**
+     * Data for a variable.
+     */
+    /*public*/ /*static*/ class VariableData : public QObject {
+    //Q_OBJECT
+        public:
+        /*public*/ QString _name;
+        /*public*/ InitialValueType::TYPES _initalValueType = InitialValueType::None;
+        /*public*/ QString _initialValueData;
+
+        /*public*/ VariableData(
+                QString name,
+                InitialValueType::TYPES initalValueType,
+                QString initialValueData) {
+
+            _name = name;
+            _initalValueType = initalValueType;
+            _initialValueData = initialValueData;
+        }
+
+    /*public*/ VariableData(VariableData* variableData) {
+        _name = variableData->_name;
+        _initalValueType = variableData->_initalValueType;
+        _initialValueData = variableData->_initialValueData;
+    }
+
+    /**
+     * The name of the variable
+     * @return the name
+     */
+    /*public*/ QString getName() {
+        return _name;
+    }
+
+    /*public*/ InitialValueType::TYPES getInitalValueType() {
+        return _initalValueType;
+    }
+
+    /*public*/ QString getInitialValueData() {
+        return _initialValueData;
+    }
+ }; // VariableData
+    SymbolTable(QObject* parent = nullptr) : QObject(parent) {}
   /**
    * The definition of the symbol
    */
@@ -139,115 +250,10 @@ class VariableData;
           /*public*/ SymbolNotFound(QString message) :  IllegalArgumentException(message){
               //super(message);
           }
-      };
-};
-      /**
-       * An enum that defines the types of initial value.
-       */
-      /*public*/ /*enum*/class InitialValueType  : public QObject{
-        Q_OBJECT
-      public:
-          enum TYPES {None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
-          Q_ENUM(TYPES)
-      //        None(Bundle.getMessage("InitialValueType_None")),
-      //        Integer(Bundle.getMessage("InitialValueType_Integer")),
-      //        FloatingNumber(Bundle.getMessage("InitialValueType_FloatingNumber")),
-      //        String(Bundle.getMessage("InitialValueType_String")),
-      //        LocalVariable(Bundle.getMessage("InitialValueType_LocalVariable")),
-      //        Memory(Bundle.getMessage("InitialValueType_Memory")),
-      //        Reference(Bundle.getMessage("InitialValueType_Reference")),
-      //        Formula(Bundle.getMessage("InitialValueType_Formula"));
-      private:
-          /*private*/ /*final*/ QString _descr;
-          TYPES t;
-          QMap<QString, TYPES> map = {
-           {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
-           {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
-          };
-          /*private*/ InitialValueType(QString descr) {
-              _descr = descr;
-              t=map.value(descr);
-          }
-      public:
-          //@Override
-          /*public*/ static QString toString(TYPES t) {
-             switch(t)
-             {
-              case None:
-                return tr("None");
-             case Integer:
-              return tr("Integer");
-             case FloatingNumber:
-              return tr("FloatigNumber");
-             case String:
-              return tr("String");
-             case LocalVariable:
-              return tr("Local variable");
-             case Memory:
-              return tr("Memory");
-             case Reference:
-              return tr("Reference");
-             case Formula:
-              return tr("Formula");
-             default:
-              return "??";
-             }
-          }
-       /*public*/ static TYPES toType(QString s)
-          {
-           QMap<QString, TYPES> map = {
-            {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
-            {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
-           };
-           return map.value(s);
-          }
-          /*public*/ static QList<TYPES> values()
-          {
-           return QList<TYPES>{None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
-          }
-      };
+      }; // SymbolNotFound
 
-    /**
-     * Data for a variable.
-     */
-    /*public*/ /*static*/ class VariableData : public QObject {
-    Q_OBJECT
-        public:
-        /*public*/ QString _name;
-        /*public*/ InitialValueType::TYPES _initalValueType = InitialValueType::None;
-        /*public*/ QString _initialValueData;
 
-        /*public*/ VariableData(
-                QString name,
-                InitialValueType::TYPES initalValueType,
-                QString initialValueData) {
+};  //SymbolTable
 
-            _name = name;
-            _initalValueType = initalValueType;
-            _initialValueData = initialValueData;
-        }
-
-    /*public*/ VariableData(VariableData* variableData) {
-        _name = variableData->_name;
-        _initalValueType = variableData->_initalValueType;
-        _initialValueData = variableData->_initialValueData;
-    }
-
-    /**
-     * The name of the variable
-     * @return the name
-     */
-    /*public*/ QString getName() {
-        return _name;
-    }
-
-    /*public*/ InitialValueType::TYPES getInitalValueType() {
-        return _initalValueType;
-    }
-
-    /*public*/ QString getInitialValueData() {
-        return _initialValueData;
-    }
- };
 Q_DECLARE_INTERFACE(SymbolTable, "SymbolTable")
 #endif // SYMBOLTABLE_H

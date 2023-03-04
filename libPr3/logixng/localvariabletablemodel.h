@@ -24,11 +24,11 @@ class LocalVariableTableModel : public AbstractTableModel
   /*public*/  QString getColumnClass(int col) const;
   /*public*/  void setColumnForMenu(JTable* table);
   /*public*/  void add();
-  /*public*/  QList<VariableData*> getVariables();
+  /*public*/  QList<SymbolTable::VariableData *> getVariables();
   /*public*/  void actionPerformed(JActionEvent* event =0);
 
  private:
-  /*private*/ /*final*/ QList<VariableData*> _variables = QList<VariableData*>();
+  /*private*/ /*final*/ QList<SymbolTable::VariableData*> _variables = QList<SymbolTable::VariableData*>();
 
 };
 #endif // LOCALVARIABLETABLEMODEL_H

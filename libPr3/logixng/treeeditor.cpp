@@ -810,7 +810,7 @@
             connect(_edit, &JButton::clicked, [=] {
                 QList<QString> errorMessages = QList<QString>();
                 bool hasErrors = false;
-                for (VariableData* v : _localVariableTableModel->getVariables()) {
+                for (SymbolTable::VariableData* v : _localVariableTableModel->getVariables()) {
                     if (v->getName().isEmpty()) {
                         errorMessages.append(tr("The name of the variable is empty"/*, v.getName()*/));
                         hasErrors = true;

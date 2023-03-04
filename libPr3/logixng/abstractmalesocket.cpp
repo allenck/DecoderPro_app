@@ -254,18 +254,18 @@
 //@Override
 /*public*/ void AbstractMaleSocket::addLocalVariable(
         QString name,
-        InitialValueType::TYPES initialValueType,
+        SymbolTable::InitialValueType::TYPES initialValueType,
         QString initialValueData) {
 
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         ((AbstractMaleSocket*)getObject()->bself())->addLocalVariable(name, initialValueType, initialValueData);
     } else {
-        _localVariables.insert(new VariableData(name, initialValueType, initialValueData));
+        _localVariables.insert(new SymbolTable::VariableData(name, initialValueType, initialValueData));
     }
 }
 
 //@Override
-/*public*/ void AbstractMaleSocket::addLocalVariable(VariableData* variableData) {
+/*public*/ void AbstractMaleSocket::addLocalVariable(SymbolTable::VariableData *variableData) {
 
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         ((AbstractMaleSocket*)getObject()->bself())->addLocalVariable(variableData);
@@ -284,7 +284,7 @@
 }
 
 //@Override
-/*public*/ QSet<VariableData*> AbstractMaleSocket::getLocalVariables() {
+/*public*/ QSet<SymbolTable::VariableData*> AbstractMaleSocket::getLocalVariables() {
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         return ((AbstractMaleSocket*)getObject()->bself())->getLocalVariables();
     } else {
@@ -465,7 +465,7 @@
         PrintWriter* writer,
         QString currentIndent,
         /*MutableInt*/int* lineNumber,
-        VariableData* localVariable) {
+        SymbolTable::VariableData* localVariable) {
 
     if (settings->_printLineNumbers) {
         writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/++,8));
@@ -476,7 +476,7 @@
             //locale,
             "Local variable \"%1\", init to %2 \"%3\"").arg(
             localVariable->_name,
-            InitialValueType::toString(localVariable->_initalValueType),
+            SymbolTable::InitialValueType::toString(localVariable->_initalValueType),
             localVariable->_initialValueData));
     writer->println();
 }
@@ -514,7 +514,7 @@
     printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 
     if (settings->_printLocalVariables) {
-        for (VariableData* localVariable : _localVariables) {
+        for (SymbolTable::VariableData* localVariable : _localVariables) {
             printLocalVariable(settings, locale, writer, currentIndent, lineNumber, localVariable);
         }
     }
@@ -573,7 +573,7 @@
     maleSocket->setSystem(false);    // If a system item is copied, the new item is not treated as system
     maleSocket->setCatchAbortExecution(getCatchAbortExecution());
 
-    for (VariableData* data : _localVariables) {
+    for (SymbolTable::VariableData* data : _localVariables) {
         maleSocket->addLocalVariable(data->_name, data->_initalValueType, data->_initialValueData);
     }
 

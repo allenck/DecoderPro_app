@@ -6,7 +6,6 @@
 #include "conditionalng.h"
 #include "recursivedescentparser.h"
 #include "module.h"
-#include "variable.h"
 
 class Logger;
 class DefaultSymbolTable : /*public QObject,*/ public SymbolTable
@@ -17,7 +16,7 @@ class DefaultSymbolTable : /*public QObject,*/ public SymbolTable
   DefaultSymbolTable(QObject* parent = nullptr);
   /*public*/  DefaultSymbolTable(ConditionalNG* currentConditionalNG, QObject *parent=nullptr);
   /*public*/  DefaultSymbolTable(SymbolTable* prevSymbolTable, QObject* parent = nullptr);
-  /*public*/  QMap<QString, Symbol*> getSymbols() override;
+  /*public*/  QMap<QString, SymbolTable::Symbol*> getSymbols() override;
   /*public*/  SymbolTable* getPrevSymbolTable();
   /*public*/  QMap<QString, QVariant> getSymbolValues()override;
   /*public*/  QVariant getValue(QString name)override;
@@ -25,11 +24,11 @@ class DefaultSymbolTable : /*public QObject,*/ public SymbolTable
   /*public*/  void setValue(QString name, QVariant value)override;
   /*public*/  void printSymbolTable(PrintWriter* stream)override;
   /*private*/ RecursiveDescentParser* createParser() /*throws ParserException*/;
-  /*public*/  void createSymbols(/*Collection<? extends */QSet<VariableData *> symbolDefinitions) /*throws JmriException*/override;
+  /*public*/  void createSymbols(/*Collection<? extends */QSet<SymbolTable::VariableData *> symbolDefinitions) /*throws JmriException*/override;
   /*public*/  void createSymbols(SymbolTable* symbolTable,
-                                 /*Collection<? extends*/ QSet<VariableData *> symbolDefinitions)
+                                 /*Collection<? extends*/ QSet<SymbolTable::VariableData *> symbolDefinitions)
                                  /*throws JmriException*/override;
-  /*public*/  void removeSymbols(QSet<VariableData *> symbolDefinitions) /*throws JmriException*/override;
+  /*public*/  void removeSymbols(QSet<SymbolTable::VariableData *> symbolDefinitions) /*throws JmriException*/override;
   /*public*/  Stack* getStack()override;
 
  private:

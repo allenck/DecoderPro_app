@@ -330,7 +330,7 @@
                     _currentState = State::None;
 
 
-            QMap<QString, Symbol*> symbols =
+            QMap<QString, SymbolTable::Symbol*> symbols =
                     _conditionalNG->getSymbolTable()->getSymbols();
 
             QString infStr = infoString;
