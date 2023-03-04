@@ -11,6 +11,8 @@ class ActionOBlockSwing : public AbstractDigitalActionSwing
     Q_OBJECT
 public:
     Q_INVOKABLE explicit ActionOBlockSwing(QObject *parent = nullptr);
+    ~ActionOBlockSwing() {}
+    ActionOBlockSwing(const ActionOBlockSwing&) : AbstractDigitalActionSwing() {}
     /*public*/ bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
     /*public*/ MaleSocket* createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName)override;
     /*public*/ void updateObject(/*@Nonnull*/ Base* object)override;
@@ -58,5 +60,5 @@ protected:
     /*protected*/ void createPanel(/*@CheckForNulll*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) override;
 
 };
-
+Q_DECLARE_METATYPE(ActionOBlockSwing)
 #endif // ACTIONOBLOCKSWING_H

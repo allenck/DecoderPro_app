@@ -113,7 +113,6 @@
 #include "expressions/ex_logdata.h"
 #include "sequence.h"
 #include "executedelayed.h"
-#include "analogactionlightintensity.h"
 #include "actions/digitalcallmodule.h"
 #include "symboltable.h"
 #include "module.h"

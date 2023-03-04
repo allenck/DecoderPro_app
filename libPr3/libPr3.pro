@@ -168,9 +168,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
-    logixng/loglocalvariables.cpp \
-    logixng/loglocalvariablesswing.cpp \
-    logixng/loglocalvariablesxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1143,6 +1140,10 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionentryexitswing.cpp \
+    logixng/loglocalvariables.cpp \
+    logixng/loglocalvariablesswing.cpp \
+    logixng/loglocalvariablesxml.cpp \
     logixng/shutdowncomputer.cpp \
     logixng/shutdowncomputerswing.cpp \
     logixng/shutdowncomputerxml.cpp \
@@ -1595,9 +1596,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
-    logixng/loglocalvariables.h \
-    logixng/loglocalvariablesswing.h \
-    logixng/loglocalvariablesxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
@@ -2684,6 +2682,10 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionentryexitswing.h \
+    logixng/loglocalvariables.h \
+    logixng/loglocalvariablesswing.h \
+    logixng/loglocalvariablesxml.h \
     logixng/shutdowncomputer.h \
     logixng/shutdowncomputerswing.h \
     logixng/shutdowncomputerxml.h \
