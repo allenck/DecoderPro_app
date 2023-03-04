@@ -151,7 +151,8 @@
 #include "loglocalvariablesswing.h"
 #include "loglocalvariablesxml.h"
 #include "actionentryexitswing.h"
-
+#include "actionlightintensityswing.h"
+#include "actionlightintensityxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -302,7 +303,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<ShutdownComputerXml>("ShutdownComputerXml");
     qRegisterMetaType<LogLocalVariablesSwing>("LogLocalVariablesSwing");
     qRegisterMetaType<LogLocalVariablesXml>("LogLocalVariablesXml");
-
+    qRegisterMetaType<ActionLightIntensitySwing>("ActionLightIntensitySwing");
+    qRegisterMetaType<ActionLightIntensityXml>("ActionLightIntensityXml");
 
 
    // AbstractStringExpressionSwing

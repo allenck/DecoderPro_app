@@ -1,4 +1,5 @@
 #include "storeandloadtest.h"
+#include "actionlightintensity.h"
 #include "actionsignalmast.h"
 #include "actionthrottle.h"
 #include "enablelogix.h"
@@ -616,7 +617,6 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setErrorHandlingType(ErrorHandlingType::ThrowException);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0 // ActionLightIntensity not yet implemented
         ActionLightIntensity* actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setEnabled(false);
@@ -629,49 +629,48 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         actionLightIntensity->AbstractNamedBean::setComment("A comment");
-        actionLightIntensity.setLight(variableLight1);
-        actionLightIntensity.setAddressing(NamedBeanAddressing::Direct);
-        actionLightIntensity.setFormula("\"IT\"+index");
-        actionLightIntensity.setLocalVariable("index");
-        actionLightIntensity.setReference("{IM1}");
+        actionLightIntensity->setLight(variableLight1);
+        actionLightIntensity->setAddressing(NamedBeanAddressing::Direct);
+        actionLightIntensity->setFormula("\"IT\"+index");
+        actionLightIntensity->setLocalVariable("index");
+        actionLightIntensity->setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         actionLightIntensity->AbstractNamedBean::setComment("A comment");
-        actionLightIntensity.setLight(variableLight1);
-        actionLightIntensity.setAddressing(NamedBeanAddressing::LocalVariable);
-        actionLightIntensity.setFormula("\"IT\"+index");
-        actionLightIntensity.setLocalVariable("index");
-        actionLightIntensity.setReference("{IM1}");
+        actionLightIntensity->setLight(variableLight1);
+        actionLightIntensity->setAddressing(NamedBeanAddressing::LocalVariable);
+        actionLightIntensity->setFormula("\"IT\"+index");
+        actionLightIntensity->setLocalVariable("index");
+        actionLightIntensity->setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setErrorHandlingType(ErrorHandlingType::LogError);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         actionLightIntensity->AbstractNamedBean::setComment("A comment");
-        actionLightIntensity.setLight(variableLight1);
-        actionLightIntensity.setAddressing(NamedBeanAddressing::Formula);
-        actionLightIntensity.setFormula("\"IT\"+index");
-        actionLightIntensity.setLocalVariable("index");
-        actionLightIntensity.setReference("{IM1}");
+        actionLightIntensity->setLight(variableLight1);
+        actionLightIntensity->setAddressing(NamedBeanAddressing::Formula);
+        actionLightIntensity->setFormula("\"IT\"+index");
+        actionLightIntensity->setLocalVariable("index");
+        actionLightIntensity->setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setErrorHandlingType(ErrorHandlingType::LogErrorOnce);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
         actionLightIntensity = new ActionLightIntensity(digitalActionManager->getAutoSystemName(), "");
         actionLightIntensity->AbstractNamedBean::setComment("A comment");
-        actionLightIntensity.setLight(variableLight1);
-        actionLightIntensity.setAddressing(NamedBeanAddressing::Reference);
-        actionLightIntensity.setFormula("\"IT\"+index");
-        actionLightIntensity.setLocalVariable("index");
-        actionLightIntensity.setReference("{IM1}");
+        actionLightIntensity->setLight(variableLight1);
+        actionLightIntensity->setAddressing(NamedBeanAddressing::Reference);
+        actionLightIntensity->setFormula("\"IT\"+index");
+        actionLightIntensity->setLocalVariable("index");
+        actionLightIntensity->setReference("{IM1}");
         maleSocket = digitalActionManager->registerAction(actionLightIntensity);
         maleSocket->setErrorHandlingType(ErrorHandlingType::ShowDialogBox);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#endif
         ActionListenOnBeans* actionListenOnBeans = new ActionListenOnBeans(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionListenOnBeans);
         maleSocket->setEnabled(false);

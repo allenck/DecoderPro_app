@@ -1140,6 +1140,9 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionlightintensity.cpp \
+    logixng/actionlightintensityswing.cpp \
+    logixng/actionlightintensityxml.cpp \
     logixng/actionentryexitswing.cpp \
     logixng/loglocalvariables.cpp \
     logixng/loglocalvariablesswing.cpp \
@@ -2682,6 +2685,9 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionlightintensity.h \
+    logixng/actionlightintensityswing.h \
+    logixng/actionlightintensityxml.h \
     logixng/actionentryexitswing.h \
     logixng/loglocalvariables.h \
     logixng/loglocalvariablesswing.h \
