@@ -37,7 +37,7 @@ public:
      void dispose() override;
     /*public*/ int getObjectCount() override;
      QStringList getSystemNameArray() override;
-     QStringList getSystemNameList() override;
+     QT_DEPRECATED QStringList getSystemNameList() override;
     QStringList getUserNameList();
     QMap<QString, NamedBean *> *getSystemNameHash();
     /**
@@ -85,7 +85,7 @@ public:
      * are not added to newly registered objects.
      */
     //virtual /*public*/ void propertyChange(PropertyChangeEvent* e);
-//    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
+    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
 //    /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* l) override;
 //    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 //    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
@@ -139,7 +139,7 @@ public:
 //    void notifyIntervalRemoved(ManagerDataEvent* e);
 
 public slots:
-    virtual void propertyChange(PropertyChangeEvent* e)override;
+     void propertyChange(PropertyChangeEvent* e)override;
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException) */ override;
 
 protected:
@@ -160,6 +160,9 @@ private:
     mutable int lastAutoNamedBeanRef = 0;
     DecimalFormat paddedNumber = DecimalFormat("0000");
     /*final*/ void setRegisterSelf();
+    // caches
+    /*private*/ QList<QString>* cachedSystemNameList = nullptr;
+    /*private*/ QList<NamedBean*>* cachedNamedBeanList = nullptr;
 
 friend class SectionTableDataModel;
 friend class ReporterPickModel;

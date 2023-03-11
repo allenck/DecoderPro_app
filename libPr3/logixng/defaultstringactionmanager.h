@@ -30,6 +30,7 @@ QString getClassName() override {return "jmri.jmrit.logixng.implementation.Defau
   QObject* pself() override {return (QObject*)this;}
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 
  private:
   static Logger* log;

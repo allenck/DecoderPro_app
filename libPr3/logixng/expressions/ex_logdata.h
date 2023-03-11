@@ -158,6 +158,7 @@ namespace Expressions {
    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
     return AbstractNamedBean::getPropertyChangeListenersByReference(name);
    }
+   void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
 //   /*public*/  enum FormatType {
 //       OnlyText(Bundle.getMessage("LogData_FormatType_TextOnly"), true, false),

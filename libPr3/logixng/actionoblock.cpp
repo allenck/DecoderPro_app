@@ -408,6 +408,7 @@
             }
         });
 #endif
+        ThreadingUtil::runOnLayoutWithJmriException(new AOB_ThreadingUtil(theOper, oblock,conditionalNG, this));
     }
 
     //@Override

@@ -135,6 +135,8 @@ public:
     /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l)override{
         return AbstractNamedBean::getListenerRef(l);
     }
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/override;

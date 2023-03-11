@@ -241,15 +241,15 @@ template<class T>
 
 //        @Override
 //template<class T>
-///*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
-//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
-//}
+/*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+}
 
 //        @Override
 //template<class T>
-///*public synchronized*/ void NamedBeanHandleManager::removePropertyChangeListener(PropertyChangeListener* l) {
-//    pcs->removePropertyChangeListener(l);
-//}
+/*public synchronized*/ void NamedBeanHandleManager::removePropertyChangeListener(PropertyChangeListener* l) {
+    pcs->removePropertyChangeListener(l);
+}
 
 //        @Override
 //template<class T>

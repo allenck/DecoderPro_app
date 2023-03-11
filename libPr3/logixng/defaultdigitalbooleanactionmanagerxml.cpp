@@ -1,7 +1,5 @@
 #include "defaultdigitalbooleanactionmanagerxml.h"
 #include "loggerfactory.h"
-#include "instancemanager.h"
-#include "digitalbooleanactionmanager.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalbooleanactionsocket.h"
 /**
@@ -63,7 +61,7 @@
      * @param actions The top-level element being created
      */
     /*public*/  void DefaultDigitalBooleanActionManagerXml::setStoreElementClass(QDomElement actions) {
-        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultMaleDigitalBooleanActionSocketXml");  // NOI18N
+        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultDigitalBooleanActionManagerXml");  // NOI18N
     }
 
     /**
@@ -123,11 +121,11 @@
                     try {
                         AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket* oldLastItem = ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* oldLastItem = ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getLastRegisteredMaleSocket();
                         o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket* newLastItem = ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getLastRegisteredMaleSocket();
+                        MaleSocket* newLastItem = ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getLastRegisteredMaleSocket();
                         if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
                         else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
                     } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {
@@ -170,6 +168,7 @@
             }
         });
 #endif
+        ThreadingUtil::runOnGUI(new DDBAM_ThreadingUtil());
     }
 
     //@Override

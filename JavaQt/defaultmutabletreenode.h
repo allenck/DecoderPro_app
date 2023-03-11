@@ -17,6 +17,13 @@ public:
     explicit DefaultMutableTreeNode(QObject *oparent = 0);
     /*public*/ DefaultMutableTreeNode(QVariant userObject, QObject* oparent = 0);
     /*public*/ DefaultMutableTreeNode(QVariant userObject, bool allowsChildren, QObject* oparent = 0);
+    ~DefaultMutableTreeNode() {}
+    DefaultMutableTreeNode(const DefaultMutableTreeNode& other) : MutableTreeNode() {
+        this->extraData = other.extraData;
+        this->_parent = other._parent;
+        this->_children = other._children;
+        this-> allowsChildren = other.allowsChildren;
+    }
     /*public*/ void insert(MutableTreeNode* newChild, int childIndex)override;
     /*public*/ void remove(int childIndex) override;
     /*public*/ void setParent(MutableTreeNode* newParent)override;
@@ -72,6 +79,8 @@ public:
      * of a leaf node's children is requested.
      */
     static /*public*/ /*final*/ QVectorIterator<MutableTreeNode*>* EMPTY_ENUMERATION;// =  QVectorIterator<TreeNode*>(QVector<TreeNode*>());
+    QObject* getExtra() {return extraData;}
+    void setExtra(QObject* extraData) {this->extraData = extraData;}
 
     QObject* tself() override {return (QObject*)this;}
 signals:
@@ -82,6 +91,7 @@ private:
     void common(QVariant userObject, bool allowsChildren);
 //    /*private*/ void writeObject(ObjectOutputStream s) /*throw (IOException)*/ ;
 //    /*private*/ void readObject(ObjectInputStream s) /*throw (IOException)*/, (ClassNotFoundException);
+    QObject* extraData;
 
 protected:
     /** this node's parent, or null if this node has no parent */
@@ -99,6 +109,7 @@ protected:
 
 friend class ItemPalette;
 };
+Q_DECLARE_METATYPE(DefaultMutableTreeNode)
 
 /*private*/ /*final*/ class PreorderEnumeration : public QObject
 {

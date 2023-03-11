@@ -2,6 +2,7 @@
 #define EXPRESSIONSIGNALMASTSWING_H
 
 #include "abstractdigitalexpressionswing.h"
+#include "threadingutil.h"
 
 class ExpressionSignalMast;
 class JComboBox;
@@ -63,6 +64,23 @@ private:
 protected:
     /*protected*/ void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) override;
 
+    friend class ESMS_ThreadingUtil;
 };
 Q_DECLARE_METATYPE(ExpressionSignalMastSwing)
+
+class ESMS_ThreadingUtil : public ThreadAction
+{
+  Q_OBJECT
+  ExpressionSignalMast* expression;
+  ExpressionSignalMastSwing* esms;
+ public:
+  ESMS_ThreadingUtil(ExpressionSignalMast* expression, ExpressionSignalMastSwing* esms){
+   this->expression = expression;
+   this->esms = esms;
+  }
+  void run()
+  {
+   esms->setAspectComboBox(expression);
+  }
+};
 #endif // EXPRESSIONSIGNALMASTSWING_H

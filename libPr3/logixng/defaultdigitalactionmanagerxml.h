@@ -3,6 +3,11 @@
 
 #include "abstractmanagerxml.h"
 #include <QMainWindow>
+#include "threadingutil.h"
+#include "defaultdigitalactionmanager.h"
+#include "instancemanager.h"
+#include "jmriconfigurationmanager.h"
+
 
 class DefaultDigitalActionManagerXml : public AbstractManagerXml
 {
@@ -26,4 +31,23 @@ class DefaultDigitalActionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultDigitalActionManagerXml)
+
+class DDAM_ThreadingUtil : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DDAM_ThreadingUtil() {}
+  void run()
+  {
+   // register new one with InstanceManager
+   DefaultDigitalActionManager* pManager = DefaultDigitalActionManager::instance();
+   InstanceManager::store(pManager, "DigitalActionManager");
+   // register new one for configuration
+   ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   if (cmOD != nullptr) {
+       cmOD->registerConfig(pManager, Manager::LOGIXNG_DIGITAL_ACTIONS);
+   }
+
+  }
+};
 #endif // DEFAULTDIGITALACTIONMANAGERXML_H

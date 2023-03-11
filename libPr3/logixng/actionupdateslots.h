@@ -46,6 +46,7 @@ public:
     /*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/{
         AbstractNamedBean::vetoableChange(evt);
     }
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
 private:
 

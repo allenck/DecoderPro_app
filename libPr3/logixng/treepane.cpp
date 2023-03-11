@@ -13,6 +13,7 @@
 #include "abstractfemalesocket.h"
 #include "instancemanager.h"
 #include "emptyborder.h"
+#include "defaultfemaledigitalactionsocket.h"
 
 /**
  * Show the action/expression tree.
@@ -78,7 +79,18 @@
 
         // Expand the entire tree
         for (int i = 0; i < _tree->getRowCount(); i++) {
-            FemaleSocket* femaleSocket = (AbstractFemaleSocket*) _tree->getPathForRow(i)->getLastPathComponent();
+            QObject* obj =_tree->getPathForRow(i)->getLastPathComponent();
+            DefaultMutableTreeNode* node = (DefaultMutableTreeNode*)obj;
+            //FemaleSocket* femaleSocket = (FemaleSocket*) _tree->getPathForRow(i)->getLastPathComponent();
+            FemaleSocket* femaleSocket = nullptr;
+            QObject* exObj = node->getExtra();
+            if(node->getExtra())
+                femaleSocket = (DefaultFemaleDigitalActionSocket*)node->getExtra();
+            else
+            {
+                TP_FemaleSocketTreeNode* tnode = (TP_FemaleSocketTreeNode*)obj;
+                femaleSocket = tnode->getFemaleSocket();
+            }
             if (femaleSocket->isConnected() && femaleSocket->getConnectedSocket()->isEnabled()) {
                 _tree->expandRow(i);
             }
@@ -231,9 +243,12 @@
 
 
         /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(AbstractFemaleSocket* root, QObject* parent)
-          : DefaultTreeModel(new TreePane_FemaleSocketTreeNode(root), parent) {
+//          : DefaultTreeModel(new TreePane_FemaleSocketTreeNode(root), parent) {
+           : DefaultTreeModel(nullptr){
           setObjectName("FemaleSocketTreeModel");
-            this->_root = root;
+          DefaultMutableTreeNode* defaultNode = (DefaultMutableTreeNode*)DefaultTreeModel::getRoot();
+          defaultNode->add(new TP_FemaleSocketTreeNode(root));
+          this->_root = root;
           //nodeStructureChanged((MutableTreeNode*)root);
         }
 
@@ -438,8 +453,10 @@
             return _decorator->decorate(socket, mainPanel);
         }
 
-TreePane_FemaleSocketTreeNode::TreePane_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent)
+TP_FemaleSocketTreeNode::TP_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent)
  : DefaultMutableTreeNode(femaleSocket->getName(), parent){
+    setObjectName("TP_FemaleSocketTreeNode");
+    setExtra(femaleSocket);
  this->femaleSocket = femaleSocket;
 }
 

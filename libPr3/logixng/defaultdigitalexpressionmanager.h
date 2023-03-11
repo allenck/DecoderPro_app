@@ -32,6 +32,10 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
   QObject* pself() override {return (QObject*)this;}
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {
+      propertyChangeSupport->addPropertyChangeListener(l);
+  }
+
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> expressionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();

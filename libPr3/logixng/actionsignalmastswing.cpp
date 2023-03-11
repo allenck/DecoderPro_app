@@ -239,6 +239,7 @@ ActionSignalMastSwing::ActionSignalMastSwing(QObject *parent)
 #if 0 // TODO
             ThreadingUtil::runOnGUIEventually(() -> { setAspectComboBox(action); });
 #endif
+            ThreadingUtil::runOnGUIEventually(new ASMS_ThreaingUtil(action, this));
         }
 
         QList<JComponent*> components = QList<JComponent*>{

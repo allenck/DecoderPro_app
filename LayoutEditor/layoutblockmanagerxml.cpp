@@ -1,4 +1,5 @@
 #include "layoutblockmanagerxml.h"
+#include "layoutblock.h"
 #include "layoutblockmanager.h"
 #include "colorutil.h"
 

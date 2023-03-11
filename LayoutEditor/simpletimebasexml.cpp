@@ -2,15 +2,15 @@
 #include "timebase.h"
 #include "instancemanager.h"
 #include "simpletimebase.h"
+#include "loggerfactory.h"
 
 // Conversion format for dates created by Java Date.toString().
 // The Locale needs to be always US, irrelevant from computer's and program's settings!
-/*static*/ /*final*/ /*SimpleDateFormat*/ QString SimpleTimebaseXml::format =  "ddd MMM dd hh:mm:ss yyyy";
+/*static*/ /*final*/ /*SimpleDateFormat*/ QString SimpleTimebaseXml::format =  "ddd MMM d HH:mm:ss yyyy";
 
 SimpleTimebaseXml::SimpleTimebaseXml(QObject *parent) :
     AbstractXmlAdapter(parent)
 {
- log = new Logger("SimpleTimebaseXml");
  setObjectName("SimpleTimebaseXml");
 }
 
@@ -40,7 +40,7 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
  */
 /*public*/ QDomElement SimpleTimebaseXml::store(QObject* /*o*/) {
 
-    Timebase* clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
+    Timebase* clock = static_cast<SimpleTimebase*>(InstanceManager::getDefault("Timebase"));
 
     QDomElement elem = doc.createElement("timebase");
     elem.setAttribute("class", /*getClass().getName()*/"jmri.jmrit.simpleclock.configurexml.SimpleTimebaseXml");
@@ -67,10 +67,10 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
  * @param element Top level blocks QDomElement to unpack.
  * @return true if successful
   */
-/*public*/ bool SimpleTimebaseXml::load(QDomElement element) throw (Exception)
+/*public*/ bool SimpleTimebaseXml::load(QDomElement element) /*throw (Exception)*/
 {
  bool result = true;
- Timebase* clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
+ Timebase* clock = static_cast<SimpleTimebase*>(InstanceManager::getDefault("Timebase"));
  QString val,val2;
  if (element.attribute("master")!="")
  {
@@ -219,7 +219,7 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
  * @param element Top level QDomElement to unpack.
  * @param o  ignored
  */
-/*public*/ void SimpleTimebaseXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception) {
+/*public*/ void SimpleTimebaseXml::load(QDomElement /*element*/, QObject* /*o*/) /*throw (Exception)*/ {
     log->error("load(QDomElement, Object) called unexpectedly");
 }
 
@@ -227,7 +227,7 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
     return Manager::TIMEBASE;
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SimpleTimebaseXml.class.getName());
+/*static*/ Logger* SimpleTimebaseXml::log = LoggerFactory::getLogger("SimpleTimebaseXml");
 
 //}
 /*private*/ QString SimpleTimebaseXml:: removeTimeZone(QString time)

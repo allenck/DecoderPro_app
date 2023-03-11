@@ -52,6 +52,7 @@ class Logix_Emulator : public AbstractDigitalAction, public FemaleSocketListener
   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
   }
+  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  private:
   static Logger* log;

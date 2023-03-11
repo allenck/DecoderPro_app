@@ -2,6 +2,10 @@
 #define DEFAULTSTRINGACTIONMANAGERXML_H
 
 #include "abstractmanagerxml.h"
+#include "threadingutil.h"
+#include "jmriconfigurationmanager.h"
+#include "instancemanager.h"
+#include "defaultstringactionmanager.h"
 
 class DefaultStringActionManagerXml : public AbstractManagerXml
 {
@@ -25,4 +29,22 @@ class DefaultStringActionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultStringActionManagerXml)
+
+class DSA_ThreadingUtil : public ThreadAction
+{
+ Q_OBJECT
+ public:
+  void run()
+  {
+   // register new one with InstanceManager
+   DefaultStringActionManager* pManager = DefaultStringActionManager::instance();
+   InstanceManager::store(pManager, "StringActionManager");
+   // register new one for configuration
+   ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   if (cmOD != nullptr) {
+       cmOD->registerConfig(pManager, Manager::LOGIXNG_STRING_ACTIONS);
+   }
+
+  }
+};
 #endif // DEFAULTSTRINGACTIONMANAGERXML_H

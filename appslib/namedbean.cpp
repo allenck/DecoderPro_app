@@ -233,7 +233,7 @@ QVariant NamedBean::getProperty(QString /*key*/)
 /*static*/ /*public*/ QString NamedBean::normalizeUserName(/*@CheckForNull*/ QString inputName) //throw (NamedBean::BadUserNameException)
 {
     QString result = inputName;
-    if (result != NULL) {
+    if (result != "") {
         result = result.trimmed();
     }
     return result;

@@ -1,5 +1,8 @@
 ﻿#include "signallingpanel.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
+#include "jtable.h"
+#include "layoutblockconnectivitytools.h"
 #include "signalmast.h"
 #include "abstractsignalmast.h"
 #include "signalmastlogic.h"
@@ -24,6 +27,9 @@
 #include "tablerowsorter.h"
 #include "alphanumcomparator.h"
 #include "rowsorterutil.h"
+#include "jlabel.h"
+#include "borderfactory.h"
+#include "layoutblock.h"
 
 /**
  *

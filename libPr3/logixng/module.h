@@ -98,11 +98,6 @@
     /*public*/ virtual QSet<SymbolTable::VariableData*> getLocalVariables()=0;
 
 
-
-
-
-
-
     /**
      * Data for a parameter.
      */

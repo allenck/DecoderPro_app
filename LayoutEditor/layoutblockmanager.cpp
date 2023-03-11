@@ -7,7 +7,6 @@
 #include "layouteditor.h"
 #include "signalheadmanager.h"
 #include "signalmastmanager.h"
-#include "abstractsignalheadmanager.h"
 #include "defaultsignalmastmanager.h"
 #include "turnoutsignalmast.h"
 #include "virtualsignalmast.h"
@@ -15,6 +14,8 @@
 #include "panelmenu.h"
 #include "layouteditorfinditems.h"
 #include "positionablepoint.h"
+#include "layoutblock.h"
+#include "memory.h"
 
 //LayoutBlockManager* LayoutBlockManager::_instance = NULL;
 

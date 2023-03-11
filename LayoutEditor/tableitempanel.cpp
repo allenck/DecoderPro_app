@@ -15,7 +15,6 @@
 #include "sensoricon.h"
 #include "lighticon.h"
 #include "flowlayout.h"
-#include "borderlayout.h"
 #include "addnewdevicepanel.h"
 #include "jdialog.h"
 #include "dataflavor.h"
@@ -61,7 +60,7 @@
  if (!_initialized)
  {
   FamilyItemPanel::init();
-  thisLayout->insertWidget(0, initTablePanel(_model, _editor), 0, Qt::AlignTop); // top of Panel
+  thisLayout->insertWidget(0, initTablePanel(_model, _editor), 1, Qt::AlignTop); // top of Panel
   _buttonPosition = 1;
  }
 }

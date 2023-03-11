@@ -4,6 +4,7 @@
 #include <QObject>
 #include "exceptions.h"
 #include "junitutil.h"
+#include "layoutblock.h"
 #include "layoutblockmanager.h"
 #include <QColor>
 

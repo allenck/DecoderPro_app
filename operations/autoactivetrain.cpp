@@ -8,6 +8,7 @@
 #include "dispatcherframe.h"
 #include "allocatedsection.h"
 #include "section.h"
+#include "signalhead.h"
 #include "signalmast.h"
 #include "sensor.h"
 #include "signalmastlogicmanager.h"

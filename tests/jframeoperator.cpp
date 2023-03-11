@@ -625,5 +625,8 @@ TreePath* JTreeOperator::getPathForRow(int row)
 
 QMenu* JTreeOperator::callPopupOnPath(TreePath* tp)
 {
-
+ //QContextMenuEvent(new QContextMenuEvent());
+    _tree->on_clicked(_tree->model()->index(0,0));
+    QMenu* popupMenu = treeframe->findChild<QMenu*>("TEPopupMenu");
+    return popupMenu;
 }

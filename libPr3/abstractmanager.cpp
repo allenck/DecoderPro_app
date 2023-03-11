@@ -214,9 +214,14 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
      * @return requested NamedBean object or NULL if none exists
      */
     /*public*/ NamedBean* AbstractManager::getNamedBean(QString name){
-        NamedBean* b = getBeanByUserName(name);
-        if(b!=NULL) return b;
-        return getBeanBySystemName(name);
+     QString normalizedUserName = NamedBean::normalizeUserName(name);
+    if (normalizedUserName != "") {
+        NamedBean* b = getByUserName(normalizedUserName);
+        if (b != nullptr) {
+            return b;
+        }
+    }
+    return getBySystemName(name);
     }
 
 /**
@@ -276,8 +281,8 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 
   // clear caches
 //  cachedSystemNameArray = null;
-//  cachedSystemNameList = null;
-//  cachedNamedBeanList = null;
+  cachedSystemNameList = nullptr;
+  cachedNamedBeanList = nullptr;
 
   // save this bean
   _beans.insert(s);
@@ -351,8 +356,8 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  int position = getPosition(s);
  // clear caches
 // cachedSystemNameArray = null;
-// cachedSystemNameList = null;
-// cachedNamedBeanList = null;
+    cachedSystemNameList = nullptr;
+    cachedNamedBeanList = nullptr;
 
  // stop listening for user name changes
     s->removePropertyChangeListener((PropertyChangeListener*)this);
@@ -391,10 +396,10 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
      QString now = e->getNewValue().toString();  // current user name
 //     try { // really should always succeed
          NamedBean* t = (NamedBean*)e->getSource();
-         if (old != nullptr) {
+         if (old != "") {
              _tuser->remove(old); // remove old name for this bean
          }
-         if (now != nullptr) {
+         if (now != "") {
              // was there previously a bean with the new name?
              if (_tuser->value(now) != nullptr && _tuser->value(now) != t) {
                  // If so, clear. Note that this is not a "move" operation
@@ -494,11 +499,11 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     return out;
 }
 
-///*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
-//{
-// pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
-// //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//}
+/*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
+{
+ propertyChangeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+ //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+}
 
 ///*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
 //    pcs->removePropertyChangeListener(l);

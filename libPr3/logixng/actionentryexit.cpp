@@ -2,9 +2,6 @@
 #include "conditionalng.h"
 #include "defaultdigitalactionmanager.h"
 #include "defaultlogixmanager.h"
-#include "destinationpoints.h"
-#include "entryexitpairs.h"
-#include "instancemanager.h"
 #include "loggerfactory.h"
 #include "recursivedescentparser.h"
 #include "referenceutil.h"
@@ -315,6 +312,7 @@
             }
         });
 #endif
+        ThreadingUtil::runOnGUIWithJmriException(new AEE_ThreadingUtil(theOper, entryExit));
     }
 
     //@Override

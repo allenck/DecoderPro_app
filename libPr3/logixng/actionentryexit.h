@@ -6,6 +6,10 @@
 #include "namedbeanaddressing.h"
 #include "vetoablechangelistener.h"
 #include "threadingutil.h"
+#include "destinationpoints.h"
+#include "entryexitpairs.h"
+#include "instancemanager.h"
+
 
 class DestinationPoints;
 class ExpressionNode;
@@ -88,6 +92,8 @@ public:
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
      return AbstractNamedBean::getPropertyChangeListenersByReference(name);
     }
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
 public slots:
     /*public*/ void vetoableChange(PropertyChangeEvent* evt)/* throws java.beans.PropertyVetoException*/override;
 
@@ -110,26 +116,35 @@ private:
     /*private*/ void parseLockFormula() /*throws ParserException*/;
 
 };
-#if 0
-class AEE_ThreadingUtil : public ThreadingUtil
+#if 1
+class AEE_ThreadingUtil : public ThreadActionWithJmriException
 {
-    void runOnLayoutWithJmriException()
+  Q_OBJECT
+  ActionEntryExit::Operation::TYPE theOper;
+  DestinationPoints* entryExit;
+ public:
+  AEE_ThreadingUtil(ActionEntryExit::Operation::TYPE theOper, DestinationPoints* entryExit) {
+   this->theOper = theOper;
+   this->entryExit = entryExit;
+  }
+
+    void run()
     {
                 switch (theOper) {
-                    case SetNXPairEnabled:
-                        entryExit.setEnabled(true);
+                    case ActionEntryExit::Operation::SetNXPairEnabled:
+                        entryExit->setEnabled(true);
                         break;
-                    case SetNXPairDisabled:
-                        entryExit.setEnabled(false);
+                    case ActionEntryExit::Operation::SetNXPairDisabled:
+                        entryExit->setEnabled(false);
                         break;
-                    case SetNXPairSegment:
-                        jmri.InstanceManager.getDefault(jmri.jmrit.entryexit.EntryExitPairs.class).
-                                setSingleSegmentRoute(entryExit.getSystemName());
+                    case ActionEntryExit::Operation::SetNXPairSegment:
+                        ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->
+                                setSingleSegmentRoute(entryExit->getSystemName());
                         break;
                     default:
-                        throw new IllegalArgumentException("invalid oper state: " + theOper.name());
-                }
-            });
+                        throw new IllegalArgumentException("invalid oper state: " + ActionEntryExit::Operation::toString(theOper));
+            };
+    }
 };
 #endif
 #endif // ACTIONENTRYEXIT_H

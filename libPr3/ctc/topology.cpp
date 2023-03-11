@@ -1,4 +1,5 @@
 #include "topology.h"
+#include "layoutblock.h"
 #include "signalmastlogicmanager.h"
 #include "instancemanager.h"
 #include "path.h"

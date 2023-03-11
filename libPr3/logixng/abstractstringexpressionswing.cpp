@@ -4,6 +4,7 @@
 #include "loggerfactory.h"
 #include "stringexpressionmanager.h"
 #include "defaultsymboltable.h"
+#include "logixng_thread.h"
 
 AbstractStringExpressionSwing::AbstractStringExpressionSwing(QObject *parent) : AbstractSwingConfigurator(parent)
 {
@@ -53,6 +54,7 @@ AbstractStringExpressionSwing::AbstractStringExpressionSwing(QObject *parent) : 
             conditionalNG.setSymbolTable(oldSymbolTable);
         });
 #endif
+        conditionalNG->getCurrentThread()->runOnLogixNGEventually(new ASES_run(object, conditionalNG, symbolTable,this));
     }
 
     /** {@inheritDoc} */

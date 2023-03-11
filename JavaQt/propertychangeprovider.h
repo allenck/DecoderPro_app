@@ -29,7 +29,7 @@
      *
      * @param listener The PropertyChangeListener to be added
      */
-  /*public*/ virtual void addPropertyChangeListener(/*QNullable*/ PropertyChangeListener* /*listener*/) {}
+  /*public*/ virtual void addPropertyChangeListener(/*QNullable*/ PropertyChangeListener* /*listener*/) {}//=0;
 
     /**
      * Add a {@link java.beans.PropertyChangeListener} for a specific property.

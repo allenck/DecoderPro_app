@@ -1,4 +1,5 @@
 #include "whereusedcollectors.h"
+#include "layoutblock.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "turnoutmanager.h"

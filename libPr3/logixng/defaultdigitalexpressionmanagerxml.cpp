@@ -1,8 +1,5 @@
 #include "defaultdigitalexpressionmanagerxml.h"
 #include "loggerfactory.h"
-#include "instancemanager.h"
-#include "defaultdigitalexpressionmanagerxml.h"
-#include "defaultdigitalexpressionmanager.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalexpressionsocket.h"
 /**
@@ -173,6 +170,7 @@
             }
         });
 #endif
+        ThreadingUtil::runOnGUI(new DDEM_ThreadingUtil());
     }
 
     //@Override

@@ -100,6 +100,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
   }
   /*public*/ virtual void getListenerRefsIncludingChildren(QList<QString> list)override {AbstractBase::getListenerRefsIncludingChildren(list);}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  private:
   static Logger* log;

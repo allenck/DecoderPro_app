@@ -1,6 +1,6 @@
 #include "defaulttreemodel.h"
+#include "defaultmutabletreenode.h"
 #include "mutabletreenode.h"
-#include "catalogtreenode.h"
 #include "treepath.h"
 #include <QVector>
 #include "vptr.h"

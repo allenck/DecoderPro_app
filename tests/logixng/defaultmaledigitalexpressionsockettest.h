@@ -45,6 +45,7 @@ public:
 
     QObject* self() override {return (QObject*)this;}
     QObject* bself() override {return (QObject*)this;}
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  protected:
     //@Override

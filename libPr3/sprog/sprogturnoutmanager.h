@@ -28,6 +28,7 @@ namespace Sprog
   QObject* vself() override { return (QObject*)this;}
   QObject* pself() override{return (QObject*)this;}
 
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
  private:
   /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SprogTurnoutManager");
   SprogSystemConnectionMemo* _memo;// = null;

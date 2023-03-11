@@ -19,10 +19,10 @@
 
 /*public*/ /*interface*/ class JAVAQTSHARED_EXPORT MutableTreeNode : public QObject, public TreeNode
 {
-    Q_OBJECT
+  Q_OBJECT
   Q_INTERFACES(TreeNode)
 public:
-    MutableTreeNode(QObject* oparent ) : QObject(oparent) {}
+    MutableTreeNode(QObject* oparent=nullptr ) : QObject(oparent) {}
     virtual ~MutableTreeNode() {}
     /**
      * Adds <code>child</code> to the receiver at <code>index</code>.

@@ -102,14 +102,20 @@ class ThreadAction2 : public ThreadAction
   }
 };
 
-class TreePane_FemaleSocketTreeNode : public DefaultMutableTreeNode
+class TP_FemaleSocketTreeNode : public DefaultMutableTreeNode
 {
   Q_OBJECT
-  AbstractFemaleSocket* femaleSocket;
+  AbstractFemaleSocket* femaleSocket = nullptr;
  public:
-  TreePane_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent = nullptr);
+  TP_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent = nullptr);
+  ~TP_FemaleSocketTreeNode() {}
+  TP_FemaleSocketTreeNode(const TP_FemaleSocketTreeNode&) : DefaultMutableTreeNode() {}
 //  int getChildCount() override;
+  AbstractFemaleSocket* getFemaleSocket() {
+      return femaleSocket;
+  }
 };
+//Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
 
 /*public*/  /*static*/ class FemaleSocketTreeModel : public DefaultTreeModel //, public TreeNode
 {

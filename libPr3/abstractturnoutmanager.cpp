@@ -73,7 +73,9 @@ Turnout* AbstractTurnoutManager::getTurnout(QString name)  {
      t = (AbstractTurnout*)nb->self();
     if (t!=nullptr) return t;
 
-    return (Turnout*)getBySystemName(name)->self();
+     nb =getBySystemName(name);
+     if(nb) return (Turnout*)nb->self();
+     return nullptr;
 }
 
 NamedBean* AbstractTurnoutManager::getBySystemName(QString name) const

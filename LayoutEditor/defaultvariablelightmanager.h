@@ -29,6 +29,8 @@ class DefaultVariableLightManager : public AbstractManager, public VariableLight
   /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) const override {return AbstractManager::getBeanByUserName(s);}
   /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString s) const override {return AbstractManager::getBeanBySystemName(s);}
   /*public*/ SystemConnectionMemo* getMemo()  override {return AbstractManager::getMemo();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
+
  public slots:
   //@Override
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

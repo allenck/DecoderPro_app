@@ -3,7 +3,6 @@
 #include "lastresultofdigitalexpression.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "jcombobox.h"
-#include "defaultmaledigitalexpressionsocket.h"
 
 LastResultOfDigitalExpressionSwing::LastResultOfDigitalExpressionSwing(QObject *parent) : AbstractDigitalExpressionSwing(parent)
 {

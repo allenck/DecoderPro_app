@@ -40,28 +40,28 @@ class DefaultSymbolTable : /*public QObject,*/ public SymbolTable
 
 public:
 
-/*public*/  /*static*/ class DefaultSymbol : public Symbol {
+    /*public*/  /*static*/ class DefaultSymbol : public Symbol {
 
-    /*private*/ /*final*/ QString _name;
-    /*private*/ /*final*/ int _index;
-public:
-  /*public*/  DefaultSymbol(QString name, int index) {
-      _name = name;
-      _index = index;
-  }
+        /*private*/ /*final*/ QString _name;
+        /*private*/ /*final*/ int _index;
+    public:
+      /*public*/  DefaultSymbol(QString name, int index) {
+          _name = name;
+          _index = index;
+      }
 
-  /** {@inheritDoc} */
-  //@Override
-  /*public*/  QString getName() {
-      return _name;
-  }
+      /** {@inheritDoc} */
+      //@Override
+      /*public*/  QString getName() {
+          return _name;
+      }
 
-  /** {@inheritDoc} */
-  //@Override
-  /*public*/  int getIndex() {
-      return _index;
-  }
-};
+      /** {@inheritDoc} */
+      //@Override
+      /*public*/  int getIndex() {
+          return _index;
+      }
+    };
 
 /*public*/  /*static*/  class DefaultParameter : public Module::Parameter {
 

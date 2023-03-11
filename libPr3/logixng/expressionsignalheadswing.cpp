@@ -247,6 +247,7 @@ used to tell JMRI which %2 the indirect addressed signal %1 may show.</html>").a
 #if 0
             jmri.util.ThreadingUtil.runOnGUIEventually(() -> { setAppearanceComboBox(expression); });
 #endif
+            ThreadingUtil::runOnGUIEventually(new ESHS_ThreadingUtil(expression, this));
         }
 
         QList<JComponent*> components = QList<JComponent*>{

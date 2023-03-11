@@ -2,6 +2,7 @@
 #include "actionlightintensity.h"
 #include "actionsignalmast.h"
 #include "actionthrottle.h"
+#include "actionwarrant.h"
 #include "enablelogix.h"
 #include "expressionconditional.h"
 #include "instancemanager.h"
@@ -125,6 +126,7 @@
 #include "expressionoblock.h"
 #include "expressionclock.h"
 #include "shutdowncomputer.h"
+#include "expressionwarrant.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -144,7 +146,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/  void StoreAndLoadTest::testLogixNGs() /*throws PropertyVetoException, Exception*/ {
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-    ConfigureManager* cm1 = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+    ConfigureManager* cm1 = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
 /*
         audioManager = new jmri.jmrit.audio.DefaultAudioManager(
                 InstanceManager::getDefault(jmri.jmrix.internal.InternalSystemConnectionMemo.class));
@@ -1466,8 +1468,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalActionManager->registerAction(actionTurnout);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ActionWarrant actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
+#if 1 // not yet implemented
+        ActionWarrant* actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setEnabled(false);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
@@ -1486,14 +1488,14 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("Direct / Direct / Direct :: SetTrainName");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setWarrant("IW99");
+        actionWarrant->setAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setWarrant("IW99");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setOperationDirect(ActionWarrant.DirectOperation.SetTrainName);
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setOperationDirect(ActionWarrant::DirectOperation::SetTrainName);
 
-        actionWarrant.setDataAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setTrainIdName("ABC");
+        actionWarrant->setDataAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setTrainIdName("ABC");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -1503,14 +1505,14 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("Direct / Direct / Direct :: ControlAutoTrain - Resume");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setWarrant("IW99");
+        actionWarrant->setAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setWarrant("IW99");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setOperationDirect(ActionWarrant.DirectOperation.ControlAutoTrain);
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setOperationDirect(ActionWarrant::DirectOperation::ControlAutoTrain);
 
-        actionWarrant.setDataAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setControlAutoTrain(ActionWarrant.ControlAutoTrain.Resume);
+        actionWarrant->setDataAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setControlAutoTrain(ActionWarrant::ControlAutoTrain::Resume);
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -1520,11 +1522,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("Direct / Direct :: AllocateWarrantRoute");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setWarrant("IW99");
+        actionWarrant->setAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setWarrant("IW99");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setOperationDirect(ActionWarrant.DirectOperation.AllocateWarrantRoute);
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setOperationDirect(ActionWarrant::DirectOperation::AllocateWarrantRoute);
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -1534,11 +1536,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("Direct / LocalVariable");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setWarrant("IW99");
+        actionWarrant->setAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setWarrant("IW99");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::LocalVariable);
-        actionWarrant.setOperationLocalVariable("index2");
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::LocalVariable);
+        actionWarrant->setOperationLocalVariable("index2");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -1548,11 +1550,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("LocalVariable / Formula");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::LocalVariable);
-        actionWarrant.setLocalVariable("index");
+        actionWarrant->setAddressing(NamedBeanAddressing::LocalVariable);
+        actionWarrant->setLocalVariable("index");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::Formula);
-        actionWarrant.setOperationFormula("\"IT\"+index2");
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::Formula);
+        actionWarrant->setOperationFormula("\"IT\"+index2");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -1562,11 +1564,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("Formula / Reference");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::Formula);
-        actionWarrant.setFormula("\"IT\"+index");
+        actionWarrant->setAddressing(NamedBeanAddressing::Formula);
+        actionWarrant->setFormula("\"IT\"+index");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::Reference);
-        actionWarrant.setOperationReference("{IM2}");
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::Reference);
+        actionWarrant->setOperationReference("{IM2}");
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -1576,11 +1578,11 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         actionWarrant = new ActionWarrant(digitalActionManager->getAutoSystemName(), "");
         actionWarrant->AbstractNamedBean::setComment("Reference / Direct :: DeallocateWarrant");
 
-        actionWarrant.setAddressing(NamedBeanAddressing::Reference);
-        actionWarrant.setReference("{IM1}");
+        actionWarrant->setAddressing(NamedBeanAddressing::Reference);
+        actionWarrant->setReference("{IM1}");
 
-        actionWarrant.setOperationAddressing(NamedBeanAddressing::Direct);
-        actionWarrant.setOperationDirect(ActionWarrant.DirectOperation.DeallocateWarrant);
+        actionWarrant->setOperationAddressing(NamedBeanAddressing::Direct);
+        actionWarrant->setOperationDirect(ActionWarrant::DirectOperation::DeallocateWarrant);
 
         maleSocket = digitalActionManager->registerAction(actionWarrant);
         maleSocket->setErrorHandlingType(ErrorHandlingType::AbortExecution);
@@ -3005,77 +3007,75 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionTurnout);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ExpressionWarrant expressionWarrant = new ExpressionWarrant(digitalExpressionManager->getAutoSystemName(), "");
+        ExpressionWarrant* expressionWarrant = new ExpressionWarrant(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionWarrant);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionWarrant = new ExpressionWarrant(digitalExpressionManager->getAutoSystemName(), "");
         expressionWarrant->AbstractNamedBean::setComment("A comment");
-        expressionWarrant.setWarrant("IW99");
-        expressionWarrant.setBeanState(ExpressionWarrant.WarrantState.RouteAllocated);
-        expressionWarrant.setAddressing(NamedBeanAddressing::Direct);
-        expressionWarrant.setFormula("\"IT\"+index");
-        expressionWarrant.setLocalVariable("index");
-        expressionWarrant.setReference("{IM1}");
-        expressionWarrant.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionWarrant.setStateAddressing(NamedBeanAddressing::LocalVariable);
-        expressionWarrant.setStateFormula("\"IT\"+index2");
-        expressionWarrant.setStateLocalVariable("index2");
-        expressionWarrant.setStateReference("{IM2}");
+        expressionWarrant->setWarrant("IW99");
+        expressionWarrant->setBeanState(ExpressionWarrant::WarrantState::RouteAllocated);
+        expressionWarrant->setAddressing(NamedBeanAddressing::Direct);
+        expressionWarrant->setFormula("\"IT\"+index");
+        expressionWarrant->setLocalVariable("index");
+        expressionWarrant->setReference("{IM1}");
+        expressionWarrant->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionWarrant->setStateAddressing(NamedBeanAddressing::LocalVariable);
+        expressionWarrant->setStateFormula("\"IT\"+index2");
+        expressionWarrant->setStateLocalVariable("index2");
+        expressionWarrant->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionWarrant);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionWarrant = new ExpressionWarrant(digitalExpressionManager->getAutoSystemName(), "");
         expressionWarrant->AbstractNamedBean::setComment("A comment");
-        expressionWarrant.setWarrant("IW99");
-        expressionWarrant.setBeanState(ExpressionWarrant.WarrantState.RouteFree);
-        expressionWarrant.setAddressing(NamedBeanAddressing::LocalVariable);
-        expressionWarrant.setFormula("\"IT\"+index");
-        expressionWarrant.setLocalVariable("index");
-        expressionWarrant.setReference("{IM1}");
-        expressionWarrant.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionWarrant.setStateAddressing(NamedBeanAddressing::Formula);
-        expressionWarrant.setStateFormula("\"IT\"+index2");
-        expressionWarrant.setStateLocalVariable("index2");
-        expressionWarrant.setStateReference("{IM2}");
+        expressionWarrant->setWarrant("IW99");
+        expressionWarrant->setBeanState(ExpressionWarrant::WarrantState::RouteFree);
+        expressionWarrant->setAddressing(NamedBeanAddressing::LocalVariable);
+        expressionWarrant->setFormula("\"IT\"+index");
+        expressionWarrant->setLocalVariable("index");
+        expressionWarrant->setReference("{IM1}");
+        expressionWarrant->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionWarrant->setStateAddressing(NamedBeanAddressing::Formula);
+        expressionWarrant->setStateFormula("\"IT\"+index2");
+        expressionWarrant->setStateLocalVariable("index2");
+        expressionWarrant->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionWarrant);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionWarrant = new ExpressionWarrant(digitalExpressionManager->getAutoSystemName(), "");
         expressionWarrant->AbstractNamedBean::setComment("A comment");
-        expressionWarrant.setWarrant("IW99");
-        expressionWarrant.setBeanState(ExpressionWarrant.WarrantState.RouteOccupied);
-        expressionWarrant.setAddressing(NamedBeanAddressing::Formula);
-        expressionWarrant.setFormula("\"IT\"+index");
-        expressionWarrant.setLocalVariable("index");
-        expressionWarrant.setReference("{IM1}");
-        expressionWarrant.set_Is_IsNot(Is_IsNot_Enum.IsNot);
-        expressionWarrant.setStateAddressing(NamedBeanAddressing::Reference);
-        expressionWarrant.setStateFormula("\"IT\"+index2");
-        expressionWarrant.setStateLocalVariable("index2");
-        expressionWarrant.setStateReference("{IM2}");
+        expressionWarrant->setWarrant("IW99");
+        expressionWarrant->setBeanState(ExpressionWarrant::WarrantState::RouteOccupied);
+        expressionWarrant->setAddressing(NamedBeanAddressing::Formula);
+        expressionWarrant->setFormula("\"IT\"+index");
+        expressionWarrant->setLocalVariable("index");
+        expressionWarrant->setReference("{IM1}");
+        expressionWarrant->set_Is_IsNot(Is_IsNot_Enum::IsNot);
+        expressionWarrant->setStateAddressing(NamedBeanAddressing::Reference);
+        expressionWarrant->setStateFormula("\"IT\"+index2");
+        expressionWarrant->setStateLocalVariable("index2");
+        expressionWarrant->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionWarrant);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionWarrant = new ExpressionWarrant(digitalExpressionManager->getAutoSystemName(), "");
         expressionWarrant->AbstractNamedBean::setComment("A comment");
-        expressionWarrant.setWarrant("IW99");
-        expressionWarrant.setBeanState(ExpressionWarrant.WarrantState.RouteSet);
-        expressionWarrant.setAddressing(NamedBeanAddressing::Reference);
-        expressionWarrant.setFormula("\"IT\"+index");
-        expressionWarrant.setLocalVariable("index");
-        expressionWarrant.setReference("{IM1}");
-        expressionWarrant.set_Is_IsNot(Is_IsNot_Enum.Is);
-        expressionWarrant.setStateAddressing(NamedBeanAddressing::Direct);
-        expressionWarrant.setStateFormula("\"IT\"+index2");
-        expressionWarrant.setStateLocalVariable("index2");
-        expressionWarrant.setStateReference("{IM2}");
+        expressionWarrant->setWarrant("IW99");
+        expressionWarrant->setBeanState(ExpressionWarrant::WarrantState::RouteSet);
+        expressionWarrant->setAddressing(NamedBeanAddressing::Reference);
+        expressionWarrant->setFormula("\"IT\"+index");
+        expressionWarrant->setLocalVariable("index");
+        expressionWarrant->setReference("{IM1}");
+        expressionWarrant->set_Is_IsNot(Is_IsNot_Enum::Is);
+        expressionWarrant->setStateAddressing(NamedBeanAddressing::Direct);
+        expressionWarrant->setStateFormula("\"IT\"+index2");
+        expressionWarrant->setStateLocalVariable("index2");
+        expressionWarrant->setStateReference("{IM2}");
         maleSocket = digitalExpressionManager->registerExpression(expressionWarrant);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#endif
         False* false1 = new False(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(false1);
         maleSocket->setEnabled(false);

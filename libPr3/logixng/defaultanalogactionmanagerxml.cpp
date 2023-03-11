@@ -1,7 +1,5 @@
 #include "defaultanalogactionmanagerxml.h"
 #include "loggerfactory.h"
-#include "instancemanager.h"
-#include "defaultanalogactionmanager.h"
 #include "defaultmaleanalogactionsocket.h"
 #include "abstractanalogaction.h"
 
@@ -69,7 +67,7 @@
      * @param actions The top-level element being created
      */
     /*public*/  void  DefaultAnalogActionManagerXml::setStoreElementClass(QDomElement actions) {
-        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configut=rexml.DefaultAnalogActionManagerXml");  // NOI18N
+        actions.setAttribute("class", "jmri.jmrit.logixng.implementation.configut=rexml.DefaultAnalogActionManagerXml");  // NOI18N
     }
 
     /**
@@ -176,6 +174,8 @@
             }
         });
 #endif
+        ThreadingUtil::runOnGUI(new DAAM_ThreadingUtil(this));
+
     }
 
     //@Override

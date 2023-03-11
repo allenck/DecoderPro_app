@@ -51,7 +51,8 @@ class AnalogActionMemory : public AbstractAnalogAction, public VetoableChangeLis
    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
   }
 
-  //QString getSystemName()  const override{return mSystemName;}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
  private:
   static Logger* log;
   /*private*/ NamedBeanHandle<Memory*>* _memoryHandle = nullptr;

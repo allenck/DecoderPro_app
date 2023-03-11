@@ -74,8 +74,8 @@ template<class T>
 /*public*/ QStringList getSystemNameArray() override;
 /*public*/ QStringList getSystemNameList()override;
 SwingPropertyChangeSupport* pcs; // = new SwingPropertyChangeSupport(this, nullptr);
-///*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
-///*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+/*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
+/*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
  /*public*/ void Register(NamedBean* n) override;
 /*public*/ void deregister(NamedBean* n) override;
 /*public*/ int getXMLOrder()const override;

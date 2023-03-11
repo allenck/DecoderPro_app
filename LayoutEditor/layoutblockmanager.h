@@ -1,11 +1,19 @@
 #ifndef LAYOUTBLOCKMANAGER_H
 #define LAYOUTBLOCKMANAGER_H
-#include "abstractmanager.h"
-#include "layoutblock.h"
+//#include "layoutblock.h"
 //#include "signalhead.h"
 #include "runnable.h"
+#include "abstractmanager.h"
+#include "liblayouteditor_global.h"
 #include "instancemanagerautodefault.h"
+#include "namedbeanhandle.h"
+#include <QCompleter>
 
+class Sensor;
+class LayoutEditor;
+class Memory;
+class Block;
+class LayoutBlock;
 class SignalHead;
 class SignalMast;
 class LayoutBlockConnectivityTools;
@@ -109,6 +117,8 @@ public:
  QObject* self() override{return (QObject*)this;}
  QObject* vself() override {return (QObject*)this;}
  QObject* pself() override{return (QObject*)this;}
+
+ void addPropertyChangeListener(PropertyChangeListener* l)override {PropertyChangeSupport::addPropertyChangeListener(l);}
 
 signals:
  void propertyChange(PropertyChangeEvent *e) override;

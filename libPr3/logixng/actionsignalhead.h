@@ -10,7 +10,6 @@
 #include "atomicreference.h"
 #include "threadingutil.h"
 #include "jmriexception.h"
-#include "defaultconditionalng.h"
 
 class ActionSignalHead : public AbstractDigitalAction, public VetoableChangeListener
 {
@@ -126,6 +125,7 @@ class ActionSignalHead : public AbstractDigitalAction, public VetoableChangeList
   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
   }
+  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  public slots:
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/override;

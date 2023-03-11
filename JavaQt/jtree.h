@@ -149,6 +149,7 @@ protected slots:
  void rowExpanded(const QModelIndex index);
  void on_clicked(QModelIndex);
 
+ friend class JTreeOperator;
 };
 #if 0
 /**

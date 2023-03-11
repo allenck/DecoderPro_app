@@ -74,6 +74,7 @@ public:
     /*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override{
         return AbstractNamedBean::vetoableChange(evt);
     }
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
 private:
     static Logger* log;

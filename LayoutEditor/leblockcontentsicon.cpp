@@ -1,4 +1,5 @@
 #include "leblockcontentsicon.h"
+#include "layoutblock.h"
 #include "loggerfactory.h"
 #include "positionablepopuputil.h"
 #include "transferhandler.h"

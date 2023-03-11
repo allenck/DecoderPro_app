@@ -3,6 +3,10 @@
 
 #include "abstractmanagerxml.h"
 #include <QMainWindow>
+#include "threadingutil.h"
+#include "instancemanager.h"
+#include "defaultanalogactionmanager.h"
+#include "jmriconfigurationmanager.h"
 
 class DefaultAnalogActionManagerXml : public AbstractManagerXml
 {
@@ -27,4 +31,26 @@ class DefaultAnalogActionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultAnalogActionManagerXml)
+
+class DAAM_ThreadingUtil : public ThreadAction
+{
+  Q_OBJECT
+  DefaultAnalogActionManagerXml* daam;
+ public:
+  DAAM_ThreadingUtil(DefaultAnalogActionManagerXml* daam){
+   this->daam = daam;
+  }
+  void run()
+  {
+   // register new one with InstanceManager
+   DefaultAnalogActionManager* pManager = DefaultAnalogActionManager::instance();
+   InstanceManager::store(pManager, "AnalogActionManager");
+   // register new one for configuration
+   ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   if (cmOD != nullptr) {
+       cmOD->registerConfig(pManager, Manager::LOGIXNG_ANALOG_ACTIONS);
+   }
+
+  }
+};
 #endif // DEFAULTANALOGACTIONMANAGERXML_H

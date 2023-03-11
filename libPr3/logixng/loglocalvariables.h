@@ -22,6 +22,8 @@ public:
 
     QObject* bself() override{return this;}
 
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
     /*public*/ void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef) override{
         AbstractNamedBean::addPropertyChangeListener(listener, name, listenerRef);
     }

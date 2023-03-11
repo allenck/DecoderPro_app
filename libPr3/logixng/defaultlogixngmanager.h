@@ -59,6 +59,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
 
   /*public*/ QString getSubSystemNamePrefix() const override {return  AbstractManager::getSystemPrefix()+ typeLetter();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
+
  private:
   static Logger* log;
   /*private*/ /*final*/ QMap<QString, Manager/*<? extends MaleSocket>*/*> _managers = QMap<QString, Manager*>();

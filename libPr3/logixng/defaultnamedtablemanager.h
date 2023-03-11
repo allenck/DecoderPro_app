@@ -52,6 +52,8 @@ class DefaultNamedTableManager : public AbstractManager, public NamedTableManage
   QObject* pself() override {return (QObject*)this;}
   QObject* mself() override {return (QObject*)this;}
 
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
+
  private:
   DecimalFormat* paddedNumber = new DecimalFormat("0000");
   static /*volatile*/ DefaultNamedTableManager* _instance;// = null;

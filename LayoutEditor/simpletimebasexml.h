@@ -10,10 +10,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT SimpleTimebaseXml : public AbstractXmlAdapter
 public:
     Q_INVOKABLE explicit SimpleTimebaseXml(QObject *parent = 0);
     ~SimpleTimebaseXml() override;
- SimpleTimebaseXml(const SimpleTimebaseXml&) : AbstractXmlAdapter() {}
+     SimpleTimebaseXml(const SimpleTimebaseXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement element) throw (Exception) override;
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ bool load(QDomElement element) /*throw (Exception)*/ override;
+    /*public*/ void load(QDomElement element, QObject* o) /*throw (Exception)*/ override;
     /*public*/ int loadOrder() const override;
     // Conversion format for dates created by Java Date.toString().
     // The Locale needs to be always US, irrelevant from computer's and program's settings!
@@ -24,7 +24,7 @@ signals:
 public slots:
 
 private:
- Logger* log;
+ static Logger* log;
  /*private*/ QString removeTimeZone(QString time);
 
 };

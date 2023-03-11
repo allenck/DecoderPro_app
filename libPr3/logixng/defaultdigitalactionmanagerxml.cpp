@@ -1,7 +1,5 @@
 #include "defaultdigitalactionmanagerxml.h"
 #include "loggerfactory.h"
-#include "defaultdigitalactionmanager.h"
-#include "instancemanager.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalactionsocket.h"
 
@@ -171,6 +169,7 @@
             }
         });
 #endif
+        ThreadingUtil::runOnGUI(new DDAM_ThreadingUtil());
     }
 
     //@Override

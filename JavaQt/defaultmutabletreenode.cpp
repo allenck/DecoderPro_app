@@ -70,7 +70,7 @@
 DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
     : MutableTreeNode(oparent)
 {
- common(QVariant(), true);
+ common("?", true);
 }
 
 /*static*/ /*public*/ /*final*/ QVectorIterator<MutableTreeNode*>* DefaultMutableTreeNode::EMPTY_ENUMERATION = new QVectorIterator<MutableTreeNode*>(QVector<MutableTreeNode*>());
@@ -236,7 +236,7 @@ void DefaultMutableTreeNode::common(QVariant userObject, bool allowsChildren)
  */
 /*public*/ int DefaultMutableTreeNode::getChildCount()
 {
-    if (_children == NULL)
+ if (_children == NULL)
  {
   return 0;
  }

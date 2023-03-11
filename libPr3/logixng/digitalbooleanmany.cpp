@@ -56,6 +56,7 @@
      QMapIterator<QString, QString> entry(map);
        while(entry.hasNext())
      {
+        entry.next();
         FemaleDigitalBooleanActionSocket* socket = ((DefaultDigitalBooleanActionManager*)
                 InstanceManager::getDefault("DigitalBooleanActionManager"))
                         ->createFemaleSocket(this, this, entry.key());

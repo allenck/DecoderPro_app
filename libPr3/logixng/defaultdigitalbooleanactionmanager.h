@@ -34,6 +34,7 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
   QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 
  private:
   static Logger* log;

@@ -244,6 +244,7 @@ ExpressionSignalMastSwing::ExpressionSignalMastSwing(QObject *parent)
             _signalMastAspectFormulaTextField->setText(expression->getAspectFormula());
 
  //           ThreadingUtil::runOnGUIEventually(() -> { setAspectComboBox(expression); });
+            ThreadingUtil::runOnGUIEventually(new ESMS_ThreadingUtil( expression, this));
         }
 
         QList<JComponent*> components = {

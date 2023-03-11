@@ -3,18 +3,19 @@
 
 #include <QObject>
 #include "femalesocketlistener.h"
-#include "socketalreadyconnectedexception.h"
 #include "swingpropertychangesupport.h"
 #include "base.h"
 #include "femalesocket.h"
-#include "abstractbase.h"
 
 class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
 {
   Q_OBJECT
   Q_INTERFACES(FemaleSocket)
  public:
+    explicit AbstractFemaleSocket(QObject* parent = nullptr) : QObject(parent) {}
   /*public*/ AbstractFemaleSocket(Base* parent, FemaleSocketListener* listener, QString name, QObject* parentObject = nullptr);
+    ~AbstractFemaleSocket() {}
+    AbstractFemaleSocket(const AbstractFemaleSocket& ) : QObject() {}
   /*public*/ void setEnableListeners(bool enable)override;
   /*public*/ bool getEnableListeners()override;
   /*public*/ Base* getParent() const override;
@@ -105,5 +106,5 @@ class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
           /*MutableInt*/int *lineNumber);
 
 };
-
+//Q_DECLARE_METATYPE(AbstractFemaleSocket)
 #endif // ABSTRACTFEMALESOCKET_H

@@ -3,7 +3,6 @@
 #include "instancemanager.h"
 #include "defaultconditionalng.h"
 
-#include "conditionalng.h"
 /**
  * Editor of ConditionalNG
  *
@@ -97,6 +96,7 @@
 void ConditionalNGEditor::contextMenuEvent(QContextMenuEvent* evt)
 {
   TEPopupMenu* menu = new TEPopupMenu(this);
+  menu->setObjectName("TEPopupMenu");
   menu->init();
   menu->openPopupMenu(evt);
 

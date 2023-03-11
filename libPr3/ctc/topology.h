@@ -5,6 +5,7 @@
 #include "ctcserialdata.h"
 #include "topologyinfo.h"
 #include "layoutblockmanager.h"
+#include "instancemanager.h"
 
 class SignalMastLogicManager;
 class LayoutBlockManager;

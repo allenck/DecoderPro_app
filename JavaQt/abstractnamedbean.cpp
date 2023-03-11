@@ -151,13 +151,6 @@ QString AbstractNamedBean::getDisplayName()
     pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
-////@Override
-////@OverridingMethodsMustInvokeSuper
-///*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName,
-//                                                                              PropertyChangeListener* listener) {
-//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
-//}
-
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* listener)
 {
  pcs->removePropertyChangeListener(listener);

@@ -2,6 +2,7 @@
 #define ACTIONSIGNALMASTSWING_H
 
 #include "abstractdigitalactionswing.h"
+#include "threadingutil.h"
 
 class ActionSignalMast;
 class JComboBox;
@@ -62,7 +63,23 @@ private:
 protected:
     /*protected*/ void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) override;
 
-
+ friend class ASMS_ThreaingUtil;
 };
 Q_DECLARE_METATYPE(ActionSignalMastSwing)
+
+class ASMS_ThreaingUtil : public ThreadAction
+{
+  Q_OBJECT
+  ActionSignalMastSwing* asms;
+  ActionSignalMast* action;
+ public:
+  ASMS_ThreaingUtil(ActionSignalMast* action, ActionSignalMastSwing* asms){
+   this->action = action;
+   this->asms = asms;
+  }
+  void run()
+  {
+   asms->setAspectComboBox(action);
+  }
+};
 #endif // ACTIONSIGNALMASTSWING_H

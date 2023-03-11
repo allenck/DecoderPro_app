@@ -153,6 +153,12 @@
 #include "actionentryexitswing.h"
 #include "actionlightintensityswing.h"
 #include "actionlightintensityxml.h"
+#include "defaultmoduleswing.h"
+#include "simpletimebasexml.h"
+#include "actionwarrantswing.h"
+#include "actionwarrantxml.h"
+#include "expressionwarrantxml.h"
+#include "expressionwarrantswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -325,6 +331,16 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ExpressionConditionalSwing>("ExpressionConditionalSwing");
    qRegisterMetaType<ExpressionConditionalXml>("ExpressionConditionalXml");
    qRegisterMetaType<ExpressionOBlockXml>("ExpressionOBlockXml");
+   qRegisterMetaType<ActionWarrantSwing>("ActionWarrantSwing");
+   qRegisterMetaType<ActionWarrantXml>("ActionWarrantXml");
+   qRegisterMetaType<ExpressionWarrantXml>("ExpressionWarrantXml");
+   qRegisterMetaType<ExpressionWarrantSwing>("ExpressionWarrantSwing");
+
+
+   // AbstractSwingConfigurator
+   qRegisterMetaType<DefaultModuleSwing>("DefaultModuleSwing");
+
+   qRegisterMetaType<SimpleTimebaseXml>("SimpleTimebaseXml");
 
    LogixNG_Metatypes::ng_done = true;
 }

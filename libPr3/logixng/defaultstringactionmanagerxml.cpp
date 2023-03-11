@@ -1,7 +1,5 @@
 #include "defaultstringactionmanagerxml.h"
 #include "loggerfactory.h"
-#include "instancemanager.h"
-#include "defaultstringactionmanager.h"
 #include "runtimeexception.h"
 #include "malestringactionsocket.h"
 #include "defaultmalestringactionsocket.h"
@@ -180,6 +178,7 @@
             }
         });
 #endif
+       ThreadingUtil::runOnGUI(new DSA_ThreadingUtil()) ;
     }
 
     //@Override

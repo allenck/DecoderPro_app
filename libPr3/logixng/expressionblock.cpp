@@ -1,5 +1,6 @@
 #include "expressionblock.h"
 #include "blockmanager.h"
+#include "layoutblock.h"
 #include "layoutblockmanager.h"
 #include "logixng/defaultdigitalexpressionmanager.h"
 #include "logixng/digitalexpressionmanager.h"

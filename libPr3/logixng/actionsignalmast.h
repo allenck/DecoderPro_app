@@ -7,8 +7,9 @@
 #include "logixng/namedbeanaddressing.h"
 #include "namedbeanhandle.h"
 #include "signalmast.h"
-
-
+#include "threadingutil.h"
+#include "jmriexception.h"
+#include <QAtomicPointer>
 
 class ActionSignalMast : public AbstractDigitalAction, public VetoableChangeListener
 {
@@ -135,6 +136,7 @@ public:
     /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l)override{
         return AbstractNamedBean::getListenerRef(l);
     }
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
 public slots:
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/ override;
@@ -169,6 +171,65 @@ private:
     /*private*/ QString getNewAspect(ConditionalNG* conditionalNG) /*throws JmriException*/ ;
     /*private*/ OperationType::TYPE getOperation() /*throws JmriException*/;
 
+    friend class ASM_ThreadingUtil;
+};
+
+class ASM_ThreadingUtil : public ThreadActionWithJmriException
+{
+  Q_OBJECT
+  ActionSignalMast* _asm;
+  QAtomicPointer<JmriException> ref;
+  ActionSignalMast::OperationType::TYPE operation;
+  ConditionalNG* conditionalNG;
+  SignalMast* signalMast;
+
+ public:
+  ASM_ThreadingUtil(SignalMast* signalMast, ConditionalNG* conditionalNG, QAtomicPointer<JmriException> ref,
+                    ActionSignalMast::OperationType::TYPE operation, ActionSignalMast* _asm)
+  {
+   this->signalMast = signalMast;
+   this->conditionalNG = conditionalNG;
+   this->_asm = _asm;
+   this->operation = operation;
+   this->ref = ref;
+  }
+  void run()
+  {
+   try {
+       switch (operation) {
+       case ActionSignalMast::OperationType::Aspect:
+       {
+               QString newAspect = _asm->getNewAspect(conditionalNG);
+               if (!newAspect.isEmpty()) {
+                   signalMast->setAspect(newAspect);
+               }
+               break;
+       }
+           case ActionSignalMast::OperationType::Lit:
+               signalMast->setLit(true);
+               break;
+           case ActionSignalMast::OperationType::NotLit:
+               signalMast->setLit(false);
+               break;
+           case ActionSignalMast::OperationType::Held:
+               signalMast->setHeld(true);
+               break;
+           case ActionSignalMast::OperationType::NotHeld:
+               signalMast->setHeld(false);
+               break;
+           case ActionSignalMast::OperationType::PermissiveSmlDisabled:
+               signalMast->setPermissiveSmlDisabled(true);
+               break;
+           case ActionSignalMast::OperationType::PermissiveSmlNotDisabled:
+               signalMast->setPermissiveSmlDisabled(false);
+               break;
+           default:
+               throw new JmriException("Unknown enum: "+ActionSignalMast::OperationType::toString(_asm->_operationType));
+       }
+   } catch (JmriException* e) {
+       ref.storeRelease(e);
+   }
+  }
 };
 
 #endif // ACTIONSIGNALMAST_H

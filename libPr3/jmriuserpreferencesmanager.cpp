@@ -74,7 +74,7 @@
 
 /*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager(QObject* parent) : UserPreferencesManager(parent)
 {
- log->setDebugEnabled(true);
+ log->setDebugEnabled(false);
   dirty = false;
  loading = false;
  simplePreferenceList = new QStringList();

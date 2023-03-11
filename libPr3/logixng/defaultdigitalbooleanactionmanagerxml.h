@@ -2,6 +2,10 @@
 #define DEFAULTDIGITALBOOLEANACTIONMANAGERXML_H
 
 #include "abstractmanagerxml.h"
+#include "jmriconfigurationmanager.h"
+#include "threadingutil.h"
+#include "instancemanager.h"
+#include "defaultdigitalbooleanactionmanager.h"
 
 class DefaultDigitalBooleanActionManagerXml : public AbstractManagerXml
 {
@@ -27,4 +31,24 @@ class DefaultDigitalBooleanActionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultDigitalBooleanActionManagerXml)
+
+class DDBAM_ThreadingUtil : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DDBAM_ThreadingUtil() {}
+  void run()
+  {
+   // register new one with InstanceManager
+   DefaultDigitalBooleanActionManager* pManager = DefaultDigitalBooleanActionManager::instance();
+   InstanceManager::store(pManager, "DigitalBooleanActionManager");
+   // register new one for configuration
+   ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   if (cmOD != nullptr) {
+       cmOD->registerConfig(pManager, Manager::LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
+   }
+
+  }
+
+};
 #endif // DEFAULTDIGITALBOOLEANACTIONMANAGERXML_H

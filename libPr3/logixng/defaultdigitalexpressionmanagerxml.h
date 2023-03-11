@@ -2,6 +2,12 @@
 #define DEFAULTDIGITALEXPRESSIONMANAGERXML_H
 
 #include "abstractmanagerxml.h"
+#include "threadingutil.h"
+#include "jmriconfigurationmanager.h"
+#include "instancemanager.h"
+#include "defaultdigitalexpressionmanagerxml.h"
+#include "defaultdigitalexpressionmanager.h"
+
 
 class DefaultDigitalExpressionManagerXml : public AbstractManagerXml
 {
@@ -25,4 +31,23 @@ class DefaultDigitalExpressionManagerXml : public AbstractManagerXml
 
 };
 Q_DECLARE_METATYPE(DefaultDigitalExpressionManagerXml)
+
+class DDEM_ThreadingUtil : public ThreadAction
+{
+  Q_OBJECT
+ public:
+  DDEM_ThreadingUtil() {}
+  void run()
+  {
+   // register new one with InstanceManager
+   DefaultDigitalExpressionManager* pManager = DefaultDigitalExpressionManager::instance();
+   InstanceManager::store(pManager, "DigitalExpressionManager");
+   // register new one for configuration
+   ConfigureManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   if (cmOD != nullptr) {
+       cmOD->registerConfig(pManager, Manager::LOGIXNG_DIGITAL_EXPRESSIONS);
+   }
+
+  }
+};
 #endif // DEFAULTDIGITALEXPRESSIONMANAGERXML_H

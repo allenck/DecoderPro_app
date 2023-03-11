@@ -68,7 +68,7 @@ SwingConfiguratorInterfaceTest::SwingConfiguratorInterfaceTest(QObject *parent)
         Assert::assertEquals(component3_activeInactive, list.at(9)->jself(), __FILE__, __LINE__);
 
         Assert::assertTrue(qobject_cast<JLabel*>(list.at(10)->jself()), __FILE__, __LINE__);
-        Assert::assertEquals(" now", ((JLabel)list.at(10)->jself()).text(), __FILE__, __LINE__);
+        Assert::assertEquals(" now", ((JLabel*)list.at(10)->jself())->text(), __FILE__, __LINE__);
     }
 
     // The minimal setup for log4J

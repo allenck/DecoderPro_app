@@ -24,6 +24,7 @@ class AbstractMeterManager : public AbstractManager,  public MeterManager
   /*public*/ NamedBean* getByUserName(QString name)const override{return AbstractManager::getByUserName(name);}
 
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 
 };
 

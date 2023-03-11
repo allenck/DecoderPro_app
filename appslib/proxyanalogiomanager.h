@@ -26,6 +26,7 @@ class ProxyAnalogIOManager : public AbstractProxyManager, public AnalogIOManager
   QObject* vself() override {return (QObject*)this;}
   QObject* mself() override {return (QObject*)this;}
 
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* e)override;

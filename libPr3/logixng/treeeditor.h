@@ -23,8 +23,6 @@
 #include "threadingutil.h"
 #include "runtimeexception.h"
 #include "treepane.h"
-//#include "treepane.h"
-
 
 class TreeEditor_run2;
 class TEPopupMenu;

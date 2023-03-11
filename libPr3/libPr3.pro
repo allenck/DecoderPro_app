@@ -168,7 +168,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
-    logixng/actionentryexitxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1141,6 +1140,15 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionwarrant.cpp \
+    logixng/actionwarrantswing.cpp \
+    logixng/actionwarrantxml.cpp \
+    logixng/expressionnodefalse.cpp \
+    logixng/expressionwarrant.cpp \
+    logixng/expressionwarrantswing.cpp \
+    logixng/expressionwarrantxml.cpp \
+    logixng/moduleparameterstablemodel.cpp \
+    logixng/actionentryexitxml.cpp \
     logixng/actionlightintensity.cpp \
     logixng/actionlightintensityswing.cpp \
     logixng/actionlightintensityxml.cpp \
@@ -1600,7 +1608,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
-    logixng/actionentryexitxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
@@ -2687,6 +2694,16 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionwarrant.h \
+    logixng/actionwarrantswing.h \
+    logixng/actionwarrantxml.h \
+    logixng/expressionnodefalse.h \
+    logixng/expressionwarrant.h \
+    logixng/expressionwarrantswing.h \
+    logixng/expressionwarrantxml.h \
+    logixng/moduleparameterstablemodel.h \
+    logixng/moduleparameterstablemodel.h \
+    logixng/actionentryexitxml.h \
     logixng/actionlightintensity.h \
     logixng/actionlightintensityswing.h \
     logixng/actionlightintensityxml.h \

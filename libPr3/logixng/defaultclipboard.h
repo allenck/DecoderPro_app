@@ -62,6 +62,8 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   QObject* self() override {return (QObject*)this;}
  QObject* bself() override {return (QObject*)this;}
 
+ void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
  /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
   AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
  }

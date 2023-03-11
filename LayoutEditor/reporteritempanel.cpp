@@ -7,7 +7,6 @@
 #include "dataflavor.h"
 #include <QTableView>
 #include <QGroupBox>
-#include "imagepanel.h"
 #include "reportericonxml.h"
 
 //ReporterItemPanel::ReporterItemPanel(QWidget *parent) :

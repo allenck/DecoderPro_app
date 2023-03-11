@@ -481,6 +481,9 @@ ActionSignalMast::ActionSignalMast(QObject *parent)
         });
         if (ref.get() != nullptr) throw ref.get();
 #endif
+        QAtomicPointer<JmriException> ref;
+        ThreadingUtil::runOnLayoutWithJmriException(new ASM_ThreadingUtil(signalMast, conditionalNG, ref, operation,this));
+        if (ref.loadAcquire() != nullptr) throw ref.loadAcquire();
     }
 
     //@Override

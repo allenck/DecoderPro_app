@@ -24,6 +24,9 @@ public:
   QObject* vself() override { return (QObject*)this;}
   QObject* pself() override{return (QObject*)this;}
 
+  void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
+
+
 protected:
 /*protected*/ Turnout* createNewTurnout(QString systemName, QString userName)override ;
 /*protected*/ QString prefix; // = "I";

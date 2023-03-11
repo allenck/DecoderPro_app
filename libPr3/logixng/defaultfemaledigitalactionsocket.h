@@ -9,7 +9,9 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   Q_OBJECT
   Q_INTERFACES(FemaleDigitalActionSocket)
  public:
+    explicit DefaultFemaleDigitalActionSocket(QObject*parent = nullptr) {}
   DefaultFemaleDigitalActionSocket(Base* parentObject, FemaleSocketListener* listener, QString name, QObject*parent = nullptr);
+  ~DefaultFemaleDigitalActionSocket() {}
   /*public*/  bool isCompatible(MaleSocket* socket)override;
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
@@ -28,6 +30,6 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
 
 };
-
+Q_DECLARE_METATYPE(DefaultFemaleDigitalActionSocket)
 
 #endif // DEFAULTFEMALEDIGITALACTIONSOCKET_H

@@ -87,6 +87,8 @@ class StringFormula : public AbstractStringExpression, public FemaleSocketListen
   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
   }
+  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
  private:
   static Logger* log;
   /*private*/ QString _formula = "";

@@ -98,6 +98,7 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
   /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
   /*public*/ virtual void dispose() override {AbstractNamedBean::dispose();}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  private:
   /*private*/ /*final*/ LogixNG_Manager* _manager = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");

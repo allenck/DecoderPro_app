@@ -1,5 +1,6 @@
 #include "defaultsignalmastlogicmanager.h"
 #include "instancemanager.h"
+#include "layoutblockconnectivitytools.h"
 #include "signalspeedmap.h"
 #include "propertychangelistener.h"
 #include "../LayoutEditor/layoutblockmanager.h"

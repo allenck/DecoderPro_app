@@ -1,8 +1,10 @@
 #include "speedprofilepanel.h"
 #include <QPushButton>
 #include <QLabel>
+#include "jtable.h"
 #include "jtextfield.h"
 #include "beanselectcreatepanel.h"
+#include "layoutblock.h"
 #include "rosterentrycombobox.h"
 #include "instancemanager.h"
 #include <QBoxLayout>

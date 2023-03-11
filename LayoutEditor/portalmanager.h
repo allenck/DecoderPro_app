@@ -13,31 +13,33 @@ class LIBLAYOUTEDITORSHARED_EXPORT PortalManager : public AbstractManager, publi
  Q_OBJECT
   Q_INTERFACES(InstanceManagerAutoDefault )
 public:
- explicit PortalManager(QObject *parent = 0);
- ~PortalManager() {}
- PortalManager(const PortalManager &) : AbstractManager() {}
- /*public*/ int getPortalCount();
- /*public*/ Portal* getPortal(int idx);
- /*public*/ int getIndexOf(Portal* portal);
- /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix() const override;
- /*public*/ QChar typeLetter() const override;
- /*public*/ Portal* createNewPortal(QString sName);
- /*public*/ QString generateSystemName();
- /*public*/ Portal* getPortal(QString name);
- /*public*/ NamedBean *getBySystemName(QString name)const ;
- /*public*/ NamedBean* getByUserName(QString key) const ;
- /*public*/ Portal* providePortal(QString name);
- static /*public*/ PortalManager* instance();
- /*public*/ QString getBeanTypeHandled();
- /*public*/ bool isAssignableFromType() {return true;}
- /*public*/ QString getNamedBeanClass()const override {
-     return "Portal";
- }
- /*public*/ QSet<Portal*> getPortalSet();
- QObject* self() {return (QObject*)this;}
+     explicit PortalManager(QObject *parent = 0);
+     ~PortalManager() {}
+     PortalManager(const PortalManager &) : AbstractManager() {}
+     /*public*/ int getPortalCount();
+     /*public*/ Portal* getPortal(int idx);
+     /*public*/ int getIndexOf(Portal* portal);
+     /*public*/ int getXMLOrder()const override;
+     /*public*/ QString getSystemPrefix() const override;
+     /*public*/ QChar typeLetter() const override;
+     /*public*/ Portal* createNewPortal(QString sName);
+     /*public*/ QString generateSystemName();
+     /*public*/ Portal* getPortal(QString name);
+     /*public*/ NamedBean *getBySystemName(QString name)const ;
+     /*public*/ NamedBean* getByUserName(QString key) const ;
+     /*public*/ Portal* providePortal(QString name);
+     static /*public*/ PortalManager* instance();
+     /*public*/ QString getBeanTypeHandled();
+     /*public*/ bool isAssignableFromType() {return true;}
+     /*public*/ QString getNamedBeanClass()const override {
+         return "Portal";
+     }
+    /*public*/ QSet<Portal*> getPortalSet();
+    QObject* self() override{return (QObject*)this;}
     QObject* vself() override {return (QObject*)this;}
     QObject* pself() override{return (QObject*)this;}
+
+    void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 
 signals:
 

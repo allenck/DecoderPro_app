@@ -2,6 +2,8 @@
 #define EXPRESSIONSIGNALHEADSWING_H
 
 #include "abstractdigitalexpressionswing.h"
+#include "threadingutil.h"
+
 
 class ExpressionSignalHead;
 class JTabbedPane;
@@ -79,4 +81,20 @@ public:
 
 };
 Q_DECLARE_METATYPE(ExpressionSignalHeadSwing)
+
+class ESHS_ThreadingUtil : public ThreadAction
+{
+  Q_OBJECT
+  ExpressionSignalHeadSwing* eshs;
+  ExpressionSignalHead* expression;
+ public:
+  ESHS_ThreadingUtil(ExpressionSignalHead* expression , ExpressionSignalHeadSwing* eshs){
+   this->expression = expression;
+   this->eshs = eshs;
+  }
+  void run()
+  {
+
+  }
+};
 #endif // EXPRESSIONSIGNALHEADSWING_H

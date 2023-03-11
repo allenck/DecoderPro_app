@@ -6,6 +6,8 @@
 #include "namedbeanhandle.h"
 #include "oblock.h"
 #include "namedbeanaddressing.h"
+#include "threadingutil.h"
+
 
 class ExpressionNode;
 class ActionOBlock : public AbstractDigitalAction, public VetoableChangeListener
@@ -102,6 +104,8 @@ public:
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
      return AbstractNamedBean::getPropertyChangeListenersByReference(name);
     }
+    void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+
 public slots:
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/ override;
 
@@ -134,6 +138,48 @@ private:
     /*private*/ QString getNewOperation() /*throws JmriException */;
     /*private*/ QString getNewData(ConditionalNG* conditionalNG) /*throws JmriException*/;
 
+    friend class AOB_ThreadingUtil;
+};
+
+class AOB_ThreadingUtil : public ThreadActionWithJmriException
+{
+  Q_OBJECT
+  ActionOBlock::DirectOperation::TYPE theOper;
+  OBlock* oblock;
+  ConditionalNG* conditionalNG;
+  ActionOBlock* aob;
+ public:
+  AOB_ThreadingUtil(ActionOBlock::DirectOperation::TYPE theOper, OBlock* oblock, ConditionalNG* conditionalNG, ActionOBlock* aob) {
+   this->theOper = theOper;
+  this->oblock = oblock;
+   this->conditionalNG = conditionalNG;
+   this->aob = aob;
+  }
+  void run()
+  {
+   switch (theOper) {
+       case ActionOBlock::DirectOperation::Deallocate:
+           oblock->deAllocate(nullptr);
+           break;
+       case ActionOBlock::DirectOperation::SetValue:
+           oblock->setValue(aob->getNewData(conditionalNG));
+           break;
+       case ActionOBlock::DirectOperation::SetError:
+           oblock->setError(true);
+           break;
+       case ActionOBlock::DirectOperation::ClearError:
+           oblock->setError(false);
+           break;
+       case ActionOBlock::DirectOperation::SetOutOfService:
+           oblock->setOutOfService(true);
+           break;
+       case ActionOBlock::DirectOperation::ClearOutOfService:
+           oblock->setOutOfService(false);
+           break;
+       default:
+           throw new IllegalArgumentException("invalid oper state: " + ActionOBlock::DirectOperation::toString(theOper));
+   }
+  }
 };
 
 #endif // ACTIONOBLOCK_H
