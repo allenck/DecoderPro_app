@@ -70,7 +70,7 @@
 }
 
 //@Override
-/*public*/ QVariant ProfileListModel::getElementAt(int index)
+/*public*/ QVariant ProfileListModel::getElementAt(int index) const
 {
  return VPtr<Profile>::asQVariant( ProfileManager::getDefault()->getProfiles(index));
 }

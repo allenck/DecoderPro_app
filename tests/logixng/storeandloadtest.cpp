@@ -127,6 +127,7 @@
 #include "expressionclock.h"
 #include "shutdowncomputer.h"
 #include "expressionwarrant.h"
+#include "expressionsignalmast.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -2854,86 +2855,86 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalHead);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-#if 0 // not yet implemented
-        ExpressionSignalMast expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
+#if 1 // not yet implemented
+        ExpressionSignalMast* expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalMast);
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalMast->AbstractNamedBean::setComment("A comment");
-        expressionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        expressionSignalMast.setAddressing(NamedBeanAddressing::Direct);
-        expressionSignalMast.setFormula("\"IT\"+index");
-        expressionSignalMast.setLocalVariable("index");
-        expressionSignalMast.setReference("{IM1}");
-        expressionSignalMast.setQueryAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSignalMast.setQueryFormula("\"IT\"+index2");
-        expressionSignalMast.setQueryLocalVariable("index2");
-        expressionSignalMast.setQueryReference("{IM2}");
-        expressionSignalMast.setAspectAddressing(NamedBeanAddressing::Formula);
-        expressionSignalMast.setAspect("Medium Approach Slow");
-        expressionSignalMast.setAspectFormula("\"IT\"+index3");
-        expressionSignalMast.setAspectLocalVariable("index3");
-        expressionSignalMast.setAspectReference("{IM3}");
-        expressionSignalMast.setExampleSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        expressionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        expressionSignalMast->setAddressing(NamedBeanAddressing::Direct);
+        expressionSignalMast->setFormula("\"IT\"+index");
+        expressionSignalMast->setLocalVariable("index");
+        expressionSignalMast->setReference("{IM1}");
+        expressionSignalMast->setQueryAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSignalMast->setQueryFormula("\"IT\"+index2");
+        expressionSignalMast->setQueryLocalVariable("index2");
+        expressionSignalMast->setQueryReference("{IM2}");
+        expressionSignalMast->setAspectAddressing(NamedBeanAddressing::Formula);
+        expressionSignalMast->setAspect("Medium Approach Slow");
+        expressionSignalMast->setAspectFormula("\"IT\"+index3");
+        expressionSignalMast->setAspectLocalVariable("index3");
+        expressionSignalMast->setAspectReference("{IM3}");
+        expressionSignalMast->setExampleSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalMast);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalMast->AbstractNamedBean::setComment("A comment");
-        expressionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        expressionSignalMast.setAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSignalMast.setFormula("\"IT\"+index");
-        expressionSignalMast.setLocalVariable("index");
-        expressionSignalMast.setReference("{IM1}");
-        expressionSignalMast.setQueryAddressing(NamedBeanAddressing::Formula);
-        expressionSignalMast.setQueryFormula("\"IT\"+index2");
-        expressionSignalMast.setQueryLocalVariable("index2");
-        expressionSignalMast.setQueryReference("{IM2}");
-        expressionSignalMast.setAspectAddressing(NamedBeanAddressing::Reference);
-        expressionSignalMast.setAspect("Medium Approach");
-        expressionSignalMast.setAspectFormula("\"IT\"+index3");
-        expressionSignalMast.setAspectLocalVariable("index3");
-        expressionSignalMast.setAspectReference("{IM3}");
+        expressionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        expressionSignalMast->setAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSignalMast->setFormula("\"IT\"+index");
+        expressionSignalMast->setLocalVariable("index");
+        expressionSignalMast->setReference("{IM1}");
+        expressionSignalMast->setQueryAddressing(NamedBeanAddressing::Formula);
+        expressionSignalMast->setQueryFormula("\"IT\"+index2");
+        expressionSignalMast->setQueryLocalVariable("index2");
+        expressionSignalMast->setQueryReference("{IM2}");
+        expressionSignalMast->setAspectAddressing(NamedBeanAddressing::Reference);
+        expressionSignalMast->setAspect("Medium Approach");
+        expressionSignalMast->setAspectFormula("\"IT\"+index3");
+        expressionSignalMast->setAspectLocalVariable("index3");
+        expressionSignalMast->setAspectReference("{IM3}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalMast);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalMast->AbstractNamedBean::setComment("A comment");
-        expressionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        expressionSignalMast.setAddressing(NamedBeanAddressing::Formula);
-        expressionSignalMast.setFormula("\"IT\"+index");
-        expressionSignalMast.setLocalVariable("index");
-        expressionSignalMast.setReference("{IM1}");
-        expressionSignalMast.setQueryAddressing(NamedBeanAddressing::Reference);
-        expressionSignalMast.setQueryFormula("\"IT\"+index2");
-        expressionSignalMast.setQueryLocalVariable("index2");
-        expressionSignalMast.setQueryReference("{IM2}");
-        expressionSignalMast.setAspectAddressing(NamedBeanAddressing::Direct);
-        expressionSignalMast.setAspect("Approach");
-        expressionSignalMast.setAspectFormula("\"IT\"+index3");
-        expressionSignalMast.setAspectLocalVariable("index3");
-        expressionSignalMast.setAspectReference("{IM3}");
+        expressionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        expressionSignalMast->setAddressing(NamedBeanAddressing::Formula);
+        expressionSignalMast->setFormula("\"IT\"+index");
+        expressionSignalMast->setLocalVariable("index");
+        expressionSignalMast->setReference("{IM1}");
+        expressionSignalMast->setQueryAddressing(NamedBeanAddressing::Reference);
+        expressionSignalMast->setQueryFormula("\"IT\"+index2");
+        expressionSignalMast->setQueryLocalVariable("index2");
+        expressionSignalMast->setQueryReference("{IM2}");
+        expressionSignalMast->setAspectAddressing(NamedBeanAddressing::Direct);
+        expressionSignalMast->setAspect("Approach");
+        expressionSignalMast->setAspectFormula("\"IT\"+index3");
+        expressionSignalMast->setAspectLocalVariable("index3");
+        expressionSignalMast->setAspectReference("{IM3}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalMast);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         expressionSignalMast = new ExpressionSignalMast(digitalExpressionManager->getAutoSystemName(), "");
         expressionSignalMast->AbstractNamedBean::setComment("A comment");
-        expressionSignalMast.setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
-        expressionSignalMast.setAddressing(NamedBeanAddressing::Reference);
-        expressionSignalMast.setFormula("\"IT\"+index");
-        expressionSignalMast.setLocalVariable("index");
-        expressionSignalMast.setReference("{IM1}");
-        expressionSignalMast.setQueryAddressing(NamedBeanAddressing::Direct);
-        expressionSignalMast.setQueryFormula("\"IT\"+index2");
-        expressionSignalMast.setQueryLocalVariable("index2");
-        expressionSignalMast.setQueryReference("{IM2}");
-        expressionSignalMast.setAspectAddressing(NamedBeanAddressing::LocalVariable);
-        expressionSignalMast.setAspect("Medium Approach Slow");
-        expressionSignalMast.setAspectFormula("\"IT\"+index3");
-        expressionSignalMast.setAspectLocalVariable("index3");
-        expressionSignalMast.setAspectReference("{IM3}");
+        expressionSignalMast->setSignalMast("IF$shsm:AAR-1946:CPL(IH1)");
+        expressionSignalMast->setAddressing(NamedBeanAddressing::Reference);
+        expressionSignalMast->setFormula("\"IT\"+index");
+        expressionSignalMast->setLocalVariable("index");
+        expressionSignalMast->setReference("{IM1}");
+        expressionSignalMast->setQueryAddressing(NamedBeanAddressing::Direct);
+        expressionSignalMast->setQueryFormula("\"IT\"+index2");
+        expressionSignalMast->setQueryLocalVariable("index2");
+        expressionSignalMast->setQueryReference("{IM2}");
+        expressionSignalMast->setAspectAddressing(NamedBeanAddressing::LocalVariable);
+        expressionSignalMast->setAspect("Medium Approach Slow");
+        expressionSignalMast->setAspectFormula("\"IT\"+index3");
+        expressionSignalMast->setAspectLocalVariable("index3");
+        expressionSignalMast->setAspectReference("{IM3}");
         maleSocket = digitalExpressionManager->registerExpression(expressionSignalMast);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 #endif
@@ -3106,9 +3107,10 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
         hold = new Hold(digitalExpressionManager->getAutoSystemName(), "");
-        hold->AbstractNamedBean::setUserName("A hold expression");
+        //hold->AbstractNamedBean::setUserName("A hold expression");
         hold->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalExpressionManager->registerExpression(hold);
+        hold->AbstractNamedBean::setUserName("A hold expression");
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
 

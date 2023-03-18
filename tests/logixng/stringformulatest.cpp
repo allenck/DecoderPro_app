@@ -300,7 +300,7 @@
         //_base.addPropertyChangeListener((PropertyChangeEvent evt) -> {
 //            ab.set(true);
 //        });
-        _base->PropertyChangeProvider::addPropertyChangeListener(new PropertyChangeListener01(ab));
+        ((AbstractBase* )_base->bself())->AbstractNamedBean::addPropertyChangeListener(new PropertyChangeListener01(ab));
 
         a->setChildCount(1);
         Assert::assertEquals("numChilds are correct", 1, a->getChildCount(), __FILE__, __LINE__);

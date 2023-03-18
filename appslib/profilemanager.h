@@ -58,7 +58,6 @@ public:
     /*public*/ void _export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
          bool exportExternalRoster) /*throw (IOException, JDOMException, InitializationException)*/;
 
-
 signals:
 public slots:
 private:

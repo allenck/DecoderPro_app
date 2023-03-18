@@ -112,11 +112,11 @@ QString AbstractNamedBean::getDisplayName()
                                                                           const QString beanRef,
                                                                           QString listenerRef)
 {
- pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
- if(beanRef!=NULL)
+ if(beanRef!="")
      _register->insert(l, beanRef);
- if(listenerRef!=NULL)
+ if(listenerRef!="")
      listenerRefs->insert(l, listenerRef);
  //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
@@ -128,7 +128,7 @@ QString AbstractNamedBean::getDisplayName()
                                                        QString beanRef, QString listenerRef)
 {
  //QPointer<PropertyChangeListener> listener = (PropertyChangeListener*)l->self();
-    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, /*listener*/l);
+    pcs->addPropertyChangeListener(propertyName, /*listener*/l);
     if (beanRef != "") {
         _register->insert(l, beanRef);
     }
@@ -141,14 +141,14 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)), Qt::DirectConnection);
 }
 
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+    pcs->addPropertyChangeListener(propertyName, listener);
 }
 
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* listener)
@@ -208,17 +208,7 @@ QString AbstractNamedBean::getDisplayName()
 /* This allows a meaning full list of places where the bean is in use!*/
 /*public synchronized*/ QList<QString> AbstractNamedBean::getListenerRefs()
 {
- QList<QString> list = QList<QString>();
- //Enumeration<PropertyChangeListener> en = listenerRefs.keys();
- QHashIterator<PropertyChangeListener*, QString> en(*listenerRefs);
-//        while (en.hasMoreElements()) {
- while(en.hasNext())
- {
-  en.next();
-  PropertyChangeListener* l = en.key();
-  list.append(listenerRefs->value(l));
- }
- return list;
+ return QList<QString>(listenerRefs->values());
 }
 
 /*public synchronized*/ void AbstractNamedBean::updateListenerRef(PropertyChangeListener* l, QString newName)
@@ -230,7 +220,7 @@ QString AbstractNamedBean::getDisplayName()
 }
 
 /*public synchronized*/ QString AbstractNamedBean::getListenerRef(PropertyChangeListener* l) {
-    return listenerRefs->value(l);
+    //return listenerRefs->value(l);
 }
 
 /**

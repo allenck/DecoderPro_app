@@ -297,6 +297,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
   }
   firePropertyChange("length", 0, _beans.size());
   // listen for name and state changes to forward
+  //((AbstractNamedBean*)s->self())->addPropertyChangeListener(this);
   s->addPropertyChangeListener(this);
 }
   // not efficient, but does job for now

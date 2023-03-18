@@ -288,9 +288,6 @@ class TreeEditor_run2 : public RunnableWithBase
   TreeEditor_run2(/*Base* b, */TreePane* _treePane) {/*this->b = b;*/ this->_treePane = _treePane;}
 
   void run(Base* b);
-//  {
-//   b->PropertyChangeProvider::addPropertyChangeListener(_treePane);
-//  }
 };
 
 class TreeEditor_run3 : public ThreadAction

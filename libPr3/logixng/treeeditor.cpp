@@ -1989,7 +1989,7 @@
 
         void TreeEditor_run2::run(Base* b)
         {
-         b->PropertyChangeProvider::addPropertyChangeListener(_treePane);
+            ((AbstractBase* )b->bself())->AbstractNamedBean::addPropertyChangeListener(_treePane);
         }
 
         void TreeEditor_run3::run()

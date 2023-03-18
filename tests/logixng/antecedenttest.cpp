@@ -332,7 +332,7 @@ AntecedentTest::AntecedentTest(QObject *parent) : AbstractDigitalExpressionTestB
 //        _base->addPropertyChangeListener((PropertyChangeEvent evt) -> {
 //            ab.set(true);
 //        });
-        _base->PropertyChangeProvider::addPropertyChangeListener(new AntecedentTest_PropertyChangeListener(ab));
+        ((AbstractBase* )_base->bself())->AbstractNamedBean::addPropertyChangeListener(new AntecedentTest_PropertyChangeListener(ab));
 
         a->setChildCount(1);
         Assert::assertEquals("numChilds are correct", 1, a->getChildCount(), __FILE__, __LINE__);

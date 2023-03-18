@@ -142,32 +142,32 @@
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(PropertyChangeListener* l, QString name, QString listenerRef) {
-    _object->addPropertyChangeListener(l, name, listenerRef);
+    ((AbstractBase* )_object->bself())->AbstractNamedBean::addPropertyChangeListener(l, name, listenerRef);
 }
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l, QString name, QString listenerRef) {
-    _object->addPropertyChangeListener(propertyName, l, name, listenerRef);
+    ((AbstractBase* )_object->bself())->AbstractNamedBean::addPropertyChangeListener(propertyName, l, name, listenerRef);
 }
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(PropertyChangeListener* l) {
-    _object->PropertyChangeProvider::addPropertyChangeListener(l);
+   ((AbstractBase* )_object->bself())->AbstractNamedBean::addPropertyChangeListener(l);
 }
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
-    _object->PropertyChangeProvider::addPropertyChangeListener(propertyName, l);
+    ((AbstractBase* )_object->bself())->AbstractNamedBean::addPropertyChangeListener(propertyName, l);
 }
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::removePropertyChangeListener(PropertyChangeListener* l) {
-    _object->removePropertyChangeListener(l);
+    ((AbstractBase* )_object->bself())->AbstractNamedBean::removePropertyChangeListener(l);
 }
 
 //@Override
 /*public*/ /*final*/ void AbstractMaleSocket::removePropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
-    _object->removePropertyChangeListener(propertyName, l);
+    ((AbstractBase* )_object->bself())->AbstractNamedBean::removePropertyChangeListener(propertyName, l);
 }
 
 //@Override

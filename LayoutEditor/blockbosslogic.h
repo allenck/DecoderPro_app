@@ -91,6 +91,7 @@ public:
     /*public*/ static BlockBossLogic* getExisting(QString signal);
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
+    QObject* pself() override {return this;}
 signals:
 
 public slots:

@@ -114,7 +114,7 @@ class AbstractMaleSocket :  public /*QObject*/AbstractBase, public virtual MaleS
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ Base* _object=nullptr;
+  /*private*/ /*final*/ Base* _object = nullptr;
   /*private*/ bool _locked = false;
   /*private*/ bool _system = false;
   /*private*/ /*final*/ BaseManager/*<NamedBean*><? extends NamedBean>*/* _manager;

@@ -160,8 +160,10 @@
     //@Override
     /*public*/  void LastResultOfDigitalExpression::registerListenersForThisClass() {
         if (!_listenersAreRegistered && (_digitalExpressionHandle != nullptr)) {
-            _digitalExpressionHandle->getBean()
-                    ->NamedBean::addPropertyChangeListener(PROPERTY_LAST_RESULT_CHANGED, this);
+//            _digitalExpressionHandle->getBean()
+//                    ->NamedBean::addPropertyChangeListener(PROPERTY_LAST_RESULT_CHANGED, this);
+            ((AbstractNamedBean*)_digitalExpressionHandle->getBean()->self())
+                    ->addPropertyChangeListener(PROPERTY_LAST_RESULT_CHANGED, this);
             _listenersAreRegistered = true;
         }
     }

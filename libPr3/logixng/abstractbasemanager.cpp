@@ -128,7 +128,7 @@
         QString s1 = ((AbstractBase*)s->bself())->AbstractNamedBean::getSystemName();
 //        NamedBean* nb = (AbstractNamedBean*)s->bself();
 //        QString sys = nb->getSystemName();
-        AbstractMaleSocket* bean=s;
+        AbstractMaleSocket* bean = s;
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, s);
         }
@@ -140,6 +140,7 @@
 //        QString sys2 = nb2->getSystemName();
         //AbstractManager::Register(nb2);
         AbstractManager::Register(bean);
+        bean->addPropertyChangeListener(this); // added ACK
         return bean;
     }
 

@@ -118,9 +118,12 @@
         // Keep track of the last created auto system name
         updateAutoNumber(((AbstractNamedBean*)expression->self())->getSystemName());
 
+        ((AbstractNamedBean*)expression->self())->addPropertyChangeListener(this); // ACK added
+
         // save in the maps
         MaleDigitalExpressionSocket* maleSocket = createMaleExpressionSocket(expression);
         registerBean((AbstractMaleSocket*)maleSocket->msself());
+        QVector<PropertyChangeListener*> list = ((AbstractMaleSocket*)maleSocket->msself())->AbstractNamedBean::getPropertyChangeListeners();
         return maleSocket;
     }
 

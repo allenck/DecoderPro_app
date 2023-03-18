@@ -7,6 +7,7 @@
 #include "digitalexpression.h"
 #include "logixng_thread.h"
 #include "expressionmemory.h"
+#include "instancemanager.h"
 
 /**
  * Test DigitalExpressionManager
@@ -32,8 +33,17 @@
 
         // We need a male socket to test with, so we register the action and then unregister the socket
         DigitalExpressionBean* action = new ExpressionMemory("IQDE321", "");
+        AbstractNamedBean* anb = ((AbstractNamedBean*)action->self());
         QString sn = ((AbstractNamedBean*)action->self())->getSystemName();
         MaleDigitalExpressionSocket* maleSocket = _m->registerExpression(action);
+
+        // begin additions ACK
+        int i1 = ((AbstractNamedBean*)action->self())->getNumPropertyChangeListeners();
+        Assert::assertTrue("listener count > 0", ((AbstractNamedBean*)action->self())->getNumPropertyChangeListeners() > 0, __FILE__, __LINE__);
+        ((AbstractNamedBean*)action->self())->setUserName("My user name");
+        NamedBean* nb = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getByUserName("My user name");
+        // end additions ACK
+
         _m->deregister(maleSocket);
 
         hasThrown = false;

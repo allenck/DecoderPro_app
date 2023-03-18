@@ -164,12 +164,18 @@ class ExpressionMemory : public AbstractDigitalExpression, public PropertyChange
   /*public*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override {AbstractNamedBean::updateListenerRef(l, newName);}
   ///*public*/ void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) override {AbstractNamedBean::vetoableChange(evt);}
   /*public*/ QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) override {return  AbstractNamedBean::getListenerRef(l);}
-  /*public*/ QList<QString> getListenerRefs() override {return AbstractNamedBean::getListenerRefs();}
-  /*public*/ int getNumPropertyChangeListeners() override {return  AbstractNamedBean::getNumPropertyChangeListeners();}
+  /*public*/ QList<QString> getListenerRefs() override {
+      return AbstractNamedBean::getListenerRefs();
+  }
+  /*public*/ int getNumPropertyChangeListeners() override {
+      return  AbstractNamedBean::getNumPropertyChangeListeners();
+  }
   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)override {
    return AbstractNamedBean::getPropertyChangeListenersByReference(name);
   }
-  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+  void addPropertyChangeListener(PropertyChangeListener* l) override {
+      AbstractNamedBean::addPropertyChangeListener(l);
+  }
 
  public slots:
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws java.beans.PropertyVetoException*/ override;

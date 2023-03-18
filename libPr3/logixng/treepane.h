@@ -201,7 +201,7 @@ class TreePane_RunnableWithBase : public RunnableWithBase
   }
   void run(Base* b)
   {
-   ((AbstractFemaleSocket*)b->bself())->PropertyChangeProvider::addPropertyChangeListener(treePane);
+   ((AbstractFemaleSocket*)b->bself())->addPropertyChangeListener(treePane);
   }
 };
 

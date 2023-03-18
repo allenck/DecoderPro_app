@@ -125,7 +125,7 @@
         for (int i=0; i < getChildCount(); i++) {
             //getChild(i)->registerListeners();
          Base* b = getChild(i);
-         b->registerListeners();
+         ((AbstractBase*)b->bself())->registerListeners();
         }
     }
 }
