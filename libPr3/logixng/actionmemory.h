@@ -100,6 +100,10 @@ class ActionMemory : public AbstractDigitalAction, public PropertyChangeListener
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+    /*public*/  QString getClass() const override
+    {
+     return "jmri.jmrit.logixng.actions.ActionMemory";
+    }
 
   QObject* pself() override{return this;}
   QObject* bself() override{return this;}

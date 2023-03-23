@@ -6,6 +6,7 @@
 #include "jdialog.h"
 #include <QDebug>
 #include "sleeperthread.h"
+#include "treeeditor.h"
 #include "treemodel.h"
 
 JFrameOperator::JFrameOperator(QObject *parent) : QObject()
@@ -626,7 +627,18 @@ TreePath* JTreeOperator::getPathForRow(int row)
 QMenu* JTreeOperator::callPopupOnPath(TreePath* tp)
 {
  //QContextMenuEvent(new QContextMenuEvent());
-    _tree->on_clicked(_tree->model()->index(0,0));
-    QMenu* popupMenu = treeframe->findChild<QMenu*>("TEPopupMenu");
-    return popupMenu;
+    TreeEditor* p = TreeEditor::instance();
+    if(p)
+    {
+     //_tree->on_clicked(_tree->model()->index(0,0));
+     TEPopupMenu* popup = new TEPopupMenu(p);
+     popup->init();
+     FemaleSocket* femaleSocket = nullptr;
+     femaleSocket = ((TP_FemaleSocketTreeNode*) tp->getLastPathComponent())->getFemaleSocket();
+     popup->showPopup(0,0, femaleSocket, tp);
+
+     QMenu* popupMenu = treeframe->findChild<QMenu*>("TEPopupMenu");
+     return popupMenu;
+    }
+    return nullptr;
 }

@@ -46,8 +46,13 @@ public:
     /*public*/ void registerListenersForThisClass()override;
     /*public*/ void unregisterListenersForThisClass()override;
     /*public*/ void disposeMe()override;
+    /*public*/  QString getClass() const override
+    {
+     return "jmri.jmrit.logixng.actions.ActionLightIntensity";
+    }
 
     QObject* bself() override {return this;}
+    QObject* self() override {return this;}
 
     void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 

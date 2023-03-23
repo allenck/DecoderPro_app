@@ -214,6 +214,10 @@ class ExpressionReporter : public AbstractDigitalExpression, public PropertyChan
   /** {@inheritDoc} */
   //@Override
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+  /*public*/ QString getClass() const override
+  {
+      return "jmri.jmrit.logixng.expressions.ExpressionReporter";
+  }
 
 
   QObject* self() override {return (QObject*)this;}

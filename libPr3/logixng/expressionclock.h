@@ -54,6 +54,10 @@ public:
     /*public*/ void registerListenersForThisClass()override;
     /*public*/ void unregisterListenersForThisClass()override;
     /*public*/ void disposeMe()override;
+    /*public*/ QString getClass() const override
+    {
+        return "jmri.jmrit.logixng.expressions.ExpressionClock";
+    }
 
     QObject* bself() override {return this;}
     QObject* pself() override {return this;}

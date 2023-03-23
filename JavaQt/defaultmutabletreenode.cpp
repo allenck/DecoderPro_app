@@ -154,7 +154,7 @@ void DefaultMutableTreeNode::common(QVariant userObject, bool allowsChildren)
   throw new IllegalArgumentException("new child is an ancestor");
  }
 
- MutableTreeNode* oldParent = (MutableTreeNode*)((DefaultMutableTreeNode*)newChild)->getParent();
+ MutableTreeNode* oldParent = ((DefaultMutableTreeNode*)newChild)->getParent();
 
  if (oldParent != NULL)
  {

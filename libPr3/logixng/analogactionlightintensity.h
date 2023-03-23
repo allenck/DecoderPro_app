@@ -39,6 +39,8 @@ class AnalogActionLightIntensity : public AbstractAnalogAction, public VetoableC
   /*public*/  void disposeMe()override;
 
   QObject* bself() override {return (QObject*)this;}
+  QObject* self() override {return this;}
+
   /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
    AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
   }

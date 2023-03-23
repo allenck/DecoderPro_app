@@ -149,9 +149,14 @@ public:
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+  /*public*/ QString getClass() const override
+  {
+      return "jmri.jmrit.logixng.expressions.ExpressionLocalVariable";
+  }
 
   QObject* bself() override{return (QObject*)this;}
   QObject* pself() override{return (QObject*)this;}
+  QObject* self() override {return this;}
 
   /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
    AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);

@@ -14,7 +14,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed();
+ /*public*/ void actionPerformed(JActionEvent* = 0)override;
 
 private:
  QWidget* _who;

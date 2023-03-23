@@ -31,6 +31,7 @@ class DefaultDigitalBooleanActionManager : public AbstractBaseManager, public Di
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
+  QObject* self() override {return this;}
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
   QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}

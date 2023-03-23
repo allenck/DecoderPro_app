@@ -31,6 +31,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
 
   QObject* pself() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
+  QObject* self() override {return this;}
 
   QString getAutoSystemName() override {return AbstractManager::getAutoSystemName();}
   void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}

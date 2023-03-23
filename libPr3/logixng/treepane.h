@@ -107,6 +107,7 @@ class TP_FemaleSocketTreeNode : public DefaultMutableTreeNode
   Q_OBJECT
   AbstractFemaleSocket* femaleSocket = nullptr;
  public:
+  TP_FemaleSocketTreeNode(QObject* parent = nullptr) : DefaultMutableTreeNode(parent) {}
   TP_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent = nullptr);
   ~TP_FemaleSocketTreeNode() {}
   TP_FemaleSocketTreeNode(const TP_FemaleSocketTreeNode&) : DefaultMutableTreeNode() {}
@@ -114,8 +115,13 @@ class TP_FemaleSocketTreeNode : public DefaultMutableTreeNode
   AbstractFemaleSocket* getFemaleSocket() {
       return femaleSocket;
   }
+  static TP_FemaleSocketTreeNode* instance()
+  {
+      return new TP_FemaleSocketTreeNode();
+  }
+  QObject* tself() override{return this;}
 };
-//Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
+Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
 
 /*public*/  /*static*/ class FemaleSocketTreeModel : public DefaultTreeModel //, public TreeNode
 {

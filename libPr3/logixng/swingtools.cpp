@@ -52,7 +52,7 @@
             return result;
         } else {
             // No last dot found! This should not be possible in Java.
-            log->error("No package name found, which is not yet handled!");
+            log->error(tr("No package name '%1'found, which is not yet handled!").arg(className));
             throw new RuntimeException("No package name found, which is not yet handled!");
         }
     }

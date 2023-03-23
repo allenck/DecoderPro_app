@@ -79,6 +79,10 @@ class ExpressionPower : public AbstractDigitalExpression, public PropertyChangeL
    /*public*/  void unregisterListenersForThisClass()override;
    /*public*/  void propertyChange(PropertyChangeEvent* evt) override;
    /*public*/  void disposeMe()override;
+   /*public*/ QString getClass() const override
+   {
+       return "jmri.jmrit.logixng.expressions.ExpressionPower";
+   }
 
    QObject* bself() override {return (QObject*)this;}
    QObject* pself() override {return (QObject*)this;}

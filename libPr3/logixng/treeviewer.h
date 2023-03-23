@@ -18,13 +18,11 @@ class TreeViewer : public JmriJFrame
   /*public*/ void dispose()override;
 
   QWidget* jself() override {return this;}
+
  private:
   /*private*/ static /*final*/ int panelWidth;// = 500;
   /*private*/ static /*final*/ int panelHeight;// = 300;
   /*private*/ bool _rootVisible = true;
-
-
-
 };
 
 #endif // TREEVIEWER_H

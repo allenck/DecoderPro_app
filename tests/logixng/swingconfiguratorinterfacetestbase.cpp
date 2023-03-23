@@ -25,8 +25,8 @@ SwingConfiguratorInterfaceTestBase::SwingConfiguratorInterfaceTestBase(QObject *
 
         JFrameOperator* treeFrame = new JFrameOperator(title1);
         JTreeOperator* jto = new JTreeOperator(treeFrame);
-#if 1
         TreePath* tp = jto->getPathForRow(row);
+#if 1
         QMenu* jpm = jto->callPopupOnPath(tp);
 
         ((new JPopupMenuOperator(jpm, "Edit"))->pushMenuNoBlock("Edit"));

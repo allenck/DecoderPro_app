@@ -52,6 +52,8 @@ class TreeEditor : public TreeViewer
   /*final*/ /*public*/  void initComponents()override final;
   /*final*/ /*public*/  void openClipboard();
   QString getClassName() override{return "jmri.jmrit.logixng.tools.TreeEditor";}
+  static TreeEditor* instance();
+
  private:
   static Logger* log;
   /*private*/ /*final*/ LogixNGPreferences* _prefs = (DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences");
@@ -109,7 +111,9 @@ class TreeEditor : public TreeViewer
     bool parentIsSystem,
     bool itemIsSystem,
     QString command);
-AbstractFemaleSocket* femaleRootSocket;
+   AbstractFemaleSocket* femaleRootSocket=nullptr;
+   static QPointer<TreeEditor> _instance;//= nullptr;
+
  protected:
   /*protected*/ bool _showReminder = false;
   /*final*/ /*protected*/ void renameSocketPressed(FemaleSocket* femaleSocket, TreePath* path);
@@ -239,6 +243,7 @@ public:
 /*public*/  void actionPerformed(JActionEvent* e = nullptr)override;
 
 QObject* self() override {return(QObject*)this;}
+TreeEditor* instance();
 
 private:
 /*private*/ void init();
@@ -249,6 +254,7 @@ private:
   bool parentIsSystem,
   bool itemIsSystem,
   QString command);
+  QPointer<TreeEditor> _instance = nullptr;
 
  protected:
 
@@ -256,6 +262,7 @@ friend class TreePane;
 friend class TreeEditor;
 friend class DeleteBeanWorker2;
 friend class ConditionalNGEditor;
+friend class JTreeOperator;
 };
 
 class TEClipboardListener : public QObject, public ClipboardEventListener

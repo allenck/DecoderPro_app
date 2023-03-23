@@ -16,6 +16,8 @@ class TestVetoableChangeListener : public QObject, public VetoableChangeListener
   /*public*/  void throwNext(QString mess);
   /*public*/  bool willThrowNext();
 
+  QObject* self() override {return this;}
+
  private:
   /*private*/ QString _throwNext = "";
   /*private*/ /*final*/ QList<PropertyChangeEvent*> events = QList<PropertyChangeEvent*>();

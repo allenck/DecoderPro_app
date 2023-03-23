@@ -427,4 +427,9 @@ void ASRun::run()
     }
 }
 
+/*public*/ QString ActionSensor::getClass() const {
+    return "jmri.jmrit.logixng.actions.ActionSensor";
+}
+
+
 /*private*/ /*final*/ /*static*/ Logger* ActionSensor::log = LoggerFactory::getLogger("ActionSensor");

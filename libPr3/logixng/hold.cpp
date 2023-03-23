@@ -21,6 +21,7 @@
             /*throws BadUserNameException, BadSystemNameException*/ {
 
         //super(sys, user);
+        setObjectName("Hold");
 
         _triggerExpressionSocket = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))
                 ->createFemaleSocket(this, this, tr("Trigger"));

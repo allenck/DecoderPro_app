@@ -39,6 +39,8 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
 
   QObject* vself() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
+  QObject* self() override {return this;}
+
   /*public*/ QString getAutoSystemName()override;
   void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 

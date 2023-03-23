@@ -38,6 +38,8 @@ class CtcManager : public QObject, public InstanceManagerAutoDefault, public Vet
   /*public*/ int getXMLOrder();
   /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean *bean);
 
+  QObject* self() override {return this;}
+
  signals:
 
  public slots:

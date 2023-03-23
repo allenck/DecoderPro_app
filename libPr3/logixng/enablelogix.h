@@ -70,6 +70,7 @@ public:
     /*public*/ void disposeMe()override;
 
     QObject* bself() override {return this;}
+    QObject* self() override {return this;}
 
     /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
      AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);

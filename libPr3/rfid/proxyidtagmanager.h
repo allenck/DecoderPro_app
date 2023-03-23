@@ -43,6 +43,7 @@ public:
  QObject* mself() override {return (QObject*)this;}
  QObject* vself() override {return (QObject*)this;}
  QObject* pself() override {return (QObject*)this;}
+ QObject* self() override {return this;}
 
 private:
 /*private*/ bool useFastClock = false;

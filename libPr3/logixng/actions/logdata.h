@@ -187,6 +187,10 @@ namespace Actions {
 //       }
 
 //   /*public*/  QString toString()override;
+   /*public*/  QString getClass() const override
+   {
+    return "jmri.jmrit.logixng.actions.LogData";
+   }
 
    QObject* bself() override {return this;}
    QObject* pself() override {return this;}

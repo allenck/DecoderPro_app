@@ -65,7 +65,13 @@
         _disableRootPopup = enableRootPopup == EnableRootPopup::DisableRootPopup;
         _enableExecuteEvaluate = enableExecuteEvaluate == EnableExecuteEvaluate::EnableExecuteEvaluate;
         this->femaleRootSocket = femaleRootSocket;
+        _instance = this;
     }
+
+    /*static*/ QPointer<TreeEditor> TreeEditor::_instance = nullptr;
+
+    /*static*/ TreeEditor* TreeEditor::instance() {return _instance;}
+
     /*public*/ int TreeEditor::SwingConfiguratorInterfaceComparator::compare(SwingConfiguratorInterface* o1, SwingConfiguratorInterface* o2) {
          //return ((Comparable<QVariant>*)o1)->compareTo(o2);
       return (o1->toString()).compare(o2->toString());
@@ -1415,7 +1421,10 @@
                         // Select the row the user clicked on
                         _tree->setSelectionPath(path);
 
-                        FemaleSocket* femaleSocket = (AbstractFemaleSocket*) path->getLastPathComponent();
+                        FemaleSocket* femaleSocket = nullptr;
+                        QObject* obj =  path->getLastPathComponent();
+                        TP_FemaleSocketTreeNode* node = (TP_FemaleSocketTreeNode*)obj;
+                        femaleSocket = node->getFemaleSocket();
                         showPopup(e->x(), e->y(), femaleSocket, path);
 //                    }
                 }
@@ -1488,6 +1497,7 @@
             //                    isAnyLocked.set(isAnyLocked.get() || ((MaleSocket)item).isLocked());
             //                    isAnyUnlocked.set(isAnyUnlocked.get() || !((MaleSocket)item).isLocked());
             //                }
+#if 0
             for (int i=0; i < _currentFemaleSocket->getChildCount(); i++) {
               Base* item = ((Base*)_currentFemaleSocket->getChild(i));
               if (qobject_cast<AbstractMaleSocket*>(item->bself())) {
@@ -1495,7 +1505,7 @@
                   isAnyUnlocked =(isAnyUnlocked || !((MaleSocket*)item->bself())->isLocked());
               }
             }
-
+#endif
             menuItemLock->setEnabled(isAnyUnlocked);
             menuItemUnlock->setEnabled(isAnyLocked);
 
@@ -1513,7 +1523,7 @@
                         object = ((AbstractMaleSocket*)object->bself())->getObject();
                     }
                     menuItemExecuteEvaluate->setText(
-                            SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className())
+                            SwingTools::getSwingConfiguratorForClass(((AbstractFemaleSocket*)object->bself())->getClass())
                                     ->getExecuteEvaluateMenuText());
                 }
             }

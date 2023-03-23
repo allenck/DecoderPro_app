@@ -89,6 +89,7 @@ public:
 
     QObject* bself() override{return this;}
     QObject* pself() override{return this;}
+    QObject* self() override {return this;}
 
 
     /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{

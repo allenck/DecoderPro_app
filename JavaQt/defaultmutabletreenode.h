@@ -19,7 +19,7 @@ public:
     /*public*/ DefaultMutableTreeNode(QVariant userObject, bool allowsChildren, QObject* oparent = 0);
     ~DefaultMutableTreeNode() {}
     DefaultMutableTreeNode(const DefaultMutableTreeNode& other) : MutableTreeNode() {
-        this->extraData = other.extraData;
+        this->_extraData = other._extraData;
         this->_parent = other._parent;
         this->_children = other._children;
         this-> allowsChildren = other.allowsChildren;
@@ -79,8 +79,10 @@ public:
      * of a leaf node's children is requested.
      */
     static /*public*/ /*final*/ QVectorIterator<MutableTreeNode*>* EMPTY_ENUMERATION;// =  QVectorIterator<TreeNode*>(QVector<TreeNode*>());
-    QObject* getExtra() {return extraData;}
-    void setExtra(QObject* extraData) {this->extraData = extraData;}
+    QObject* getExtra() {
+        return _extraData;
+    }
+    void setExtra(QObject* extraData) {this->_extraData = extraData;}
 
     QObject* tself() override {return (QObject*)this;}
 signals:
@@ -91,7 +93,7 @@ private:
     void common(QVariant userObject, bool allowsChildren);
 //    /*private*/ void writeObject(ObjectOutputStream s) /*throw (IOException)*/ ;
 //    /*private*/ void readObject(ObjectInputStream s) /*throw (IOException)*/, (ClassNotFoundException);
-    QObject* extraData;
+    QObject* _extraData = nullptr;
 
 protected:
     /** this node's parent, or null if this node has no parent */

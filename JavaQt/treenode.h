@@ -33,7 +33,7 @@ public:
      * Returns the child <code>TreeNode</code> at index
      * <code>childIndex</code>.
      */
-    virtual TreeNode* getChildAt(int /*childIndex*/) {return NULL;}
+    virtual TreeNode* getChildAt(int /*childIndex*/) =0;//{return NULL;}
 
     /**
      * Returns the number of children <code>TreeNode</code>s the receiver
@@ -44,31 +44,32 @@ public:
     /**
      * Returns the parent <code>TreeNode</code> of the receiver.
      */
-    virtual MutableTreeNode* getParent() {return NULL;}
+    virtual MutableTreeNode* getParent() =0;//{return NULL;}
 
     /**
      * Returns the index of <code>node</code> in the receivers children.
      * If the receiver does not contain <code>node</code>, -1 will be
      * returned.
      */
-    virtual int getIndex(MutableTreeNode* /*node*/) {return 0;}
+    virtual int getIndex(MutableTreeNode* /*node*/) =0;//{return 0;}
 
     /**
      * Returns true if the receiver allows children.
      */
-    virtual bool getAllowsChildren() {return false;}
+    virtual bool getAllowsChildren() =0;//{return false;}
 
     /**
      * Returns true if the receiver is a leaf.
      */
-   virtual  bool isLeaf() {return false;}
+   virtual  bool isLeaf() =0;//{return false;}
 
     /**
      * Returns the children of the receiver as an <code>Enumeration</code>.
      */
     //template <class E>
-     virtual QVectorIterator<MutableTreeNode*>* children() {return NULL;}
-  virtual QObject* tself() =0;
+     virtual QVectorIterator<MutableTreeNode*>* children() =0;//{return NULL;}
+
+     virtual QObject* tself() =0;
 };
 Q_DECLARE_INTERFACE(TreeNode, "TreeNode")
 #endif // TREENODE_H

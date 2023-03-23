@@ -3,7 +3,6 @@
 
 #include "abstractdigitalaction.h"
 #include "turnout.h"
-#include "namedbeanhandlemanager.h"
 #include "namedbeanhandle.h"
 #include "namedbeanaddressing.h"
 #include "expressionnode.h"
@@ -72,7 +71,7 @@ class ActionTurnout : public AbstractDigitalAction, public VetoableChangeListene
        if(s == tr("Toggle")) return Toggle;
        throw new IllegalArgumentException("invalid turnout state");
       }
-
+      static QList<STATE> values() {return {Closed, Thrown, Toggle};};
   };
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws ParserException*/override;
   /*public*/  void setTurnout(/*@Nonnull*/ QString turnoutName);
@@ -109,6 +108,14 @@ class ActionTurnout : public AbstractDigitalAction, public VetoableChangeListene
   /*public*/  void registerListenersForThisClass() override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
+    /*public*/  QString getClass() const override
+    {
+     return "jmri.jmrit.logixng.actions.ActionTurnout";
+    }
+
+    QObject* self() override {return this;}
+    QObject* bself() override {return this;}
+
 
   /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
    AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);

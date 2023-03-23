@@ -79,10 +79,12 @@
 
         // Expand the entire tree
         for (int i = 0; i < _tree->getRowCount(); i++) {
+            TreePath* tp =_tree->getPathForRow(i);
             QObject* obj =_tree->getPathForRow(i)->getLastPathComponent();
-            DefaultMutableTreeNode* node = (DefaultMutableTreeNode*)obj;
+            TP_FemaleSocketTreeNode* node = (TP_FemaleSocketTreeNode*)obj;
             //FemaleSocket* femaleSocket = (FemaleSocket*) _tree->getPathForRow(i)->getLastPathComponent();
-            FemaleSocket* femaleSocket = nullptr;
+            FemaleSocket* femaleSocket = node->getFemaleSocket();
+            //QVariant v = node->getUserObject();
             QObject* exObj = node->getExtra();
             if(node->getExtra())
                 femaleSocket = (DefaultFemaleDigitalActionSocket*)node->getExtra();

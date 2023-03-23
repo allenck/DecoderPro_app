@@ -86,6 +86,8 @@ public:
             }
             return Unoccupied;
         }
+        static QList<STATES> values() {return {Unoccupied, Occupied, Allocated, Running, OutOfService, Dark, TrackError};
+}
     };
     static /*final*/ QHash<QString, int> _oldstatusMap;// = new Hashtable<String, Integer>();
     static /*final*/ QHash<QString, int> _statusMap;// = new Hashtable<String, Integer>();

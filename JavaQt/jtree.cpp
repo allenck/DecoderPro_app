@@ -708,7 +708,7 @@ void JTree::on_clicked(QModelIndex index)
  QList<MutableTreeNode*>* path = ((DefaultTreeModel*)model())->getPathToRoot(node);
  QVector<QObject*>* ol = new  QVector<QObject*>();
  foreach(TreeNode* node, *path)
-  ol->append((QObject*)node);
+  ol->append(node->tself());
  return new TreePath(ol);
 #endif
 }

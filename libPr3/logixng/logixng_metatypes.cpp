@@ -10,6 +10,7 @@
 #include "analogexpressionanalogioswing.h"
 #include "analogexpressionconstantswing.h"
 #include "analogexpressionmemoryswing.h"
+#include "logixng/treepane.h"
 #include "timesincemidnightswing.h"
 #include "analogmanyswing.h"
 #include "analogactionmemoryswing.h"
@@ -159,6 +160,14 @@
 #include "actionwarrantxml.h"
 #include "expressionwarrantxml.h"
 #include "expressionwarrantswing.h"
+#include "actionclearslotsxml.h"
+#include "actionclearslotsswing.h"
+#include "stringactionstringioswing.h"
+#include "stringactionstringioxml.h"
+#include "actionturnoutxml.h"
+#include "actionturnoutswing.h"
+#include "expressionoblockswing.h"
+
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -311,6 +320,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<LogLocalVariablesXml>("LogLocalVariablesXml");
     qRegisterMetaType<ActionLightIntensitySwing>("ActionLightIntensitySwing");
     qRegisterMetaType<ActionLightIntensityXml>("ActionLightIntensityXml");
+    qRegisterMetaType<ActionClearSlotsXml>("ActionClearSlotsXml");
+    qRegisterMetaType<ActionClearSlotsSwing>("ActionClearSlotsSwing");
 
 
    // AbstractStringExpressionSwing
@@ -335,12 +346,21 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<ActionWarrantXml>("ActionWarrantXml");
    qRegisterMetaType<ExpressionWarrantXml>("ExpressionWarrantXml");
    qRegisterMetaType<ExpressionWarrantSwing>("ExpressionWarrantSwing");
+   qRegisterMetaType<ActionTurnoutXml>("ActionTurnoutXml");
+   qRegisterMetaType<ActionTurnoutSwing>("ActionTurnoutSwing");
+   qRegisterMetaType<ExpressionOBlockSwing>("ExpressionOBlockSwing");
 
 
    // AbstractSwingConfigurator
    qRegisterMetaType<DefaultModuleSwing>("DefaultModuleSwing");
 
-   qRegisterMetaType<SimpleTimebaseXml>("SimpleTimebaseXml");
+   // AbstractStringActionSwing
+   qRegisterMetaType<StringActionStringIOSwing>("StringActionStringIOSwing");
+   qRegisterMetaType<StringActionStringIOXml>("StringActionStringIOXml");
 
+
+   qRegisterMetaType<SimpleTimebaseXml>("SimpleTimebaseXml");
+   qRegisterMetaType<TP_FemaleSocketTreeNode>("TP_FemaleSocketTreeNode");
+   qRegisterMetaType<DefaultMutableTreeNode>("DefaultMutableTreeNode");
    LogixNG_Metatypes::ng_done = true;
 }

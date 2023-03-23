@@ -57,6 +57,8 @@ public:
     };
     QObject* vself() override {return this;}
     QObject* pself() override {return this;}
+    QObject* self() override {return this;}
+
 
     void addPropertyChangeListener(PropertyChangeListener* l) override {PropertyChangeSupport::addPropertyChangeListener(l);}
 

@@ -148,6 +148,7 @@ SOURCES += \
     abstractanalogiomanager.cpp \
     abstractprovidingproxymanager.cpp \
     abstractproxymanager.cpp \
+    abstractstringiomanager.cpp \
     acelamessage.cpp \
     acelasignalheadxml.cpp \
     addeditsinglelightcontrolframe.cpp \
@@ -1140,6 +1141,15 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionturnoutswing.cpp \
+    logixng/actionturnoutxml.cpp \
+    logixng/expressionoblockswing.cpp \
+    logixng/stringactionstringio.cpp \
+    logixng/stringactionstringioswing.cpp \
+    logixng/stringactionstringioxml.cpp \
+    logixng/actionclearslots.cpp \
+    logixng/actionclearslotsswing.cpp \
+    logixng/actionclearslotsxml.cpp \
     logixng/actionwarrant.cpp \
     logixng/actionwarrantswing.cpp \
     logixng/actionwarrantxml.cpp \
@@ -1586,6 +1596,7 @@ HEADERS += \
      abstractanalogiomanager.h \
      abstractprovidingproxymanager.h \
      abstractproxymanager.h \
+    abstractstringiomanager.h \
      acelasignalheadxml.h \
      addeditsinglelightcontrolframe.h \
      analogiomanager.h \
@@ -1640,6 +1651,8 @@ HEADERS += \
     loconetslot.h \
     slotlistener.h \
  sprog/sprogserialdriveradapter.h \
+    stringio.h \
+    stringiomanager.h \
     systemconnectionmemomanager.h \
     systemconnectionmemo.h \
     loconetsystemconnectionmemo.h \
@@ -2694,6 +2707,15 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionturnoutswing.h \
+    logixng/actionturnoutxml.h \
+    logixng/expressionoblockswing.h \
+    logixng/stringactionstringio.h \
+    logixng/stringactionstringioswing.h \
+    logixng/stringactionstringioxml.h \
+    logixng/actionclearslots.h \
+    logixng/actionclearslotsswing.h \
+    logixng/actionclearslotsxml.h \
     logixng/actionwarrant.h \
     logixng/actionwarrantswing.h \
     logixng/actionwarrantxml.h \
@@ -2869,7 +2891,6 @@ HEADERS += \
     logixng/stringformula.h \
     logixng/stringformulaswing.h \
     logixng/stringformulaxml.h \
-    logixng/stringio.h \
     logixng/defaultmaleanalogactionsocketxml.h \
     logixng/defaultmaledigitalactionsocketxml.h \
     logixng/defaultmaledigitalbooleanactionsocketxml.h \

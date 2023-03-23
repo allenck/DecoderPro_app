@@ -590,7 +590,9 @@ class Base;
 
     /*public*/ /*final*/ QString PRINT_LINE_NUMBERS_FORMAT = "%1:  ";
 
-  /*public*/ virtual QString toString() {return "";}
+    /*public*/ virtual QString toString() {return "";}
+
+    /*public*/ virtual QString getClass() const {return "";}
 
 
     virtual QObject* bself() =0;
