@@ -1,6 +1,7 @@
 #ifndef TREEEDITOR_H
 #define TREEEDITOR_H
 
+#include "logixng/defaultlogixngmanager.h"
 #include "treeviewer.h"
 //#include "femalesocket.h"
 #include "defaultlogixngpreferences.h"
@@ -263,6 +264,7 @@ friend class TreeEditor;
 friend class DeleteBeanWorker2;
 friend class ConditionalNGEditor;
 friend class JTreeOperator;
+friend class TreeEditor_run0b;
 };
 
 class TEClipboardListener : public QObject, public ClipboardEventListener
@@ -284,6 +286,53 @@ class TEClipboardListener : public QObject, public ClipboardEventListener
   }
   QObject* self() override {return (QObject*)this;}
 };
+
+class TreeEditor_run0b : public ThreadAction
+{
+    Q_OBJECT
+    TreeEditor* _treeEditor;
+    TEPopupMenu* _menu;
+public:
+    TreeEditor_run0b(TreeEditor* _treeEditor) {this->_treeEditor = _treeEditor;}
+    void run()
+    {
+        _treeEditor->_treePane->_femaleRootSocket->registerListeners();
+        _treeEditor->_treePane->updateTree(_menu->_currentFemaleSocket, _menu->_currentPath->getPath());
+
+    }
+};
+
+class TreeEditor_run0 : public ThreadAction
+{
+ Q_OBJECT
+ FemaleSocket* _currentFemaleSocket;
+ TreeEditor* _treeEditor;
+public:
+    TreeEditor_run0(FemaleSocket* _currentFemaleSocket, TreeEditor* _treeEditor)  {
+        this->_currentFemaleSocket = _currentFemaleSocket;
+        this->_treeEditor = _treeEditor;
+    }
+    void run()
+    {
+        Clipboard* clipboard =
+                ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
+        QList<QString>* errors = new QList<QString>();
+        MaleSocket* maleSocket = _currentFemaleSocket->getConnectedSocket();
+        _currentFemaleSocket->_disconnect();
+        if (!clipboard->add(maleSocket, errors)) {
+            JOptionPane::showMessageDialog(nullptr,
+                    errors->join("<br>"),//String.join("<br>", errors),
+                    tr("Error"),
+                    JOptionPane::ERROR_MESSAGE);
+        }
+//        ThreadingUtil::runOnGUIEventually(() -> {
+//            _treePane._femaleRootSocket.registerListeners();
+//            _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
+//        });
+        ThreadingUtil::runOnGUIEventually(new TreeEditor_run0b(_treeEditor));
+    }
+};
+
 
 class TreeEditor_run2 : public RunnableWithBase
 {

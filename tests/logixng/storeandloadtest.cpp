@@ -3106,7 +3106,7 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
         maleSocket->setEnabled(false);
         _and->getChild(indexExpr++)->_connect(maleSocket);
 
-        hold = new Hold(digitalExpressionManager->getAutoSystemName(), "");
+        hold = new Hold(digitalExpressionManager->getAutoSystemName(), "A comment");
         //hold->AbstractNamedBean::setUserName("A hold expression");
         hold->AbstractNamedBean::setComment("A comment");
         maleSocket = digitalExpressionManager->registerExpression(hold);

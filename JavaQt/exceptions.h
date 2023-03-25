@@ -270,7 +270,7 @@ class JAVAQTSHARED_EXPORT ClassNotFoundException : public Exception
 {
  public:
     ClassNotFoundException(QString s = "");
-    ~ClassNotFoundException() {name = "ClassNotFoundException";}
+    ~ClassNotFoundException() {}
 };
 class JAVAQTSHARED_EXPORT NoClassDefFoundError : public Exception
 {

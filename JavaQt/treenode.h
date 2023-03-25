@@ -67,7 +67,7 @@ public:
      * Returns the children of the receiver as an <code>Enumeration</code>.
      */
     //template <class E>
-     virtual QVectorIterator<MutableTreeNode*>* children() =0;//{return NULL;}
+     virtual QVectorIterator<MutableTreeNode*>* children() {return NULL;}
 
      virtual QObject* tself() =0;
 };

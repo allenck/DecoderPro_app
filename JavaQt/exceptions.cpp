@@ -131,7 +131,7 @@ ParseException::ParseException(QString s){msg=s;}
 PortInUseException::PortInUseException(QString s) {msg=s;}
 //JmriConfigureXmlException::JmriConfigureXmlException(QString s) : JmriException(s) {msg =s;}
 //JmriConfigureXmlException::JmriConfigureXmlException(QString s, Throwable e) : JmriException(s) {msg =s; this->e = e;}
-ClassNotFoundException::ClassNotFoundException(QString s) {msg=s;}
+ClassNotFoundException::ClassNotFoundException(QString s) {msg=s; name = "ClassNotFoundException";}
 NoClassDefFoundError::NoClassDefFoundError(QString s) {msg=s;}
 IllegalAccessException::IllegalAccessException(QString s) {msg=s;}
 InstantiationException::InstantiationException(QString s) {msg=s;}

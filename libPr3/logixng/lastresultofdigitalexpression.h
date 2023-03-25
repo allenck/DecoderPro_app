@@ -28,9 +28,9 @@ class LastResultOfDigitalExpression : public AbstractDigitalExpression, public P
   /*public*/  void unregisterListenersForThisClass() override;
   /*public*/  void disposeMe()override;
 
-  QObject* self() override {return (QObject*)this;}
-  QObject* bself() override {return (QObject*)this;}
-  QObject* pself() override {return (QObject*)this;}
+  QObject* self() override {return this;}
+  QObject* bself() override {return this;}
+  QObject* pself() override {return this;}
 
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* evt)override;

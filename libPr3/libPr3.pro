@@ -152,6 +152,7 @@ SOURCES += \
     acelamessage.cpp \
     acelasignalheadxml.cpp \
     addeditsinglelightcontrolframe.cpp \
+    beantablestartupactionfactory.cpp \
     defaultlightcontrol.cpp \
    # direct/defaultthrottle.cpp \
    # direct/defaultthrottlemanager.cpp \
@@ -169,6 +170,7 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+    logixng/dostringactionxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1141,6 +1143,15 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/webbrowser.cpp \
+    logixng/webbrowserswing.cpp \
+    logixng/webbrowserxml.cpp \
+    logixng/triggerroute.cpp \
+    logixng/triggerrouteswing.cpp \
+    logixng/triggerroutexml.cpp \
+    logixng/doanalogactionswing.cpp \
+    logixng/doanalogactionxml.cpp \
+    logixng/dostringactionswing.cpp \
     logixng/actionturnoutswing.cpp \
     logixng/actionturnoutxml.cpp \
     logixng/expressionoblockswing.cpp \
@@ -1600,6 +1611,7 @@ HEADERS += \
      acelasignalheadxml.h \
      addeditsinglelightcontrolframe.h \
      analogiomanager.h \
+    beantablestartupactionfactory.h \
      collectingReporter.h \
      defaultlightcontrol.h \
      digitalio.h \
@@ -1619,6 +1631,7 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+    logixng/dostringactionxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
@@ -2707,6 +2720,15 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/webbrowser.h \
+    logixng/webbrowserswing.h \
+    logixng/webbrowserxml.h \
+    logixng/triggerroute.h \
+    logixng/triggerrouteswing.h \
+    logixng/triggerroutexml.h \
+    logixng/doanalogactionswing.h \
+    logixng/doanalogactionxml.h \
+    logixng/dostringactionswing.h \
     logixng/actionturnoutswing.h \
     logixng/actionturnoutxml.h \
     logixng/expressionoblockswing.h \

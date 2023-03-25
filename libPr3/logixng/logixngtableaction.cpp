@@ -32,6 +32,8 @@
     /*public*/  LogixNGTableAction::LogixNGTableAction(QString s, QObject* parent) : AbstractLogixNGTableAction(s, parent){
         //super(s);
         setObjectName("LogixNGTableAction");
+        _systemName->setEnabled(false);
+        _sysNameLabel->setEnabled(false);
     }
 
     /**

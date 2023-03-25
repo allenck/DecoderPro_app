@@ -38,6 +38,9 @@
     /*public*/  LogixNGModuleTableAction::LogixNGModuleTableAction(QString s, QObject *parent) : AbstractLogixNGTableAction(s, parent) {
         //super(s);
         setObjectName("LogixNGModuleTableAction");
+        _systemName->setEnabled(false);
+        _sysNameLabel->setEnabled(false);
+
     }
 
     /**

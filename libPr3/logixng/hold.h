@@ -29,7 +29,7 @@ class Hold : public AbstractDigitalExpression, public FemaleSocketListener
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
 
-  QObject* bself() override{return (QObject*)this;}
+  QObject* bself() override{return this;}
   QObject* self() override {return this;}
 
 

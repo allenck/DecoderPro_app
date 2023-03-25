@@ -167,6 +167,16 @@
 #include "actionturnoutxml.h"
 #include "actionturnoutswing.h"
 #include "expressionoblockswing.h"
+#include "dostringactionswing.h"
+#include "actiontimerswing.h"
+#include "actionupdateslotsswing.h"
+#include "doanalogactionswing.h"
+#include "doanalogactionxml.h"
+#include "triggerroutexml.h"
+#include "triggerrouteswing.h"
+#include "webbrowserswing.h"
+#include "webbrowserxml.h"
+#include "dostringactionxml.h"
 
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
@@ -322,7 +332,16 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<ActionLightIntensityXml>("ActionLightIntensityXml");
     qRegisterMetaType<ActionClearSlotsXml>("ActionClearSlotsXml");
     qRegisterMetaType<ActionClearSlotsSwing>("ActionClearSlotsSwing");
-
+    qRegisterMetaType<DoStringActionSwing>("DoStringActionSwing");
+    qRegisterMetaType<DoStringActionXml>("DoStringActionXml");
+    qRegisterMetaType<ActionTimerSwing>("ActionTimerSwing");
+    qRegisterMetaType<ActionUpdateSlotsSwing>("ActionUpdateSlotsSwing");
+    qRegisterMetaType<DoAnalogActionSwing>("DoAnalogActionSwing");
+    qRegisterMetaType<DoAnalogActionXml>("DoAnalogActionXml");
+    qRegisterMetaType<TriggerRouteXml>("TriggerRouteXml");
+    qRegisterMetaType<TriggerRouteSwing>("TriggerRouteSwing");
+    qRegisterMetaType<WebBrowserSwing>("WebBrowserSwing");
+    qRegisterMetaType<WebBrowserXml>("WebBrowserXml");
 
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");

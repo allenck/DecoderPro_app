@@ -32,6 +32,13 @@ class Other;
   /*public*/  static /*final*/ Item ITEM;// = new Item();
   /*public*/  static /*final*/ Common COMMON;// = new Common();
   /*public*/  static /*final*/ Other OTHER;// = new Other();
+    Category() {}
+    ~Category() {}
+    Category(const Category& other) {
+        this->_description = other._description;
+        this->_name = other._name;
+        this->_order = other._order;
+    }
 
   /*public*/  QString name() const;
   /*public*/  /*final*/ QString toString();
@@ -48,7 +55,7 @@ class Other;
 
   /*private*/ /*final*/ QString _name;
   /*private*/ /*final*/ QString _description;
-  /*private*/ /*final*/ int _order;
+  /*private*/ /*final*/ int _order = 0;
   friend class TreeEditor;
 };
   inline bool operator==(const Category &e1, const Category &e2)
@@ -71,6 +78,7 @@ public:
         //super("ITEM", Bundle.getMessage("CategoryItem"), 100);
     }
 };
+Q_DECLARE_METATYPE(Category)
 
 /*public*/  /*static*/ /*final*/ class Common : public Category {
 public:

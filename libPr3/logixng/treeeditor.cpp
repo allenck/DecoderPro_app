@@ -5,6 +5,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include "clipboardeditor.h"
+#include "logixng/abstractswingconfigurator.h"
 #include "logixng_thread.h"
 #include "jmenuitem.h"
 #include "conditionalng.h"
@@ -262,24 +263,34 @@
         _categoryComboBox->clear();
         QList<Category> list = QList<Category>(connectableClasses.keys());
 // TODO:       Collections.sort(list);
+        //std::sort(list.first()._name, list.last().name());
+
         for (Category item : list) {
-            _categoryComboBox->addItem(item.name());
+            QVariant v;
+            v.setValue(item);
+            _categoryComboBox->addItem(item.name(), v);
         }
+        _categoryComboBox->setCurrentIndex(0);
 //  TODO:      JComboBoxUtil.setupComboBoxMaxRows(_categoryComboBox);
 
         for (ItemListener* l : _categoryComboBox->getItemListeners()) {
             _categoryComboBox->removeItemListener(l);
         }
 
-        connect(_categoryComboBox, &JComboBox::itemStateChanged, [=] {
-            Category category = Category(_categoryComboBox->currentText(), "", 0);//_categoryComboBox->getItemAt(_categoryComboBox->getSelectedIndex()));
+        connect(_categoryComboBox, &JComboBox::currentTextChanged, [=] {
+            QString s = _categoryComboBox->currentText();
+            int ix = _categoryComboBox->currentIndex();
+            Category category =_categoryComboBox->getItemAt(_categoryComboBox->getSelectedIndex()).value<Category>();
+            if(ix >=0)
+             category = list.at(ix);
             _swingConfiguratorComboBox->clear();
             QList</*Class<? extends Base>*/QString> classes = connectableClasses.value(category);
             if (!classes.isEmpty()) {
                 for (/*Class<? extends Base>*/QString clazz : classes) {
-                    SwingConfiguratorInterface* sci = SwingTools::getSwingConfiguratorForClass( clazz);
+                    SwingConfiguratorInterface* sci = (AbstractSwingConfigurator*)SwingTools::getSwingConfiguratorForClass( clazz)->sself();
                     if (sci != nullptr) {
-                        _swingConfiguratorComboBox->addItem(VPtr<SwingConfiguratorInterface>::asQVariant(sci));
+                        QString txt = sci->toString();
+                        _swingConfiguratorComboBox->addItem(txt,VPtr<SwingConfiguratorInterface>::asQVariant(sci));
                     } else {
                         log->error(tr("Class %1 has no swing configurator interface").arg(clazz));
                     }
@@ -307,7 +318,6 @@
 
         JPanel* p;
         p = new JPanel();
-//        p.setLayout(new FlowLayout());
         GridBagLayout* pLayout;
         p->setLayout(pLayout = new GridBagLayout());
         GridBagConstraints c =  GridBagConstraints();
@@ -360,9 +370,10 @@
         panel5->layout()->addWidget(_create);
         connect(_create, &JButton::clicked, [=] {
             cancelAddPressed(nullptr);
+            QString s = _swingConfiguratorComboBox->currentText();
 
-            SwingConfiguratorInterface* swingConfiguratorInterface =
-                    VPtr<SwingConfiguratorInterface>::asPtr(_swingConfiguratorComboBox->getItemAt(_swingConfiguratorComboBox->getSelectedIndex()));
+            SwingConfiguratorInterface* swingConfiguratorInterface = (AbstractSwingConfigurator*)
+                    VPtr<SwingConfiguratorInterface>::asPtr(_swingConfiguratorComboBox->getItemAt(_swingConfiguratorComboBox->getSelectedIndex()))->sself();
 //            System.err.format("swingConfiguratorInterface: %s%n", swingConfiguratorInterface.getClass().getName());
             createAddFrame(femaleSocket, path, swingConfiguratorInterface);
         });
@@ -708,10 +719,10 @@
         } else {
             /*Class<? extends MaleSocket>*/QString maleSocketClass =
                     _addSwingConfiguratorInterface->getManager()->getMaleSocketClass();
-#if 0
+
             _addSwingConfiguratorInterfaceMaleSocket =
                     SwingTools::getSwingConfiguratorForClass(maleSocketClass);
-#endif
+
             panels.append(_addSwingConfiguratorInterfaceMaleSocket->getConfigPanel(panel5));
 
             panels.append(_addSwingConfiguratorInterface->getConfigPanel(panel5));
@@ -1275,6 +1286,7 @@
 
 
         TEPopupMenu::TEPopupMenu(TreeEditor* editor) {
+         this->setObjectName("TEPopupMenu");
          this->editor = editor;
             if (editor->_treePane->_tree == nullptr) throw new IllegalArgumentException("_tree is null");
             _tree = editor->_treePane->_tree;
@@ -1287,29 +1299,29 @@
             addAction(menuItemRenameSocket);
             addSeparator();
             menuItemAdd = new JMenuItem(tr("Add"),this);
-            connect(menuItemAdd, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemAdd, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this, 0, ACTION_COMMAND_ADD));});
             menuItemAdd->setActionCommand(ACTION_COMMAND_ADD);
             addAction(menuItemAdd);
             addSeparator();
             menuItemEdit = new JMenuItem(tr("Edit"), this);
-            connect(menuItemEdit, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemEdit, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,1, ACTION_COMMAND_EDIT));});
             menuItemEdit->setActionCommand(ACTION_COMMAND_EDIT);
             addAction(menuItemEdit);
             menuItemRemove = new JMenuItem(tr("Remove"),this);
-            connect(menuItemRemove, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemRemove, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,2,ACTION_COMMAND_REMOVE) );});
             menuItemRemove->setActionCommand(ACTION_COMMAND_REMOVE);
             addAction(menuItemRemove);
             addSeparator();
             menuItemCut = new JMenuItem(tr("Cut"),this);
-            connect(menuItemCut, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemCut, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,3,ACTION_COMMAND_CUT));});
             menuItemCut->setActionCommand(ACTION_COMMAND_CUT);
             addAction(menuItemCut);
             menuItemCopy = new JMenuItem(tr("Copy"),this);
-            connect(menuItemCopy, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemCopy, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,4,ACTION_COMMAND_COPY));});
             menuItemCopy->setActionCommand(ACTION_COMMAND_COPY);
             addAction(menuItemCopy);
             menuItemPaste = new JMenuItem(tr("Paste"),this);
-            connect(menuItemPaste, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemPaste, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,5,ACTION_COMMAND_PASTE));});
             menuItemPaste->setActionCommand(ACTION_COMMAND_PASTE);
             addAction(menuItemPaste);
             addSeparator();
@@ -1602,6 +1614,9 @@
                                 _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
                             });
                         });
+#else
+                        editor->runOnConditionalNGThreadOrGUIThreadEventually(
+                                editor->_treePane->_femaleRootSocket->getConditionalNG(),  new TreeEditor_run0(_currentFemaleSocket,editor));
 #endif
                    } else {
                         editor->log->error("_currentFemaleSocket is not connected");

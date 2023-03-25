@@ -387,14 +387,15 @@ JPopupMenuOperator::JPopupMenuOperator(QMenu* parent, QString text)
 {
  QObjectList list = parent->children();
  foreach (QObject* obj, list) {
-  if(qobject_cast<QMenu*>(obj) && ((QMenu*)obj)->title() == text)
-   menu = (QMenu*)obj;
+  if(qobject_cast<QAction*>(obj) && ((QAction*)obj)->text() == text)
+   menu = (QAction*)obj;
  }
 }
 
 void JPopupMenuOperator::pushMenuNoBlock(QString text)
 {
-
+ if(menu)
+     menu->trigger();
 }
 
 JMenuItemOperator::JMenuItemOperator(QMenu* parent, QString text)
@@ -636,9 +637,10 @@ QMenu* JTreeOperator::callPopupOnPath(TreePath* tp)
      FemaleSocket* femaleSocket = nullptr;
      femaleSocket = ((TP_FemaleSocketTreeNode*) tp->getLastPathComponent())->getFemaleSocket();
      popup->showPopup(0,0, femaleSocket, tp);
+     return popup;
 
-     QMenu* popupMenu = treeframe->findChild<QMenu*>("TEPopupMenu");
-     return popupMenu;
+//     QMenu* popupMenu = treeframe->findChild<QMenu*>("TEPopupMenu");
+//     return popupMenu;
     }
     return nullptr;
 }

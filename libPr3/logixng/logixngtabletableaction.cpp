@@ -5,7 +5,6 @@
 #include "runtimeexception.h"
 #include "fileutil.h"
 #include "jfilechooser.h"
-#include "filenameextensionfilter.h"
 #include "gridbaglayout.h"
 
 /**
@@ -36,6 +35,8 @@
     /*public*/  LogixNGTableTableAction::LogixNGTableTableAction(QString s, QObject* parent)
       : AbstractLogixNGTableAction(s, parent){
         //super(s);
+    _systemName->setEnabled(false);
+    _sysNameLabel->setEnabled(false);
     }
 
     /**
@@ -275,7 +276,6 @@
         c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
         c.gridy = 0;
         pLayout->addWidget(_autoSystemName, c);
-
 
         _buttonGroup->addButton(_typeExternalTable);
         _buttonGroup->addButton(_typeInternalTable);

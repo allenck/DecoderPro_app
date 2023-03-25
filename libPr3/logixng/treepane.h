@@ -60,7 +60,7 @@ class TreePane : public JPanel, public PropertyChangeListener
   friend class ModuleEditor;
   friend class TreeEditor_run3;
   friend class TreeEditor_run5;
-
+  friend class TreeEditor_run0b;
 };
 
 class ThreadAction1 : public ThreadAction

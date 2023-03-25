@@ -477,6 +477,11 @@
         c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
         c.gridy = 0;
         pLayout->addWidget(_autoSystemName, c);
+        if(_autoSystemName->isChecked())
+        {
+            _sysNameLabel->setEnabled(false);
+            _systemName->setEnabled(false);
+        }
 
         _systemName->setText("");
         _systemName->setEnabled(true);

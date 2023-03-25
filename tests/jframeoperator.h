@@ -158,7 +158,7 @@ public:
 class JPopupMenuOperator : public QObject
 {
  Q_OBJECT
- QMenu* menu;
+ QAction* menu=nullptr;
 public:
  JPopupMenuOperator();
  JPopupMenuOperator(QMenu* parent, QString text);

@@ -6,7 +6,6 @@
 #include "defaultlogixngmanager.h"
 #include <QMenuBar>
 #include <QMenu>
-#include "logixngtabletableaction.h"
 #include "jmenuitem.h"
 #include "jeditorpane.h"
 #include "fileutil.h"
@@ -59,6 +58,8 @@
     {
         //super(s);
 //        AbstractTableAction::setEnabled(false);
+        _systemName->setEnabled(false);
+        _sysNameLabel->setEnabled(false);
     }
 
 

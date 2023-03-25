@@ -42,7 +42,7 @@
         NamedBean* nb = ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))
           ->getNamedBean(digitalExpressionName);
         if(nb)
-          digitalExpression = (DigitalExpressionBean*)nb->self();
+          digitalExpression = (/*DigitalExpressionBean*/AbstractDigitalExpression*)nb->self();
 
         if (digitalExpression != nullptr) {
      //        DigitalExpressionBean* digitalExpression = (DigitalExpressionBean*)
