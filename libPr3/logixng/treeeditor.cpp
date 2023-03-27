@@ -5,7 +5,6 @@
 #include <QMenuBar>
 #include <QMenu>
 #include "clipboardeditor.h"
-#include "logixng/abstractswingconfigurator.h"
 #include "logixng_thread.h"
 #include "jmenuitem.h"
 #include "conditionalng.h"
@@ -33,7 +32,6 @@
 #include <QScrollArea>
 #include "basemanager.h"
 #include "abstractmalesocket.h"
-#include "itemevent.h"
 
 /**
  * Base class for LogixNG editors
@@ -175,6 +173,7 @@
 //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
         _renameSocketDialog->setLocation(50, 30);
         QWidget* contentPanel = _renameSocketDialog->getContentPane();
+        if(!contentPanel->layout())
         contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
@@ -248,6 +247,13 @@
         _renameSocketDialog->setVisible(true);
     }
 
+    bool compareCategory(const Category &u1, const Category &u2)
+    {
+      return u1.name() < u2.name();
+    }
+    bool compareStrings(QString &u1, const QString &u2){
+        return u1 < u2;
+    }
 
     /**
      * Respond to the Add menu choice in the popup menu.
@@ -263,14 +269,16 @@
         _categoryComboBox->clear();
         QList<Category> list = QList<Category>(connectableClasses.keys());
 // TODO:       Collections.sort(list);
-        //std::sort(list.first()._name, list.last().name());
+        std::sort(list.begin(), list.end(), compareCategory);
 
         for (Category item : list) {
             QVariant v;
             v.setValue(item);
+            log->debug(tr("add category %1").arg(item.name()));
             _categoryComboBox->addItem(item.name(), v);
         }
         _categoryComboBox->setCurrentIndex(0);
+        QStringList sl = _categoryComboBox->itemList();
 //  TODO:      JComboBoxUtil.setupComboBoxMaxRows(_categoryComboBox);
 
         for (ItemListener* l : _categoryComboBox->getItemListeners()) {
@@ -285,12 +293,14 @@
              category = list.at(ix);
             _swingConfiguratorComboBox->clear();
             QList</*Class<? extends Base>*/QString> classes = connectableClasses.value(category);
+            std::sort(classes.begin(), classes.end(), compareStrings);
             if (!classes.isEmpty()) {
                 for (/*Class<? extends Base>*/QString clazz : classes) {
-                    SwingConfiguratorInterface* sci = (AbstractSwingConfigurator*)SwingTools::getSwingConfiguratorForClass( clazz)->sself();
-                    if (sci != nullptr) {
+                    SwingConfiguratorInterface* sci = SwingTools::getSwingConfiguratorForClass( clazz);
+                    if (sci != nullptr && !sci->toString().isEmpty())  {
                         QString txt = sci->toString();
-                        _swingConfiguratorComboBox->addItem(txt,VPtr<SwingConfiguratorInterface>::asQVariant(sci));
+                        log->debug(tr("for Category%1, add %2").arg(category.name(), txt));
+                        _swingConfiguratorComboBox->addItem(txt, clazz);
                     } else {
                         log->error(tr("Class %1 has no swing configurator interface").arg(clazz));
                     }
@@ -314,10 +324,12 @@
 //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
         _selectItemTypeDialog->setLocation(50, 30);
         QWidget* contentPanel = _selectItemTypeDialog->getContentPane();
+        if(!contentPanel->layout())
         contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
-        p = new JPanel();
+        p = new JPanel(new QHBoxLayout);
+       #if 0
         GridBagLayout* pLayout;
         p->setLayout(pLayout = new GridBagLayout());
         GridBagConstraints c =  GridBagConstraints();
@@ -337,9 +349,19 @@
         pLayout->addWidget(_categoryComboBox, c);
         c.gridy = 1;
         pLayout->addWidget(_swingConfiguratorComboBox, c);
-
+#else
+        p->layout()->addWidget(_categoryLabel);
+        ((QVBoxLayout*)p->layout())->addWidget(_categoryComboBox, 1);
         _categoryComboBox->setToolTip(tr("Select the category"));    // NOI18N
         _swingConfiguratorComboBox->setToolTip(tr("Select the type of item"));   // NOI18N
+        contentPanel->layout()->addWidget(p);
+        p = new JPanel(new QHBoxLayout);
+        p->layout()->addWidget(_typeLabel);
+        ((QVBoxLayout*)p->layout())->addWidget(_swingConfiguratorComboBox, 1);
+#endif
+
+        _categoryComboBox->setToolTip(tr("Select the category"));    // NOI18N
+       _swingConfiguratorComboBox ->setToolTip(tr("Select the type of item"));   // NOI18N
         contentPanel->layout()->addWidget(p);
         // set up message
         JPanel* panel3 = new JPanel();
@@ -370,10 +392,11 @@
         panel5->layout()->addWidget(_create);
         connect(_create, &JButton::clicked, [=] {
             cancelAddPressed(nullptr);
-            QString s = _swingConfiguratorComboBox->currentText();
-
-            SwingConfiguratorInterface* swingConfiguratorInterface = (AbstractSwingConfigurator*)
-                    VPtr<SwingConfiguratorInterface>::asPtr(_swingConfiguratorComboBox->getItemAt(_swingConfiguratorComboBox->getSelectedIndex()))->sself();
+            int ix = _swingConfiguratorComboBox->currentIndex();
+            QString s = _swingConfiguratorComboBox->itemText(ix);
+            QString clazz = _swingConfiguratorComboBox->itemData(ix).toString();
+            QStringList sl = _swingConfiguratorComboBox->itemList();
+            SwingConfiguratorInterface* swingConfiguratorInterface = SwingTools::getSwingConfiguratorForClass(clazz);
 //            System.err.format("swingConfiguratorInterface: %s%n", swingConfiguratorInterface.getClass().getName());
             createAddFrame(femaleSocket, path, swingConfiguratorInterface);
         });
@@ -385,6 +408,7 @@
         });
 //        addLogixNGFrame.setLocationRelativeTo(component);
         _selectItemTypeDialog->setLocationRelativeTo(nullptr);
+        _selectItemTypeDialog->resize(400, 500);
         _selectItemTypeDialog->pack();
         _selectItemTypeDialog->setVisible(true);
     }
@@ -614,7 +638,7 @@
 
         JDialog* frame  = new JDialog(
                 this,
-                addOrEdit ? tr("Add %1").arg("EditMaleSocketDialogTitle"):
+                addOrEdit ? tr("Add %1").arg("Edit MaleSocket"):
                         femaleSocket->getLongDescription(),
                 true);
 //        frame.addHelpMenu(
@@ -696,7 +720,7 @@
                 SwingConfiguratorInterface* swi =
                         SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
                 panels.append(swi->getConfigPanel(object, panel5));
-                QMap<SwingConfiguratorInterface*, Base*> entry;
+                QHash<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(swi, object);
                 _swingConfiguratorInterfaceList.append(entry);
                 object = ((MaleSocket*)object->bself())->getObject();
@@ -705,7 +729,7 @@
                 _editSwingConfiguratorInterface =
                         SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
                 panels.append(_editSwingConfiguratorInterface->getConfigPanel(object, panel5));
-                QMap<SwingConfiguratorInterface*, Base*> entry;
+                QHash<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(_editSwingConfiguratorInterface, object);
 
                 _swingConfiguratorInterfaceList.append(entry);
@@ -719,9 +743,10 @@
         } else {
             /*Class<? extends MaleSocket>*/QString maleSocketClass =
                     _addSwingConfiguratorInterface->getManager()->getMaleSocketClass();
+            if(!maleSocketClass.startsWith("jmri."))
+                maleSocketClass.prepend("jmri.jmrit.logixng.implementation.");
 
-            _addSwingConfiguratorInterfaceMaleSocket =
-                    SwingTools::getSwingConfiguratorForClass(maleSocketClass);
+            _addSwingConfiguratorInterfaceMaleSocket = SwingTools::getSwingConfiguratorForClass(maleSocketClass);
 
             panels.append(_addSwingConfiguratorInterfaceMaleSocket->getConfigPanel(panel5));
 
@@ -742,7 +767,7 @@
         contentPanel->layout()->addWidget(panel3);
 
         // Edit comment
-        JButton* editComment = new JButton(tr("EditComment"));    // NOI18N
+        JButton* editComment = new JButton(tr("Edit comment"));    // NOI18N
         panel5->layout()->addWidget(editComment);
         QString comment = object != nullptr ? object->getComment() : "";
         connect(editComment, &JButton::clicked, [=] {
@@ -751,7 +776,7 @@
         });
 
         // Function help
-        JButton* showFunctionHelp = new JButton(tr("FunctionHelp"));    // NOI18N
+        JButton* showFunctionHelp = new JButton(tr("Formula functions"));    // NOI18N
         panel5->layout()->addWidget(showFunctionHelp);
         connect(showFunctionHelp, &JButton::clicked, [=] {
             ((FunctionsHelpDialog*)InstanceManager::getDefault("FunctionsHelpDialog"))->showDialog();
@@ -1193,6 +1218,7 @@
      * @param e The event heard
      */
     /*final*/ /*protected*/ void TreeEditor::cancelEditPressed(JActionEvent* e) {
+        if(!_editActionExpressionDialog)return;
         _editActionExpressionDialog->setVisible(false);
 //        _editSwingConfiguratorInterface.dispose();
         //QListIterator<QMap<SwingConfiguratorInterface*, Base*> > entry (_swingConfiguratorInterfaceList);
@@ -1294,7 +1320,7 @@
 
         /*private*/ void TEPopupMenu::init() {
             menuItemRenameSocket = new JMenuItem(tr("Rename Socket"),this);
-            connect(menuItemRenameSocket, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemRenameSocket, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this, 0, ACTION_COMMAND_RENAME_SOCKET));});
             menuItemRenameSocket->setActionCommand(ACTION_COMMAND_RENAME_SOCKET);
             addAction(menuItemRenameSocket);
             addSeparator();
@@ -2050,8 +2076,8 @@
              ((NamedBean*)object)->setUserName(treeEditor->_addUserName->text());
          }
          ((NamedBean*)object)->setComment(commentStr/*.getValue()*/);
-         for (QMap<SwingConfiguratorInterface*, Base*> map : treeEditor->_swingConfiguratorInterfaceList) {
-          QMapIterator<SwingConfiguratorInterface*, Base*> entry(map);
+         for (QHash<SwingConfiguratorInterface*, Base*> map : treeEditor->_swingConfiguratorInterfaceList) {
+          QHashIterator<SwingConfiguratorInterface*, Base*> entry(map);
           while(entry.hasNext()){
            entry.next();
              entry.key()->updateObject(entry.value());

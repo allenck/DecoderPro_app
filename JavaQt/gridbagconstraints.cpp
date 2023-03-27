@@ -151,6 +151,6 @@ Qt::Alignment GridBagConstraints::align()
  case CENTER:
   return Qt::AlignCenter;
  default:
-  return Qt::Alignment();
+  return Qt::AlignCenter;
  }
 }

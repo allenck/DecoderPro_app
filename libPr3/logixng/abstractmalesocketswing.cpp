@@ -40,7 +40,8 @@
 
         panel = new JPanel();
 
-        AbstractMaleSocket* maleSocket = (AbstractMaleSocket*)object->bself();
+        AbstractMaleSocket* maleSocket = nullptr;
+        if(object) maleSocket = (AbstractMaleSocket*)object->bself();
 
         GridBagLayout* panelLayout;
         panel->setLayout(panelLayout =new GridBagLayout());

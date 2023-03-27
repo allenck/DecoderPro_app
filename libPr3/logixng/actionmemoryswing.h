@@ -9,7 +9,7 @@ class ActionMemorySwing : public AbstractDigitalActionSwing
 {
   Q_OBJECT
  public:
-  ActionMemorySwing(QObject*parent = nullptr);
+  Q_INVOKABLE ActionMemorySwing(QObject*parent = nullptr);
   ~ActionMemorySwing() {}
   ActionMemorySwing(const ActionMemorySwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;

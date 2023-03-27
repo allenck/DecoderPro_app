@@ -177,7 +177,13 @@
 #include "webbrowserswing.h"
 #include "webbrowserxml.h"
 #include "dostringactionxml.h"
-
+#include "defaultmaledigitalactionsocketswing.h"
+#include "defaultmaleanalogexpressionsocketswing.h"
+#include "defaultmaleanalogactionsocketswing.h"
+#include "defaultmaledigitalbooleanactionsocketswing.h"
+#include "defaultmaledigitalexpressionsocketswing.h"
+#include "defaultmalestringactionsocketswing.h"
+#include "moduleeditormalesocketswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -342,7 +348,13 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<TriggerRouteSwing>("TriggerRouteSwing");
     qRegisterMetaType<WebBrowserSwing>("WebBrowserSwing");
     qRegisterMetaType<WebBrowserXml>("WebBrowserXml");
-
+    qRegisterMetaType<DefaultMaleAnalogActionSocketSwing>("DefaultMaleAnalogActionSocketSwing");
+    qRegisterMetaType<DefaultMaleDigitalActionSocketSwing>("DefaultMaleDigitalActionSocketSwing");
+    qRegisterMetaType<DefaultMaleAnalogExpressionSocketSwing>("DefaultMaleAnalogExpressionSocketSwing");
+    qRegisterMetaType<DefaultMaleDigitalBooleanActionSocketSwing>("DefaultMaleDigitalBooleanActionSocketSwing");
+    qRegisterMetaType<DefaultMaleDigitalExpressionSocketSwing>("DefaultMaleDigitalExpressionSocketSwing");
+    qRegisterMetaType<DefaultMaleStringActionSocketSwing>("DefaultMaleStringActionSocketSwing");
+    qRegisterMetaType<ModuleEditorMaleSocketSwing>("ModuleEditorMaleSocketSwing");
    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
    qRegisterMetaType<SequenceSwing>("SequenceSwing");

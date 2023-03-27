@@ -7,8 +7,12 @@ class DefaultMaleDigitalExpressionSocketSwing : public AbstractMaleSocketSwing
 {
   Q_OBJECT
  public:
-  explicit DefaultMaleDigitalExpressionSocketSwing(QObject *parent = nullptr);
+  Q_INVOKABLE explicit DefaultMaleDigitalExpressionSocketSwing(QObject *parent = nullptr);
+    ~DefaultMaleDigitalExpressionSocketSwing() {}
+    DefaultMaleDigitalExpressionSocketSwing(const DefaultMaleDigitalExpressionSocketSwing&) : AbstractMaleSocketSwing() {}
   /*public*/ void updateObjectForSubPanel(/*@Nonnull*/ Base* object);
+
+    QObject* sself() override {return this;}
 
  private:
   /*private*/ JPanel* _panel;
@@ -19,5 +23,5 @@ class DefaultMaleDigitalExpressionSocketSwing : public AbstractMaleSocketSwing
   /*protected*/ JPanel* getSubPanel(/*@CheckForNull*/ Base* object);
 
 };
-
+Q_DECLARE_METATYPE(DefaultMaleDigitalExpressionSocketSwing)
 #endif // DEFAULTMALEDIGITALEXPRESSIONSOCKETSWING_H

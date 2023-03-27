@@ -95,10 +95,10 @@ class TreeEditor : public TreeViewer
   /*private*/ JButton* _create;
   /*private*/ JButton* _edit;
 
-  /*private*/ SwingConfiguratorInterface* _addSwingConfiguratorInterface;
-  /*private*/ SwingConfiguratorInterface* _addSwingConfiguratorInterfaceMaleSocket;
-  /*private*/ SwingConfiguratorInterface* _editSwingConfiguratorInterface;
-  /*private*/ /*final*/ QList<QMap<SwingConfiguratorInterface*, Base*> > _swingConfiguratorInterfaceList = QList<QMap<SwingConfiguratorInterface*, Base*> >();
+  /*private*/ SwingConfiguratorInterface* _addSwingConfiguratorInterface= nullptr;
+  /*private*/ SwingConfiguratorInterface* _addSwingConfiguratorInterfaceMaleSocket=nullptr;
+  /*private*/ SwingConfiguratorInterface* _editSwingConfiguratorInterface=nullptr;
+  /*private*/ /*final*/ QList<QHash<SwingConfiguratorInterface*, Base*> > _swingConfiguratorInterfaceList = QList<QHash<SwingConfiguratorInterface*, Base*> >();
 
   /*private*/ LocalVariableTableModel* _localVariableTableModel;
 

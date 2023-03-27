@@ -9,10 +9,15 @@
 /*public*/ class DefaultMaleAnalogActionSocketSwing : public AbstractMaleSocketSwing {
  Q_OBJECT
  public:
-  DefaultMaleAnalogActionSocketSwing(QObject* parent = nullptr) : AbstractMaleSocketSwing(parent)
+  Q_INVOKABLE DefaultMaleAnalogActionSocketSwing(QObject* parent = nullptr) : AbstractMaleSocketSwing(parent)
   {
    setObjectName("DefaultMaleAnalogActionSocketSwing");
   }
-};
+    ~DefaultMaleAnalogActionSocketSwing() {}
+    DefaultMaleAnalogActionSocketSwing(const DefaultMaleAnalogActionSocketSwing&) : AbstractMaleSocketSwing() {}
 
+    QObject* sself() override {return this;}
+
+};
+Q_DECLARE_METATYPE(DefaultMaleAnalogActionSocketSwing)
 #endif // DEFAULTMALEANALOGACTIONSOCKETSWING_H

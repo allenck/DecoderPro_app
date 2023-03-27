@@ -170,6 +170,8 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+    logixng/defaultmaleanalogexpressionsocketswing.cpp \
+    logixng/defaultmaledigitalactionsocketswing.cpp \
     logixng/dostringactionxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
@@ -1631,6 +1633,8 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+    logixng/defaultmaleanalogexpressionsocketswing.h \
+    logixng/defaultmaledigitalactionsocketswing.h \
     logixng/dostringactionxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
@@ -2930,7 +2934,6 @@ HEADERS += \
     logixng/analogactionmemoryxml.h \
     logixng/analogfactory_expressions.h \
     logixng/analogmanyxml.h \
-    logixng/defaultaledigitalactionsocketswing.h \
     logixng/defaultmaleanalogactionsocketswing.h \
     logixng/defaultmaledigitalbooleanactionsocketswing.h \
     logixng/defaultmaledigitalexpressionsocketswing.h \

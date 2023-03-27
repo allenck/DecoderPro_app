@@ -26,7 +26,8 @@ ActionWarrantSwing::ActionWarrantSwing(QObject *parent)
 
     //@Override
 /*protected*/ void ActionWarrantSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel){
-    ActionWarrant* action = (ActionWarrant*)object->bself();
+    ActionWarrant* action = nullptr;
+    if(object) action = (ActionWarrant*)object->bself();
 
         panel = new JPanel(new FlowLayout);
 

@@ -237,7 +237,7 @@ ActionEntryExitSwing::ActionEntryExitSwing(QObject *parent)
     /** {@inheritDoc} */
     //@Override
     /*public*/ QString ActionEntryExitSwing::toString() {
-        return tr("ActionEntryExit_Short");
+        return tr("ActionEntryExit");
     }
 
     //@Override

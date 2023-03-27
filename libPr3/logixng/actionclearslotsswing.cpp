@@ -26,7 +26,8 @@ ActionClearSlotsSwing::ActionClearSlotsSwing(QObject *parent)
             throw new IllegalArgumentException(tr("object must be an ActionClearSlots but is a: ")+object->bself()->metaObject()->className());
         }
 
-        ActionClearSlots* action = (ActionClearSlots*)object->bself();
+        ActionClearSlots* action = nullptr;
+        if(object) action = (ActionClearSlots*)object->bself();
 
         panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
@@ -92,7 +93,7 @@ ActionClearSlotsSwing::ActionClearSlotsSwing(QObject *parent)
     /** {@inheritDoc} */
     //@Override
     /*public*/ QString ActionClearSlotsSwing::toString() {
-        return tr("ActionClearSlots_Short");
+        return tr("ActionClearSlots");
     }
 
     //@Override

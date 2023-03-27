@@ -1027,7 +1027,7 @@
      * Save the bean browser window content to a text file.
      */
     void AbstractLogixNGTableAction::saveBrowserPressed() {
-        userFileChooser->setApproveButtonText(tr("BrowserSaveDialogApprove"));  // NOI18N
+        userFileChooser->setApproveButtonText(tr("Save Content"));  // NOI18N
         userFileChooser->setDialogTitle(tr("BrowserSaveDialogTitle"));  // NOI18N
 //        userFileChooser->rescanCurrentDirectory();
         // Default to logixNG system name.txt

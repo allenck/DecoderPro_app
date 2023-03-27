@@ -70,7 +70,7 @@
 
     //@Override
     /*public*/ QString ActionClearSlots::getShortDescription(QLocale locale) {
-        return tr(/*locale,*/ "ActionClearSlots_Short");
+        return tr(/*locale,*/ "ActionClearSlots");
     }
 
     //@Override

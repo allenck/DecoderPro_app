@@ -8,15 +8,15 @@
 JComboBox::JComboBox(QWidget* parent) : QComboBox(parent)
 {
  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
- cbModel = new QStringListModel();
- setModel(cbModel);
+// cbModel = new QStringListModel();
+// setModel(cbModel);
 }
 
 JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 {
  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
- cbModel = new QStringListModel();
- setModel(cbModel);
+// cbModel = new QStringListModel();
+// setModel(cbModel);
  addItems(list);
 }
 
@@ -116,7 +116,10 @@ void JComboBox::currentIndexChanged(int)
 }
 
 /*public*/ QStringList JComboBox::itemList(){
- return cbModel->stringList();
+    QStringList l;
+    for(int i=0; i  < QComboBox::count(); i++)
+        l.append(QComboBox::itemText(i));
+    return l;
 }
 
 /*public*/ QVariant JComboBox::getItemAt(int i)
@@ -137,7 +140,7 @@ void JComboBox::currentIndexChanged(int)
 
 /*public*/ QVariant JComboBox::itemData(int index)
 {
- if(index >= QComboBox::count())
+ if(index < 0 || index >= QComboBox::count())
   throw new IndexOutOfBoundsException();
  QVariant v = QComboBox::itemData(index);
  if(v.isValid())

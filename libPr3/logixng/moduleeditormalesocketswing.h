@@ -9,12 +9,14 @@
 /*public*/ class ModuleEditorMaleSocketSwing : public AbstractMaleSocketSwing {
  Q_OBJECT
  public:
-  ModuleEditorMaleSocketSwing(QObject* parent = nullptr) : AbstractMaleSocketSwing(parent)
+  Q_INVOKABLE ModuleEditorMaleSocketSwing(QObject* parent = nullptr) : AbstractMaleSocketSwing(parent)
   {
    setObjectName("ModuleEditorMaleSocketSwing");
   }
-//    private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ModuleEditorMaleSocketSwing.class);
+    ~ModuleEditorMaleSocketSwing() {}
+    ModuleEditorMaleSocketSwing(const ModuleEditorMaleSocketSwing&) : AbstractMaleSocketSwing() {}
 
+  QObject* sself() override {return this;}
 };
-
+Q_DECLARE_METATYPE(ModuleEditorMaleSocketSwing)
 #endif // MODULEEDITORMALESOCKETSWING_H

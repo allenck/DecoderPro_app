@@ -12,7 +12,7 @@
 
 ExecuteDelayedSwing::ExecuteDelayedSwing(QObject* parent)
 {
-
+ setObjectName("ExecuteDelayedSwing");
 }
 /**
  * Configures an ExecuteDelayed object with a Swing JPanel.

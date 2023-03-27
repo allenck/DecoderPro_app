@@ -584,7 +584,7 @@ class Base;
         for (int i=0; i < getChildCount(); i++) {
          FemaleSocket* s = getChild(i);
 
-            ((Base*)getChild(i))->forEntireTree(r);
+            ((Base*)s)->forEntireTree(r);
         }
     }
 

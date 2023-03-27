@@ -69,7 +69,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/  /*Class<? extends MaleSocket>*/QString DefaultDigitalActionManager::getMaleSocketClass() {
-    return "DefaultMaleDigitalActionSocket";
+    return "jmri.jmrit.logixng.implementation.DefaultMaleDigitalActionSocket";
 }
 
 /*protected*/ MaleDigitalActionSocket* DefaultDigitalActionManager::createMaleActionSocket(DigitalActionBean* action) {

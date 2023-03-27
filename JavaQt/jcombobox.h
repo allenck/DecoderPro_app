@@ -54,11 +54,12 @@ public:
  /*public*/ bool isSelected();
  QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
  QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
- void setSize(int, int) {}
- QString toString() {
+ void setSize(int, int) override{}
+ QString toString() override{
    if(!jself()->objectName().isEmpty()) return jself()->objectName();
    else return jself()->metaObject()->className();
  }
+ QList<QVariant> dataList() {return map.values();}
 
 signals:
  void itemStateChanged(ItemEvent* e);
@@ -73,7 +74,7 @@ private:
  Border* _border = nullptr;
  /*private*/ void focusInEvent(QFocusEvent* e)override;
  /*private*/ void focusOutEvent(QFocusEvent* e)override;
- QStringListModel* cbModel;
+ //QStringListModel* cbModel;
  QMap<QString, QVariant> map = QMap<QString, QVariant>();
  QList<ItemListener*> listeners = QList<ItemListener*>();
 

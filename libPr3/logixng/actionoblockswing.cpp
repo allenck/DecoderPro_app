@@ -26,7 +26,8 @@ ActionOBlockSwing::ActionOBlockSwing(QObject *parent)
 
     //@Override
     /*protected*/ void ActionOBlockSwing::createPanel(/*@CheckForNulll*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionOBlock* action = (ActionOBlock*)object->bself();
+        ActionOBlock* action = nullptr;
+        if(object) action= (ActionOBlock*)object->bself();
 
         panel = new JPanel(new FlowLayout);
 

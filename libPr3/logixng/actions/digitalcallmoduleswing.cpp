@@ -25,7 +25,8 @@ namespace Actions
         if ((object != nullptr) && (! (qobject_cast<DigitalCallModule*>(object->bself())))) {
             throw new IllegalArgumentException(QString("object is not a Module: ") + object->bself()->metaObject()->className());
         }
-        DigitalCallModule* callModule = (DigitalCallModule*)object->bself();
+        DigitalCallModule* callModule = nullptr;
+        if(object) (DigitalCallModule*)object->bself();
 
         panel = new JPanel();
 

@@ -13,6 +13,10 @@ Q_OBJECT
   {
    setObjectName("DefaultMaleDigitalBooleanActionSocketSwing");
   }
-};
+  ~DefaultMaleDigitalBooleanActionSocketSwing() {}
+  DefaultMaleDigitalBooleanActionSocketSwing(const DefaultMaleDigitalBooleanActionSocketSwing&) : AbstractMaleSocketSwing() {}
 
+  QObject* sself() override {return this;}
+};
+Q_DECLARE_METATYPE(DefaultMaleDigitalBooleanActionSocketSwing)
 #endif // DEFAULTMALEDIGITALBOOLEANACTIONSOCKETSWING_H
