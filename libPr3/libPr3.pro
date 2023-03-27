@@ -170,9 +170,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
-    logixng/defaultmaleanalogexpressionsocketswing.cpp \
-    logixng/defaultmaledigitalactionsocketswing.cpp \
-    logixng/dostringactionxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1145,6 +1142,12 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/actionreporter.cpp \
+    logixng/actionreporterswing.cpp \
+    logixng/actionreporterxml.cpp \
+    logixng/defaultmaleanalogexpressionsocketswing.cpp \
+    logixng/defaultmaledigitalactionsocketswing.cpp \
+    logixng/dostringactionxml.cpp \
     logixng/webbrowser.cpp \
     logixng/webbrowserswing.cpp \
     logixng/webbrowserxml.cpp \
@@ -1633,9 +1636,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
-    logixng/defaultmaleanalogexpressionsocketswing.h \
-    logixng/defaultmaledigitalactionsocketswing.h \
-    logixng/dostringactionxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
@@ -2724,6 +2724,12 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/actionreporter.h \
+    logixng/actionreporterswing.h \
+    logixng/actionreporterxml.h \
+    logixng/defaultmaleanalogexpressionsocketswing.h \
+    logixng/defaultmaledigitalactionsocketswing.h \
+    logixng/dostringactionxml.h \
     logixng/webbrowser.h \
     logixng/webbrowserswing.h \
     logixng/webbrowserxml.h \

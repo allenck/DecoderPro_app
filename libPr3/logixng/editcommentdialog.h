@@ -12,7 +12,7 @@ class EditCommentDialog : public QObject
   Q_OBJECT
  public:
   explicit EditCommentDialog(QObject *parent = nullptr);
-  /*public*/ QString showDialog(QString comment);
+  /*public*/ QString showDialog(const QString comment) ;
 
  signals:
 private:
@@ -26,7 +26,7 @@ private:
  protected:
   /*final*/ /*protected*/ void cancelPressed(JActionEvent* e=nullptr);
   /*final*/ /*protected*/ void okPressed(QActionEvent* e =nullptr);
-
+  friend class TreeEditor;
 };
 
 #endif // EDITCOMMENTDIALOG_H

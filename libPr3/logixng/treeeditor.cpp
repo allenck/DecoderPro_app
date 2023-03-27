@@ -174,7 +174,7 @@
         _renameSocketDialog->setLocation(50, 30);
         QWidget* contentPanel = _renameSocketDialog->getContentPane();
         if(!contentPanel->layout())
-        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
         GridBagLayout* pLayout;
@@ -325,7 +325,7 @@
         _selectItemTypeDialog->setLocation(50, 30);
         QWidget* contentPanel = _selectItemTypeDialog->getContentPane();
         if(!contentPanel->layout())
-        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
         p = new JPanel(new QHBoxLayout);
@@ -644,7 +644,8 @@
 //        frame.addHelpMenu(
 //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
         QWidget* contentPanel = frame->getContentPane();
-        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+        if(!contentPanel->layout())
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
         p = new JPanel();
@@ -770,10 +771,11 @@
         JButton* editComment = new JButton(tr("Edit comment"));    // NOI18N
         panel5->layout()->addWidget(editComment);
         QString comment = object != nullptr ? object->getComment() : "";
-        connect(editComment, &JButton::clicked, [=] {
-         EditCommentDialog* dlg = new EditCommentDialog();
-//            commentStr= dlg->showDialog(comment);
+        EditCommentDialog* dlg = new EditCommentDialog();
+        connect(editComment, &JButton::clicked, [=] (){
+         dlg->showDialog(comment);
         });
+        comment =dlg->_comment;
 
         // Function help
         JButton* showFunctionHelp = new JButton(tr("Formula functions"));    // NOI18N
@@ -917,7 +919,8 @@
     //        frame.addHelpMenu(
     //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
             QWidget* contentPanel = _editLocalVariablesDialog->getContentPane();
-            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            if(!contentPanel->layout())
+                contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
             JPanel* tablePanel = new JPanel(new QVBoxLayout());
             JTable* table = new JTable();
@@ -1101,7 +1104,8 @@
     //        frame.addHelpMenu(
     //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
             QWidget* contentPanel = _changeUsernameDialog->getContentPane();
-            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            if(!contentPanel->layout())
+              contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
 //            JPanel* tablePanel = new JPanel();
 

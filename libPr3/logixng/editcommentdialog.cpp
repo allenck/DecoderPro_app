@@ -17,9 +17,9 @@
     /*public*/ EditCommentDialog::EditCommentDialog(QObject* parent) :QObject(parent){
     }
 
-    /*public*/ QString EditCommentDialog::showDialog(QString comment) {
+/*public*/ QString EditCommentDialog::showDialog(const QString comment) {
 
-        _comment = comment;
+        this->_comment = comment;
 
         _commentTextArea->setText(comment);
 
@@ -30,7 +30,8 @@
 
 
         QWidget* contentPanel = _editCommentDialog->getContentPane();
-        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+        if(contentPanel->layout())
+          contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
         p = new JPanel();

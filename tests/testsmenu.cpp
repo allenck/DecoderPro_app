@@ -143,6 +143,7 @@
 #include "logixng/analogexpressionconstanttestaction.h"
 #include "logixng/swingconfiguratorinterfacetestactionaction.h"
 #include "logixng/actionsensorswingtestaction.h"
+#include "logixng/actionsandexpressionstestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -338,6 +339,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMiscMenu->addAction(new TokenizerTestAction(this));
     logixNGMiscMenu->addAction(new SwingConfiguratorInterfaceTestActionAction(this));
     logixNGMiscMenu->addAction(new ActionSensorSwingTestAction(this));
+    logixNGMiscMenu->addAction(new ActionsAndExpressionsTestAction(this));
 
     logixNGTypesMenu->addAction(new ActionMemoryTestAction(this));
     logixNGTypesMenu->addAction(new ActionSensorTestAction(this));

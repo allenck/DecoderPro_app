@@ -184,6 +184,8 @@
 #include "defaultmaledigitalexpressionsocketswing.h"
 #include "defaultmalestringactionsocketswing.h"
 #include "moduleeditormalesocketswing.h"
+#include "actionreporterswing.h"
+#include "actionreporterxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -348,6 +350,10 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<TriggerRouteSwing>("TriggerRouteSwing");
     qRegisterMetaType<WebBrowserSwing>("WebBrowserSwing");
     qRegisterMetaType<WebBrowserXml>("WebBrowserXml");
+    qRegisterMetaType<ActionReporterSwing>("ActionReporterSwing");
+    qRegisterMetaType<ActionReporterXml>("ActionReporterXml");
+
+
     qRegisterMetaType<DefaultMaleAnalogActionSocketSwing>("DefaultMaleAnalogActionSocketSwing");
     qRegisterMetaType<DefaultMaleDigitalActionSocketSwing>("DefaultMaleDigitalActionSocketSwing");
     qRegisterMetaType<DefaultMaleAnalogExpressionSocketSwing>("DefaultMaleAnalogExpressionSocketSwing");
