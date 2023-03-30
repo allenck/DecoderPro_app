@@ -29,6 +29,8 @@ class DigitalBooleanMany : public AbstractDigitalBooleanAction, public FemaleSoc
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass() override;
   /*public*/  void disposeMe()override;
+    /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.DigitalBooleanMany";}
+
 
   QObject* bself() override {return (QObject*)this;}
 

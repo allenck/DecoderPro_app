@@ -579,20 +579,13 @@ class Base;
      * Do something on every item in the sub tree of this item.
      * @param r the action to do on all items.
      */
-    /*public*/ virtual /*default*/ void forEntireTree(RunnableWithBase* r) {
-        r->run(this);
-        for (int i=0; i < getChildCount(); i++) {
-         FemaleSocket* s = getChild(i);
-
-            ((Base*)s)->forEntireTree(r);
-        }
-    }
+    /*public*/ virtual/*default*/ void forEntireTree(RunnableWithBase* r);
 
     /*public*/ /*final*/ QString PRINT_LINE_NUMBERS_FORMAT = "%1:  ";
 
     /*public*/ virtual QString toString() {return "";}
 
-    /*public*/ virtual QString getClass() const {return "";}
+    /*public*/ virtual QString getClass() const =0;//{return "";}
 
 
     virtual QObject* bself() =0;

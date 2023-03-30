@@ -28,6 +28,8 @@ class DebuggerMaleAnalogExpressionSocket : public AbstractDebuggerMaleSocket, pu
   /*public*/  void setTriggerOnChange(bool triggerOnChange)override;
   /*public*/  bool getTriggerOnChange()override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools,debugger.DebuggerMaleAnalogExpressionSocket";}
+    /*public*/ QString getClass() const override {return "jmri.jmrit.logixng.tools,debugger.DebuggerMaleAnalogExpressionSocket";}
+
 
   QObject* self() override {return (QObject*)this;}
   QObject* msself() override {return this;}

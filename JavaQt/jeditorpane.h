@@ -12,6 +12,7 @@ public:
  /*public*/ JEditorPane(QString type, QString text, QWidget *parent = 0);
  /*public*/ void setContentType(QString) {/*this->type = JTextComponent::type;*/}
  /*public*/ void setEditable(bool b) {JTextComponent::setEnabled(b);}
+    /*public*/ void setCaretPosition(int) {JTextComponent::setTextCursor(QTextCursor());}
 signals:
 
 public slots:

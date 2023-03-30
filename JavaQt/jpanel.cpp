@@ -167,8 +167,8 @@ QLayout* JPanel::findParentLayout(QWidget* w, QLayout* topLevelLayout)
 
 void JPanel::setLayout(QLayout *layout)
 {
- if(layout)
-  IllegalArgumentException("panel already has a layout");
+ if(this->layout())
+  throw new IllegalArgumentException("panel already has a layout");
  QWidget::setLayout(layout);
 }
 

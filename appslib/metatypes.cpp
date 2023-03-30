@@ -366,6 +366,8 @@
 #include "filelocationspreferences.h"
 #include "checkforupdateaction.h"
 #include "paneleditoraction.h"
+#include "functionshelpdialog.h"
+
 #ifdef ENABLE_SCRIPTING
 #include "inputwindowaction.h"
 #endif
@@ -750,6 +752,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<FileLocationsPreferences>("FileLocationsPreferences");
  qRegisterMetaType<CheckForUpdateAction>("CheckForUpdateAction");
  qRegisterMetaType<PanelEditorAction>("PanelEditorAction");
+ qRegisterMetaType<FunctionsHelpDialog>("FunctionsHelpDialog");
 #ifdef ENABLE_SCRIPTING
  qRegisterMetaType<InputWindowAction>("InputWindowAction");
 #endif

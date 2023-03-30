@@ -658,6 +658,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return m;
  }
 
+
  if (type == "VariableLightManager") {
    return (new DefaultVariableLightManager(memo))->init();
  }

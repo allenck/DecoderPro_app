@@ -42,6 +42,7 @@ public:
     MyDigitalExpression(QString sysName) : AbstractDigitalExpression(sysName,""){
         //super(sysName, null);
     }
+    QString getClass() const override {return ".MyDigitalExpression";}
 
     QObject* self() override {return (QObject*)this;}
     QObject* bself() override {return (QObject*)this;}

@@ -128,6 +128,7 @@
 #include "shutdowncomputer.h"
 #include "expressionwarrant.h"
 #include "expressionsignalmast.h"
+#include "triggerroute.h"
 
 StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 {
@@ -2076,10 +2077,8 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
                 digitalExpressionManager->registerExpression(
                         new ExpressionMemory(digitalExpressionManager->getAutoSystemName(), "")));
 
-#if 0 // not yet implemented
 
-
-        TriggerRoute triggerRoute =
+        TriggerRoute* triggerRoute =
                 new TriggerRoute(digitalActionManager->getAutoSystemName(), "");
         maleSocket = digitalActionManager->registerAction(triggerRoute);
         maleSocket->setEnabled(false);
@@ -2087,10 +2086,10 @@ StoreAndLoadTest::StoreAndLoadTest(QObject *parent) : QObject(parent)
 
         triggerRoute = new TriggerRoute(digitalActionManager->getAutoSystemName(), "");
         triggerRoute->AbstractNamedBean::setComment("A comment");
-        triggerRoute.setOperationDirect(TriggerRoute.Operation.TriggerRoute);
+        triggerRoute->setOperationDirect(TriggerRoute::Operation::TriggerRoute);
         maleSocket = digitalActionManager->registerAction(triggerRoute);
         actionManySocket->getChild(indexAction++)->_connect(maleSocket);
-#endif
+
 
 
         ifThenElse = new IfThenElse(digitalActionManager->getAutoSystemName(), "");

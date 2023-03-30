@@ -37,6 +37,8 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*public*/  void disconnected(FemaleSocket* socket)override;
   /*public*/  void disposeMe()override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.implementation.DefaultFemaleGenericExpressionSocket";}
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.implementation.DefaultFemaleGenericExpressionSocket";}
+
 
   QObject* self() override{return (QObject*)this;}
   QObject* bself() override{return (QObject*)this;}

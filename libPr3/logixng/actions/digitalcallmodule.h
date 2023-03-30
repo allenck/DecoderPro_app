@@ -40,6 +40,7 @@ namespace Actions
            ReturnValueType::TYPES returnValueType,
            QString returnValueData);
    /*public*/  QList<Module::ParameterData*>* getParameterData();
+   /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.DigitalCallModule";}
 
 
    QObject* self() override {return this;}

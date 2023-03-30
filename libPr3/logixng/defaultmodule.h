@@ -64,6 +64,8 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
   /*public*/  QList<NamedBeanUsageReport*>* getUsageReport(NamedBean* bean)override;
   /*public*/  void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.implementation.DefaultModule";}
+
 
   QObject* self() override{return (QObject*)this;}
   QObject* bself() override{return (QObject*)this;}

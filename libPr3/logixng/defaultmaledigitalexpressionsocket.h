@@ -52,6 +52,7 @@ class DefaultMaleDigitalExpressionSocket : public AbstractMaleSocket, public Mal
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  QString getDisplayName()override;
   /*public*/  QString getClassName() override {return "jmri.jmrit.logixng.implentation.DefaultMaleDigitalExpressionSocket";}
+  /*public*/  QString getClass()const override {return "jmri.jmrit.logixng.implentation.DefaultMaleDigitalExpressionSocket";}
 
 
   QObject* self() override {return this;}

@@ -33,6 +33,7 @@ class TreePane : public JPanel, public PropertyChangeListener
 
 
   QObject* pself() override {return (QObject*)this; }
+
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* evt)override;
 
@@ -139,33 +140,6 @@ Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
     /*public*/  void valueForPathChanged(TreePath* path, QVariant newvalue)override;
     /*public*/  void addTreeModelListener(TreeModelListener* l)override;
     /*public*/  void removeTreeModelListener(TreeModelListener* l) override;
-#if 0
-  int rowCount(const QModelIndex &parent) const override
-  {
-  // if(QString(metaObject()->className()) == "DefaultTreeModel")
-  // {
-    MutableTreeNode* parentItem;
-    if (parent.column() > 0)
-     return 0;
-    if (!parent.isValid())
-     parentItem = root;
-    else
-     parentItem = static_cast<DefaultMutableTreeNode*>(parent.internalPointer());
-    if(!parentItem)
-     parentItem = root;
-    return getChildCount(((QObject*)root));
-  }
-
-  QVariant headerData(int /*section*/, Qt::Orientation orientation, int role) const override
-  {
-   if(role == Qt::DisplayRole &&  orientation == Qt::Horizontal)
-   {
-   return tr("");
-   }
-   return QVariant();
-  }
-#endif
-  //QObject* tself() override {return (QObject*)this;}
 
 protected:
   /*protected*/ /*final*/ QList<TreeModelListener*> listeners = QList<TreeModelListener*>();

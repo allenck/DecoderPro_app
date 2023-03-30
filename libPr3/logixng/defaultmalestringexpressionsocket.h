@@ -52,6 +52,8 @@ class DefaultMaleStringExpressionSocket : public AbstractMaleSocket, public Male
             }
         };
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DefaultMaleStringExpressionSocket";}
+  /*public*/ QString getClass() const override {return "jmri.jmrit.logixng.tools.debugger.DefaultMaleStringExpressionSocket";}
+
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}
 

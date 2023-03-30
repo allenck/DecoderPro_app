@@ -48,6 +48,8 @@ class DefaultMaleStringActionSocket : public AbstractMaleSocket, public MaleStri
   /*public*/  void setEnabledFlag(bool enable)override;
   /*public*/  bool isEnabled()override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DefaultMaleStringActionSocket";}
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.tools.debugger.DefaultMaleStringActionSocket";}
+
 
   QObject* self() override {return (QObject*)this;}
 

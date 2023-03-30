@@ -1,6 +1,7 @@
 #ifndef TREEEDITOR_H
 #define TREEEDITOR_H
 
+//#include "logixng/clipboardeditor.h"
 #include "logixng/defaultlogixngmanager.h"
 #include "treeviewer.h"
 //#include "femalesocket.h"
@@ -75,6 +76,7 @@ class TreeEditor : public TreeViewer
       //@SuppressWarnings("unchecked")
   public:
       /*public*/ int compare(SwingConfiguratorInterface* o1, SwingConfiguratorInterface* o2);
+
   };
 
 //  /*private*/ /*final*/ Comparator<SwingConfiguratorInterface> _swingConfiguratorComboBoxComparator
@@ -146,26 +148,10 @@ class TreeEditor : public TreeViewer
  friend class TreeEditor_run4;
  friend class TreeEditor_run5;
  friend class ConditionalNGEditor;
-
-#if 0
- class TEClipboardListener : public ClipboardEventListener
- {
-   Q_OBJECT
-   TreeEditor* te;
-  public:
-   TEClipboardListener(TreeEditor* te)
-   {
-    //_clipboardEditor->clipboardData.forEach((key, value) -> {
-    foreach(QString key, te->_clipboardEditor->clipboardData){
-        if (key == ("Finish")) {                  // NOI18N
-            te->_clipboardEditor = nullptr;
-        }
-    }
-   }
-   QObject* self() override {return (QObject*)this;}
+ friend class TE_WindowAdapter;
+ friend class TE_WindowAdapter2;
  };
-#endif
-};
+
  // This class is copied from BeanTableDataModel
  /*private*/ class DeleteBeanWorker2 : public QObject//: public SwingWorker<void, void> {
  {
@@ -273,17 +259,7 @@ class TEClipboardListener : public QObject, public ClipboardEventListener
   TreeEditor* te;
  public:
   TEClipboardListener(TreeEditor* te) {this->te = te;}
-  void clipboardEventOccurred()override
-  {
-#if 0
-   //_clipboardEditor->clipboardData.forEach((key, value) -> {
-   foreach(QString key, te->_clipboardEditor->clipboardData){
-       if (key == ("Finish")) {                  // NOI18N
-           te->_clipboardEditor = nullptr;
-       }
-   }
-#endif
-  }
+  void clipboardEventOccurred()override;
   QObject* self() override {return (QObject*)this;}
 };
 
@@ -569,6 +545,29 @@ class TreeEditor_run4 : public ThreadAction
    }
 
   }
+};
+class TE_WindowAdapter : public WindowAdapter
+{
+    Q_OBJECT
+    TreeEditor* te;
+public:
+    TE_WindowAdapter(TreeEditor* te) { this->te = te;}
+    void windowClosing(QEvent* e)
+    {
+        te->cancelRenameSocketPressed(nullptr);
+    }
+};
+
+class TE_WindowAdapter2 : public WindowAdapter
+{
+    Q_OBJECT
+    TreeEditor* te;
+public:
+    TE_WindowAdapter2(TreeEditor* te) { this->te = te;}
+    void windowClosing(QEvent* e)
+    {
+        te->cancelAddPressed(nullptr);
+    }
 };
 
 #endif // TREEEDITOR_H

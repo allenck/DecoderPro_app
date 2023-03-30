@@ -372,7 +372,9 @@ private:
         /*public*/  void setCatchAbortExecution(bool catchAbortExecution) override{
             throw new UnsupportedOperationException("Not supported");
         }
-    /*public*/ QString getClassName()override {return "IncompatiblealeSocket";}
+    /*public*/ QString getClassName()override {return "IncompatibleMaleSocket";}
+    QString getClass() const override {return ".IncompatibleMaleSocket";}
+
     /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
     /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
     /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}

@@ -1,12 +1,15 @@
 #ifndef MODULEEDITOR_H
 #define MODULEEDITOR_H
 
+#include "logixng/module.h"
 #include "treeeditor.h"
 #include "abstractlogixngeditor.h"
 #include "beantableframe.h"
 #include "beantabledatamodel.h"
 #include "moduleeditormalesocket.h"
 #include "femalesocketlistener.h"
+#include "threadingutil.h"
+
 class Module;
 class ModuleEditor : public TreeEditor, public AbstractLogixNGEditor
 {
@@ -68,17 +71,17 @@ class ModuleEditor_FemaleSocketListener1 : public QObject, public FemaleSocketLi
     }
 
     //@Override
-    /*public*/  bool canDisconnect() {
+    /*public*/  bool canDisconnect() override{
         return false;
     }
 
     //@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void disposeMe() override{
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/  bool isCompatible(MaleSocket* socket) {
+    /*public*/  bool isCompatible(MaleSocket* socket) override{
         return qobject_cast<ModuleEditorMaleSocket*>(socket->bself());
     }
 
@@ -98,15 +101,39 @@ class ModuleEditor_FemaleSocketListener1 : public QObject, public FemaleSocketLi
     }
 
     //@Override
-    /*public*/  QString getLongDescription(QLocale locale) {
+    /*public*/  QString getLongDescription(QLocale locale) override{
         return tr(/*locale,*/ "- %1").arg(getName());
     }
   QObject* bself() override {return (QObject*)this;}
-  QString getClassName() {return "RootSocket";}
+  QString getClassName() override {return "RootSocket";}
 
   /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) override {}
   /*public*/  /*default*/ virtual void doSocketOperation(int index, FemaleSocketOperation::TYPES oper) override {}
   /*public*/ virtual QString toString() override {return getLongDescription(QLocale());}
+   QString getClass() const override {return "jmri.jmrit.logixng.tools.swing.ModuleEditorMaleSocket";}
 
 };
+
+class ME_run1 : public ThreadAction
+{
+    Module* module;
+    SwingConfiguratorInterface* swi;
+    MaleSocket* maleSocket;
+public:
+    ME_run1(Module* module, SwingConfiguratorInterface* swi, MaleSocket* maleSocket) {
+        this->module = module;
+        this->swi = swi;
+        this->maleSocket = maleSocket;
+    }
+    void run()
+    {
+        // We need to create a temporary ConditionalNG to be able to
+        // execute/evaluate a module or a part of a module
+        module->setCurrentConditionalNG(new DefaultConditionalNG("IQC1", ""));
+
+        swi->executeEvaluate(maleSocket);
+
+    }
+};
+
 #endif // MODULEEDITOR_H

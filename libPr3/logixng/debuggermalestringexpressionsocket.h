@@ -25,6 +25,8 @@ class DebuggerMaleStringExpressionSocket : public AbstractDebuggerMaleSocket, pu
   /*public*/  void setTriggerOnChange(bool triggerOnChange)override;
   /*public*/  bool getTriggerOnChange()override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DebuggerMaleStringExpressionSocket";}
+    /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.tools.debugger.DebuggerMaleStringExpressionSocket";}
+
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}

@@ -30,14 +30,14 @@
      *
      * @param listener The recipient
      */
-  /*public*/ virtual void addEditorEventListener(EditorEventListener* listener){}
+  /*public*/ virtual void addEditorEventListener(EditorEventListener* listener)=0;
 
     /**
      * Remove a listener -- not used.
      *
      * @param listener The recipient
      */
-  /*public*/ virtual void removeEditorEventListener(EditorEventListener* listener){}
+  /*public*/ virtual void removeEditorEventListener(EditorEventListener* listener)=0;
 
   /*public*/ virtual void bringToFront(){}
 

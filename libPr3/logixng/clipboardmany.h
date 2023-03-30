@@ -73,6 +73,8 @@ public:
   /*public*/ void registerListenersForThisClass() override;
   /*public*/ void unregisterListenersForThisClass()override;
   /*public*/ void disposeMe()override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.implementation.ClipboardMany";}
+
 
   /*public*/ void addPropertyChangeListener(PropertyChangeListener* l, QString name, QString listenerRef)override{return AbstractNamedBean::addPropertyChangeListener(l,name,listenerRef);}
   /*public*/ void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,

@@ -50,6 +50,8 @@ public:
     /*public*/ void registerListenersForThisClass()override;
     /*public*/ void unregisterListenersForThisClass() override;
     /*public*/ void disposeMe()override;
+    /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.ShutDownComputer";}
+
 
     /*public*/ void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef) override{
         AbstractNamedBean::addPropertyChangeListener(listener, name, listenerRef);

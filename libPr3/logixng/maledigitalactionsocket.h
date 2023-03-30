@@ -19,6 +19,7 @@
      */
     //@Override
     /*public*/ virtual void execute() /*throws JmriException*/=0;
+    /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.MaleDigitalActionSocket";}
 
 };
 Q_DECLARE_INTERFACE(MaleDigitalActionSocket, "MaleDigitalActionSocket")

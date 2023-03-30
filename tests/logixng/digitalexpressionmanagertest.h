@@ -35,9 +35,11 @@ Q_OBJECT
    /*public*/ MyExpression(QString sys) /*throws BadSystemNameException*/ : AbstractBase(sys){
        //super(sys);
    }
- QObject* bself() override {return (QObject*)this;}
- QObject* self() override {return (QObject*)this;}
- void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
+    QString getClass() const override {return ".MyExpression";}
+
+     QObject* bself() override {return (QObject*)this;}
+     QObject* self() override {return (QObject*)this;}
+     void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
 
    /** {@inheritDoc} */

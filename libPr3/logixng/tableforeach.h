@@ -62,6 +62,8 @@ class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, 
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.TableForEach";}
+
 
   QObject* bself() override{return (QObject*)this;}
   QObject* self() override{return (QObject*)this;}

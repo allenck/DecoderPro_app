@@ -70,7 +70,7 @@
             module = (Module*)b->bself();
         }
 #if 0
-        LogixNG_Thread::getThread(LogixNG_Thread::DEFAULT_LOGIXNG_THREAD).runOnLogixNGEventually(() -> {
+        () -> {
 
             // We need to create a temporary ConditionalNG to be able to
             // execute/evaluate a module or a part of a module
@@ -78,6 +78,9 @@
 
             swi.executeEvaluate(maleSocket);
         });
+#else
+        LogixNG_Thread::getThread(LogixNG_Thread::DEFAULT_LOGIXNG_THREAD)->
+                runOnLogixNGEventually(new ME_run1(module, swi,maleSocket));
 #endif
     }
 

@@ -24,7 +24,8 @@ ExpressionLightSwing::ExpressionLightSwing(QObject *parent)
 
     //@Override
     /*protected*/ void ExpressionLightSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ExpressionLight* expression = (ExpressionLight*)object->bself();
+        ExpressionLight* expression = nullptr;
+        if(object) expression = (ExpressionLight*)object->bself();
 
         panel = new JPanel(new FlowLayout);
 

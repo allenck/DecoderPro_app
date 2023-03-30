@@ -58,6 +58,8 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ int getChildCount() override;
   /*public*/ Category getCategory()override;
   /*public*/ QString getClassName() {return "jmri.jmrit.logixng.tools.debugger.DefaultClipboard";}
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.tools.debugger.DefaultClipboard";}
+
 
   QObject* self() override {return (QObject*)this;}
  QObject* bself() override {return (QObject*)this;}
@@ -113,29 +115,31 @@ public:
   /*public*/ bool add(MaleSocket* maleSocket, QList<QString> errors);
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.MaleRootSocket";}
 
+  /*public*/ QString getClass() const override {return "jmri.jmrit.logixng.tools.debugger.MaleRootSocket";}
+
  protected:
         //@Override
-        /*protected*/ void registerListenersForThisClass() {
+        /*protected*/ void registerListenersForThisClass() override{
             throw new UnsupportedOperationException("Not supported");
         }
 
         //@Override
-        /*protected*/ void unregisterListenersForThisClass() {
+        /*protected*/ void unregisterListenersForThisClass() override{
             throw new UnsupportedOperationException("Not supported");
         }
 
         //@Override
-        /*protected*/ void disposeMe() {
+        /*protected*/ void disposeMe() override{
             defaultClipboard->_clipboardItems->dispose();
         }
 public:
         //@Override
-        /*public*/ void setEnabled(bool enable) {
+        /*public*/ void setEnabled(bool enable) override{
             throw new UnsupportedOperationException("Not supported");
         }
 
         //@Override
-        /*public*/ void setEnabledFlag(bool enable) {
+        /*public*/ void setEnabledFlag(bool enable)override {
             throw new UnsupportedOperationException("Not supported");
         }
 

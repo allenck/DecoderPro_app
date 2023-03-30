@@ -23,6 +23,8 @@ class DebuggerMaleStringActionSocket : public AbstractDebuggerMaleSocket, public
   /*public*/  QString getBeanType()override;
   /*public*/  int compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2)override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.tools.debugger.DebuggerMaleStringActionSocket";}
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.tools.debugger.DebuggerMaleStringActionSocket";}
+
 
   QObject* self() override {return (QObject*)this;}
 

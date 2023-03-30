@@ -42,6 +42,7 @@ class TimeSinceMidnight : public AbstractAnalogExpression, public PropertyChange
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.expressions.TimeSinceMidnight";}
 
   QObject* bself() override {return (QObject*)this;}
   QObject* self() override {return (QObject*)this;}

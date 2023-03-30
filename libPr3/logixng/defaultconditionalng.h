@@ -50,6 +50,8 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames)override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.implementation.DefaultConditionalNG";}
+
 
   bool setParentForAllChildren(QList<QString>* list) override{
    return AbstractBase::setParentForAllChildren(list);

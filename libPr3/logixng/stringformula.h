@@ -69,6 +69,8 @@ class StringFormula : public AbstractStringExpression, public FemaleSocketListen
       }
     friend class StringFormula;
   };
+    /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.expressions.StringFormula";}
+
 
   QObject* bself() override{return (QObject*)this;}
 

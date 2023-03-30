@@ -53,6 +53,7 @@ class ExecuteDelayed : public AbstractDigitalAction, public FemaleSocketListener
   /*public*/  void registerListenersForThisClass() override;
   /*public*/  void unregisterListenersForThisClass() override;
   /*public*/  void disposeMe() override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.ExecuteDelayed";}
 
   /*public*/  void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)override{
    AbstractNamedBean::addPropertyChangeListener(listener, name,listenerRef);
@@ -135,6 +136,8 @@ class ExecuteDelayed : public AbstractDigitalAction, public FemaleSocketListener
               conditionalNG->setSymbolTable(oldSymbolTable);
           }
       }
+      /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.InternalFemaleSocket";}
+
    friend class EDProtectedTimerTask;
   };
   /*private*/ /*final*/ InternalFemaleSocket* _internalSocket = new InternalFemaleSocket(this);

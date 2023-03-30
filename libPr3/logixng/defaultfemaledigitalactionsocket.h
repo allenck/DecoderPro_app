@@ -9,7 +9,8 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   Q_OBJECT
   Q_INTERFACES(FemaleDigitalActionSocket)
  public:
-    explicit DefaultFemaleDigitalActionSocket(QObject*parent = nullptr) {}
+    explicit DefaultFemaleDigitalActionSocket(QObject*parent = nullptr)
+        : AbstractFemaleSocket(parent) {}
   DefaultFemaleDigitalActionSocket(Base* parentObject, FemaleSocketListener* listener, QString name, QObject*parent = nullptr);
   ~DefaultFemaleDigitalActionSocket() {}
   /*public*/  bool isCompatible(MaleSocket* socket)override;
@@ -19,6 +20,8 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/  QHash<Category, QList<QString> > getConnectableClasses()override;
   /*public*/  void disposeMe()override;
   /*public*/ QString getClassName()override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.DefaultFemalDigitalActionSocket";}
+
 
   QObject* bself() override{return(QObject*)this;}
   QString getUserName() const override{return AbstractFemaleSocket::getUserName();}

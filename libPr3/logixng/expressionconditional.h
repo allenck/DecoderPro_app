@@ -86,6 +86,7 @@ public:
     /*public*/ void propertyChange(PropertyChangeEvent* evt)override;
     /*public*/ void disposeMe()override;
     /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*>* report, NamedBean* cdl)override;
+    /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.expressions.ExpressionConditional";}
 
     QObject* bself() override{return this;}
     QObject* pself() override{return this;}

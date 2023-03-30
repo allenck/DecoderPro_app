@@ -174,7 +174,7 @@
         _renameSocketDialog->setLocation(50, 30);
         QWidget* contentPanel = _renameSocketDialog->getContentPane();
         if(!contentPanel->layout())
-            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
         GridBagLayout* pLayout;
@@ -209,13 +209,14 @@
         });
 //        cancel->setToolTip(Bundle.getMessage("Press to return to Logix Table without any changes"));      // NOI18N
         cancel->setToolTip("Press to return to Logix Table without any changes");      // NOI18N
-#if 0 // TODO
-        _renameSocketDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-            //@Override
-            /*public*/  void windowClosing(java.awt.event.WindowEvent e) {
-                cancelRenameSocketPressed(null);
-            }
-        });
+#if 1 // TODO
+        _renameSocketDialog->addWindowListener(new TE_WindowAdapter(this));
+//        {                                {
+//            //@Override
+//            /*public*/  void windowClosing(java.awt.event.WindowEvent e) {
+//                cancelRenameSocketPressed(null);
+//            }
+//        });
 #endif
         _create = new JButton(tr("OK"));  // NOI18N
         panel5->layout()->addWidget(_create);
@@ -325,11 +326,11 @@
         _selectItemTypeDialog->setLocation(50, 30);
         QWidget* contentPanel = _selectItemTypeDialog->getContentPane();
         if(!contentPanel->layout())
-            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
         JPanel* p;
-        p = new JPanel(new QHBoxLayout);
-       #if 0
+        p = new JPanel();
+       #if 1
         GridBagLayout* pLayout;
         p->setLayout(pLayout = new GridBagLayout());
         GridBagConstraints c =  GridBagConstraints();
@@ -350,6 +351,7 @@
         c.gridy = 1;
         pLayout->addWidget(_swingConfiguratorComboBox, c);
 #else
+        p->setLayout(new QHBoxLayout);
         p->layout()->addWidget(_categoryLabel);
         ((QVBoxLayout*)p->layout())->addWidget(_categoryComboBox, 1);
         _categoryComboBox->setToolTip(tr("Select the category"));    // NOI18N
@@ -387,6 +389,9 @@
                 cancelAddPressed(null);
             }
         });
+#else
+        _selectItemTypeDialog->addWindowListener(new TE_WindowAdapter2(this));
+
 #endif
         _create = new JButton(tr("Create"));  // NOI18N
         panel5->layout()->addWidget(_create);
@@ -644,8 +649,8 @@
 //        frame.addHelpMenu(
 //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
         QWidget* contentPanel = frame->getContentPane();
-        if(!contentPanel->layout())
-            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+        contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+        frame->resize(300, 300);
 
         JPanel* p;
         p = new JPanel();
@@ -771,11 +776,11 @@
         JButton* editComment = new JButton(tr("Edit comment"));    // NOI18N
         panel5->layout()->addWidget(editComment);
         QString comment = object != nullptr ? object->getComment() : "";
-        EditCommentDialog* dlg = new EditCommentDialog();
-        connect(editComment, &JButton::clicked, [=] (){
-         dlg->showDialog(comment);
+        connect(editComment, &JButton::clicked, [=] {
+         //commentStr.setValue(new EditCommentDialog().showDialog(comment));
+         EditCommentDialog* dlg = new EditCommentDialog();
+//            commentStr= dlg->showDialog(comment);
         });
-        comment =dlg->_comment;
 
         // Function help
         JButton* showFunctionHelp = new JButton(tr("Formula functions"));    // NOI18N
@@ -919,8 +924,8 @@
     //        frame.addHelpMenu(
     //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
             QWidget* contentPanel = _editLocalVariablesDialog->getContentPane();
-            if(!contentPanel->layout())
-                contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            _editLocalVariablesDialog->setMaximumSize(300,300);
 
             JPanel* tablePanel = new JPanel(new QVBoxLayout());
             JTable* table = new JTable();
@@ -1104,8 +1109,8 @@
     //        frame.addHelpMenu(
     //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
             QWidget* contentPanel = _changeUsernameDialog->getContentPane();
-            if(!contentPanel->layout())
-              contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
+            _changeUsernameDialog->setMinimumSize(300,300);
 
 //            JPanel* tablePanel = new JPanel();
 
@@ -1323,42 +1328,43 @@
         }
 
         /*private*/ void TEPopupMenu::init() {
+            int ix = 0;
             menuItemRenameSocket = new JMenuItem(tr("Rename Socket"),this);
-            connect(menuItemRenameSocket, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this, 0, ACTION_COMMAND_RENAME_SOCKET));});
+            connect(menuItemRenameSocket, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this, JActionEvent::ACTION_PERFORMED, ACTION_COMMAND_RENAME_SOCKET));});
             menuItemRenameSocket->setActionCommand(ACTION_COMMAND_RENAME_SOCKET);
             addAction(menuItemRenameSocket);
             addSeparator();
             menuItemAdd = new JMenuItem(tr("Add"),this);
-            connect(menuItemAdd, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this, 0, ACTION_COMMAND_ADD));});
+            connect(menuItemAdd, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this, JActionEvent::ACTION_PERFORMED, ACTION_COMMAND_ADD));});
             menuItemAdd->setActionCommand(ACTION_COMMAND_ADD);
             addAction(menuItemAdd);
             addSeparator();
             menuItemEdit = new JMenuItem(tr("Edit"), this);
-            connect(menuItemEdit, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,1, ACTION_COMMAND_EDIT));});
+            connect(menuItemEdit, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED, ACTION_COMMAND_EDIT));});
             menuItemEdit->setActionCommand(ACTION_COMMAND_EDIT);
             addAction(menuItemEdit);
             menuItemRemove = new JMenuItem(tr("Remove"),this);
-            connect(menuItemRemove, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,2,ACTION_COMMAND_REMOVE) );});
+            connect(menuItemRemove, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_REMOVE) );});
             menuItemRemove->setActionCommand(ACTION_COMMAND_REMOVE);
             addAction(menuItemRemove);
             addSeparator();
             menuItemCut = new JMenuItem(tr("Cut"),this);
-            connect(menuItemCut, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,3,ACTION_COMMAND_CUT));});
+            connect(menuItemCut, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_CUT));});
             menuItemCut->setActionCommand(ACTION_COMMAND_CUT);
             addAction(menuItemCut);
             menuItemCopy = new JMenuItem(tr("Copy"),this);
-            connect(menuItemCopy, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,4,ACTION_COMMAND_COPY));});
+            connect(menuItemCopy, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_COPY));});
             menuItemCopy->setActionCommand(ACTION_COMMAND_COPY);
             addAction(menuItemCopy);
             menuItemPaste = new JMenuItem(tr("Paste"),this);
-            connect(menuItemPaste, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,5,ACTION_COMMAND_PASTE));});
+            connect(menuItemPaste, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_PASTE));});
             menuItemPaste->setActionCommand(ACTION_COMMAND_PASTE);
             addAction(menuItemPaste);
             addSeparator();
 
             for (FemaleSocketOperation::TYPES oper : FemaleSocketOperation::values()) {
                 JMenuItem* menuItem = new JMenuItem(FemaleSocketOperation::toString(oper),this);
-                connect(menuItem, &JMenuItem::triggered, [=]{actionPerformed();});
+                connect(menuItem, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED, FemaleSocketOperation::toString(oper)));});
                 menuItem->setActionCommand(FemaleSocketOperation::toString(oper));
                 addAction(menuItem);
                 menuItemFemaleSocketOperation.insert(oper, menuItem);
@@ -1366,38 +1372,38 @@
 
             addSeparator();
             menuItemEnable = new JMenuItem(tr("Enable"),this);
-            connect(menuItemEnable, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemEnable, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_ENABLE));});
             menuItemEnable->setActionCommand(ACTION_COMMAND_ENABLE);
             addAction(menuItemEnable);
             menuItemDisable = new JMenuItem(tr("Disable"),this);
-            connect(menuItemDisable, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemDisable, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_DISABLE));});
             menuItemDisable->setActionCommand(ACTION_COMMAND_DISABLE);
             addAction(menuItemDisable);
             menuItemLock = new JMenuItem(tr("Lock"),this);
-            connect(menuItemLock, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemLock, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_LOCK));});
             menuItemLock->setActionCommand(ACTION_COMMAND_LOCK);
             addAction(menuItemLock);
             menuItemUnlock = new JMenuItem(tr("Unlock"),this);
-            connect(menuItemUnlock, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemUnlock, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_UNLOCK));});
             menuItemUnlock->setActionCommand(ACTION_COMMAND_UNLOCK);
             addAction(menuItemUnlock);
 
             addSeparator();
             menuItemLocalVariables = new JMenuItem(tr("Local Variables"),this);
-            connect(menuItemLocalVariables, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemLocalVariables, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_LOCAL_VARIABLES));});
             menuItemLocalVariables->setActionCommand(ACTION_COMMAND_LOCAL_VARIABLES);
             addAction(menuItemLocalVariables);
 
             addSeparator();
             menuItemChangeUsername = new JMenuItem(tr("Chang, &JMenuItem::triggered, [=]{actionPerformed();});e Username"), this);
-            connect(menuItemChangeUsername, &JMenuItem::triggered, [=]{actionPerformed();});
+            connect(menuItemChangeUsername, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_CHANGE_USERNAME));});
             menuItemChangeUsername->setActionCommand(ACTION_COMMAND_CHANGE_USERNAME);
             addAction(menuItemChangeUsername);
 
             if (editor->_enableExecuteEvaluate) {
                 addSeparator();
                 menuItemExecuteEvaluate = new JMenuItem(this);  // The text is set later
-                connect(menuItemExecuteEvaluate, &JMenuItem::triggered, [=]{actionPerformed();});
+                connect(menuItemExecuteEvaluate, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_EXECUTE_EVALUATE));});
                 menuItemExecuteEvaluate->setActionCommand(ACTION_COMMAND_EXECUTE_EVALUATE);
                 addAction(menuItemExecuteEvaluate);
             }
@@ -1611,6 +1617,7 @@
             else if(e->getActionCommand() ==  ACTION_COMMAND_EDIT)
             {
                     if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
+                    editor->editPressed(_currentFemaleSocket, _currentPath);
             }
             else if(e->getActionCommand() ==  ACTION_COMMAND_REMOVE)
             {
@@ -2102,6 +2109,15 @@
       //                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
          if (treeEditor->_treePane->_femaleRootSocket->isActive()) {
              treeEditor->_treePane->_femaleRootSocket->registerListeners();
+         }
+        }
+        void TEClipboardListener::clipboardEventOccurred()
+        {
+         //_clipboardEditor->clipboardData.forEach((key, value) -> {
+         foreach(QString key, te->_clipboardEditor->clipboardData){
+             if (key == ("Finish")) {                  // NOI18N
+                 te->_clipboardEditor = nullptr;
+             }
          }
         }
 

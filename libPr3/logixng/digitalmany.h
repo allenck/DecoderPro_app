@@ -40,10 +40,11 @@ class DigitalMany : public AbstractDigitalAction, public FemaleSocketListener
   /*public*/  void connected(FemaleSocket* socket)override;
   /*public*/  void disconnected(FemaleSocket* socket)override;
   /*public*/  QString getShortDescription(QLocale locale)override;
-  /*public*/  QString getLongDescription(QLocale locale);
+  /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.tools.debugger.DigitalMany";}
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}

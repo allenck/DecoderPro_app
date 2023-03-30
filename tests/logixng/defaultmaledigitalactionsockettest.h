@@ -39,6 +39,8 @@ class DefaultMaleDigitalActionSocketTest : public MaleSocketTestBase
     MyDigitalAction(QString sysName) : AbstractDigitalAction(sysName, ""){
         //super(sysName, null);
     }
+    QString getClass() const override {return ".MyDigitalAction";}
+
     void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  protected:

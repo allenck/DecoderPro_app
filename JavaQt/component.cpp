@@ -7,7 +7,8 @@ Component::Component(QWidget *parent) :  JPanel(parent)
 {
  peer = NULL;
  dropTarget = NULL;
- setLayout(new QVBoxLayout);
+// if(!this->layout())
+//  setLayout(new QVBoxLayout);
 }
 /**
  * Associate a <code>DropTarget</code> with this component.

@@ -2,7 +2,7 @@
 #include <QString>
 #include "malesocket.h"
 #include "abstractmalesocket.h"
-
+#include "femalesocket.h"
 /**
  * The name of the property child count.
  * To get the number of children, use the method getChildCount().
@@ -75,4 +75,13 @@
         ((AbstractMaleSocket*)this->bself())->getObject()->doSocketOperation(index, oper);
     }
     // By default, do nothing if not a male socket
+}
+
+/*public*/ /*default*/ void Base::forEntireTree(RunnableWithBase* r) {
+    r->run(this);
+    for (int i=0; i < getChildCount(); i++) {
+     FemaleSocket* s = getChild(i);
+
+        s->forEntireTree(r);
+    }
 }

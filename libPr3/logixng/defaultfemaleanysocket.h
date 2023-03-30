@@ -18,6 +18,7 @@ class DefaultFemaleAnySocket : public AbstractFemaleSocket, public FemaleAnySock
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale)override;
   /*public*/ QString getClassName()override {return "jmri.jmrit.logixng.implementation.DefaultFemaleAnySocket";}
+  /*public*/ QString getClass() const override {return "jmri.jmrit.logixng.implementation.DefaultFemaleAnySocket";}
 
   QObject* bself() override {return (QObject*)this;}
   /*public*/ QString getSystemName() const override {return AbstractFemaleSocket::getSystemName();}

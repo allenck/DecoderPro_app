@@ -31,6 +31,7 @@ class AnalogExpressionManagerTest : public AbstractManagerTestBase
       /*public*/  MyExpression(QString sys) /*throws BadSystemNameException*/ : AbstractBase(sys) {
           //super(sys);
       }
+        QString getClass() const override {return ".MyExpression";}
     QObject* bself() override {return (QObject*)this;}
    protected:
       //@Override

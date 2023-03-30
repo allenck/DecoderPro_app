@@ -17,6 +17,7 @@ class DefaultFemaleDigitalExpressionSocket : public AbstractFemaleSocket, public
   /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getConnectableClasses()override;
   /*public*/  void disposeMe()override;
   /*public*/  QString getClassName() override {return "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket";}
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket";}
 
   QObject* bself() override{return (QObject*)this;}
 

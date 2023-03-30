@@ -3,6 +3,7 @@
 #include "jmriexception.h"
 #include "runtimeexception.h"
 #include "reference.h"
+#include <QApplication>
 
 ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
 {
@@ -264,8 +265,10 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      */
     /*static*/ /*public*/ void ThreadingUtil::runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) {
         // dispatch to Swing
-#if 0
-        SwingUtilities.invokeLater(ta);
+#if 1
+        //SwingUtilities.invokeLater(ta);
+        qApp->processEvents();
+        runOnGUI(ta);
 #endif
     }
 #if 0

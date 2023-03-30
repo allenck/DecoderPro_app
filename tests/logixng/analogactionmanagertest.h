@@ -28,6 +28,8 @@ class AnalogActionManagerTest : public AbstractManagerTestBase
       /*public*/  MyAction(QString sys) /*throws BadSystemNameException*/ : AbstractBase(sys){
           //super(sys);
       }
+      QString getClass() const override {return ".MyAction";}
+
     QObject* bself() override{return (QObject*)this;}
 
    protected:

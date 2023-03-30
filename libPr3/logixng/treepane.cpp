@@ -261,7 +261,11 @@
 
         //@Override
         /*public*/  bool FemaleSocketTreeModel::isLeaf(QObject* node) {
-            FemaleSocket* socket = (AbstractFemaleSocket*) node;
+            FemaleSocket* socket = nullptr;
+            if(qobject_cast<TP_FemaleSocketTreeNode*>(node))
+                socket = qobject_cast<TP_FemaleSocketTreeNode*>(node)->getFemaleSocket();
+            else
+                socket =(AbstractFemaleSocket*) node;
             if (!socket->isConnected()) {
                 return true;
             }

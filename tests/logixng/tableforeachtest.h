@@ -57,6 +57,8 @@ class TableForEachTest : public AbstractDigitalActionTestBase
         //super(sys, user);
      this->_cells = _cells;
     }
+ QString getClass() const override {return ".MyAction04";}
+
  void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(l);}
 
  protected:

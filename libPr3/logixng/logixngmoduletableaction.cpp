@@ -123,12 +123,12 @@
 
     //@Override
     /*protected*/ QString LogixNGModuleTableAction::getAddTitleKey() {
-        return "Add LogixNGModule";
+        return "Add LogixNG Module";
     }
 
     //@Override
     /*protected*/ QString LogixNGModuleTableAction::getCreateButtonHintKey() {
-        return "LogixNGModuleCreateButtonHint";
+        return "Press to create a new LogixNG Module";
     }
 
     //@Override

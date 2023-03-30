@@ -21,7 +21,7 @@
         Sequence* action = nullptr;
         if(object) action = (Sequence*)object->bself();
 
-        panel = new JPanel(new FlowLayout);
+        panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
         _startImmediately = new JCheckBox(tr("Start sequence immediately on load"));
         _runContinuously = new JCheckBox(tr("Run sequence continuously"));
