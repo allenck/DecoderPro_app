@@ -9,6 +9,8 @@ class AbstractDebuggerMaleSocketSwing : public AbstractSwingConfigurator
 
  public:
   explicit AbstractDebuggerMaleSocketSwing(QObject *parent = nullptr) : AbstractSwingConfigurator(parent) {}
+    ~AbstractDebuggerMaleSocketSwing() {}
+    AbstractDebuggerMaleSocketSwing(const AbstractDebuggerMaleSocketSwing&) : AbstractSwingConfigurator() {}
   /*public*/  BaseManager/*<? extends NamedBean>*/* getManager() override;
   /*public*/  /*final*/ JPanel* getConfigPanel(/*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/ override;
   /*public*/  /*final*/ JPanel* getConfigPanel(/*@Nonnull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/ override;

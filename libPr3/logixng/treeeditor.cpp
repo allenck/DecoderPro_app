@@ -32,6 +32,7 @@
 #include <QScrollArea>
 #include "basemanager.h"
 #include "abstractmalesocket.h"
+#include "joptionpane.h"
 
 /**
  * Base class for LogixNG editors
@@ -121,8 +122,8 @@
     /*final*/ /*public*/  void TreeEditor::openClipboard() {
         if (_clipboardEditor == nullptr) {
             _clipboardEditor = new ClipboardEditor();
-            /*_clipboardEditor->*/initComponents();
-            /*_clipboardEditor->*/setVisible(true);
+            _clipboardEditor->initComponents();
+            _clipboardEditor->setVisible(true);
 #if 1
             _clipboardEditor->addClipboardEventListener(new TEClipboardListener(this));
 #endif
@@ -175,7 +176,7 @@
         QWidget* contentPanel = _renameSocketDialog->getContentPane();
         if(!contentPanel->layout())
         contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
-
+        _renameSocketDialog->setMinimumSize(300,200);
         JPanel* p;
         GridBagLayout* pLayout;
         p = new JPanel();
@@ -724,7 +725,8 @@
             object = femaleSocket->getConnectedSocket();
             while (dynamic_cast<AbstractMaleSocket*>(object->bself())) {
                 SwingConfiguratorInterface* swi =
-                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
+//                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
+                        SwingTools::getSwingConfiguratorForClass(((AbstractMaleSocket*)object->bself())->getClass());
                 panels.append(swi->getConfigPanel(object, panel5));
                 QHash<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(swi, object);
@@ -1095,6 +1097,9 @@
                             _treePane._tree.updateUI();
                         });
                     });
+#else
+                    runOnConditionalNGThreadOrGUIThreadEventually(_treePane->_femaleRootSocket->getConditionalNG(),
+                                                                  new TreeEditor_run7(femaleSocket, path,maleSocket,this));
 #endif
                 }
             });
@@ -1145,6 +1150,9 @@
                     _changeUsernameDialog = null;
                 }
             });
+#else
+            _changeUsernameDialog->addWindowListener(new TE_WindowAdapter3(this));
+
 #endif
             contentPanel->layout()->addWidget(buttonPanel);
 
@@ -1230,19 +1238,18 @@
         if(!_editActionExpressionDialog)return;
         _editActionExpressionDialog->setVisible(false);
 //        _editSwingConfiguratorInterface.dispose();
-        //QListIterator<QMap<SwingConfiguratorInterface*, Base*> > entry (_swingConfiguratorInterfaceList);
-#if 0 // TODO:
-        foreach (QMap<SwingConfiguratorInterface*, Base*> map, _swingConfiguratorInterfaceList)
-        {
-         QMapIterator<QMap<SwingConfiguratorInterface*, Base*> > entry (map);
-
-        while(entry.hasNext()){
-         entry.next();
-            entry.key()->dispose();
-//            entry.getKey().updateObject(entry.getValue());
-//        for (SwingConfiguratorInterface swi : _swingConfiguratorInterfaceList) {
-//            swi.dispose();
-        }
+#if 1 // TODO:
+        for (QHash<SwingConfiguratorInterface*, Base*> item : _swingConfiguratorInterfaceList) {
+            QHashIterator<SwingConfiguratorInterface*, Base*> entry(item);
+            while(entry.hasNext())
+            {
+                entry.next();
+                entry.key()->dispose();
+            }
+        //            entry.getKey().updateObject(entry.getValue());
+        //        for (SwingConfiguratorInterface swi : _swingConfiguratorInterfaceList) {
+        //            swi.dispose();
+                }
 #endif
         _editActionExpressionDialog->dispose();
         _editActionExpressionDialog = nullptr;
@@ -2048,6 +2055,80 @@
            treeEditor->editor-> _treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
         }
 //    };
+        void TreeEditor_run1::run()
+        {
+         QList<QString>* errorMessages = new QList<QString>();
+
+         bool isValid = true;
+
+         if (!treeEditor->_prefs->getShowSystemUserNames()
+                 || (treeEditor->_systemName->text().isEmpty() && treeEditor->_autoSystemName->isSelected())) {
+             treeEditor->_systemName->setText(treeEditor->_addSwingConfiguratorInterface->getAutoSystemName());
+         }
+
+         if (treeEditor->_addSwingConfiguratorInterface->getManager()
+                 ->validSystemNameFormat(treeEditor->_systemName->text()) != Manager::NameValidity::VALID) {
+             isValid = false;
+             errorMessages->append(tr("Invalid System Name \"%1\"").arg(treeEditor->_systemName->text()));
+         }
+
+         isValid &= treeEditor->_addSwingConfiguratorInterface->validate(errorMessages);
+
+         if (isValid) {
+             MaleSocket* socket;
+             if (treeEditor->_addUserName->text().isEmpty()) {
+                 socket = treeEditor->_addSwingConfiguratorInterface->createNewObject(treeEditor->_systemName->text(), "");
+             } else {
+                 socket = treeEditor->_addSwingConfiguratorInterface->createNewObject(treeEditor->_systemName->text(), treeEditor->_addUserName->text());
+             }
+             treeEditor->_addSwingConfiguratorInterfaceMaleSocket->updateObject(socket);
+       //                    for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
+       //                        entry.getKey().updateObject(entry.getValue());
+       //                    }
+             socket->setComment(commentStr/*.getValue()*/);
+             try {
+                 femaleSocket->_connect(socket);
+             } catch (SocketAlreadyConnectedException* ex) {
+                 throw new RuntimeException(ex);
+             }
+       #if 1
+      //       femaleSocket->forEntireTree((Base b) -> {
+      //           b.addPropertyChangeListener(_treePane);
+      //       });
+             femaleSocket->forEntireTree(new TreeEditor_run2( treeEditor->_treePane));
+
+             ThreadingUtil::runOnGUIEventually(/*() -> {*/ new TreeEditor_run3(femaleSocket, path, treeEditor));
+      //           _addSwingConfiguratorInterface.dispose();
+      //           _addItemDialog.dispose();
+      //           _addItemDialog = null;
+
+      //           for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+      //               TreeModelEvent tme = new TreeModelEvent(
+      //                       femaleSocket,
+      //                       path.getPath()
+      //               );
+      //               l.treeNodesChanged(tme);
+      //           }
+      //           _treePane._tree.expandPath(path);
+      //           _treePane._tree.updateUI();
+
+      //           InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefMgr) -> {
+      //               prefMgr.setCheckboxPreferenceState(_systemNameAuto, _autoSystemName.isSelected());
+      //           });
+      //       });
+         } else {
+             QString errorMsg;// = new StringBuilder();
+             for (QString s : *errorMessages) {
+                 if (errorMsg.length() > 0) errorMsg.append("<br>");
+                 errorMsg.append(s);
+             }
+             JOptionPane::showMessageDialog(nullptr,
+                     tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
+                     tr("Data is not valid"),
+                     JOptionPane::ERROR_MESSAGE);
+      #endif
+        }
+       }
 
         void TreeEditor_run2::run(Base* b)
         {
@@ -2060,11 +2141,16 @@
          treeEditor->_addItemDialog->dispose();
          treeEditor->_addItemDialog = nullptr;
 
+         QObject* parent = path->getLastPathComponent();
+
+         ((DefaultMutableTreeNode*)parent)->add(new TP_FemaleSocketTreeNode(femaleSocket->bself()));
+
          for (TreeModelListener* l : treeEditor->_treePane->femaleSocketTreeModel->listeners) {
              TreeModelEvent* tme = new TreeModelEvent(
                      femaleSocket->bself(),
                      path->getPath()
              );
+             if(l)
              l->treeNodesChanged(tme);
          }
          treeEditor->_treePane->_tree->expandPath(path);
@@ -2120,6 +2206,104 @@
              }
          }
         }
+
+        void TreeEditor_run7::run()
+        {
+            QString username = te->_usernameField->text();
+            if (username == ("")) username = "";
+
+            // Only change user name if it's changed
+            if (((username == "") && (maleSocket->getUserName() != ""))
+                    || ((username != "") && username!=(maleSocket->getUserName()))) {
+
+                if (username != "") {
+                    NamedBean* nB = maleSocket->getManager()->getByUserName(username);
+                    if (nB != nullptr) {
+                        QString uname = username;
+#if 0
+                        ThreadingUtil.runOnGUIEventually(() -> {
+                            log.error("User name is not unique {}", uname);
+                            String msg = Bundle.getMessage("WarningUserName", new Object[]{("" + uname)});
+                            JOptionPane.showMessageDialog(null, msg,
+                                    Bundle.getMessage("WarningTitle"),
+                                    JOptionPane.ERROR_MESSAGE);
+                        });
+#else
+                      ThreadingUtil::runOnGUIEventually(new   TreeEditor_run7b(uname, te));
+#endif
+                        username = "";
+                    }
+                }
+
+                maleSocket->setUserName(username);
+
+                MaleSocket* m = maleSocket;
+//                while ( /*!(qobject_cast<AbstractNamedBean*>(m))*/ m = (MaleSocket*) m->getObject()->bself());
+
+                NamedBeanHandleManager* nbMan = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
+                if (nbMan->inUse(maleSocket->getSystemName(), (NamedBean*)m)) {
+                    QString msg = tr("Do you want to update references to this %1\n to use the UserName \"%2\" rather than its SystemName \"%3\"?").arg(
+                                maleSocket->getManager()->getBeanTypeHandled(), username, maleSocket->getSystemName());
+                    int optionPane = JOptionPane::showConfirmDialog(nullptr,
+                            msg, tr("Update usage to UserName"),
+                            JOptionPane::YES_NO_OPTION);
+                    if (optionPane == JOptionPane::YES_OPTION) {
+                        //This will update the bean reference from the systemName to the userName
+                        try {
+                       nbMan->updateBeanFromSystemToUser((NamedBean*)m);
+                        } catch (JmriException* ex) {
+                            //We should never get an exception here as we already check that the username is not valid
+                            te->log->error("Impossible exception setting user name", ex);
+                        }
+                    }
+                }
+            }
+#if 0
+            ThreadingUtil.runOnGUIEventually(() -> {
+                if (_treePane._femaleRootSocket.isActive()) {
+                    _treePane._femaleRootSocket.registerListeners();
+                }
+                _changeUsernameDialog.dispose();
+                _changeUsernameDialog = null;
+                for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+                    TreeModelEvent tme = new TreeModelEvent(
+                            femaleSocket,
+                            path.getPath()
+                    );
+                    l.treeNodesChanged(tme);
+                }
+                _treePane._tree.updateUI();
+            });
+        });
+#else
+           ThreadingUtil::runOnGUIEventually( new TreeEditor_run7c(femaleSocket, path, te));
+#endif
+    }
+        void TreeEditor_run7b::run()
+        {
+            te->log->error(tr("User name is not unique %1").arg(uname));
+            QString msg = tr("User Name \"%1\" has already been used.").arg(uname);
+            JOptionPane::showMessageDialog(nullptr, msg,
+                    tr("Warning"),
+                    JOptionPane::ERROR_MESSAGE);
+        }
+
+        void TreeEditor_run7c::run()
+        {
+            if (te->_treePane->_femaleRootSocket->isActive()) {
+                te->_treePane->_femaleRootSocket->registerListeners();
+            }
+            te->_changeUsernameDialog->dispose();
+            te->_changeUsernameDialog = nullptr;
+            for (TreeModelListener* l : te->_treePane->femaleSocketTreeModel->listeners) {
+                TreeModelEvent* tme = new TreeModelEvent(
+                        femaleSocket->bself(),
+                            path->getPath()
+                );
+                l->treeNodesChanged(tme);
+            }
+    //        _treePane._tree.updateUI();
+        }//);
 
 
     /*private*/ /*final*/ /*static*/ Logger* TreeEditor::log =LoggerFactory::getLogger("TreeEditor");

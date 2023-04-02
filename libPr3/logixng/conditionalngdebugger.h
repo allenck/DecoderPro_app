@@ -79,7 +79,7 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
   /*private*/ void doStepInto();
   /*private*/ void doRun();
   void fireLogixNGEvent();
-
+  JPanel* dbPanel(FemaleSocket* femaleSocket);
  protected:
   /*protected*/ /*final*/ ConditionalNG* _conditionalNG;
  friend class PopupMenu;
@@ -147,5 +147,6 @@ class CDRun2 : public ThreadAction
  public slots:
   void run();
 };
+
 
 #endif // CONDITIONALNGDEBUGGER_H

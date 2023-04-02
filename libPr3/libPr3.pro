@@ -1142,6 +1142,13 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
+    logixng/debuggermaleanalogactionsocketswing.cpp \
+    logixng/debuggermaleanalogexpressionsocketswing.cpp \
+    logixng/debuggermaledigitalactionsocketswing.cpp \
+    logixng/debuggermaledigitalbooleanactionsocketswing.cpp \
+    logixng/debuggermaledigitalexpressionsocketswing.cpp \
+    logixng/debuggermalestringactionsocketswing.cpp \
+    logixng/debuggermalestringexpressionsocketswing.cpp \
     logixng/actionreporter.cpp \
     logixng/actionreporterswing.cpp \
     logixng/actionreporterxml.cpp \
@@ -2724,6 +2731,13 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+    logixng/debuggermaleanalogactionsocketswing.h \
+    logixng/debuggermaleanalogexpressionsocketswing.h \
+    logixng/debuggermaledigitalactionsocketswing.h \
+    logixng/debuggermaledigitalbooleanactionsocketswing.h \
+    logixng/debuggermaledigitalexpressionsocketswing.h \
+    logixng/debuggermalestringactionsocketswing.h \
+    logixng/debuggermalestringexpressionsocketswing.h \
     logixng/actionreporter.h \
     logixng/actionreporterswing.h \
     logixng/actionreporterxml.h \

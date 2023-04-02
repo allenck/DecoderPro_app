@@ -255,7 +255,7 @@
         }
 
         //@Override
-        /*public*/  QObject* FemaleSocketTreeModel::getRoot() {
+        /*public*/  QObject *FemaleSocketTreeModel::getRoot() {
             return (QObject*)_root;
         }
 

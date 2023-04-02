@@ -36,7 +36,7 @@
 
         _treePane = new TreePane((AbstractFemaleSocket*)conditionalNG->getFemaleSocket());
 #if 0 // TODO:
-        _treePane->initComponents(FemaleSocket* femaleSocket/*, JPanel* panel*/)  {
+        _treePane.initComponents((FemaleSocket femaleSocket, JPanel panel) -> {
 
             if (femaleSocket->isConnected()) {
                 MaleSocket* maleSocket = femaleSocket->getConnectedSocket();
@@ -80,6 +80,8 @@
             }
             return panel;
         });
+#else
+        _treePane->initComponents((FemaleSocketDecorator*)dbPanel((AbstractFemaleSocket*)conditionalNG->getFemaleSocket()->bself()));
 #endif
         // build menu
         QMenuBar* menuBar = new QMenuBar();
@@ -191,6 +193,52 @@
         PopupMenu* popup = new PopupMenu(this);
         popup->init();
     }
+
+
+    JPanel* ConditionalNGDebugger::dbPanel(FemaleSocket* femaleSocket)      {
+        JPanel* panel = new JPanel(new FlowLayout);
+            if (femaleSocket->isConnected()) {
+                MaleSocket* maleSocket = femaleSocket->getConnectedSocket();
+                AbstractDebuggerMaleSocket* debugMaleSocket =
+                        (AbstractDebuggerMaleSocket*) maleSocket->find("AbstractDebuggerMaleSocket")->bself();
+                if (debugMaleSocket == nullptr) throw new RuntimeException("AbstractDebuggerMaleSocket is not found");
+                bool breakpointBefore = debugMaleSocket->getBreakpointBefore();
+                bool breakpointAfter = debugMaleSocket->getBreakpointAfter();
+                if (breakpointBefore || breakpointAfter) {
+                    JPanel* newPanel = new JPanel(new FlowLayout());
+                    newPanel->setBorder(BorderFactory::createMatteBorder(
+                            breakpointBefore ? 5 : 1,
+                            5,
+                            breakpointAfter ? 5 : 1,
+                            1, Qt::red));
+                    newPanel->layout()->addWidget(panel);
+                    panel = newPanel;
+                }
+            }
+            if (_currentMaleSocket != nullptr) {
+                Base* parent = _currentMaleSocket->getParent();
+                while ((parent != nullptr) && (!(qobject_cast<FemaleSocket*>(parent->bself())))) {
+                    parent = parent->getParent();
+                }
+                if (parent == femaleSocket) {
+                    JPanel* newPanel = new JPanel();
+                    switch (_currentState) {
+                        case State::Before:
+                            newPanel->setBorder(BorderFactory::createMatteBorder(8, 5, 1, 1, Qt::black));
+                            break;
+                        case State::After:
+                            newPanel->setBorder(BorderFactory::createMatteBorder(1, 5, 8, 1, Qt::black));
+                            break;
+                        default:
+                            // Return without adding a border
+                            return panel;
+                    }
+                    newPanel->layout()->addWidget(panel);
+                    return newPanel;
+                }
+            }
+            return panel;
+        };
 
     /*private*/ void ConditionalNGDebugger::doStepOver() {
         AbstractDebuggerMaleSocket* maleSocket = _currentMaleSocket;

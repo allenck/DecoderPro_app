@@ -724,7 +724,7 @@ QModelIndex DefaultTreeModel::index(int row, int column, const QModelIndex &pare
  }
  if (childItem)
  {
-  qDebug() << "Parent has " << parentItem->getChildCount() << " children, Child Level "  << childItem->getLevel() << childItem->toString();
+  qDebug() << parentItem->metaObject()->className() << "Parent has " << parentItem->getChildCount() << " children, Child Level "  << childItem->getLevel() << childItem->toString();
   return createIndex(row,column,childItem);
  }
  else
@@ -742,9 +742,13 @@ QModelIndex DefaultTreeModel::parent(const QModelIndex &index) const
  return createIndex(index.row(), 0, parentItem);
 }
 
-int DefaultTreeModel::columnCount(const QModelIndex &/*parent*/) const
+int DefaultTreeModel::columnCount(const QModelIndex &parent) const
 {
  return 1;
+//    if (parent.isValid())
+//     return static_cast<DefaultMutableTreeNode*>(parent.internalPointer())->columnCount();
+//    else
+//     return rootItem->columnCount();
 }
 
 int DefaultTreeModel::rowCount(const QModelIndex &parent) const

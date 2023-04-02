@@ -123,7 +123,7 @@
         Assert::assertEquals("socket name is correct", "Def", conditionalNG->getSocketSystemName(), __FILE__, __LINE__);
         conditionalNG->getFemaleSocket()->_connect(actionManySocket);
         Assert::assertEquals("socket name is correct",
-                ((AbstractNamedBean*)actionManySocket->bself())->getSystemName(),
+                ((NamedBean*)actionManySocket)->getSystemName(),
                 conditionalNG->getSocketSystemName(), __FILE__, __LINE__);
         conditionalNG->setSocketSystemName("");
         Assert::assertEquals("socket name is correct", "", conditionalNG->getSocketSystemName(), __FILE__, __LINE__);

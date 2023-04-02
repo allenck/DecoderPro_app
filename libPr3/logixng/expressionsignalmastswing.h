@@ -25,9 +25,9 @@ public:
     QObject* sself() override{return this;}
 
 private:
-    /*private*/ JTabbedPane* _tabbedPaneSignalMast;
-    /*private*/ BeanSelectPanel/*<SignalMast>*/* _signalMastBeanPanel;
-    /*private*/ JPanel* _panelSignalMastDirect;
+    /*private*/ JTabbedPane* _tabbedPaneSignalMast = nullptr;
+    /*private*/ BeanSelectPanel/*<SignalMast>*/* _signalMastBeanPanel = nullptr;
+    /*private*/ JPanel* _panelSignalMastDirect = nullptr;
     /*private*/ JPanel* _panelSignalMastReference;
     /*private*/ JPanel* _panelSignalMastLocalVariable;
     /*private*/ JPanel* _panelSignalMastFormula;

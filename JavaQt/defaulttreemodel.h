@@ -50,7 +50,6 @@ public:
      Qt::ItemFlags flags(const QModelIndex &index) const;
      QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 signals:
-    void treeStructureChanged(TreeModelEvent*);
     void treeNodesChanged(QObject* source, QList<QObject*>* path,
                           QList<int>* childIndices,
                           QList<QObject*>* children);
@@ -65,6 +64,8 @@ signals:
                           QList<QObject*>* children);
 
 public slots:
+    void treeStructureChanged(TreeModelEvent*);
+
 private:
     /*private*/ void fireTreeStructureChanged(QObject* source, TreePath* path);
     bool _asksAllowsChildren;

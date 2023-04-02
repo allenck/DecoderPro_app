@@ -11,6 +11,7 @@
 #include "treeexpansionlistener.h"
 #include "treeselectionlistener.h"
 #include "treecellrenderer.h"
+#include "treemodellistener.h"
 
 class JAVAQTSHARED_EXPORT ExpandVetoException : public Exception
 {
@@ -100,8 +101,10 @@ public:
  /*public*/ void addTreeExpansionListener(TreeExpansionListener* tel);
  /*public*/ int  getRowCount();
  /*public*/ void setCellRenderer(TreeCellRenderer*);
+ /*public*/ TreeModel* getModel();
  /*public*/ void setModel(TreeModel *m);
  /*public*/ TreeModel *model();
+ /*public*/ void treeNodesChanged(TreeModelEvent* ev);
 
 signals:
  void treeCollapsed(TreeExpansionEvent*);
@@ -114,7 +117,7 @@ public slots:
 
 private:
  void common();
- TreeModel* tree = nullptr;
+ TreeModel* treeModel = nullptr;
  TreeSelectionModel* selectionModel;
  //TreeSelectionListener* _TSL; // note: only one listener supported at this time.
  SwingPropertyChangeSupport* pcs;
@@ -143,6 +146,10 @@ protected:
  /*protected*/ bool removeDescendantSelectedPaths(TreePath* path, bool includePath);
  /** A list of event listeners for this component. */
  /*protected*/ EventListenerList* listenerList;// = new EventListenerList();
+ /**
+  * Handles TreeModelEvents to update the expandedState.
+  */
+ /*protected*/ /*transient*/ TreeModelListener* treeModelListener = nullptr;
 
 protected slots:
  void rowCollapsed(const QModelIndex index);

@@ -39,7 +39,7 @@ public slots:
      * <code>e.getChildIndices()</code>
      * returns the index(es) of the changed node(s).</p>
      */
- virtual void treeNodesChanged(TreeModelEvent* /*e*/) {}
+ virtual void treeNodesChanged(TreeModelEvent* /*e*/) =0;
 
     /**
      * <p>Invoked after nodes have been inserted into the tree.</p>

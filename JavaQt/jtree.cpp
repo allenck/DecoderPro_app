@@ -11,6 +11,7 @@
 #include "treeexpansionlistener.h"
 #include "eventlistenerlist.h"
 #include "defaulttreemodel.h"
+#include "treemodellistener.h"
 
 /** Bound property name for selectionModel. */
 //
@@ -62,18 +63,17 @@ JTree::JTree(QWidget *parent) :
  common();
 }
 
-JTree::JTree(TreeModel* tree,QWidget *parent) :
+JTree::JTree(TreeModel* model,QWidget *parent) :
   QTreeView(parent)
 {
  common();
- this->tree = tree;
- QTreeView::setModel((QAbstractItemModel*)tree);
+ setModel(model);
 }
 
 void JTree::common()
 {
  selectionModel = new DefaultTreeSelectionModel();
- tree = NULL;
+ treeModel = NULL;
  rootVisible = true;
  setRootIsDecorated(true);
  pcs = new SwingPropertyChangeSupport(this, nullptr);
@@ -774,16 +774,72 @@ void JTree::rowExpanded(const QModelIndex index)
  _treeCellRenderer = r;
 }
 
-/*public*/ void JTree::setModel(TreeModel* m)
+/**
+ * Returns the model of this <code>JTree</code> object.
+ *
+ * @return the associated <code>TreeModel</code>
+ */
+/*public*/ TreeModel* JTree::getModel()
 {
- QTreeView::setModel(m);
- if(qobject_cast<DefaultTreeModel*>(m))
-     tree = (DefaultTreeModel*)m;
+  return treeModel;
+}
+
+/*public*/ void JTree::setModel(TreeModel* model)
+{
+    if (treeModel == model)
+        return;
+    // Remove listeners from old model.
+    if (treeModel != nullptr && treeModelListener != nullptr)
+        treeModel->removeTreeModelListener(treeModelListener);
+    // add treeModelListener to the new model
+//    if (treeModelListener == nullptr)
+//      treeModelListener = createTreeModelListener();
+    if (model != nullptr) // as setModel(null) is allowed
+    {
+        model->addTreeModelListener(treeModelListener);
+      QTreeView::setModel(model);
+      if(qobject_cast<DefaultTreeModel*>(model))
+        treeModel = (DefaultTreeModel*)model;
+    }
+
+    TreeModel* oldValue = treeModel;
+    treeModel = model;
+//    clearToggledPaths();
+
+    if (treeModel != nullptr)
+    {
+//      if (treeModelListener == nullptr)
+//        treeModelListener = createTreeModelListener();
+      if (treeModelListener != nullptr)
+          treeModel->addTreeModelListener(treeModelListener);
+      QObject* root = treeModel->getRoot();
+      if (root != nullptr && !treeModel->isLeaf(root))
+      {
+        //nodeStates.put(new TreePath(root), Boolean.TRUE);
+      }
+    }
+
+//    firePropertyChange(TREE_MODEL_PROPERTY, oldValue, model);
 }
 
 /*public*/ TreeModel *JTree::model()
 {
-  if(tree)
-      return tree;
+  if(treeModel)
+      return treeModel;
   return nullptr;
+}
+
+/**
+ * Notifies when a node has changed in some ways. This does not include
+ * that a node has changed its location or changed it's children. It
+ * only means that some attributes of the node have changed that might
+ * affect its presentation.
+ *
+ * This method is called after the actual change occured.
+ *
+ * @param ev the TreeModelEvent describing the change
+ */
+/*public*/ void JTree::treeNodesChanged(TreeModelEvent* ev)
+{
+    // Nothing to do here.
 }

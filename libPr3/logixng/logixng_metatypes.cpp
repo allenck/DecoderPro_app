@@ -186,6 +186,14 @@
 #include "moduleeditormalesocketswing.h"
 #include "actionreporterswing.h"
 #include "actionreporterxml.h"
+#include "debuggermaledigitalactionsocketswing.h"
+#include "debuggermaledigitalbooleanactionsocketswing.h"
+#include "debuggermalestringactionsocketswing.h"
+#include "debuggermaleanalogactionsocketswing.h"
+#include "debuggermaleanalogexpressionsocketswing.h"
+#include "debuggermaledigitalexpressionsocketswing.h"
+#include "debuggermaledigitalexpressionsocketswing.h"
+#include "debuggermalestringexpressionsocketswing.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -361,7 +369,8 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
     qRegisterMetaType<DefaultMaleDigitalExpressionSocketSwing>("DefaultMaleDigitalExpressionSocketSwing");
     qRegisterMetaType<DefaultMaleStringActionSocketSwing>("DefaultMaleStringActionSocketSwing");
     qRegisterMetaType<ModuleEditorMaleSocketSwing>("ModuleEditorMaleSocketSwing");
-   // AbstractStringExpressionSwing
+
+    // AbstractStringExpressionSwing
    qRegisterMetaType<StringFormulaSwing>("StringFormulaSwing");
    qRegisterMetaType<SequenceSwing>("SequenceSwing");
    qRegisterMetaType<Expressions::DigitalCallModuleSwing>("Expressions::DigitalCallModuleSwing");
@@ -399,5 +408,15 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<SimpleTimebaseXml>("SimpleTimebaseXml");
    qRegisterMetaType<TP_FemaleSocketTreeNode>("TP_FemaleSocketTreeNode");
    qRegisterMetaType<DefaultMutableTreeNode>("DefaultMutableTreeNode");
+
+   // AbstractDebuggerMaleSocketSwing
+   qRegisterMetaType<DebuggerMaleAnalogActionSocketSwing>("DebuggerMaleAnalogActionSocketSwing");
+   qRegisterMetaType<DebuggerMaleAnalogExpressionSocketSwing>("DebuggerMaleAnalogExpressionSocketSwing");
+   qRegisterMetaType<DebuggerMaleDigitalActionSocketSwing>("DebuggerMaleDigitalActionSocketSwing");
+   qRegisterMetaType<DebuggerMaleDigitalBooleanActionSocketSwing>("DebuggerMaleDigitalBooleanActionSocketSwing");
+   qRegisterMetaType<DebuggerMaleDigitalExpressionSocketSwing>("DebuggerMaleDigitalExpressionSocketSwing");
+   qRegisterMetaType<DebuggerMaleStringActionSocketSwing>("DebuggerMaleStringActionSocketSwing");
+   qRegisterMetaType<DebuggerMaleDigitalExpressionSocketSwing>("DebuggerMaleDigitalExpressionSocketSwing");
+   qRegisterMetaType<DebuggerMaleStringExpressionSocketSwing>("DebuggerMaleStringExpressionSocketSwing");
    LogixNG_Metatypes::ng_done = true;
 }

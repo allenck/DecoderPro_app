@@ -20,7 +20,7 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/  QHash<Category, QList<QString> > getConnectableClasses()override;
   /*public*/  void disposeMe()override;
   /*public*/ QString getClassName()override;
-  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.actions.DefaultFemalDigitalActionSocket";}
+  /*public*/ QString getClass()const override {return "jmri.jmrit.logixng.implementation.DefaultFemalDigitalActionSocket";}
 
 
   QObject* bself() override{return(QObject*)this;}

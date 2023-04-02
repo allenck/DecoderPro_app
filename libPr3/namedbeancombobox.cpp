@@ -129,6 +129,9 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 //            tr("%1 not shown cannot be used in this context.").arg(this->manager->getBeanTypeHandled(true)));
     setDisplayOrder(displayOrder);
     this->setEditable(false); // prevent overriding method
+    QSet<NamedBean*> set = manager->getNamedBeanSet();
+    for(NamedBean* nb : set)
+        addItem(nb->getDisplayName(), VPtr<NamedBean>::asQVariant(nb));
                                                // call in constructor
 #if 0
     NamedBeanRenderer namedBeanRenderer = new NamedBeanRenderer(getRenderer());

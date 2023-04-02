@@ -17,7 +17,7 @@
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionBlock"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionClock"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionConditional"}});
-        expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionDispatcher"}});
+//        expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionDispatcher"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionEntryExit"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionLight"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionLocalVariable"}});
@@ -26,7 +26,7 @@
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionPower"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionReference"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionReporter"}});
-        expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionScript"}});
+//        expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionScript"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionSensor"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionSignalHead"}});
         expressionClasses.insert(QHash<Category, QString> {{Category::ITEM, "jmri.jmrit.logixng.expressions.ExpressionSignalMast"}});
