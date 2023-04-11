@@ -4,4 +4,5 @@ DefaultMaleDigitalActionSocketSwing::DefaultMaleDigitalActionSocketSwing(QObject
     : AbstractMaleSocketSwing{parent}
 {
  setObjectName("DefaultMaleDigitalActionSocketSwing");
+
 }

@@ -56,7 +56,9 @@
 
         IfThenElse* action = (IfThenElse*)object->bself();
 
-        action->setType((IfThenElse::Type::ETYPE)_typeComboBox->getItemAt(_typeComboBox->getSelectedIndex()).toInt());
+        //QVariant v = _typeComboBox->getItemAt(_typeComboBox->getSelectedIndex());
+        int i = _typeComboBox->currentIndex();
+        action->setType((IfThenElse::Type::ETYPE)_typeComboBox->getSelectedIndex());
     }
 
     /** {@inheritDoc} */

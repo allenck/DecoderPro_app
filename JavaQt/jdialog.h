@@ -4,11 +4,13 @@
 #include <QDialog>
 #include "logger.h"
 #include "javaqt_global.h"
+#include "windowlistener.h"
 
 class WindowListener;
-class JAVAQTSHARED_EXPORT JDialog : public QDialog
+class JAVAQTSHARED_EXPORT JDialog : public QDialog//, public WindowListener
 {
     Q_OBJECT
+    //Q_INTERFACES(WindowListener)
 public:
     explicit JDialog(QWidget *parent = 0);
     /*public*/ JDialog(QWidget* owner, bool modal);

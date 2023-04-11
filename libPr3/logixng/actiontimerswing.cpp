@@ -37,7 +37,7 @@ ActionTimerSwing::ActionTimerSwing(QObject *parent)
         return AbstractDigitalAction::getNewSocketName(names);
     }
 
-    ////@Override
+    //@Override
     /*protected*/ void ActionTimerSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
         if ((object != nullptr) && !(qobject_cast<ActionTimer*>(object->bself()))) {
             throw new IllegalArgumentException(QString("object must be an ActionTimer but is a: ")+object->bself()->metaObject()->className());

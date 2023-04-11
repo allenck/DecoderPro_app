@@ -20,8 +20,8 @@ class SequenceSwing : public AbstractDigitalActionSwing
   QObject* sself() override {return this;}
 
  private:
-  /*private*/ JCheckBox* _startImmediately;
-  /*private*/ JCheckBox* _runContinuously;
+  /*private*/ JCheckBox* _startImmediately = nullptr;
+  /*private*/ JCheckBox* _runContinuously = nullptr;
  protected:
   /*protected*/ void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel)override;
 

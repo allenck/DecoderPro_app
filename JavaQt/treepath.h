@@ -39,8 +39,9 @@ private:
     /*protected*/ TreePath(QObject* parent = 0);
 
     friend class DefaultTreeSelectionModel;
-friend class TreeModelEvent;
-friend class RosterGroupsPanel;
+    friend class TreeModelEvent;
+    friend class RosterGroupsPanel;
+    friend class SwingUtilities2;
 };
 
 #endif // TREEPATH_H

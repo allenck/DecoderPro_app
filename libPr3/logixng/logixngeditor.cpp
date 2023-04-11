@@ -1247,7 +1247,7 @@
 
                 if (listenerRefsCount > 0) { // warn of listeners attached before delete
                     QString prompt = _conditionalNG->getFemaleSocket()->isConnected()
-                            ? "DeleteWithChildrenPrompt" : "DeletePrompt";
+                            ? "Are you sure you want to delete %2 and its children?" : "Are you sure you want to delete %1?";
                     JLabel* question = new JLabel(QString(prompt).arg(_conditionalNG->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME)));
                     question->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
                     container->layout()->addWidget(question);
@@ -1278,7 +1278,7 @@
                     container->layout()->addWidget(jScrollPane);
                 } else {
                     QString prompt = _conditionalNG->getFemaleSocket()->isConnected()
-                            ? "DeleteWithChildrenPrompt" : "DeletePrompt";
+                            ? "Are you sure you want to delete %1 and its children?" : "Are you sure you want to delete %1?";
                     QString msg = QString(prompt).arg(_conditionalNG->NamedBean::getSystemName());
                     JLabel* question = new JLabel(msg);
                     question->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);

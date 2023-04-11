@@ -8,7 +8,9 @@ class IfThenElseSwing : public AbstractDigitalActionSwing
 {
   Q_OBJECT
  public:
-  Q_INVOKABLE explicit IfThenElseSwing(QObject *parent = nullptr) : AbstractDigitalActionSwing(parent) {}
+  Q_INVOKABLE explicit IfThenElseSwing(QObject *parent = nullptr) : AbstractDigitalActionSwing(parent) {
+      setObjectName("IfThenElseSwing");
+  }
   ~IfThenElseSwing(){}
   IfThenElseSwing(const IfThenElseSwing&) : AbstractDigitalActionSwing() {}
   /*public*/  bool validate(/*@Nonnull*/ QList<QString>* errorMessages)override;
@@ -20,7 +22,7 @@ class IfThenElseSwing : public AbstractDigitalActionSwing
   QObject* sself() override {return (QObject*)this;}
 
  private:
-  /*private*/ JComboBox/*<Type>*/* _typeComboBox;
+  /*private*/ JComboBox/*<Type>*/* _typeComboBox = nullptr;
 
  protected:
   /*protected*/ void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel)override;

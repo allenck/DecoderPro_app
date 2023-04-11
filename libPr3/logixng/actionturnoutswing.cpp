@@ -23,7 +23,8 @@ ActionTurnoutSwing::ActionTurnoutSwing(QObject *parent)
 
     //@Override
     /*protected*/ void ActionTurnoutSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-    ActionTurnout* action = (ActionTurnout*)object->bself();
+    ActionTurnout* action = nullptr;
+    if(object) action =(ActionTurnout*)object->bself();
 
         panel = new JPanel(new FlowLayout);
 
@@ -183,7 +184,11 @@ ActionTurnoutSwing::ActionTurnoutSwing(QObject *parent)
         }
         ActionTurnout* action = (ActionTurnout*)object->bself();
         if (_tabbedPaneTurnout->getSelectedComponent() == _panelTurnoutDirect) {
-            Turnout* turnout = (Turnout*)turnoutBeanPanel->getNamedBean()->self();
+            //Turnout* turnout = (Turnout*)turnoutBeanPanel->getNamedBean()->self();
+            Turnout* turnout = nullptr;
+            NamedBean*nb = turnoutBeanPanel->getNamedBean();
+            if(nb)
+                turnout = (Turnout*)nb->self();
             if (turnout != nullptr) {
                 NamedBeanHandle<Turnout*>* handle
                         = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))

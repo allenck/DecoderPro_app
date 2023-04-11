@@ -49,7 +49,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ bool AbstractMaleSocket::isLocked() {
-    if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+    if (_object && qobject_cast<AbstractMaleSocket*>(_object->bself())) {
         return ((AbstractMaleSocket*)_object->bself())->isLocked();
     }
     return _locked;
@@ -58,7 +58,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ void AbstractMaleSocket::setLocked(bool locked) {
-    if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+    if (_object && qobject_cast<AbstractMaleSocket*>(_object->bself())) {
         ((AbstractMaleSocket*)_object->bself())->setLocked(locked);
     }
     _locked = locked;
@@ -67,7 +67,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ bool AbstractMaleSocket::isSystem() {
-    if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+    if (_object && qobject_cast<AbstractMaleSocket*>(_object->bself())) {
         return ((AbstractMaleSocket*)_object->bself())->isSystem();
     }
     return _system;
@@ -356,7 +356,8 @@
  QObject* obj = (QObject*)bo;
     if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
         //getObject()->registerListeners();
-     ((AbstractMaleSocket*)obj)->registerListeners();
+     ((AbstractMaleSocket*)bo->bself())->registerListeners();
+        //bo->registerListeners();
     } else {
         if (_listen) {
             registerListenersForThisClass();

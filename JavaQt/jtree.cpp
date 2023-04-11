@@ -792,8 +792,8 @@ void JTree::rowExpanded(const QModelIndex index)
     if (treeModel != nullptr && treeModelListener != nullptr)
         treeModel->removeTreeModelListener(treeModelListener);
     // add treeModelListener to the new model
-//    if (treeModelListener == nullptr)
-//      treeModelListener = createTreeModelListener();
+    if (treeModelListener == nullptr)
+      treeModelListener = createTreeModelListener();
     if (model != nullptr) // as setModel(null) is allowed
     {
         model->addTreeModelListener(treeModelListener);
@@ -808,8 +808,8 @@ void JTree::rowExpanded(const QModelIndex index)
 
     if (treeModel != nullptr)
     {
-//      if (treeModelListener == nullptr)
-//        treeModelListener = createTreeModelListener();
+      if (treeModelListener == nullptr)
+        treeModelListener = createTreeModelListener();
       if (treeModelListener != nullptr)
           treeModel->addTreeModelListener(treeModelListener);
       QObject* root = treeModel->getRoot();
@@ -843,3 +843,110 @@ void JTree::rowExpanded(const QModelIndex index)
 {
     // Nothing to do here.
 }
+
+
+/**
+      * Creates and returns an instance of <code>TreeModelHandler</code>.
+      * The returned
+      * object is responsible for updating the expanded state when the
+      * <code>TreeModel</code> changes.
+      * <p>
+      * For more information on what expanded state means, see the
+      * <a href=#jtree_description>JTree description</a> above.
+      */
+/*protected*/ TreeModelListener* JTree::createTreeModelListener() {
+  return new TreeModelHandler(this);
+}
+
+/**
+      * Listens to the model and updates the <code>expandedState</code>
+      * accordingly when nodes are removed, or changed.
+      */
+// /*protected*/ class TreeModelHandler implements TreeModelListener {
+/*public*/ void TreeModelHandler::treeNodesChanged(TreeModelEvent* e) { }
+
+  /*public*/ void TreeModelHandler::treeNodesInserted(TreeModelEvent* e) { }
+
+  /*public*/ void TreeModelHandler::treeStructureChanged(TreeModelEvent* e) {
+      if(e == nullptr)
+          return;
+
+      // NOTE: If I change this to NOT remove the descendants
+      // and update BasicTreeUIs treeStructureChanged method
+      // to update descendants in response to a treeStructureChanged
+      // event, all the children of the event won't collapse!
+      TreePath*  parent = SwingUtilities2::getTreePath(e, getModel());
+
+      if(parent == nullptr)
+          return;
+
+      if (parent->getPathCount() == 1) {
+          // New root, remove everything!
+//          clearToggledPaths();
+          QObject* treeRoot = treeModel->getRoot();
+          if(treeRoot != nullptr &&
+              !treeModel->isLeaf(treeRoot)) {
+                // Mark the root as expanded, if it isn't a leaf.
+          tree->expandedState.insert(parent, true);
+          }
+      }
+      else if(tree->expandedState.value(parent) != false) {
+          QVector<TreePath*>    toRemove = QVector<TreePath*>(1);
+          bool             isExpanded = tree->isExpanded(parent);
+
+          toRemove.append(parent);
+//          removeDescendantToggledPaths(toRemove.elements());
+          if(isExpanded) {
+                TreeModel*         model = getModel();
+
+          if(model == nullptr || model->isLeaf
+                                        (parent->getLastPathComponent()))
+                tree->collapsePath(parent);
+                else
+                tree->expandedState.insert(parent, true);
+          }
+      }
+      //removeDescendantSelectedPaths(parent, false);
+  }
+
+  /*public*/ void TreeModelHandler::treeNodesRemoved(TreeModelEvent* e) {
+      if(e == nullptr)
+          return;
+
+      TreePath*            parent = SwingUtilities2::getTreePath(e, getModel());
+      QList<QObject*>*           children = e->getChildren();
+
+      if(children == nullptr)
+          return;
+
+      TreePath*            rPath;
+      QVector<TreePath*>    toRemove
+          = QVector<TreePath*>(qMax(1, children->length()));
+
+      for(int counter = children->length() - 1; counter >= 0; counter--) {
+          rPath = parent->pathByAddingChild(children->at(counter));
+          if(tree->expandedState.value(rPath) != false)
+                toRemove.append(rPath);
+      }
+//      if(toRemove.size() > 0)
+//          removeDescendantToggledPaths(toRemove.elements());
+
+      TreeModel*         model = getModel();
+
+      if(model == nullptr || model->isLeaf(parent->getLastPathComponent()))
+          tree->expandedState.remove(parent);
+
+//      removeDescendantSelectedPaths(e);
+  }
+//}
+
+  /*public*/ /*static*/ TreePath* SwingUtilities2::getTreePath(TreeModelEvent* event, TreeModel* model) {
+      TreePath* path = event->getTreePath();
+      if ((path == nullptr) && (model != nullptr)) {
+          QObject* root = model->getRoot();
+          if (root != nullptr) {
+                path = new TreePath(root);
+          }
+      }
+      return path;
+  }

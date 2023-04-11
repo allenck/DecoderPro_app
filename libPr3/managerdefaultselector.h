@@ -28,6 +28,8 @@ public:
      /*public*/ QString typeName;
      /*public*/ QString managerClass;
      Item(QString typeName,QString managerClass);
+
+
  private:
  };
  /*public*/ /*final*/ static QString ALL_INTERNAL_DEFAULTS;// = "allInternalDefaults";
@@ -69,7 +71,9 @@ class MemoListener : public QObject, public PropertyChangeListener
  ManagerDefaultSelector* mds;
 public:
  MemoListener(ManagerDefaultSelector* mds) {this->mds = mds;}
- QObject* pself() override{return (QObject*)this;}
+
+ QObject* pself() override{return this;}
+
 public slots:
  void propertyChange(PropertyChangeEvent* e);
 };

@@ -14,6 +14,7 @@
 #include "instancemanager.h"
 #include "emptyborder.h"
 #include "defaultfemaledigitalactionsocket.h"
+#include "uidefaults.h"
 
 /**
  * Show the action/expression tree.
@@ -40,11 +41,11 @@
         // and the list must be saved between runs.
         FEMALE_SOCKET_COLORS.insert("jmri.jmrit.logixng.implementation.DefaultFemaleDigitalActionSocket", Qt::red);
         FEMALE_SOCKET_COLORS.insert("jmri.jmrit.logixng.implementation.DefaultFemaleDigitalExpressionSocket", Qt::blue);
-
-//        _femaleRootSocket->forEntireTree([=] (Base* b)  {
-//            b->addPropertyChangeListener(this);
-//        });
-#if 1
+#if 0
+        _femaleRootSocket->forEntireTree([=] (Base* b)  {
+            b->addPropertyChangeListener(this);
+        });
+#else
         RunnableWithBase* rb= new TreePane_RunnableWithBase(this);
         QString name = _femaleRootSocket->getName();
         _femaleRootSocket->forEntireTree(rb);
@@ -70,12 +71,17 @@
 //        ToolTipManager.sharedInstance().registerComponent(_tree);
         _tree->setModel(femaleSocketTreeModel);
 //        _tree->setCellRenderer(new FemaleSocketTreeRenderer(decorator));
+        _tree->setItemDelegateForColumn(0, new FemaleSocketItemDelegate(new FemaleSocketTreeRenderer(nullptr),this));
 
         _tree->setRootVisible(_rootVisible);
         _tree->setShowsRootHandles(true);
         _tree->setHeaderHidden(true);
         _tree->setRootIsDecorated(true);
 
+        connect(_tree, &QTreeView::clicked, [=] (QModelIndex ix){
+            int row = ix.row();
+            qDebug() << "clicked on " << ix.row() << " col " << ix.column();
+        });
 
         // Expand the entire tree
         for (int i = 0; i < _tree->getRowCount(); i++) {
@@ -323,6 +329,23 @@
             listeners.removeOne(l);
         }
 
+        /*public*/  QVariant FemaleSocketTreeModel::data(const QModelIndex &index, int role) const
+        {
+            TP_FemaleSocketTreeNode* node = static_cast<TP_FemaleSocketTreeNode*>(index.internalPointer());
+            if(static_cast<TP_FemaleSocketTreeNode*>(node))
+            {
+                if(role == Qt::DisplayRole)
+                {
+                    FemaleSocket* socket = ((TP_FemaleSocketTreeNode*)node)->getFemaleSocket();
+                    if(!socket)
+                        return DefaultTreeModel::data(index, role);
+                    return socket->getShortDescription();
+
+                }
+            }
+            return DefaultTreeModel::data(index, role);
+        }
+
 
 //    private static final class FemaleSocketTreeRenderer implements TreeCellRenderer {
 
@@ -335,14 +358,14 @@
         }
 
         //@Override
-        /*public*/  QWidget* FemaleSocketTreeRenderer::getTreeCellRendererComponent(JTree* tree, QVariant value,
+        /*public*/  QWidget* FemaleSocketTreeRenderer::getTreeCellRendererComponent(JTree* tree, QObject* value,
                                                                                     bool selected, bool expanded,
                                                                                     bool leaf, int row, bool hasFocus
                                                                                     ) {
 
-            //UIDefaults uiDefaults = javax.swing.UIManager.getDefaults();
+            UIDefaults* uiDefaults = new UIDefaults();//UIManager::getDefaults();
 
-            FemaleSocket* socket = VPtr<FemaleSocket>::asPtr(value);
+            FemaleSocket* socket = (AbstractFemaleSocket*)(value);
 
             JPanel* mainPanel = new JPanel();
 
@@ -350,7 +373,7 @@
             mainPanel->setOpaque(false);
             if (selected && ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getTreeEditorHighlightRow()) {
                 mainPanel->setOpaque(true);
-//                mainPanel->setBackground(uiDefaults->getColor("Tree.selectionBackground"));
+                mainPanel->setBackground(uiDefaults->getColor("Tree.selectionBackground"));
             }
 
             JPanel* commentPanel = new JPanel(new FlowLayout());//FlowLayout.LEFT, 0, 0));
@@ -368,14 +391,14 @@
             //socketLabel.setFont(font.deriveFont((float)(font.getSize2D()*1.7)));
             font.setPixelSize(font.pixelSize()*1.7);
             socketLabel->setFont(font);
-            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className()));
+            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className(), Qt::red));
 //            socketLabel.setForeground(Color.red);
             panelLayout->addWidget(socketLabel,0, Qt::AlignLeft);
 
             panelLayout->addWidget( Box::createRigidArea(QSize(5,0)), 0, Qt::AlignLeft);
 
             JLabel* socketNameLabel = new JLabel(socket->getName());
-            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className()));
+            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className(), Qt::blue));
 //            socketNameLabel.setForeground(Color.red);
             panelLayout->addWidget(socketNameLabel, 0, Qt::AlignLeft);
 
@@ -385,9 +408,9 @@
             if (socket->isConnected()) {
 
                 if (((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getTreeEditorHighlightRow()) {
-//                    connectedItemLabel.setFont(uiDefaults.getFont("Tree.font"));
+                    connectedItemLabel->setFont(uiDefaults->getFont("Tree.font"));
                     if (selected) {
-//                        connectedItemLabel->setForeground(uiDefaults.getColor("Tree.selectionForeground"));
+                        connectedItemLabel->setForeground(uiDefaults->getColor("Tree.selectionForeground"));
                     }
                 }
 
@@ -445,10 +468,10 @@
                             variableData->_initialValueData));
                     variableLabel->setAlignmentX(Qt::AlignLeft);
                     if (((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getTreeEditorHighlightRow()) {
-//                        variableLabel.setFont(uiDefaults.getFont("Tree.font"));
-//                        if (selected) {
-//                            variableLabel.setForeground(uiDefaults.getColor("Tree.selectionForeground"));
-//                        }
+                        variableLabel->setFont(uiDefaults->getFont("Tree.font"));
+                        if (selected) {
+                            variableLabel->setForeground(uiDefaults->getColor("Tree.selectionForeground"));
+                        }
                     }
                     mainPanel->layout()->addWidget(variableLabel);
                 }
@@ -456,7 +479,8 @@
 
             panelLayout->addWidget(connectedItemLabel,0, Qt::AlignLeft);
 
-            return _decorator->decorate(socket, mainPanel);
+            //return _decorator->decorate(socket, mainPanel);
+            return mainPanel;
         }
 
 TP_FemaleSocketTreeNode::TP_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent)

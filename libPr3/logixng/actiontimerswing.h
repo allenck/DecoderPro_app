@@ -24,14 +24,14 @@ public:
     QObject* sself() override {return this;}
 
 private:
-    /*private*/ JCheckBox* _startImmediately;
-    /*private*/ JCheckBox* _runContinuously;
-    /*private*/ JComboBox/*<TimerUnit>*/* _unitComboBox;
-    /*private*/ JTextField* _numTimers;
-    /*private*/ JButton* _addTimer;
-    /*private*/ JButton* _removeTimer;
-    /*private*/ QVector<JTextField*>* _timerSocketNames;
-    /*private*/ QVector<JTextField*>* _timerDelays;
+    /*private*/ JCheckBox* _startImmediately=nullptr;
+    /*private*/ JCheckBox* _runContinuously=nullptr;
+    /*private*/ JComboBox/*<TimerUnit>*/* _unitComboBox=nullptr;
+    /*private*/ JTextField* _numTimers=nullptr;
+    /*private*/ JButton* _addTimer=nullptr;
+    /*private*/ JButton* _removeTimer=nullptr;
+    /*private*/ QVector<JTextField*>* _timerSocketNames = nullptr;
+    /*private*/ QVector<JTextField*>* _timerDelays= nullptr;
     /*private*/ int numActions = 1;
     /*private*/ QString getNewSocketName(ActionTimer* action);
 

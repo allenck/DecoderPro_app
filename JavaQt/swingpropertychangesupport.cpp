@@ -62,6 +62,7 @@
 /*public*/ SwingPropertyChangeSupport::SwingPropertyChangeSupport(QObject* sourceBean, QObject *parent)
  : QObject(parent)
 {
+    setObjectName("SwingPropertyChangeSupport");
  this->parent = sourceBean;
  if (sourceBean == NULL)
  {
@@ -88,6 +89,9 @@
  {
   return;
  }
+
+if (static_cast<PropertyChangeListener*>(listener) == nullptr)
+  throw new IllegalArgumentException("invalid propertychange listener");
 
  // If a listener has no self() function, a chrash here will occur!
 // if(listener->self()->metaObject() == nullptr)

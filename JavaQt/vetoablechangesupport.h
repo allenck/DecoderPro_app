@@ -43,7 +43,7 @@ private:
  /**
   * Provide a {@link java.beans.VetoableChangeSupport} helper.
   */
- /*protected*/ /*final*/ Java_VetoableChangeSupport* vetoableChangeSupport = new Java_VetoableChangeSupport(this->vself());
+ /*protected*/ /*final*/ Java_VetoableChangeSupport* vetoableChangeSupport = new Java_VetoableChangeSupport(this);
 };
 
 Q_DECLARE_INTERFACE(VetoableChangeSupport, "VetoableChangeSupport")

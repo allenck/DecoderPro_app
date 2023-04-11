@@ -39,6 +39,7 @@
         }
 
         panel = new JPanel();
+        panel->setObjectName("AbstractMaleSocketSwing");
 
         AbstractMaleSocket* maleSocket = nullptr;
         if(object) maleSocket = (AbstractMaleSocket*)object->bself();

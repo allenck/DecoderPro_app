@@ -86,6 +86,8 @@ SOURCES += javaqt.cpp \
     swingpropertychangesupport.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
+    uidefaults.cpp \
+    uimanager.cpp \
     uncheckedioexception.cpp \
     unexpectedexceptioncontext.cpp \
     validation.cpp \
@@ -352,6 +354,8 @@ HEADERS += javaqt.h\
  thread.h \
     treecellrenderer.h \
  tristatejcheckbox.h \
+    uidefaults.h \
+    uimanager.h \
  uncheckedioexception.h \
  unexpectedexceptioncontext.h \
  validation.h \

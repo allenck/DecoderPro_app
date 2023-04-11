@@ -5,6 +5,7 @@
 #include "propertychangelistener.h"
 #include "jtree.h"
 #include "femalesocket.h"
+#include "qlabel.h"
 #include "treemodellistener.h"
 #include "imageicon.h"
 #include "treecellrenderer.h"
@@ -12,6 +13,8 @@
 #include "threadingutil.h"
 #include "abstractfemalesocket.h"
 #include "defaultmutabletreenode.h"
+#include <QStyledItemDelegate>
+#include "vptr.h"
 
 class TreeEditor;
 class FemaleSocketDecorator;
@@ -63,7 +66,11 @@ class TreePane : public JPanel, public PropertyChangeListener
   friend class TreeEditor_run5;
   friend class TreeEditor_run0b;
   friend class TreeEditor_run7c;
-};
+  friend class FemaleSocketItemDelegate;
+  friend class TreeEditor_run8;
+  friend class TreeEditor_run9a;
+
+}; // TreePane
 
 class ThreadAction1 : public ThreadAction
 {
@@ -141,6 +148,7 @@ Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
     /*public*/  void valueForPathChanged(TreePath* path, QVariant newvalue)override;
     /*public*/  void addTreeModelListener(TreeModelListener* l)override;
     /*public*/  void removeTreeModelListener(TreeModelListener* l) override;
+    /*public*/  QVariant data(const QModelIndex &index, int role) const;
 
 protected:
   /*protected*/ /*final*/ QList<TreeModelListener*> listeners = QList<TreeModelListener*>();
@@ -152,7 +160,7 @@ protected:
   friend class TreeEditor_run3;
   friend class TreeEditor_run5;
   friend class TreeEditor_run7c;
-};
+}; // FemaleSocketTreeModel
 
 /*private*/ /*static*/ /*final*/ class FemaleSocketTreeRenderer : public QObject, public TreeCellRenderer {
   Q_OBJECT
@@ -162,7 +170,7 @@ protected:
     public:
     /*public*/  FemaleSocketTreeRenderer(FemaleSocketDecorator* decorator);
     //@Override
-    /*public*/  QWidget* getTreeCellRendererComponent(JTree* tree, QVariant value, bool selected, bool expanded,
+    /*public*/  QWidget* getTreeCellRendererComponent(JTree* tree, QObject* value, bool selected, bool expanded,
                                                       bool leaf, int row, bool hasFocus)override;
 };
 
@@ -205,5 +213,40 @@ class TreePane_FemaleSocketDecorator : public QObject,public FemaleSocketDecorat
   }
 };
 
+class FemaleSocketItemDelegate : public QStyledItemDelegate
+{
+  Q_OBJECT
+    FemaleSocketTreeRenderer* renderer;
+    TreePane* treePane;
+  public:
+    FemaleSocketItemDelegate(FemaleSocketTreeRenderer* renderer, TreePane* treePane) {
+        this->renderer = renderer;
+        this->treePane = treePane;
+    }
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+        QObject* object = (QObject*)index.internalPointer();
+        if(qobject_cast<TP_FemaleSocketTreeNode*>(object))
+        {
+            TP_FemaleSocketTreeNode* node = static_cast<TP_FemaleSocketTreeNode*>(index.internalPointer());
+            AbstractFemaleSocket* socket = node->getFemaleSocket();
+            if(socket)
+            {
+             QString desc = socket->getShortDescription();
+             return renderer->getTreeCellRendererComponent(treePane->_tree, (QObject*)socket, true, true, true, index.row(),true);
+            }
+        }
+        return new QLabel("???");
+    }
+    void setEditorData(QWidget *editor, const QModelIndex &index) const
+    {
+
+    }
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+       QWidget * widget;
+       widget = createEditor(nullptr, option, index);
+       widget->render(painter);
+    }};
 
 #endif // TREEPANE_H

@@ -102,7 +102,7 @@ public:
  /*public*/ int  getRowCount();
  /*public*/ void setCellRenderer(TreeCellRenderer*);
  /*public*/ TreeModel* getModel();
- /*public*/ void setModel(TreeModel *m);
+ /*public*/ void setModel(TreeModel* m);
  /*public*/ TreeModel *model();
  /*public*/ void treeNodesChanged(TreeModelEvent* ev);
 
@@ -134,7 +134,6 @@ private:
  /*transient*/ /*private*/ QStack<QStack<TreePath*> > expandedStack;
  /*private*/ QVector<TreePath*> getDescendantSelectedPaths(TreePath* path,
                                                bool includePath);
-
 protected:
  /**
   * True if the root node is displayed, false if its children are
@@ -150,6 +149,8 @@ protected:
   * Handles TreeModelEvents to update the expandedState.
   */
  /*protected*/ /*transient*/ TreeModelListener* treeModelListener = nullptr;
+ /*protected*/ TreeModelListener* createTreeModelListener();
+
 
 protected slots:
  void rowCollapsed(const QModelIndex index);
@@ -157,6 +158,7 @@ protected slots:
  void on_clicked(QModelIndex);
 
  friend class JTreeOperator;
+ friend class TreeModelHandler;
 };
 #if 0
 /**
@@ -282,5 +284,47 @@ public:
     }
 };
 #endif
+
+/**
+      * Listens to the model and updates the <code>expandedState</code>
+      * accordingly when nodes are removed, or changed.
+      */
+/*protected*/ class TreeModelHandler : public TreeModelListener {
+ Q_OBJECT
+ TreeModel* treeModel;
+ JTree* tree;
+
+ public:
+ TreeModelHandler(JTree* tree) {
+     this->tree = tree;
+     treeModel = tree->getModel();
+ }
+ /*public*/ void treeNodesChanged(TreeModelEvent* e)override;
+
+ /*public*/ void treeNodesInserted(TreeModelEvent* e)override;
+
+ /*public*/ void treeStructureChanged(TreeModelEvent* e)override;
+
+ /*public*/ void treeNodesRemoved(TreeModelEvent* e)override;
+
+
+ QObject* self() override {return this;}
+
+ private:
+ TreeModel* getModel()  {return treeModel;}
+};
+
+class SwingUtilities2 : public QObject{
+ Q_OBJECT
+ public:
+ /**
+     * Returns the {@link TreePath} that identifies the changed nodes.
+     *
+     * @param event  changes in a tree model
+     * @param model  corresponing tree model
+     * @return  the path to the changed nodes
+     */
+     /*public*/ static TreePath* getTreePath(TreeModelEvent* event, TreeModel* model);
+};
 
 #endif // JTREE_H

@@ -107,7 +107,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
  private:
   static Logger* log;
   /*private*/ /*final*/ LogixNG_Thread* _thread = nullptr;
-  /*private*/ int _startupThreadId;
+  /*private*/ int _startupThreadId =0;
   /*private*/ Base* _parent = nullptr;
   /*private*/ QString _socketSystemName = nullptr;
   /*private*/ /*final*/ DefaultFemaleDigitalActionSocket* _femaleSocket = nullptr;

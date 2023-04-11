@@ -225,6 +225,7 @@
             if (femaleSocket->validateName(_socketNameTextField->text())) {
                 femaleSocket->setName(_socketNameTextField->text());
                 cancelRenameSocketPressed(nullptr);
+                if(_treePane->femaleSocketTreeModel->listeners.count())
                 for (TreeModelListener* l : _treePane->femaleSocketTreeModel->listeners) {
                     TreeModelEvent* tme = new TreeModelEvent(
                             femaleSocket->bself(),
@@ -235,15 +236,15 @@
 //                _treePane._tree.updateUI();
             } else {
                 JOptionPane::showMessageDialog(nullptr,
-                        tr("The socket name \"%1\" is not valid").arg(_socketNameTextField->text()),
-                        tr("Error"),
-                        JOptionPane::ERROR_MESSAGE);
+                                               tr("The socket name \"%1\" is not valid").arg(_socketNameTextField->text()),
+                                               tr("Error"),
+                                               JOptionPane::ERROR_MESSAGE);
             }
         });
 
         contentPanel->layout()->addWidget(panel5);
 
-//        _renameSocketDialog.setLocationRelativeTo(component);
+        //        _renameSocketDialog.setLocationRelativeTo(component);
         _renameSocketDialog->setLocationRelativeTo(nullptr);
         _renameSocketDialog->pack();
         _renameSocketDialog->setVisible(true);
@@ -251,7 +252,7 @@
 
     bool compareCategory(const Category &u1, const Category &u2)
     {
-      return u1.name() < u2.name();
+        return u1.name() < u2.name();
     }
     bool compareStrings(QString &u1, const QString &u2){
         return u1 < u2;
@@ -266,7 +267,7 @@
     /*final*/ /*protected*/ void TreeEditor::addPressed(FemaleSocket* femaleSocket, TreePath* path) {
 
         QHash<Category, QList</*Class<? extends Base>*/QString> > connectableClasses =
-                femaleSocket->getConnectableClasses();
+            femaleSocket->getConnectableClasses();
 
         _categoryComboBox->clear();
         QList<Category> list = QList<Category>(connectableClasses.keys());
@@ -302,7 +303,7 @@
                     if (sci != nullptr && !sci->toString().isEmpty())  {
                         QString txt = sci->toString();
                         log->debug(tr("for Category%1, add %2").arg(category.name(), txt));
-                        _swingConfiguratorComboBox->addItem(txt, clazz);
+                        _swingConfiguratorComboBox->addItem(txt, VPtr<SwingConfiguratorInterface>::asQVariant(sci));
                     } else {
                         log->error(tr("Class %1 has no swing configurator interface").arg(clazz));
                     }
@@ -402,8 +403,8 @@
             QString s = _swingConfiguratorComboBox->itemText(ix);
             QString clazz = _swingConfiguratorComboBox->itemData(ix).toString();
             QStringList sl = _swingConfiguratorComboBox->itemList();
-            SwingConfiguratorInterface* swingConfiguratorInterface = SwingTools::getSwingConfiguratorForClass(clazz);
-//            System.err.format("swingConfiguratorInterface: %s%n", swingConfiguratorInterface.getClass().getName());
+            SwingConfiguratorInterface* swingConfiguratorInterface =
+                VPtr<SwingConfiguratorInterface>::asPtr(_swingConfiguratorComboBox->getItemAt(_swingConfiguratorComboBox->getSelectedIndex()));//            System.err.format("swingConfiguratorInterface: %s%n", swingConfiguratorInterface.getClass().getName());
             createAddFrame(femaleSocket, path, swingConfiguratorInterface);
         });
 
@@ -432,15 +433,16 @@
         _showReminder = true;
         // make an Add Item Frame
         if (_addItemDialog == nullptr) {
-            //MutableObject<QString> commentStr = new MutableObject<>();
-         QString commentStr = QString();
-            _addSwingConfiguratorInterface = swingConfiguratorInterface;
-            // Create item
-            _create = new JButton(tr("Create"));  // NOI18N
+          //MutableObject<QString> commentStr = new MutableObject<>();
+          QString commentStr = QString();
+          _addSwingConfiguratorInterface = swingConfiguratorInterface;
+          // Create item
+          _create = new JButton(tr("Create"));  // NOI18N
 #if 1
-            connect(_create, &JButton::clicked, [=] {
+          connect(_create, &JButton::clicked, [=] {
                 _treePane->_femaleRootSocket->unregisterListeners();
 
+              log->debug("prepare to run TreeEditor_run1");
                 runOnConditionalNGThreadOrGUIThreadEventually(
                         _treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run1(path, femaleSocket, commentStr, this));
 //                        () -> {
@@ -527,7 +529,7 @@
             _create->setToolTip(tr("Press to create"));  // NOI18N
 
             if (_addSwingConfiguratorInterface != nullptr) {
-                makeAddEditFrame(true, femaleSocket, _create, commentStr);
+                makeAddEditFrame(true, femaleSocket, _create, &commentStr);
             }
         }
     }
@@ -545,7 +547,8 @@
         if (_editActionExpressionDialog == nullptr) {
             Base* object = femaleSocket->getConnectedSocket()->getObject();
             //MutableObject<String> commentStr = new MutableObject<>(object.getComment());
-            QString commentStr = QString();
+            //QString commentStr = QString();
+            commentStr = "";
             // Edit ConditionalNG
             _edit = new JButton(tr("OK"));  // NOI18N
 #if 1
@@ -617,14 +620,13 @@
 //                    }
 
 //                });
-//            });
+              });
 #endif
             _edit->setToolTip(tr("Press to save"));  // NOI18N
 
             if (_addSwingConfiguratorInterface != nullptr) {
-            makeAddEditFrame(false, femaleSocket, _edit, commentStr);
+            makeAddEditFrame(false, femaleSocket, _edit, &commentStr);
             }
-        });
     }
 }
 
@@ -640,7 +642,7 @@
             bool addOrEdit,
             FemaleSocket* femaleSocket,
             JButton* button,
-            /*MutableObject<String>*/QString commentStr) {
+            /*MutableObject<String>*/QString* commentStr) {
 
         JDialog* frame  = new JDialog(
                 this,
@@ -723,7 +725,7 @@
         QList<JPanel*> panels = QList<JPanel*>();
         if (femaleSocket->isConnected()) {
             object = femaleSocket->getConnectedSocket();
-            while (dynamic_cast<AbstractMaleSocket*>(object->bself())) {
+            while (qobject_cast<AbstractMaleSocket*>(object->bself())) {
                 SwingConfiguratorInterface* swi =
 //                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
                         SwingTools::getSwingConfiguratorForClass(((AbstractMaleSocket*)object->bself())->getClass());
@@ -731,11 +733,12 @@
                 QHash<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(swi, object);
                 _swingConfiguratorInterfaceList.append(entry);
-                object = ((MaleSocket*)object->bself())->getObject();
+                object = ((AbstractMaleSocket*)object->bself())->getObject();
             }
             if (object != nullptr) {
                 _editSwingConfiguratorInterface =
-                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
+//                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
+                    SwingTools::getSwingConfiguratorForClass(object->getClass());
                 panels.append(_editSwingConfiguratorInterface->getConfigPanel(object, panel5));
                 QHash<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(_editSwingConfiguratorInterface, object);
@@ -781,7 +784,8 @@
         connect(editComment, &JButton::clicked, [=] {
          //commentStr.setValue(new EditCommentDialog().showDialog(comment));
          EditCommentDialog* dlg = new EditCommentDialog();
-//            commentStr= dlg->showDialog(comment);
+         dlg->showDialog(comment);
+         *commentStr = dlg->resultString();
         });
 
         // Function help
@@ -1402,7 +1406,7 @@
             addAction(menuItemLocalVariables);
 
             addSeparator();
-            menuItemChangeUsername = new JMenuItem(tr("Chang, &JMenuItem::triggered, [=]{actionPerformed();});e Username"), this);
+            menuItemChangeUsername = new JMenuItem(tr("Change Username"), this);
             connect(menuItemChangeUsername, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,ACTION_COMMAND_CHANGE_USERNAME));});
             menuItemChangeUsername->setActionCommand(ACTION_COMMAND_CHANGE_USERNAME);
             addAction(menuItemChangeUsername);
@@ -1467,6 +1471,7 @@
         /*private*/ void TEPopupMenu::openPopupMenu(QContextMenuEvent* e) {
 //            if (e->isPopupTrigger() && !popupMenu->isVisible()) {
                 // Get the row the user has clicked on
+            QModelIndex index = _tree->indexAt(e->pos());
                 //TreePath* path = _tree->getClosestPathForLocation(e->x(), e->y());
                 TreePath* path = _tree->getPathForRow(0);
                 if (path != nullptr) {
@@ -1638,7 +1643,7 @@
 
                     if (_currentFemaleSocket->isConnected()) {
                         editor->_treePane->_femaleRootSocket->unregisterListeners();
-#if 0
+#if 0 // done
                         runOnConditionalNGThreadOrGUIThreadEventually(
                                 _treePane._femaleRootSocket.getConditionalNG(),
                                 () -> {
@@ -1660,7 +1665,7 @@
                         });
 #else
                         editor->runOnConditionalNGThreadOrGUIThreadEventually(
-                                editor->_treePane->_femaleRootSocket->getConditionalNG(),  new TreeEditor_run0(_currentFemaleSocket,editor));
+                                editor->_treePane->_femaleRootSocket->getConditionalNG(),  new TreeEditor_run0(_currentFemaleSocket,editor, this));
 #endif
                    } else {
                         editor->log->error("_currentFemaleSocket is not connected");
@@ -1672,9 +1677,10 @@
 
                     if (_currentFemaleSocket->isConnected()) {
                         editor->_treePane->_femaleRootSocket->unregisterListeners();
-#if 0
-                        runOnConditionalNGThreadOrGUIThreadEventually(
-                                _treePane._femaleRootSocket.getConditionalNG(),
+
+                        editor->runOnConditionalNGThreadOrGUIThreadEventually(
+                            editor->_treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run8(_currentFemaleSocket, editor));
+#if 0 // done (run8)
                                 () -> {
                             Clipboard clipboard =
                                     InstanceManager.getDefault(LogixNG_Manager.class).getClipboard();
@@ -1712,9 +1718,10 @@
 
                     if (! _currentFemaleSocket->isConnected()) {
                        editor->_treePane->_femaleRootSocket->unregisterListeners();
+
+                        editor->runOnConditionalNGThreadOrGUIThreadEventually(
+                           editor->_treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run9(_currentFemaleSocket, editor));
 #if 0
-                        runOnConditionalNGThreadOrGUIThreadEventually(
-                                _treePane._femaleRootSocket.getConditionalNG(),
                                 () -> {
                             Clipboard clipboard =
                                     InstanceManager.getDefault(LogixNG_Manager.class).getClipboard();
@@ -2060,7 +2067,7 @@
          QList<QString>* errorMessages = new QList<QString>();
 
          bool isValid = true;
-
+         treeEditor->_addSwingConfiguratorInterface->getConfigPanel(new JPanel()); // added ACK
          if (!treeEditor->_prefs->getShowSystemUserNames()
                  || (treeEditor->_systemName->text().isEmpty() && treeEditor->_autoSystemName->isSelected())) {
              treeEditor->_systemName->setText(treeEditor->_addSwingConfiguratorInterface->getAutoSystemName());
@@ -2097,7 +2104,10 @@
       //       });
              femaleSocket->forEntireTree(new TreeEditor_run2( treeEditor->_treePane));
 
-             ThreadingUtil::runOnGUIEventually(/*() -> {*/ new TreeEditor_run3(femaleSocket, path, treeEditor));
+             treeEditor->log->debug("prepare to run TreeEditor_run3");
+//             ThreadingUtil::runOnGUIEventually(/*() -> {*/ new TreeEditor_run3(femaleSocket, path, treeEditor));
+             connect(this, SIGNAL(startRun3(TreeEditor_run3*)),treeEditor, SLOT(executeRun3(TreeEditor_run3*)) );
+                 emit startRun3(new TreeEditor_run3(femaleSocket, path, treeEditor));
       //           _addSwingConfiguratorInterface.dispose();
       //           _addItemDialog.dispose();
       //           _addItemDialog = null;
@@ -2130,6 +2140,38 @@
         }
        }
 
+        void TreeEditor::executeRun3(TreeEditor_run3* ta){
+        ta->run();
+        }
+        void TreeEditor::executeRun5(TreeEditor_run5* ta){
+        ta->run();
+        }
+        void TreeEditor::executeRun6(TreeEditor_run6* ta){
+        ta->run();
+        }
+        void TreeEditor::executeRun7b(TreeEditor_run7b* ta){
+        ta->run();
+        }
+        void TreeEditor::executeRun7c(TreeEditor_run7c* ta){
+        ta->run();
+        }
+        void TreeEditor::executeRun8a(QStringList* errors){
+        JOptionPane::showMessageDialog(nullptr,
+                                       errors->join("<br>"),
+                                       tr("Error"),
+                                       JOptionPane::ERROR_MESSAGE);
+        }
+        void TreeEditor::executeRun8b(JmriException* ex){
+        JOptionPane::showMessageDialog(nullptr,
+                                       "An exception has occured: "+ex->getMessage(),
+                                       "An error has occured",
+                                       JOptionPane::ERROR_MESSAGE);
+        }
+        void TreeEditor::executeRun9a(TreeEditor_run9a* ta){
+        ta->run();
+        }
+
+
         void TreeEditor_run2::run(Base* b)
         {
             ((AbstractBase* )b->bself())->AbstractNamedBean::addPropertyChangeListener(_treePane);
@@ -2141,9 +2183,9 @@
          treeEditor->_addItemDialog->dispose();
          treeEditor->_addItemDialog = nullptr;
 
-         QObject* parent = path->getLastPathComponent();
+//         QObject* parent = path->getLastPathComponent();
 
-         ((DefaultMutableTreeNode*)parent)->add(new TP_FemaleSocketTreeNode(femaleSocket->bself()));
+//         ((DefaultMutableTreeNode*)parent)->add(new TP_FemaleSocketTreeNode(femaleSocket->bself()));
 
          for (TreeModelListener* l : treeEditor->_treePane->femaleSocketTreeModel->listeners) {
              TreeModelEvent* tme = new TreeModelEvent(
@@ -2162,11 +2204,93 @@
          }//);
         }
 
+
+        void TreeEditor_run4::run()
+        {
+         QList<QString>* errorMessages = new QList<QString>();
+
+         bool isValid = true;
+
+         if (treeEditor->_editSwingConfiguratorInterface->getManager() != nullptr) {
+             if (treeEditor->_editSwingConfiguratorInterface->getManager()
+                     ->validSystemNameFormat(treeEditor->_systemName->text()) != Manager::NameValidity::VALID) {
+                 isValid = false;
+                 errorMessages->append(tr("Invalid System Name \"%1\"").arg(treeEditor->_systemName->text()));
+             }
+         } else {
+             treeEditor->log->debug("_editSwingConfiguratorInterface.getManager() returns null");
+         }
+
+         isValid &=treeEditor-> _editSwingConfiguratorInterface->validate(errorMessages);
+
+         if (isValid) {
+             //       ThreadingUtil.runOnGUIEventually(() -> {
+             //           femaleSocket->unregisterListeners();
+
+             ////                            Base object = femaleSocket->getConnectedSocket().getObject();
+             //           if (_addUserName->text().isEmpty()) {
+             //               ((NamedBean)object).setUserName(null);
+             //           } else {
+             //               ((NamedBean)object).setUserName(_addUserName->text());
+             //           }
+             //           ((NamedBean)object).setComment(commentStr.getValue());
+             //           for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
+             //               entry.getKey().updateObject(entry.getValue());
+             //               entry.getKey().dispose();
+             //           }
+             //           for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
+             //               TreeModelEvent tme = new TreeModelEvent(
+             //                       femaleSocket,
+             //                       path.getPath()
+             //               );
+             //               l.treeNodesChanged(tme);
+             //           }
+             //           _editActionExpressionDialog.dispose();
+             //           _editActionExpressionDialog = null;
+             //           _treePane._tree.updateUI();
+
+             ////                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
+             //           if (_treePane._femaleRootSocket.isActive()) {
+             //               _treePane._femaleRootSocket.registerListeners();
+             //           }
+             //       });
+             //    Base* object, FemaleSocket* femaleSocket, TreePath* path, QString commentStr, TreeEditor* treeEditor
+             //ThreadingUtil::runOnGUIEventually(new TreeEditor_run5(object, femaleSocket, path, commentStr, treeEditor));
+             connect(this, SIGNAL(doRun5(TreeEditor_run5*)), treeEditor, SLOT(executeRun5(TreeEditor_run5*)));
+
+             emit doRun5(new TreeEditor_run5(object, femaleSocket, path, commentStr, treeEditor));
+         } else {
+             QString errorMsg;// = new StringBuilder();
+             for (QString s : *errorMessages) {
+                 if (errorMsg.length() > 0) errorMsg.append("<br>");
+                 errorMsg.append(s);
+             }
+             //       ThreadingUtil.runOnGUIEventually(() -> {
+             //           JOptionPane.showMessageDialog(null,
+             //                   Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
+             //                   Bundle.getMessage("Data is not valid"),
+             //                   JOptionPane.ERROR_MESSAGE);
+             //       });
+            // ThreadingUtil::runOnGUIEventually(new TreeEditor_run6(errorMsg));
+             connect(this, SIGNAL(doRun6(TreeEditor_run6*)), treeEditor, SLOT(executeRun6(TreeEditor_run6*)));
+             emit doRun6(new TreeEditor_run6(errorMsg));
+         }
+        }
+
+        void TreeEditor_run6::run()
+        {
+         JOptionPane::showMessageDialog(nullptr,
+                                        tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
+                                        tr("Data is not valid"),
+                                        JOptionPane::ERROR_MESSAGE);
+
+        }
+
         void TreeEditor_run5::run()
         {
          femaleSocket->unregisterListeners();
 
-      //                            Base object = femaleSocket->getConnectedSocket().getObject();
+         //                            Base object = femaleSocket->getConnectedSocket().getObject();
          if (treeEditor->_addUserName->text().isEmpty()) {
              ((NamedBean*)object->bself())->setUserName(nullptr);
          } else {
@@ -2174,25 +2298,25 @@
          }
          ((NamedBean*)object)->setComment(commentStr/*.getValue()*/);
          for (QHash<SwingConfiguratorInterface*, Base*> map : treeEditor->_swingConfiguratorInterfaceList) {
-          QHashIterator<SwingConfiguratorInterface*, Base*> entry(map);
-          while(entry.hasNext()){
-           entry.next();
-             entry.key()->updateObject(entry.value());
-             entry.key()->dispose();
-          }
+             QHashIterator<SwingConfiguratorInterface*, Base*> entry(map);
+             while(entry.hasNext()){
+                 entry.next();
+                 entry.key()->updateObject(entry.value());
+                 entry.key()->dispose();
+             }
          }
          for (TreeModelListener* l : treeEditor->_treePane->femaleSocketTreeModel->listeners) {
              TreeModelEvent* tme = new TreeModelEvent(
-                     femaleSocket->bself(),
-                     path->getPath()
-             );
+                 femaleSocket->bself(),
+                 path->getPath()
+                 );
              l->treeNodesChanged(tme);
          }
          treeEditor->_editActionExpressionDialog->dispose();
          treeEditor->_editActionExpressionDialog = nullptr;
-      //   treeEditor->_treePane._tree.updateUI();
+         //   treeEditor->_treePane._tree.updateUI();
 
-      //                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
+         //                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
          if (treeEditor->_treePane->_femaleRootSocket->isActive()) {
              treeEditor->_treePane->_femaleRootSocket->registerListeners();
          }
@@ -2229,7 +2353,9 @@
                                     JOptionPane.ERROR_MESSAGE);
                         });
 #else
-                      ThreadingUtil::runOnGUIEventually(new   TreeEditor_run7b(uname, te));
+                    //  ThreadingUtil::runOnGUIEventually(new   TreeEditor_run7b(uname, te));
+                        connect(this, SIGNAL(doRun7b(TreeEditor_run7b*)), te, SLOT(executeRun7b(TreeEditor_run7b*)));
+                        emit doRun7b(new TreeEditor_run7b(uname, te));
 #endif
                         username = "";
                     }
@@ -2276,7 +2402,9 @@
             });
         });
 #else
-           ThreadingUtil::runOnGUIEventually( new TreeEditor_run7c(femaleSocket, path, te));
+           //ThreadingUtil::runOnGUIEventually( new TreeEditor_run7c(femaleSocket, path, te));
+            connect(this, SIGNAL(doRun7c(TreeEditor_run7c*)), te, SLOT(executeRun7c(TreeEditor_run7c*)));
+            emit doRun7c(new TreeEditor_run7c(femaleSocket, path, te));
 #endif
     }
         void TreeEditor_run7b::run()
@@ -2304,6 +2432,64 @@
             }
     //        _treePane._tree.updateUI();
         }//);
+
+        // handle copy
+        void TreeEditor_run8::run()
+        {
+//            te->_treePane->_femaleRootSocket->getConditionalNG(),
+//                () -> {
+                Clipboard* clipboard =
+                ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
+                QMap<QString, QString>* systemNames = new QMap<QString, QString>();
+                QMap<QString, QString>* userNames = new QMap<QString, QString>();
+                try {
+                    QList<QString>* errors =  new QList<QString>();
+                if (!clipboard->add(
+                            (MaleSocket*) _currentFemaleSocket->getConnectedSocket()->getDeepCopy(systemNames, userNames)->bself(),
+                            errors)) {
+                        JOptionPane::showMessageDialog(nullptr,
+                                                   errors->join("<br>"),
+                                                      tr("Error"),
+                                                       JOptionPane::ERROR_MESSAGE);
+                    }
+                } catch (JmriException* ex) {
+                    te->log->error(tr("getDeepCopy thrown exception: %1").arg(ex->toString()), ex);
+//                    ThreadingUtil.runOnGUIEventually(() -> {
+//                        JOptionPane.showMessageDialog(null,
+//                                                      "An exception has occured: "+ex.getMessage(),
+//                                                      "An error has occured",
+//                                                      JOptionPane.ERROR_MESSAGE);
+//                    });
+                    connect(this, SIGNAL(doRun8b(JmriException*)), te, SLOT(JmriException*));
+                    emit doRun8b(ex);
+                }
+        }
+        // handle paste
+        void TreeEditor_run9::run()
+        {
+                //            te->_treePane->_femaleRootSocket->getConditionalNG(),
+                //                () -> {
+                Clipboard* clipboard =
+                    ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
+                try {
+                    _menu->_currentFemaleSocket->_connect(clipboard->fetchTopItem());
+                    QList<QString>* errors = new QList<QString>();
+                    if (!_menu->_currentFemaleSocket->setParentForAllChildren(errors)) {
+                        JOptionPane::showMessageDialog(te,
+                                                       errors->join("<br>"),
+                                                      tr("Error"),
+                                                       JOptionPane::ERROR_MESSAGE);
+                    }
+                } catch (SocketAlreadyConnectedException* ex) {
+                    te->log->error("item cannot be connected", ex);
+                }
+//                ThreadingUtil.runOnGUIEventually(() -> {
+//                    _treePane._femaleRootSocket.registerListeners();
+//                    _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
+//                });
+                connect(this, SIGNAL(doRun9a(TreeEditor_run9a*)), te, SLOT(executeRun9a(TreeEditor_run9a*)));
+                emit new TreeEditor_run9a(te->_treePane, _menu->_currentFemaleSocket, _menu->_currentPath);
+        }
 
 
     /*private*/ /*final*/ /*static*/ Logger* TreeEditor::log =LoggerFactory::getLogger("TreeEditor");

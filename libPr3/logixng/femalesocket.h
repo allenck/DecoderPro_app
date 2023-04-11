@@ -22,12 +22,12 @@
      * @param socket the socket to connect
      * @throws SocketAlreadyConnectedException if the socket is already connected
      */
-  /*public*/ virtual void _connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/ {}
+     /*public*/ virtual void _connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/ =0;
 
     /**
      * Disconnect the current connected male socket from this female socket.
      */
-  /*public*/ virtual void _disconnect() {}
+     /*public*/ virtual void _disconnect() =0;
 
     /**
      * Can a connected socket be disconnected?
@@ -41,13 +41,13 @@
      * Get the connected socket.
      * @return the male socket or null if not connected
      */
-  /*public*/ virtual MaleSocket* getConnectedSocket() {return nullptr;}
+    /*public*/ virtual MaleSocket* getConnectedSocket() =0;//{return nullptr;}
 
     /**
      * Is a male socket connected to this female socket?
      * @return true if connected
      */
-  /*public*/ virtual bool isConnected(){return false;}
+  /*public*/ virtual bool isConnected()=0;//{return false;}
 
     /**
      * Is a particular male socket compatible with this female socket?
@@ -80,7 +80,7 @@
      *                              false otherwise
      * @return true if the name is valid, false otherwise
      */
-  /*public*/ virtual bool validateName(QString name, bool ignoreDuplicateErrors){}
+  /*public*/ virtual bool validateName(QString name, bool ignoreDuplicateErrors)=0;//{}
 
     /**
      * Set the name of this socket.
@@ -104,7 +104,7 @@
      * @param ignoreDuplicateErrors true if duplicate names should be ignored,
      *                              false otherwise
      */
-  /*public*/ virtual void setName(QString name, bool ignoreDuplicateErrors) {}
+  /*public*/ virtual void setName(QString name, bool ignoreDuplicateErrors)=0;// {}
 
     /**
      * Get the name of this socket.
@@ -118,7 +118,7 @@
      * @param oper the operation to do
      * @return true if operation is allowed, false otherwise
      */
-    /*public*/ /*default*/ bool isSocketOperationAllowed(FemaleSocketOperation::TYPES oper)
+    /*public*/ /*default*/virtual bool isSocketOperationAllowed(FemaleSocketOperation::TYPES oper)
     {
         Base* parent = getParent();
         if (parent == nullptr) return false;
@@ -152,7 +152,7 @@
      * has never listeners enabled.
      * @param enable true if listeners should be enabled, false otherwise
      */
-  /*public*/ virtual void setEnableListeners(bool enable) {}
+  /*public*/ virtual void setEnableListeners(bool enable) =0;//{}
 
     /**
      * Gets whenever listeners are enabled or not.
@@ -160,7 +160,7 @@
      * has never listeners enabled.
      * @return true if listeners should be enabled, false otherwise
      */
-  /*public*/ virtual bool getEnableListeners(){return false;}
+  /*public*/ virtual bool getEnableListeners()=0;//{return false;}
 
     /**
      * Am I an ancestor to this maleSocket?

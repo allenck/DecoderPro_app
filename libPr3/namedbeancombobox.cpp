@@ -357,8 +357,10 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 }
 
 /*public*/ void NamedBeanComboBox::dispose() {
-    ((SwingPropertyChangeSupport*)this->manager->mself())->removePropertyChangeListener("beans", managerListener);
-    ((SwingPropertyChangeSupport*)this->manager->mself())->removePropertyChangeListener("DisplayListName", managerListener);
+    //((SwingPropertyChangeSupport*)this->manager->mself())->removePropertyChangeListener("beans", managerListener);
+    this->manager->removePropertyChangeListener("beans", managerListener);
+//    ((SwingPropertyChangeSupport*)this->manager->mself())->removePropertyChangeListener("DisplayListName", managerListener);
+    this->manager->removePropertyChangeListener("beans", managerListener);
 }
 
 /*private*/ void NamedBeanComboBox::sort() {

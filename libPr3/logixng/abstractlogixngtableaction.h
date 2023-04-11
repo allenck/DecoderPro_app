@@ -39,7 +39,7 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   PickFrame* _pickTables;
   int conditionalRowNumber = 0;
   // Add E Variables
-  JmriJFrame* addLogixNGFrame = nullptr;
+  QPointer<JmriJFrame> addLogixNGFrame = nullptr;
   JTextField* _systemName = new JTextField(20);
   JTextField* _addUserName = new JTextField(20);
   JCheckBox* _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));   // NOI18N

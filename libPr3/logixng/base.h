@@ -177,7 +177,7 @@ class Base;
      * Get a short description of this item.
      * @return a short description
      */
-    /*default*/ /*public*/ QString getShortDescription() {
+    /*default*/ virtual /*public*/ QString getShortDescription() {
         return getShortDescription(QLocale());
     }
 
@@ -185,7 +185,7 @@ class Base;
      * Get a long description of this item.
      * @return a long description
      */
-    /*default*/ /*public*/ /*virtual*/ QString getLongDescription() {
+    /*default*/ /*public*/ virtual QString getLongDescription() {
         return getLongDescription(QLocale());
     }
 
@@ -194,7 +194,7 @@ class Base;
      * @param locale The locale to be used
      * @return a short description
      */
-  /*public*/ virtual QString getShortDescription(QLocale locale){return "";}
+    /*public*/ virtual QString getShortDescription(QLocale locale)=0;
 
     /**
      * Get a long description of this item.

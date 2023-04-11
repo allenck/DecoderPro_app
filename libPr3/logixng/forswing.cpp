@@ -13,6 +13,7 @@
     //@Override
     /*protected*/ void ForSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
         panel = new JPanel(new FlowLayout());
+    panel->setObjectName("ForSwing");
     }
 
     /** {@inheritDoc} */

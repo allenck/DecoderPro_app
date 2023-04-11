@@ -39,8 +39,8 @@ public:
  /*public*/ QList<ItemListener*> getItemListeners();
  /*public*/ void setEnabled(bool b) override {QComboBox::setEnabled(b);}
  /*public*/ QString getSelectedItem() {return currentText();}
- /*public*/ int getSelectedIndex() {return currentIndex();}
- /*public*/ void setSelectedIndex(int i){setCurrentIndex(i);}
+ /*public*/ int getSelectedIndex() {return QComboBox::currentIndex();}
+ /*public*/ void setSelectedIndex(int i){QComboBox::setCurrentIndex(i);}
  /*public*/ virtual void setSelectedItem(QVariant t);// {setCurrentText(t);}
  /*public*/ int getItemCount() {return count();}
  /*public*/ QStringList itemList();

@@ -17,7 +17,7 @@
     /*public*/ EditCommentDialog::EditCommentDialog(QObject* parent) :QObject(parent){
     }
 
-    /*public*/ QString EditCommentDialog::showDialog(QString comment) {
+    /*public*/ QString EditCommentDialog::showDialog(QString comment){
 
         _comment = comment;
 
@@ -76,6 +76,8 @@
                 cancelPressed(null);
             }
         });
+#else
+        //_editCommentDialog->addWindowListener(new EC_WindowAdapter(this));
 #endif
         contentPanel->layout()->addWidget(panel5);
 
@@ -84,15 +86,17 @@
 //        addLogixNGFrame.setLocationRelativeTo(component);
 //        _editCommentDialog->setLocationRelativeTo(null);
         _editCommentDialog->pack();
-        _editCommentDialog->setVisible(true);
+        //_editCommentDialog->setVisible(true);
+        _editCommentDialog->exec();
 
         return _comment;
     }
 
     /*final*/ /*protected*/ void EditCommentDialog::cancelPressed(JActionEvent* e) {
-        _editCommentDialog->setVisible(false);
-        _editCommentDialog->dispose();
-        _editCommentDialog = nullptr;
+//        _editCommentDialog->setVisible(false);
+//        _editCommentDialog->dispose();
+//        _editCommentDialog = nullptr;
+        _editCommentDialog->reject();
     }
 
     /*final*/ /*protected*/ void EditCommentDialog::okPressed(QActionEvent* e) {
@@ -101,7 +105,8 @@
         } else {
             _comment = _commentTextArea->getText();
         }
-        _editCommentDialog->setVisible(false);
-        _editCommentDialog->dispose();
-        _editCommentDialog = nullptr;
+//        _editCommentDialog->setVisible(false);
+//        _editCommentDialog->dispose();
+//        _editCommentDialog = nullptr;
+        _editCommentDialog->accept();
     }

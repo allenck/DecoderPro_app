@@ -100,6 +100,7 @@
             default:
                 throw new IllegalArgumentException("Invalid column");
           }
+          return true;
         }
         return AbstractTableModel::setData(index, value, role);
     }

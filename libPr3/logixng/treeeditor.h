@@ -23,9 +23,15 @@
 #include "abstractfemalesocket.h"
 #include "joptionpane.h"
 #include "threadingutil.h"
-#include "runtimeexception.h"
 #include "treepane.h"
 
+class TreeEditor_run9a;
+class EditCommentDialog;
+class TreeEditor_run7b;
+class TreeEditor_run7c;
+class TreeEditor_run5;
+class TreeEditor_run6;
+class TreeEditor_run3;
 class TreeEditor_run2;
 class TEPopupMenu;
 class FemaleSocket;
@@ -56,18 +62,30 @@ class TreeEditor : public TreeViewer
   QString getClassName() override{return "jmri.jmrit.logixng.tools.TreeEditor";}
   static TreeEditor* instance();
 
+  public slots:
+  void executeRun3(TreeEditor_run3* ta);
+  void executeRun5(TreeEditor_run5* ta);
+  void executeRun6(TreeEditor_run6* ta);
+  void executeRun7b(TreeEditor_run7b* ta);
+  void executeRun7c(TreeEditor_run7c* ta);
+  void executeRun8a(QStringList* errors);
+  void executeRun8b(JmriException* ex);
+  void executeRun9a(TreeEditor_run9a* ta);
+
+
  private:
   static Logger* log;
   /*private*/ /*final*/ LogixNGPreferences* _prefs = (DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences");
+    /*MutableObject<String>*/QString commentStr;
 
   ClipboardEditor* _clipboardEditor = nullptr;
 
-  /*private*/ JDialog* _renameSocketDialog = nullptr;
-  /*private*/ JDialog* _selectItemTypeDialog = nullptr;
-  /*private*/ JDialog* _addItemDialog = nullptr;
-  /*private*/ JDialog* _editActionExpressionDialog = nullptr;
-  /*private*/ JDialog* _editLocalVariablesDialog = nullptr;
-  /*private*/ JDialog* _changeUsernameDialog = nullptr;
+  /*private*/ QPointer<JDialog> _renameSocketDialog = nullptr;
+  /*private*/ QPointer<JDialog> _selectItemTypeDialog = nullptr;
+  /*private*/ QPointer<JDialog> _addItemDialog = nullptr;
+  /*private*/ QPointer<JDialog> _editActionExpressionDialog = nullptr;
+  /*private*/ QPointer<JDialog> _editLocalVariablesDialog = nullptr;
+  /*private*/ QPointer<JDialog> _changeUsernameDialog = nullptr;
   /*private*/ /*final*/ JTextField* _socketNameTextField = new JTextField(20);
   /*private*/ /*final*/ JTextField* _systemName = new JTextField(20);
   /*private*/ /*final*/ JTextField* _addUserName = new JTextField(20);
@@ -94,8 +112,8 @@ class TreeEditor : public TreeViewer
   /*private*/ /*final*/ QString _systemNameAuto = getClassName()+".AutoSystemName";             // NOI18N
   /*private*/ /*final*/ JLabel* _categoryLabel = new JLabel(tr("Category") + ":");  // NOI18N
   /*private*/ /*final*/ JLabel* _typeLabel = new JLabel(tr("Type") + ":");   // NOI18N
-  /*private*/ JButton* _create;
-  /*private*/ JButton* _edit;
+  /*private*/ JButton* _create=nullptr;
+  /*private*/ JButton* _edit=nullptr;
 
   /*private*/ SwingConfiguratorInterface* _addSwingConfiguratorInterface= nullptr;
   /*private*/ SwingConfiguratorInterface* _addSwingConfiguratorInterfaceMaleSocket=nullptr;
@@ -124,11 +142,7 @@ class TreeEditor : public TreeViewer
   /*final*/ /*protected*/ void createAddFrame(FemaleSocket* femaleSocket, TreePath* path,
                                               SwingConfiguratorInterface* swingConfiguratorInterface);
   /*final*/ /*protected*/ void editPressed(FemaleSocket* femaleSocket, TreePath* path);
-  /*final*/ /*protected*/ void makeAddEditFrame(
-    bool addOrEdit,
-    FemaleSocket* femaleSocket,
-    JButton* button,
-    /*MutableObject<String>*/QString commentStr);
+  /*final*/ /*protected*/ void makeAddEditFrame(bool addOrEdit, FemaleSocket* femaleSocket, JButton* button, QString* commentStr);
   /*final*/ /*protected*/ void editLocalVariables(FemaleSocket* femaleSocket, TreePath* path);
   /*final*/ /*protected*/ void changeUsername(FemaleSocket* femaleSocket, TreePath* path);
   /*final*/ /*protected*/ void autoSystemName();
@@ -154,6 +168,8 @@ class TreeEditor : public TreeViewer
  friend class TE_WindowAdapter;
  friend class TE_WindowAdapter2;
  friend class TE_WindowAdapter3;
+ friend class TreeEditor_run8;
+ friend class TreeEditor_run9;
 };
 
  // This class is copied from BeanTableDataModel
@@ -255,7 +271,8 @@ friend class DeleteBeanWorker2;
 friend class ConditionalNGEditor;
 friend class JTreeOperator;
 friend class TreeEditor_run0b;
-};
+friend class TreeEditor_run9;
+}; // TEPopupMenu
 
 class TEClipboardListener : public QObject, public ClipboardEventListener
 {
@@ -273,7 +290,10 @@ class TreeEditor_run0b : public ThreadAction
     TreeEditor* _treeEditor;
     TEPopupMenu* _menu;
 public:
-    TreeEditor_run0b(TreeEditor* _treeEditor) {this->_treeEditor = _treeEditor;}
+    TreeEditor_run0b(TreeEditor* _treeEditor, TEPopupMenu* _menu) {
+      this->_treeEditor = _treeEditor;
+      this->_menu = _menu;
+    }
     void run()
     {
         _treeEditor->_treePane->_femaleRootSocket->registerListeners();
@@ -287,10 +307,12 @@ class TreeEditor_run0 : public ThreadAction
  Q_OBJECT
  FemaleSocket* _currentFemaleSocket;
  TreeEditor* _treeEditor;
+ TEPopupMenu* _menu;
 public:
-    TreeEditor_run0(FemaleSocket* _currentFemaleSocket, TreeEditor* _treeEditor)  {
+    TreeEditor_run0(FemaleSocket* _currentFemaleSocket, TreeEditor* _treeEditor, TEPopupMenu* _menu)  {
         this->_currentFemaleSocket = _currentFemaleSocket;
         this->_treeEditor = _treeEditor;
+        this->_menu = _menu;
     }
     void run()
     {
@@ -309,36 +331,11 @@ public:
 //            _treePane._femaleRootSocket.registerListeners();
 //            _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
 //        });
-        ThreadingUtil::runOnGUIEventually(new TreeEditor_run0b(_treeEditor));
+        ThreadingUtil::runOnGUIEventually(new TreeEditor_run0b(_treeEditor, _menu));
     }
 };
 
 
-class TreeEditor_run2 : public RunnableWithBase
-{
-  Q_OBJECT
-  TreePane* _treePane;
-  Base* b;
-
- public:
-  TreeEditor_run2(/*Base* b, */TreePane* _treePane) {/*this->b = b;*/ this->_treePane = _treePane;}
-
-  void run(Base* b);
-};
-
-class TreeEditor_run3 : public ThreadAction
-{
-  Q_OBJECT
-  TreeEditor* treeEditor;
-  TreePath* path;
-  FemaleSocket* femaleSocket;
- public:
-  TreeEditor_run3(FemaleSocket* femaleSocket,TreePath* path, TreeEditor* treeEditor) {
-   this->femaleSocket = femaleSocket;
-   this->path = path;
-   this->treeEditor = treeEditor;}
-  void run();
-};
 
 class TreeEditor_run1 : public ThreadAction
 {
@@ -356,7 +353,61 @@ class TreeEditor_run1 : public ThreadAction
   }
   void run();
 
+ signals:
+  void startRun3(TreeEditor_run3* ta);
+
 };
+
+class TreeEditor_run2 : public RunnableWithBase
+{
+  Q_OBJECT
+  TreePane* _treePane;
+  Base* b;
+
+  public:
+  TreeEditor_run2(/*Base* b, */TreePane* _treePane) {/*this->b = b;*/ this->_treePane = _treePane;}
+
+  void run(Base* b);
+};
+
+class TreeEditor_run3 : public ThreadAction
+{
+  Q_OBJECT
+  TreeEditor* treeEditor;
+  TreePath* path;
+  FemaleSocket* femaleSocket;
+  public:
+  TreeEditor_run3(FemaleSocket* femaleSocket,TreePath* path, TreeEditor* treeEditor) {
+   this->femaleSocket = femaleSocket;
+   this->path = path;
+   this->treeEditor = treeEditor;}
+  void run();
+};
+
+class TreeEditor_run4 : public ThreadAction
+{
+  Q_OBJECT
+  TreeEditor* treeEditor;
+  QString commentStr;
+  FemaleSocket* femaleSocket;
+  TreePath* path;
+  Base* object;
+  public:
+  TreeEditor_run4(TreePath* path, FemaleSocket* femaleSocket, Base* object, QString commentStr, TreeEditor* treeEditor) {
+   this->path = path;
+   this->treeEditor = treeEditor;
+   this->object = object;
+   this->commentStr = commentStr;
+   this->femaleSocket= femaleSocket;
+  }
+  void run();
+
+  signals:
+  void doRun5(TreeEditor_run5*);
+  void doRun6(TreeEditor_run6*);
+
+};
+
 class TreeEditor_run5 : public ThreadAction
 {
   Q_OBJECT
@@ -384,100 +435,9 @@ class TreeEditor_run6 : public ThreadAction
   QString errorMsg;
  public:
   TreeEditor_run6(QString errorMsg) {this->errorMsg = errorMsg;}
-  void run()
-  {
-   JOptionPane::showMessageDialog(nullptr,
-           tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
-           tr("Data is not valid"),
-           JOptionPane::ERROR_MESSAGE);
-
-  }
+  void run();
 };
 
-class TreeEditor_run4 : public ThreadAction
-{
-  Q_OBJECT
-  TreeEditor* treeEditor;
-  QString commentStr;
-  FemaleSocket* femaleSocket;
-  TreePath* path;
-  Base* object;
- public:
-  TreeEditor_run4(TreePath* path, FemaleSocket* femaleSocket, Base* object, QString commentStr, TreeEditor* treeEditor) {
-   this->path = path;
-   this->treeEditor = treeEditor;
-   this->object = object;
-   this->commentStr = commentStr;
-   this->femaleSocket= femaleSocket;
-  }
-  void run()
-  {
-   QList<QString>* errorMessages = new QList<QString>();
-
-   bool isValid = true;
-
-   if (treeEditor->_editSwingConfiguratorInterface->getManager() != nullptr) {
-       if (treeEditor->_editSwingConfiguratorInterface->getManager()
-               ->validSystemNameFormat(treeEditor->_systemName->text()) != Manager::NameValidity::VALID) {
-           isValid = false;
-           errorMessages->append(tr("Invalid System Name \"%1\"").arg(treeEditor->_systemName->text()));
-       }
-   } else {
-       treeEditor->log->debug("_editSwingConfiguratorInterface.getManager() returns null");
-   }
-
-   isValid &=treeEditor-> _editSwingConfiguratorInterface->validate(errorMessages);
-
-   if (isValid) {
-//       ThreadingUtil.runOnGUIEventually(() -> {
-//           femaleSocket->unregisterListeners();
-
-////                            Base object = femaleSocket->getConnectedSocket().getObject();
-//           if (_addUserName->text().isEmpty()) {
-//               ((NamedBean)object).setUserName(null);
-//           } else {
-//               ((NamedBean)object).setUserName(_addUserName->text());
-//           }
-//           ((NamedBean)object).setComment(commentStr.getValue());
-//           for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
-//               entry.getKey().updateObject(entry.getValue());
-//               entry.getKey().dispose();
-//           }
-//           for (TreeModelListener l : _treePane.femaleSocketTreeModel.listeners) {
-//               TreeModelEvent tme = new TreeModelEvent(
-//                       femaleSocket,
-//                       path.getPath()
-//               );
-//               l.treeNodesChanged(tme);
-//           }
-//           _editActionExpressionDialog.dispose();
-//           _editActionExpressionDialog = null;
-//           _treePane._tree.updateUI();
-
-////                            if (femaleSocket->isActive()) femaleSocket->registerListeners();
-//           if (_treePane._femaleRootSocket.isActive()) {
-//               _treePane._femaleRootSocket.registerListeners();
-//           }
-//       });
-//    Base* object, FemaleSocket* femaleSocket, TreePath* path, QString commentStr, TreeEditor* treeEditor
-    ThreadingUtil::runOnGUIEventually(new TreeEditor_run5(object, femaleSocket, path, commentStr, treeEditor));
-   } else {
-       QString errorMsg;// = new StringBuilder();
-       for (QString s : *errorMessages) {
-           if (errorMsg.length() > 0) errorMsg.append("<br>");
-           errorMsg.append(s);
-       }
-//       ThreadingUtil.runOnGUIEventually(() -> {
-//           JOptionPane.showMessageDialog(null,
-//                   Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
-//                   Bundle.getMessage("Data is not valid"),
-//                   JOptionPane.ERROR_MESSAGE);
-//       });
-       ThreadingUtil::runOnGUIEventually(new TreeEditor_run6(errorMsg));
-   }
-
-  }
-};
 class TreeEditor_run7 : public ThreadAction
 {
     Q_OBJECT
@@ -493,6 +453,10 @@ public:
      this->te = te;
     }
     void run();
+signals:
+    void doRun7b(TreeEditor_run7b*);
+    void doRun7c(TreeEditor_run7c*);
+
 };
 class TreeEditor_run7b : public ThreadAction
 {
@@ -522,6 +486,58 @@ public:
     void run();
 };
 
+
+// handle 'copy'
+class TreeEditor_run8 : public ThreadAction
+{
+    Q_OBJECT
+    FemaleSocket* _currentFemaleSocket;
+    TreeEditor* te;
+public:
+    TreeEditor_run8(FemaleSocket* _currentFemaleSocket, TreeEditor* te) {
+        this->_currentFemaleSocket = _currentFemaleSocket;
+        this->te = te;
+    }
+    void run();
+signals:
+    void doRun8a(QStringList* errors);
+    void doRun8b(JmriException* ex);
+};
+
+// handle 'paste'
+class TreeEditor_run9 : public ThreadAction
+{
+    Q_OBJECT
+    TEPopupMenu* _menu;;
+    TreeEditor* te;
+public:
+    TreeEditor_run9(FemaleSocket* _currentFemaleSocket, TreeEditor* te) {
+        this->_menu = _menu;
+        this->te = te;
+    }
+    void run();
+signals:
+    void doRun9a(TreeEditor_run9a* ta);
+};
+
+class TreeEditor_run9a : public ThreadAction
+{
+    Q_OBJECT
+    TreePane* _treePane;
+    FemaleSocket* _currentFemaleSocket;
+    TreePath* _currentPath;
+public:
+    TreeEditor_run9a(TreePane* _treePane, FemaleSocket* _currentFemaleSocket, TreePath* _currentPath){
+        this->_treePane = _treePane;
+        this->_currentFemaleSocket = _currentFemaleSocket;
+        this->_currentPath = _currentPath;
+    }
+    void run()
+    {
+        _treePane->_femaleRootSocket->registerListeners();
+        _treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
+   }
+};
 
 class TE_WindowAdapter : public WindowAdapter
 {
