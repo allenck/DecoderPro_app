@@ -99,6 +99,8 @@ virtual void focusOutEvent(QFocusEvent*  event);
 virtual QColor  getBackground();
 virtual QString  getClassName();
 virtual QFont  getFont();
+virtual QFontMetrics  getFontMetrics();
+virtual QFontMetrics  getFontMetrics(QFont  f);
 virtual QColor  getForeground();
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
@@ -133,6 +135,7 @@ virtual void setBackground(QColor  arg__1);
 virtual void setEnabled(bool  b);
 virtual void setFont(QFont  arg__1);
 virtual void setOpaque(bool  arg__1);
+virtual void setSize(int  arg__1, int  arg__2);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
@@ -140,6 +143,7 @@ virtual void showEvent(QShowEvent*  arg__1);
 virtual QSize  sizeHint() const;
 virtual void storeValues();
 virtual void tabletEvent(QTabletEvent*  event);
+virtual QString  toString();
 virtual void wheelEvent(QWheelEvent*  event);
 virtual void windowClosing(QCloseEvent*  e);
 
@@ -1317,6 +1321,9 @@ inline void promoted_turnoutPushbuttonLockout(bool  _pushButtonLockout) { this->
 inline bool  py_q_canInvert() const { return LnTurnout::canInvert(); }
 inline void py_q_dispose() { LnTurnout::dispose(); }
 inline void py_q_forwardCommandChangeToLayout(int  newstate) { LnTurnout::forwardCommandChangeToLayout(newstate); }
+inline void py_q_setBinaryOutput(bool  state) { LnTurnout::setBinaryOutput(state); }
+inline void py_q_setFeedbackMode(QString  mode) { LnTurnout::setFeedbackMode(mode); }
+inline void py_q_setFeedbackMode(int  mode) { LnTurnout::setFeedbackMode(mode); }
 inline void py_q_turnoutPushbuttonLockout(bool  _pushButtonLockout) { LnTurnout::turnoutPushbuttonLockout(_pushButtonLockout); }
 };
 
@@ -1330,9 +1337,14 @@ void delete_LnTurnout(LnTurnout* obj) { delete obj; }
    void py_q_dispose(LnTurnout* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_dispose());}
    void py_q_forwardCommandChangeToLayout(LnTurnout* theWrappedObject, int  newstate){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_forwardCommandChangeToLayout(newstate));}
    int  getNumber(LnTurnout* theWrappedObject);
+   bool  isByPassBushbyBit(LnTurnout* theWrappedObject);
+   bool  isSendOnAndOff(LnTurnout* theWrappedObject);
    void messageFromManager(LnTurnout* theWrappedObject, LocoNetMessage*  l);
    void sendOpcSwReqMessage(LnTurnout* theWrappedObject, int  state, bool  on);
    void sendSetOffMessage(LnTurnout* theWrappedObject, int  state);
+   void py_q_setBinaryOutput(LnTurnout* theWrappedObject, bool  state){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_setBinaryOutput(state));}
+   void py_q_setFeedbackMode(LnTurnout* theWrappedObject, QString  mode){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_setFeedbackMode(mode));}
+   void py_q_setFeedbackMode(LnTurnout* theWrappedObject, int  mode){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_setFeedbackMode(mode));}
    void setUseOffSwReqAsConfirmation(LnTurnout* theWrappedObject, bool  state);
    void py_q_turnoutPushbuttonLockout(LnTurnout* theWrappedObject, bool  _pushButtonLockout){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_turnoutPushbuttonLockout(_pushButtonLockout));}
 };

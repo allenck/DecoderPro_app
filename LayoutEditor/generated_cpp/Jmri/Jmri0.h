@@ -2035,6 +2035,8 @@ virtual void focusOutEvent(QFocusEvent*  event);
 virtual QColor  getBackground();
 virtual QString  getClassName();
 virtual QFont  getFont();
+virtual QFontMetrics  getFontMetrics();
+virtual QFontMetrics  getFontMetrics(QFont  f);
 virtual QColor  getForeground();
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
@@ -2069,6 +2071,7 @@ virtual void setBackground(QColor  arg__1);
 virtual void setEnabled(bool  b);
 virtual void setFont(QFont  arg__1);
 virtual void setOpaque(bool  arg__1);
+virtual void setSize(int  arg__1, int  arg__2);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
@@ -2076,6 +2079,7 @@ virtual void showEvent(QShowEvent*  arg__1);
 virtual QSize  sizeHint() const;
 virtual void storeValues();
 virtual void tabletEvent(QTabletEvent*  event);
+virtual QString  toString();
 virtual void wheelEvent(QWheelEvent*  event);
 virtual void windowClosing(QCloseEvent*  e);
 
@@ -2840,6 +2844,8 @@ virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QColor  getBackground();
 virtual QFont  getFont();
+virtual QFontMetrics  getFontMetrics();
+virtual QFontMetrics  getFontMetrics(QFont  f);
 virtual QColor  getForeground();
 virtual QString  getTitle();
 virtual bool  hasHeightForWidth() const;
@@ -2871,12 +2877,14 @@ virtual void setBackground(QColor  arg__1);
 virtual void setEnabled(bool  b);
 virtual void setFont(QFont  arg__1);
 virtual void setOpaque(bool  arg__1);
+virtual void setSize(int  arg__1, int  arg__2);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
 virtual void showEvent(QShowEvent*  arg__1);
 virtual QSize  sizeHint() const;
 virtual void tabletEvent(QTabletEvent*  event);
+virtual QString  toString();
 virtual void wheelEvent(QWheelEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -2896,6 +2904,8 @@ inline void py_q_componentResized(QResizeEvent*  arg__1) { JFrame::componentResi
 inline void py_q_dispose() { JFrame::dispose(); }
 inline QColor  py_q_getBackground() { return JFrame::getBackground(); }
 inline QFont  py_q_getFont() { return JFrame::getFont(); }
+inline QFontMetrics  py_q_getFontMetrics() { return JFrame::getFontMetrics(); }
+inline QFontMetrics  py_q_getFontMetrics(QFont  f) { return JFrame::getFontMetrics(f); }
 inline QColor  py_q_getForeground() { return JFrame::getForeground(); }
 inline QString  py_q_getTitle() { return JFrame::getTitle(); }
 inline void py_q_hideEvent(QHideEvent*  arg__1) { JFrame::hideEvent(arg__1); }
@@ -2907,9 +2917,11 @@ inline void py_q_setBackground(QColor  arg__1) { JFrame::setBackground(arg__1); 
 inline void py_q_setEnabled(bool  b) { JFrame::setEnabled(b); }
 inline void py_q_setFont(QFont  arg__1) { JFrame::setFont(arg__1); }
 inline void py_q_setOpaque(bool  arg__1) { JFrame::setOpaque(arg__1); }
+inline void py_q_setSize(int  arg__1, int  arg__2) { JFrame::setSize(arg__1, arg__2); }
 inline void py_q_setTitle(QString  _title) { JFrame::setTitle(_title); }
 inline void py_q_setVisible(bool  visible) { JFrame::setVisible(visible); }
 inline void py_q_showEvent(QShowEvent*  arg__1) { JFrame::showEvent(arg__1); }
+inline QString  py_q_toString() { return JFrame::toString(); }
 };
 
 class PythonQtWrapper_JFrame : public QObject
@@ -2939,7 +2951,9 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    QFont  getFont(JFrame* theWrappedObject);
    QFont  py_q_getFont(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getFont());}
    QFontMetrics  getFontMetrics(JFrame* theWrappedObject);
+   QFontMetrics  py_q_getFontMetrics(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getFontMetrics());}
    QFontMetrics  getFontMetrics(JFrame* theWrappedObject, QFont  f);
+   QFontMetrics  py_q_getFontMetrics(JFrame* theWrappedObject, QFont  f){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getFontMetrics(f));}
    QColor  getForeground(JFrame* theWrappedObject);
    QColor  py_q_getForeground(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getForeground());}
    QPoint  getLocation(JFrame* theWrappedObject);
@@ -2981,6 +2995,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void py_q_setOpaque(JFrame* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setOpaque(arg__1));}
    void setResizable(JFrame* theWrappedObject, bool  resizable);
    void setSize(JFrame* theWrappedObject, int  arg__1, int  arg__2);
+   void py_q_setSize(JFrame* theWrappedObject, int  arg__1, int  arg__2){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setSize(arg__1, arg__2));}
    void setState(JFrame* theWrappedObject, int  state);
    void setTitle(JFrame* theWrappedObject, QString  _title);
    void py_q_setTitle(JFrame* theWrappedObject, QString  _title){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setTitle(_title));}
@@ -2989,6 +3004,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    QString  title(JFrame* theWrappedObject);
    void toFront(JFrame* theWrappedObject);
    QString  toString(JFrame* theWrappedObject);
+   QString  py_q_toString(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_toString());}
     QString py_toString(JFrame*);
 void py_set__closed(JFrame* theWrappedObject, bool  _closed){ theWrappedObject->_closed = _closed; }
 bool  py_get__closed(JFrame* theWrappedObject){ return theWrappedObject->_closed; }
@@ -3028,6 +3044,8 @@ virtual void focusOutEvent(QFocusEvent*  event);
 virtual QColor  getBackground();
 virtual QString  getClassName();
 virtual QFont  getFont();
+virtual QFontMetrics  getFontMetrics();
+virtual QFontMetrics  getFontMetrics(QFont  f);
 virtual QColor  getForeground();
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
@@ -3062,6 +3080,7 @@ virtual void setBackground(QColor  arg__1);
 virtual void setEnabled(bool  b);
 virtual void setFont(QFont  arg__1);
 virtual void setOpaque(bool  arg__1);
+virtual void setSize(int  arg__1, int  arg__2);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
@@ -3069,6 +3088,7 @@ virtual void showEvent(QShowEvent*  arg__1);
 virtual QSize  sizeHint() const;
 virtual void storeValues();
 virtual void tabletEvent(QTabletEvent*  event);
+virtual QString  toString();
 virtual void wheelEvent(QWheelEvent*  event);
 virtual void windowClosing(QCloseEvent*  e);
 
@@ -3080,6 +3100,7 @@ virtual void windowClosing(QCloseEvent*  e);
 class PythonQtPublicPromoter_JFrameItem : public JFrameItem
 { public:
 inline QString  py_q_getClassName() { return JFrameItem::getClassName(); }
+inline QString  py_q_toString() { return JFrameItem::toString(); }
 };
 
 class PythonQtWrapper_JFrameItem : public QObject
@@ -3089,7 +3110,7 @@ public slots:
 JFrameItem* new_JFrameItem();
 void delete_JFrameItem(JFrameItem* obj) { delete obj; } 
    QString  py_q_getClassName(JFrameItem* theWrappedObject){  return (((PythonQtPublicPromoter_JFrameItem*)theWrappedObject)->py_q_getClassName());}
-   QString  toString(JFrameItem* theWrappedObject);
+   QString  py_q_toString(JFrameItem* theWrappedObject){  return (((PythonQtPublicPromoter_JFrameItem*)theWrappedObject)->py_q_toString());}
     QString py_toString(JFrameItem*);
 };
 

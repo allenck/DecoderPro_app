@@ -32,6 +32,7 @@ void JFileChooser::common()
  selectedFile = nullptr;
  files = QStringList();
  currentDirectory =  new File(QDir::currentPath());
+ selectedFile = currentDirectory;
 }
 
 /*public*/ JFileChooser::JFileChooser(QString currentDirectoryPath, QObject *parent) : QObject(parent)

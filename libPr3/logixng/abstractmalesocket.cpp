@@ -107,7 +107,7 @@
 
 //@Override
 /*public*/ /*final*/ QString AbstractMaleSocket::getLongDescription(QLocale locale) {
- QObject* obj = (QObject*)_object->bself();
+ QObject* obj = _object->bself();
  QString cn = obj->metaObject()->className();
 
  if(static_cast<AbstractDigitalAction*>(obj))

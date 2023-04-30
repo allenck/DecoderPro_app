@@ -79,10 +79,6 @@ public:
      * of a leaf node's children is requested.
      */
     static /*public*/ /*final*/ QVectorIterator<MutableTreeNode*>* EMPTY_ENUMERATION;// =  QVectorIterator<TreeNode*>(QVector<TreeNode*>());
-    QObject* getExtra() {
-        return _extraData;
-    }
-    void setExtra(QObject* extraData) {this->_extraData = extraData;}
 
     QObject* tself() override {return (QObject*)this;}
 signals:

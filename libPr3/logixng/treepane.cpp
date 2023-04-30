@@ -63,7 +63,7 @@
 
     /*public*/  void TreePane::initComponents(FemaleSocketDecorator* decorator) {
 
-        femaleSocketTreeModel = new FemaleSocketTreeModel(_femaleRootSocket);
+    femaleSocketTreeModel = new FemaleSocketTreeModel(new FemaleSocketTreeRenderer(decorator), _femaleRootSocket, this );
 
         // Create a JTree and tell it to display our model
         _tree = new JTree();
@@ -71,7 +71,7 @@
 //        ToolTipManager.sharedInstance().registerComponent(_tree);
         _tree->setModel(femaleSocketTreeModel);
 //        _tree->setCellRenderer(new FemaleSocketTreeRenderer(decorator));
-        _tree->setItemDelegateForColumn(0, new FemaleSocketItemDelegate(new FemaleSocketTreeRenderer(nullptr),this));
+//        _tree->setItemDelegateForColumn(0, new FemaleSocketItemDelegate(new FemaleSocketTreeRenderer(nullptr),this));
 
         _tree->setRootVisible(_rootVisible);
         _tree->setShowsRootHandles(true);
@@ -80,7 +80,30 @@
 
         connect(_tree, &QTreeView::clicked, [=] (QModelIndex ix){
             int row = ix.row();
-            qDebug() << "clicked on " << ix.row() << " col " << ix.column();
+            QObject* obj = (QObject*)ix.internalPointer();
+            FemaleSocket* femaleSocket = nullptr;
+            TP_FemaleSocketTreeNode* node = nullptr;
+            QString name = "unknown";
+            QString description = "unknown";
+            int childCount =0;
+            QString fsObject = "";
+            if(qobject_cast<TP_FemaleSocketTreeNode*>(obj))
+            {
+                node = qobject_cast<TP_FemaleSocketTreeNode*>(obj);
+                if(node)
+                {
+                    femaleSocket= node->getFemaleSocket();
+                    if(femaleSocket)
+                    {
+                        name = femaleSocket->getName();
+                        description = femaleSocket->getShortDescription();
+                        childCount = femaleSocket->getConnectedSocket()-> getChildCount();
+                        fsObject = femaleSocket->bself()->objectName();
+                    }
+                }
+            }
+            qDebug() << "clicked on " << ix.row() << " col " << ix.column() << "ip: " << obj->objectName() << name
+                     << description << "children: " << childCount << fsObject;
         });
 
         // Expand the entire tree
@@ -91,10 +114,6 @@
             //FemaleSocket* femaleSocket = (FemaleSocket*) _tree->getPathForRow(i)->getLastPathComponent();
             FemaleSocket* femaleSocket = node->getFemaleSocket();
             //QVariant v = node->getUserObject();
-            QObject* exObj = node->getExtra();
-            if(node->getExtra())
-                femaleSocket = (DefaultFemaleDigitalActionSocket*)node->getExtra();
-            else
             {
                 TP_FemaleSocketTreeNode* tnode = (TP_FemaleSocketTreeNode*)obj;
                 femaleSocket = tnode->getFemaleSocket();
@@ -250,13 +269,16 @@
 //        protected final List<TreeModelListener> listeners = new ArrayList<>();
 
 
-        /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(AbstractFemaleSocket* root, QObject* parent)
+        /*public*/  FemaleSocketTreeModel::FemaleSocketTreeModel(FemaleSocketTreeRenderer* renderer,  AbstractFemaleSocket* root, TreePane* treePane, QObject* parent)
 //          : DefaultTreeModel(new TreePane_FemaleSocketTreeNode(root), parent) {
            : DefaultTreeModel(nullptr){
           setObjectName("FemaleSocketTreeModel");
           DefaultMutableTreeNode* defaultNode = (DefaultMutableTreeNode*)DefaultTreeModel::getRoot();
           defaultNode->add(new TP_FemaleSocketTreeNode(root));
           this->_root = root;
+          this->renderer = renderer;
+          this->treePane = treePane;
+
           //nodeStructureChanged((MutableTreeNode*)root);
         }
 
@@ -334,17 +356,45 @@
             TP_FemaleSocketTreeNode* node = static_cast<TP_FemaleSocketTreeNode*>(index.internalPointer());
             if(static_cast<TP_FemaleSocketTreeNode*>(node))
             {
-                if(role == Qt::DisplayRole)
+//                if(role == Qt::DisplayRole)
+//                {
+//                    FemaleSocket* socket = ((TP_FemaleSocketTreeNode*)node)->getFemaleSocket();
+//                    if(!socket)
+//                        return DefaultTreeModel::data(index, role);
+//                    return socket->getShortDescription();
+
+//                }
+                if(role == Qt::DecorationRole)
                 {
                     FemaleSocket* socket = ((TP_FemaleSocketTreeNode*)node)->getFemaleSocket();
                     if(!socket)
                         return DefaultTreeModel::data(index, role);
-                    return socket->getShortDescription();
-
+                    QWidget* w = renderer->getTreeCellRendererComponent(treePane->_tree, (QObject*)socket->bself(), true, true, true, index.row(),true);
+                    w->setMaximumHeight(50);
+                    QRect rectangle = w->rect();
+                    QPixmap pixmap(rectangle.size());
+                    w->render(&pixmap, QPoint(), QRegion(rectangle));
+                    return pixmap;
                 }
             }
             return DefaultTreeModel::data(index, role);
         }
+//        /*protected*/ void FemaleSocketTreeModel::drawRow(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex &index) const{
+
+//            QWidget * widget  =new QLabel("???");;
+//            QObject* object = (QObject*)index.internalPointer();
+//            if(qobject_cast<TP_FemaleSocketTreeNode*>(object))
+//            {
+//                TP_FemaleSocketTreeNode* node = static_cast<TP_FemaleSocketTreeNode*>(index.internalPointer());
+//                AbstractFemaleSocket* socket = node->getFemaleSocket();
+//                if(socket)
+//                {
+//                    QString desc = socket->getShortDescription();
+//                    widget = renderer->getTreeCellRendererComponent(treePane->_tree, (QObject*)socket, true, true, true, index.row(),true);
+//                }
+//            }
+//            widget->render(painter);
+//        }
 
 
 //    private static final class FemaleSocketTreeRenderer implements TreeCellRenderer {
@@ -406,7 +456,6 @@
 
             JLabel* connectedItemLabel = new JLabel();
             if (socket->isConnected()) {
-
                 if (((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getTreeEditorHighlightRow()) {
                     connectedItemLabel->setFont(uiDefaults->getFont("Tree.font"));
                     if (selected) {
@@ -480,13 +529,14 @@
             panelLayout->addWidget(connectedItemLabel,0, Qt::AlignLeft);
 
             //return _decorator->decorate(socket, mainPanel);
+            QSize s = mainPanel->size();
+            mainPanel->setMinimumHeight(100);
             return mainPanel;
         }
 
 TP_FemaleSocketTreeNode::TP_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent)
  : DefaultMutableTreeNode(femaleSocket->getName(), parent){
     setObjectName("TP_FemaleSocketTreeNode");
-    setExtra(femaleSocket);
  this->femaleSocket = femaleSocket;
 }
 

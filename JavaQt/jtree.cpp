@@ -543,6 +543,17 @@ void JTree::on_clicked(QModelIndex index)
     }
 }
 
+/*public*/ void JTree::expandRow(int row)
+{
+ if (row < 0 || row >= getRowCount())
+    return;
+
+ TreePath* path = getPathForRow(row);
+
+ if (path != nullptr)
+       expandPath(path);
+}
+
 /**
  * Ensures that the node identified by the specified path is
  * collapsed and viewable.

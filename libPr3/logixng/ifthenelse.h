@@ -75,7 +75,10 @@ class IfThenElse : public AbstractDigitalAction, public FemaleSocketListener
 
     friend class IfThenElse;
   };
-  explicit IfThenElse(QString sys, QString user, QObject *parent = nullptr);
+  Q_INVOKABLE explicit  IfThenElse(QObject *parent = nullptr) : AbstractDigitalAction(parent) {}
+  ~IfThenElse()  {}
+  IfThenElse(const IfThenElse&) : AbstractDigitalAction() {}
+  /*public*/  IfThenElse(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString>* systemNames, QMap<QString, QString>* userNames) /*throws JmriException */override;
   /*public*/  Category getCategory()override;
   /*public*/  void execute() /*throws JmriException*/override;
@@ -136,5 +139,5 @@ class IfThenElse : public AbstractDigitalAction, public FemaleSocketListener
   /*private*/ /*final*/ FemaleDigitalActionSocket* _elseActionSocket;
 
 };
-
+Q_DECLARE_METATYPE(IfThenElse)
 #endif // IFTHENELSE_H

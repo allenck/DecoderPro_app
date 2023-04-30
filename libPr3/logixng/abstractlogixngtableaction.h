@@ -39,7 +39,8 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   PickFrame* _pickTables;
   int conditionalRowNumber = 0;
   // Add E Variables
-  QPointer<JmriJFrame> addLogixNGFrame = nullptr;
+  //QPointer<JmriJFrame> addLogixNGFrame = nullptr;
+  JmriJFrame* addLogixNGFrame = nullptr;
   JTextField* _systemName = new JTextField(20);
   JTextField* _addUserName = new JTextField(20);
   JCheckBox* _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));   // NOI18N
@@ -146,6 +147,7 @@ class LNGBeanTableDataModel : public BeanTableDataModel
   /*protected*/ void configDeleteColumn(JTable* table)override;
 
 };
+
 class ALNGRunnable : public Runnable
 {
   Q_OBJECT
@@ -159,7 +161,7 @@ class ALNGRunnable : public Runnable
       // This may or may not work. It's not tested yet.
       // Disable for now.
       if (1==0) {
-          JPanel* panel5 = act->makeAddFrame("TitleCopyLogixNG", "Copy");    // NOI18N
+          JPanel* panel5 = act->makeAddFrame("Copy LogixNG", "Copy");    // NOI18N
           // Create bean
           JButton* create = new JButton(tr("Copy"));  // NOI18N
           panel5->layout()->addWidget(create);

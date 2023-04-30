@@ -194,6 +194,7 @@
 #include "debuggermaledigitalexpressionsocketswing.h"
 #include "debuggermaledigitalexpressionsocketswing.h"
 #include "debuggermalestringexpressionsocketswing.h"
+#include "ifthenelse.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -418,5 +419,9 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DebuggerMaleStringActionSocketSwing>("DebuggerMaleStringActionSocketSwing");
    qRegisterMetaType<DebuggerMaleDigitalExpressionSocketSwing>("DebuggerMaleDigitalExpressionSocketSwing");
    qRegisterMetaType<DebuggerMaleStringExpressionSocketSwing>("DebuggerMaleStringExpressionSocketSwing");
+
+   // actions
+   qRegisterMetaType<IfThenElse>("IfThenElse");
+
    LogixNG_Metatypes::ng_done = true;
 }

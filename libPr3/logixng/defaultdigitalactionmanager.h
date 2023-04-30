@@ -39,7 +39,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
  private:
   static Logger* log;
   /*private*/ /*final*/ QHash<Category, QList</*Class<? extends Base>*/QString>> actionClassList = QHash<Category, QList</*Class<? extends Base>*/QString>>();
-  /*private*/ AbstractMaleSocket* _lastRegisteredBean;
+  /*private*/ AbstractMaleSocket* _lastRegisteredBean = nullptr;
   static /*volatile*/ DefaultDigitalActionManager* _instance;// = null;
 
  protected:

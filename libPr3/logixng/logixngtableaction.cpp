@@ -137,6 +137,13 @@
         addLogixNGFrame->setLocation(50, 30);
         QWidget* contentPane = addLogixNGFrame->getContentPane();
         contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
+// added ACK
+        _sysNameLabel = new JLabel(tr("LogixNG") + " " + tr("SystemName") + ":");  // NOI18N
+        _userNameLabel = new JLabel(tr("LogixNG") + " " + tr("UserName") + ":");   // NOI18N
+        _systemName = new JTextField(20);
+        _addUserName = new JTextField(20);
+        _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));   // NOI18N
+// end add ACK
 
         JPanel* p;
         p = new JPanel();

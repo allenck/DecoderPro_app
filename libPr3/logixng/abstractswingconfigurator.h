@@ -15,12 +15,14 @@ class AbstractSwingConfigurator : public QObject, public SwingConfiguratorInterf
   /*public*/  void getAllSymbols(/*@Nonnull*/ Base* object, SymbolTable* symbolTable);
   /*public*/  QString getExecuteEvaluateMenuText() override;
   /*public*/  void executeEvaluate(/*@Nonnull*/ Base* object)override;
+  void setClass(QString s) {srcClass = s;}
+  QString getSrcClass() {return srcClass;}
 
  signals:
 
  private:
   /*private*/ void getSymbols(/*@Nonnull*/ Base* object, SymbolTable* symbolTable) /*throws JmriException*/;
-
+     QString srcClass;
 };
 
 #endif // ABSTRACTSWINGCONFIGURATOR_H

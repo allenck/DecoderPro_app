@@ -170,6 +170,7 @@ class TreeEditor : public TreeViewer
  friend class TE_WindowAdapter3;
  friend class TreeEditor_run8;
  friend class TreeEditor_run9;
+ friend class TE_WindowAdapter4;
 };
 
  // This class is copied from BeanTableDataModel
@@ -344,6 +345,7 @@ class TreeEditor_run1 : public ThreadAction
   QString commentStr;
   FemaleSocket* femaleSocket;
   TreePath* path;
+  AbstractBase* object;
  public:
   TreeEditor_run1(TreePath* path, FemaleSocket* femaleSocket,QString commentStr, TreeEditor* treeEditor) {
    this->path = path;
@@ -376,8 +378,10 @@ class TreeEditor_run3 : public ThreadAction
   TreeEditor* treeEditor;
   TreePath* path;
   FemaleSocket* femaleSocket;
+  AbstractBase* object;
   public:
-  TreeEditor_run3(FemaleSocket* femaleSocket,TreePath* path, TreeEditor* treeEditor) {
+  TreeEditor_run3(AbstractBase* object, FemaleSocket* femaleSocket,TreePath* path, TreeEditor* treeEditor) {
+   this->object = object;
    this->femaleSocket = femaleSocket;
    this->path = path;
    this->treeEditor = treeEditor;}
@@ -574,6 +578,23 @@ public:
         te->_changeUsernameDialog->setVisible(false);
         te->_changeUsernameDialog->dispose();
         te->_changeUsernameDialog = nullptr;
+
+    }
+};
+class TE_WindowAdapter4 : public WindowAdapter
+{
+    Q_OBJECT
+    TreeEditor* te;
+    bool addOrEdit;
+public:
+    TE_WindowAdapter4(bool addOrEdit, TreeEditor* te) { this->addOrEdit = addOrEdit; this->te = te;}
+    void windowClosing(QEvent* e)
+    {
+        if (addOrEdit) {
+            te->cancelCreateItem(nullptr);
+        } else {
+            te->cancelEditPressed(nullptr);
+        }
 
     }
 };

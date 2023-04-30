@@ -171,6 +171,7 @@ class LogixNGEditor : public QObject, public AbstractLogixNGEditor
   /*public*/  int getPreferredWidth(int col);
 
   QObject* pself() override {return (QObject*)this;}
+
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* e)override;
 

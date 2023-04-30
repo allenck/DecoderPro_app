@@ -5,6 +5,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include "clipboardeditor.h"
+#include "logixng/abstractswingconfigurator.h"
 #include "logixng_thread.h"
 #include "jmenuitem.h"
 #include "conditionalng.h"
@@ -33,6 +34,8 @@
 #include "basemanager.h"
 #include "abstractmalesocket.h"
 #include "joptionpane.h"
+#include "abstractbase.h"
+#include <QMetaObject>
 
 /**
  * Base class for LogixNG editors
@@ -271,7 +274,6 @@
 
         _categoryComboBox->clear();
         QList<Category> list = QList<Category>(connectableClasses.keys());
-// TODO:       Collections.sort(list);
         std::sort(list.begin(), list.end(), compareCategory);
 
         for (Category item : list) {
@@ -304,6 +306,7 @@
                         QString txt = sci->toString();
                         log->debug(tr("for Category%1, add %2").arg(category.name(), txt));
                         _swingConfiguratorComboBox->addItem(txt, VPtr<SwingConfiguratorInterface>::asQVariant(sci));
+                        ((AbstractSwingConfigurator*)sci)->setClass(clazz);
                     } else {
                         log->error(tr("Class %1 has no swing configurator interface").arg(clazz));
                     }
@@ -332,7 +335,6 @@
 
         JPanel* p;
         p = new JPanel();
-       #if 1
         GridBagLayout* pLayout;
         p->setLayout(pLayout = new GridBagLayout());
         GridBagConstraints c =  GridBagConstraints();
@@ -352,17 +354,6 @@
         pLayout->addWidget(_categoryComboBox, c);
         c.gridy = 1;
         pLayout->addWidget(_swingConfiguratorComboBox, c);
-#else
-        p->setLayout(new QHBoxLayout);
-        p->layout()->addWidget(_categoryLabel);
-        ((QVBoxLayout*)p->layout())->addWidget(_categoryComboBox, 1);
-        _categoryComboBox->setToolTip(tr("Select the category"));    // NOI18N
-        _swingConfiguratorComboBox->setToolTip(tr("Select the type of item"));   // NOI18N
-        contentPanel->layout()->addWidget(p);
-        p = new JPanel(new QHBoxLayout);
-        p->layout()->addWidget(_typeLabel);
-        ((QVBoxLayout*)p->layout())->addWidget(_swingConfiguratorComboBox, 1);
-#endif
 
         _categoryComboBox->setToolTip(tr("Select the category"));    // NOI18N
        _swingConfiguratorComboBox ->setToolTip(tr("Select the type of item"));   // NOI18N
@@ -821,6 +812,8 @@
                 }
             }
         });
+#else
+        frame->addWindowListener(new TE_WindowAdapter4(addOrEdit, this));
 #endif
         contentPanel->layout()->addWidget(panel5);
 
@@ -2098,16 +2091,28 @@
              } catch (SocketAlreadyConnectedException* ex) {
                  throw new RuntimeException(ex);
              }
-       #if 1
       //       femaleSocket->forEntireTree((Base b) -> {
       //           b.addPropertyChangeListener(_treePane);
       //       });
              femaleSocket->forEntireTree(new TreeEditor_run2( treeEditor->_treePane));
+             object = (AbstractBase*)((AbstractMaleSocket*)socket->getObject()->bself())->getObject()->bself();
+             int childCount = object->getChildCount();
+#if 0
+             QObject* parent = path->getLastPathComponent();
+             TP_FemaleSocketTreeNode* parentNode = qobject_cast<TP_FemaleSocketTreeNode*>(parent);
 
+             QString desc = this->femaleSocket->getShortDescription();
+//             int childCount = this->femaleSocket->getChildCount();
+             for(int i=0; i<childCount; i++)
+             {
+                 FemaleSocket* femaleSocket = object->getChild(i);
+                 parentNode->add(new TP_FemaleSocketTreeNode((QObject*)femaleSocket));
+             }
+#endif
              treeEditor->log->debug("prepare to run TreeEditor_run3");
 //             ThreadingUtil::runOnGUIEventually(/*() -> {*/ new TreeEditor_run3(femaleSocket, path, treeEditor));
              connect(this, SIGNAL(startRun3(TreeEditor_run3*)),treeEditor, SLOT(executeRun3(TreeEditor_run3*)) );
-                 emit startRun3(new TreeEditor_run3(femaleSocket, path, treeEditor));
+                 emit startRun3(new TreeEditor_run3(object, femaleSocket, path, treeEditor));
       //           _addSwingConfiguratorInterface.dispose();
       //           _addItemDialog.dispose();
       //           _addItemDialog = null;
@@ -2136,7 +2141,7 @@
                      tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
                      tr("Data is not valid"),
                      JOptionPane::ERROR_MESSAGE);
-      #endif
+
         }
        }
 
@@ -2179,13 +2184,30 @@
 
         void TreeEditor_run3::run()
         {
-         treeEditor->_addSwingConfiguratorInterface->dispose();
+            treeEditor->_treePane->_tree->expandPath(path);
+
+          QObject* parent = path->getLastPathComponent();
+          QString srcClass = ((AbstractSwingConfigurator*)treeEditor->_addSwingConfiguratorInterface)->getSrcClass();
+#if 1
+          if(qobject_cast<TP_FemaleSocketTreeNode*>(parent))
+          {
+             TP_FemaleSocketTreeNode* parentNode = qobject_cast<TP_FemaleSocketTreeNode*>(parent);
+//             QObject* object = (QObject*)parentNode->getFemaleSocket();
+//             femaleSocket = (AbstractFemaleSocket*)object;
+             QString desc = object->getShortDescription();
+             int childCount = object->getChildCount();
+             for(int i=0; i<childCount; i++)
+             {
+                 FemaleSocket* femaleSocket = this->object->getChild(i);
+                 parentNode->add(new TP_FemaleSocketTreeNode((QObject*)femaleSocket->bself()));
+             }
+          }
+#endif
+          treeEditor->_addSwingConfiguratorInterface->dispose();
          treeEditor->_addItemDialog->dispose();
          treeEditor->_addItemDialog = nullptr;
 
-//         QObject* parent = path->getLastPathComponent();
 
-//         ((DefaultMutableTreeNode*)parent)->add(new TP_FemaleSocketTreeNode(femaleSocket->bself()));
 
          for (TreeModelListener* l : treeEditor->_treePane->femaleSocketTreeModel->listeners) {
              TreeModelEvent* tme = new TreeModelEvent(

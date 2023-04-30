@@ -22,6 +22,7 @@
         if(object)
          action = (IfThenElse*)object->bself();
 
+
         panel = new JPanel(new FlowLayout());
 
         _typeComboBox = new JComboBox/*<>*/();

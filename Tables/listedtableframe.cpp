@@ -499,7 +499,7 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
  #else
      //constructors << QString::fromLatin1(metaObject->method(i).methodSignature());
      constructors << QString::fromLatin1(metaObject->constructor(i).methodSignature());
- #endif
+ #endif*
     }
 
      tableAction = (AbstractTableAction*)metaObject->newInstance(Q_ARG(QString, itemText),Q_ARG(QObject*, this));

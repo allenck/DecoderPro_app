@@ -16,6 +16,7 @@
 #include <QStyledItemDelegate>
 #include "vptr.h"
 
+class FemaleSocketTreeRenderer;
 class TreeEditor;
 class FemaleSocketDecorator;
 class FemaleSocketTreeModel;
@@ -69,7 +70,7 @@ class TreePane : public JPanel, public PropertyChangeListener
   friend class FemaleSocketItemDelegate;
   friend class TreeEditor_run8;
   friend class TreeEditor_run9a;
-
+  friend class FemaleSocketTreeModel;
 }; // TreePane
 
 class ThreadAction1 : public ThreadAction
@@ -137,9 +138,11 @@ Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
  Q_OBJECT
 //Q_INTERFACES(TreeNode)
     /*private*/ /*final*/ AbstractFemaleSocket* _root;
+    FemaleSocketTreeRenderer* renderer;
+    TreePane* treePane;
     public:
 
-    /*public*/  FemaleSocketTreeModel(AbstractFemaleSocket* root, QObject* parent = nullptr);
+    /*public*/  FemaleSocketTreeModel(FemaleSocketTreeRenderer* renderer, AbstractFemaleSocket* root, TreePane* treePane, QObject* parent = nullptr);
     /*public*/  QObject* getRoot()override;
     /*public*/  bool isLeaf(QObject* node)override;
     /*public*/  int getChildCount(QObject* parent)const override;
@@ -150,8 +153,11 @@ Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
     /*public*/  void removeTreeModelListener(TreeModelListener* l) override;
     /*public*/  QVariant data(const QModelIndex &index, int role) const;
 
+
 protected:
   /*protected*/ /*final*/ QList<TreeModelListener*> listeners = QList<TreeModelListener*>();
+//  /*protected*/ void drawRow(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex& index) const;
+
   friend class TreePane;
   friend class PopupMenu;
   friend class ConditionalNGDebugger;
@@ -160,6 +166,7 @@ protected:
   friend class TreeEditor_run3;
   friend class TreeEditor_run5;
   friend class TreeEditor_run7c;
+
 }; // FemaleSocketTreeModel
 
 /*private*/ /*static*/ /*final*/ class FemaleSocketTreeRenderer : public QObject, public TreeCellRenderer {

@@ -17563,6 +17563,72 @@ if (_wrapper) {
 }
   return BeanTableFrame::getFont();
 }
+QFontMetrics  PythonQtShell_BeanTableFrame::getFontMetrics()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFontMetrics");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QFontMetrics"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QFontMetrics returnValue((QFont()));
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFontMetrics", methodInfo, result);
+          } else {
+            returnValue = *((QFontMetrics*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableFrame::getFontMetrics();
+}
+QFontMetrics  PythonQtShell_BeanTableFrame::getFontMetrics(QFont  f0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFontMetrics");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QFontMetrics" , "QFont"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QFontMetrics returnValue(f0);
+      void* args[2] = {NULL, (void*)&f0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFontMetrics", methodInfo, result);
+          } else {
+            returnValue = *((QFontMetrics*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableFrame::getFontMetrics(f0);
+}
 QColor  PythonQtShell_BeanTableFrame::getForeground()
 {
 if (_wrapper) {
@@ -18454,6 +18520,28 @@ if (_wrapper) {
 }
   BeanTableFrame::setOpaque(arg__1);
 }
+void PythonQtShell_BeanTableFrame::setSize(int  arg__1, int  arg__2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSize");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  BeanTableFrame::setSize(arg__1, arg__2);
+}
 void PythonQtShell_BeanTableFrame::setTitle(QString  _title0)
 {
 if (_wrapper) {
@@ -18629,6 +18717,39 @@ if (_wrapper) {
   }
 }
   BeanTableFrame::tabletEvent(event0);
+}
+QString  PythonQtShell_BeanTableFrame::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableFrame::toString();
 }
 void PythonQtShell_BeanTableFrame::wheelEvent(QWheelEvent*  event0)
 {
@@ -26143,6 +26264,72 @@ if (_wrapper) {
 }
   return JFrame::getFont();
 }
+QFontMetrics  PythonQtShell_JFrame::getFontMetrics()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFontMetrics");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QFontMetrics"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QFontMetrics returnValue((QFont()));
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFontMetrics", methodInfo, result);
+          } else {
+            returnValue = *((QFontMetrics*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrame::getFontMetrics();
+}
+QFontMetrics  PythonQtShell_JFrame::getFontMetrics(QFont  f0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFontMetrics");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QFontMetrics" , "QFont"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QFontMetrics returnValue(f0);
+      void* args[2] = {NULL, (void*)&f0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFontMetrics", methodInfo, result);
+          } else {
+            returnValue = *((QFontMetrics*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrame::getFontMetrics(f0);
+}
 QColor  PythonQtShell_JFrame::getForeground()
 {
 if (_wrapper) {
@@ -26957,6 +27144,28 @@ if (_wrapper) {
 }
   JFrame::setOpaque(arg__1);
 }
+void PythonQtShell_JFrame::setSize(int  arg__1, int  arg__2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSize");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JFrame::setSize(arg__1, arg__2);
+}
 void PythonQtShell_JFrame::setTitle(QString  _title0)
 {
 if (_wrapper) {
@@ -27110,6 +27319,39 @@ if (_wrapper) {
   }
 }
   JFrame::tabletEvent(event0);
+}
+QString  PythonQtShell_JFrame::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrame::toString();
 }
 void PythonQtShell_JFrame::wheelEvent(QWheelEvent*  event0)
 {
@@ -28015,6 +28257,72 @@ if (_wrapper) {
 }
   return JFrameItem::getFont();
 }
+QFontMetrics  PythonQtShell_JFrameItem::getFontMetrics()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFontMetrics");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QFontMetrics"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QFontMetrics returnValue((QFont()));
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFontMetrics", methodInfo, result);
+          } else {
+            returnValue = *((QFontMetrics*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrameItem::getFontMetrics();
+}
+QFontMetrics  PythonQtShell_JFrameItem::getFontMetrics(QFont  f0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFontMetrics");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QFontMetrics" , "QFont"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QFontMetrics returnValue(f0);
+      void* args[2] = {NULL, (void*)&f0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFontMetrics", methodInfo, result);
+          } else {
+            returnValue = *((QFontMetrics*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrameItem::getFontMetrics(f0);
+}
 QColor  PythonQtShell_JFrameItem::getForeground()
 {
 if (_wrapper) {
@@ -28906,6 +29214,28 @@ if (_wrapper) {
 }
   JFrameItem::setOpaque(arg__1);
 }
+void PythonQtShell_JFrameItem::setSize(int  arg__1, int  arg__2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSize");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JFrameItem::setSize(arg__1, arg__2);
+}
 void PythonQtShell_JFrameItem::setTitle(QString  _title0)
 {
 if (_wrapper) {
@@ -29082,6 +29412,39 @@ if (_wrapper) {
 }
   JFrameItem::tabletEvent(event0);
 }
+QString  PythonQtShell_JFrameItem::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrameItem::toString();
+}
 void PythonQtShell_JFrameItem::wheelEvent(QWheelEvent*  event0)
 {
 if (_wrapper) {
@@ -29143,11 +29506,6 @@ int PythonQtShell_JFrameItem::qt_metacall(QMetaObject::Call call, int id, void**
   int result = JFrameItem::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-QString  PythonQtWrapper_JFrameItem::toString(JFrameItem* theWrappedObject)
-{
-  return ( theWrappedObject->toString());
-}
-
 QString PythonQtWrapper_JFrameItem::py_toString(JFrameItem* obj) { return obj->toString(); }
 
 

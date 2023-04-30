@@ -230,6 +230,7 @@ void BeanTableDataModel::setManager(Manager *) {}
 
 /*public*/ int BeanTableDataModel::rowCount(const QModelIndex &/*parent*/) const
 {
+
  return sysNameList.size();
 }
 
