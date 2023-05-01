@@ -24,6 +24,7 @@
 #include "joptionpane.h"
 #include "threadingutil.h"
 #include "treepane.h"
+#include "mutableobject.h"
 
 class TreeEditor_run9a;
 class EditCommentDialog;
@@ -76,7 +77,7 @@ class TreeEditor : public TreeViewer
  private:
   static Logger* log;
   /*private*/ /*final*/ LogixNGPreferences* _prefs = (DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences");
-    /*MutableObject<String>*/QString commentStr;
+  /*MutableObject<String>*/QAtomicPointer<QString> commentStr;
 
   ClipboardEditor* _clipboardEditor = nullptr;
 
@@ -96,6 +97,7 @@ class TreeEditor : public TreeViewer
       /*public*/ int compare(SwingConfiguratorInterface* o1, SwingConfiguratorInterface* o2);
 
   };
+  QString cmt;
 
 //  /*private*/ /*final*/ Comparator<SwingConfiguratorInterface> _swingConfiguratorComboBoxComparator
 //          = (SwingConfiguratorInterface* o1, SwingConfiguratorInterface o2) -> o1.toString().compareTo(o2.toString());
@@ -142,7 +144,7 @@ class TreeEditor : public TreeViewer
   /*final*/ /*protected*/ void createAddFrame(FemaleSocket* femaleSocket, TreePath* path,
                                               SwingConfiguratorInterface* swingConfiguratorInterface);
   /*final*/ /*protected*/ void editPressed(FemaleSocket* femaleSocket, TreePath* path);
-  /*final*/ /*protected*/ void makeAddEditFrame(bool addOrEdit, FemaleSocket* femaleSocket, JButton* button, QString* commentStr);
+  /*final*/ /*protected*/ void makeAddEditFrame(bool addOrEdit, FemaleSocket* femaleSocket, JButton* button, MutableObject<QString> *commentStr);
   /*final*/ /*protected*/ void editLocalVariables(FemaleSocket* femaleSocket, TreePath* path);
   /*final*/ /*protected*/ void changeUsername(FemaleSocket* femaleSocket, TreePath* path);
   /*final*/ /*protected*/ void autoSystemName();
@@ -171,6 +173,8 @@ class TreeEditor : public TreeViewer
  friend class TreeEditor_run8;
  friend class TreeEditor_run9;
  friend class TE_WindowAdapter4;
+ friend class TreeEditor_run10a;
+ friend class TreeEditor_run10;
 };
 
  // This class is copied from BeanTableDataModel
@@ -278,6 +282,7 @@ friend class TreeEditor_run9;
 class TEClipboardListener : public QObject, public ClipboardEventListener
 {
   Q_OBJECT
+  Q_INTERFACES(ClipboardEventListener)
   TreeEditor* te;
  public:
   TEClipboardListener(TreeEditor* te) {this->te = te;}
@@ -342,16 +347,16 @@ class TreeEditor_run1 : public ThreadAction
 {
   Q_OBJECT
   TreeEditor* treeEditor;
-  QString commentStr;
+  MutableObject<QString>* commentStr;
   FemaleSocket* femaleSocket;
   TreePath* path;
   AbstractBase* object;
  public:
-  TreeEditor_run1(TreePath* path, FemaleSocket* femaleSocket,QString commentStr, TreeEditor* treeEditor) {
+  TreeEditor_run1(TreePath* path, FemaleSocket* femaleSocket,MutableObject<QString>* commentStr, TreeEditor* treeEditor) {
    this->path = path;
    this->treeEditor = treeEditor;
    this->commentStr = commentStr;
-   this->femaleSocket= femaleSocket;
+   this->femaleSocket = femaleSocket;
   }
   void run();
 
@@ -392,12 +397,12 @@ class TreeEditor_run4 : public ThreadAction
 {
   Q_OBJECT
   TreeEditor* treeEditor;
-  QString commentStr;
+  MutableObject<QString>* commentStr;
   FemaleSocket* femaleSocket;
   TreePath* path;
   Base* object;
   public:
-  TreeEditor_run4(TreePath* path, FemaleSocket* femaleSocket, Base* object, QString commentStr, TreeEditor* treeEditor) {
+  TreeEditor_run4(TreePath* path, FemaleSocket* femaleSocket, Base* object, MutableObject<QString>* commentStr, TreeEditor* treeEditor) {
    this->path = path;
    this->treeEditor = treeEditor;
    this->object = object;
@@ -418,10 +423,10 @@ class TreeEditor_run5 : public ThreadAction
   TreeEditor* treeEditor;
   FemaleSocket* femaleSocket;
   Base* object;
-  QString commentStr;
+  MutableObject<QString>* commentStr;
   TreePath* path;
  public:
-  TreeEditor_run5(Base* object, FemaleSocket* femaleSocket, TreePath* path, QString commentStr, TreeEditor* treeEditor)
+  TreeEditor_run5(Base* object, FemaleSocket* femaleSocket, TreePath* path, MutableObject<QString>* commentStr, TreeEditor* treeEditor)
   {
    this->object = object;
    this->femaleSocket = femaleSocket;
@@ -542,6 +547,28 @@ public:
         _treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
    }
 };
+
+class TreeEditor_run10a : public ThreadAction
+                          {
+   Q_OBJECT
+   TreeEditor* editor;
+   FemaleSocket* _currentFemaleSocket;
+   TreePath* _currentPath;
+
+   public:
+   TreeEditor_run10a(FemaleSocket* _currentFemaleSocket, TreePath* _currentPath, TreeEditor* editor) {
+        this->_currentFemaleSocket = _currentFemaleSocket;
+        this->_currentPath = _currentPath;
+        this->editor = editor;}
+   void run()
+   {
+        editor->_treePane->_femaleRootSocket->unregisterListeners();
+        editor->_treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
+        editor->_treePane->_femaleRootSocket->registerListeners();
+
+   }
+};
+
 
 class TE_WindowAdapter : public WindowAdapter
 {

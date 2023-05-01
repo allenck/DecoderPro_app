@@ -71,6 +71,8 @@ class TreePane : public JPanel, public PropertyChangeListener
   friend class TreeEditor_run8;
   friend class TreeEditor_run9a;
   friend class FemaleSocketTreeModel;
+  friend class TreeEditor_run10a;
+  friend class TreeEditor_run10;
 }; // TreePane
 
 class ThreadAction1 : public ThreadAction
@@ -117,7 +119,7 @@ class TP_FemaleSocketTreeNode : public DefaultMutableTreeNode
   Q_OBJECT
   AbstractFemaleSocket* femaleSocket = nullptr;
  public:
-  TP_FemaleSocketTreeNode(QObject* parent = nullptr) : DefaultMutableTreeNode(parent) {}
+  TP_FemaleSocketTreeNode(QObject* parent = nullptr) : DefaultMutableTreeNode(parent) {setObjectName("TP_FemaleSocketTreeNode");}
   TP_FemaleSocketTreeNode(AbstractFemaleSocket* femaleSocket, QObject* parent = nullptr);
   ~TP_FemaleSocketTreeNode() {}
   TP_FemaleSocketTreeNode(const TP_FemaleSocketTreeNode&) : DefaultMutableTreeNode() {}

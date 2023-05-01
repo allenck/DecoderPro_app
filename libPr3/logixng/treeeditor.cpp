@@ -9,6 +9,7 @@
 #include "logixng_thread.h"
 #include "jmenuitem.h"
 #include "conditionalng.h"
+#include "mutableobject.h"
 #include "threadingutil.h"
 #include "femalesocketoperation.h"
 #include "defaultlogixngmanager.h"
@@ -424,8 +425,7 @@
         _showReminder = true;
         // make an Add Item Frame
         if (_addItemDialog == nullptr) {
-          //MutableObject<QString> commentStr = new MutableObject<>();
-          QString commentStr = QString();
+        MutableObject<QString>* commentStr = new MutableObject<QString>();
           _addSwingConfiguratorInterface = swingConfiguratorInterface;
           // Create item
           _create = new JButton(tr("Create"));  // NOI18N
@@ -520,7 +520,7 @@
             _create->setToolTip(tr("Press to create"));  // NOI18N
 
             if (_addSwingConfiguratorInterface != nullptr) {
-                makeAddEditFrame(true, femaleSocket, _create, &commentStr);
+                makeAddEditFrame(true, femaleSocket, _create, commentStr);
             }
         }
     }
@@ -537,9 +537,7 @@
         // make an Edit Frame
         if (_editActionExpressionDialog == nullptr) {
             Base* object = femaleSocket->getConnectedSocket()->getObject();
-            //MutableObject<String> commentStr = new MutableObject<>(object.getComment());
-            //QString commentStr = QString();
-            commentStr = "";
+            MutableObject<QString>* commentStr = new MutableObject<QString>(object->getComment());
             // Edit ConditionalNG
             _edit = new JButton(tr("OK"));  // NOI18N
 #if 1
@@ -616,7 +614,7 @@
             _edit->setToolTip(tr("Press to save"));  // NOI18N
 
             if (_addSwingConfiguratorInterface != nullptr) {
-            makeAddEditFrame(false, femaleSocket, _edit, &commentStr);
+            makeAddEditFrame(false, femaleSocket, _edit, commentStr);
             }
     }
 }
@@ -629,11 +627,10 @@
      * @param button a button to add to the dialog
      * @param commentStr the new comment
      */
-    /*final*/ /*protected*/ void TreeEditor::makeAddEditFrame(
-            bool addOrEdit,
+    /*final*/ /*protected*/ void TreeEditor::makeAddEditFrame(bool addOrEdit,
             FemaleSocket* femaleSocket,
             JButton* button,
-            /*MutableObject<String>*/QString* commentStr) {
+            MutableObject<QString>* commentStr) {
 
         JDialog* frame  = new JDialog(
                 this,
@@ -771,12 +768,14 @@
         // Edit comment
         JButton* editComment = new JButton(tr("Edit comment"));    // NOI18N
         panel5->layout()->addWidget(editComment);
-        QString comment = object != nullptr ? object->getComment() : "";
         connect(editComment, &JButton::clicked, [=] {
+            QString comment = object != nullptr ? object->getComment() : "";
+
          //commentStr.setValue(new EditCommentDialog().showDialog(comment));
          EditCommentDialog* dlg = new EditCommentDialog();
          dlg->showDialog(comment);
-         *commentStr = dlg->resultString();
+         cmt = dlg->resultString();
+            commentStr->setValue(cmt);
         });
 
         // Function help
@@ -1755,6 +1754,8 @@
                             _treePane._femaleRootSocket.registerListeners();
                         });
                     });
+#else
+                    editor->runOnConditionalNGThreadOrGUIThreadEventually(editor->_treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run10a(_currentFemaleSocket,_currentPath,editor));
 #endif
             }
             else if(e->getActionCommand() ==  ACTION_COMMAND_DISABLE)
@@ -1772,6 +1773,8 @@
                             _treePane._femaleRootSocket.registerListeners();
                         });
                     });
+#else
+                    editor->runOnConditionalNGThreadOrGUIThreadEventually(editor->_treePane->_femaleRootSocket->getConditionalNG(), new TreeEditor_run10a(_currentFemaleSocket, _currentPath,editor)  );
 #endif
             }
             else if(e->getActionCommand() ==  ACTION_COMMAND_LOCK)
@@ -2085,7 +2088,7 @@
        //                    for (Map.Entry<SwingConfiguratorInterface, Base> entry : _swingConfiguratorInterfaceList) {
        //                        entry.getKey().updateObject(entry.getValue());
        //                    }
-             socket->setComment(commentStr/*.getValue()*/);
+             socket->setComment(commentStr->getValue());
              try {
                  femaleSocket->_connect(socket);
              } catch (SocketAlreadyConnectedException* ex) {
@@ -2097,7 +2100,7 @@
              femaleSocket->forEntireTree(new TreeEditor_run2( treeEditor->_treePane));
              object = (AbstractBase*)((AbstractMaleSocket*)socket->getObject()->bself())->getObject()->bself();
              int childCount = object->getChildCount();
-#if 0
+
              QObject* parent = path->getLastPathComponent();
              TP_FemaleSocketTreeNode* parentNode = qobject_cast<TP_FemaleSocketTreeNode*>(parent);
 
@@ -2106,9 +2109,9 @@
              for(int i=0; i<childCount; i++)
              {
                  FemaleSocket* femaleSocket = object->getChild(i);
-                 parentNode->add(new TP_FemaleSocketTreeNode((QObject*)femaleSocket));
+                 parentNode->add(new TP_FemaleSocketTreeNode((AbstractFemaleSocket*)femaleSocket->bself()));
              }
-#endif
+
              treeEditor->log->debug("prepare to run TreeEditor_run3");
 //             ThreadingUtil::runOnGUIEventually(/*() -> {*/ new TreeEditor_run3(femaleSocket, path, treeEditor));
              connect(this, SIGNAL(startRun3(TreeEditor_run3*)),treeEditor, SLOT(executeRun3(TreeEditor_run3*)) );
@@ -2188,7 +2191,7 @@
 
           QObject* parent = path->getLastPathComponent();
           QString srcClass = ((AbstractSwingConfigurator*)treeEditor->_addSwingConfiguratorInterface)->getSrcClass();
-#if 1
+#if 0
           if(qobject_cast<TP_FemaleSocketTreeNode*>(parent))
           {
              TP_FemaleSocketTreeNode* parentNode = qobject_cast<TP_FemaleSocketTreeNode*>(parent);
@@ -2318,7 +2321,7 @@
          } else {
              ((NamedBean*)object)->setUserName(treeEditor->_addUserName->text());
          }
-         ((NamedBean*)object)->setComment(commentStr/*.getValue()*/);
+         ((NamedBean*)object)->setComment(commentStr->getValue());
          for (QHash<SwingConfiguratorInterface*, Base*> map : treeEditor->_swingConfiguratorInterfaceList) {
              QHashIterator<SwingConfiguratorInterface*, Base*> entry(map);
              while(entry.hasNext()){

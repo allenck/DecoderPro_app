@@ -16,8 +16,11 @@ class EditCommentDialog : public QObject
  public:
   explicit EditCommentDialog(QObject *parent = nullptr);
   /*public*/ QString showDialog(QString comment);
-  QString resultString() {return _comment;}
+  QString resultString()const {return _comment;}
+
  signals:
+  void valueChanged(QString);
+
 private:
   /*private*/ static /*final*/ int panelWidth;// = 500;
   /*private*/ static /*final*/ int panelHeight;// = 500;

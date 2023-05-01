@@ -1,5 +1,7 @@
 #ifndef MUTABLEOBJECT_H
 #define MUTABLEOBJECT_H
+#include <QObject>
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -28,14 +30,15 @@
  * @since 2.1
  */
 template<class T>
-/*public*/  class MutableObject<T> implements Mutable<T>, Serializable {
-
+/*public*/  class MutableObject : public QObject //implements Mutable<T>, Serializable
+{
+public:
     /**
      * Required for serialization support.
      *
      * @see java.io.Serializable
      */
-    /*private*/ static final long serialVersionUID = 86241875189L;
+    // /*private*/ static final long serialVersionUID = 86241875189L;
 
     /** The mutable value. */
     /*private*/ T value;
@@ -52,7 +55,7 @@ template<class T>
      * @param value  the initial value to store
      */
     /*public*/  MutableObject(/*final*/ T value) {
-        this.value = value;
+        this->value = value;
     }
 
     /**
@@ -62,7 +65,7 @@ template<class T>
      */
     //@Override
     /*public*/  T getValue() {
-        return this.value;
+        return this->value;
     }
 
     /**
@@ -71,10 +74,10 @@ template<class T>
      * @param value  the value to set
      */
     //@Override
-    /*public*/  void setValue(final T value) {
-        this.value = value;
+    /*public*/  void setValue(/*final*/ T value) {
+        this->value = value;
     }
-
+#if 0
     /**
      * <p>
      * Compares this object against the specified object. The result is {@code true} if and only if the argument
@@ -88,16 +91,16 @@ template<class T>
      *          {@code false} otherwise.
      */
     //@Override
-    /*public*/  bool equals(/*final*/ Object obj) {
-        if (obj == null) {
+    /*public*/  bool equals(/*final*/ QObject* obj) {
+        if (obj == nullptr) {
             return false;
         }
         if (this == obj) {
             return true;
         }
-        if (this.getClass() == obj.getClass()) {
+        if (this->getClass() == obj.getClass()) {
             final MutableObject<?> that = (MutableObject<?>) obj;
-            return this.value.equals(that.value);
+            return this->value.equals(that.value);
         }
         return false;
     }
@@ -118,10 +121,10 @@ template<class T>
      * @return the mutable value as a string
      */
     //@Override
-    /*public*/  String toString() {
+    /*public*/  QString toString() {
         return value == null ? "null" : value.toString();
     }
-
+#endif
 };
 
 

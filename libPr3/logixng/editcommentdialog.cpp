@@ -15,6 +15,7 @@
 
 
     /*public*/ EditCommentDialog::EditCommentDialog(QObject* parent) :QObject(parent){
+     setObjectName("EditCommentDialog");
     }
 
     /*public*/ QString EditCommentDialog::showDialog(QString comment){
@@ -104,6 +105,7 @@
             _comment = "";
         } else {
             _comment = _commentTextArea->getText();
+            emit valueChanged(_comment);
         }
 //        _editCommentDialog->setVisible(false);
 //        _editCommentDialog->dispose();
