@@ -15,20 +15,20 @@ class TurnoutEditAction : public BeanEditAction
  Q_OBJECT
 public:
  TurnoutEditAction(QModelIndex index, QObject* parent = 0);
- /*public*/ QString helpTarget();
+ /*public*/ QString helpTarget() override;
 
  public slots:
   /*public*/ void actionPerformed(JActionEvent*  e = 0)override;
- /*public*/ QString getBeanType();
+ /*public*/ QString getBeanType()override;
  void updateFeedbackOptions();
- /*public*/ NamedBean* getByUserName(QString name);
+ /*public*/ NamedBean* getByUserName(QString name)override;
 
   private:
  JmriBeanComboBox* reporterField;
  QCheckBox* useCurrent;// = new JCheckBox();
 
  QCheckBox* inverted;// = new JCheckBox();
- BeanItemPanel* basicDetails();
+ BeanItemPanel* basicDetails()override;
  JmriBeanComboBox* sensorFeedBack1Field;
  JmriBeanComboBox* sensorFeedBack2Field;
  JComboBox* modeBox;
@@ -64,10 +64,10 @@ public:
  BeanItemPanel* speed();
  QModelIndex index;
 protected:
-  /*protected*/ void initPanels();
+  /*protected*/ void initPanels()override;
 protected slots:
- /*protected*/ void saveBasicItems(ActionEvent* e = 0);
- /*protected*/ void resetBasicItems(ActionEvent* e = 0);
+ /*protected*/ void saveBasicItems(ActionEvent* e = 0)override;
+ /*protected*/ void resetBasicItems(ActionEvent* e = 0)override;
  /*protected*/ void cancelButtonAction(ActionEvent* e = 0);
  void On_lockBox_currentIndex_changed(QString);
  friend class FeedbackSaveItemListener;

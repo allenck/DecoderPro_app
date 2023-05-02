@@ -1,4 +1,5 @@
 #include "defaultroute.h"
+#include "abstractturnout.h"
 #include "exceptions.h"
 #include "instancemanager.h"
 #include "sound.h"

@@ -1,4 +1,5 @@
 #include "defaultconditional.h"
+#include "abstractturnout.h"
 #include "conditional.h"
 #include "conditionalaction.h"
 #include "conditionalvariable.h"

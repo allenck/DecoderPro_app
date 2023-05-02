@@ -194,7 +194,6 @@
 #include "debuggermaledigitalexpressionsocketswing.h"
 #include "debuggermaledigitalexpressionsocketswing.h"
 #include "debuggermalestringexpressionsocketswing.h"
-#include "ifthenelse.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -233,7 +232,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<IfThenElseXml>("IfThenElseXml");
    qRegisterMetaType<DigitalFormulaXml>("DigitalFormulaXml");
    qRegisterMetaType<ActionBlockXml>("ActionBlockXml");
-   qRegisterMetaType<ActionClockXml>("qRegisterMetaType<Action");
+   qRegisterMetaType<ActionClockXml>("ActionClockXml");
    qRegisterMetaType<ActionListenOnBeansXml>("ActionListenOnBeansXml");
    qRegisterMetaType<ActionLocalVariableXml>("ActionLocalVariableXml");
    qRegisterMetaType<DefaultCsvNamedTableXml>("DefaultCsvNamedTableXml");
@@ -421,7 +420,7 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
    qRegisterMetaType<DebuggerMaleStringExpressionSocketSwing>("DebuggerMaleStringExpressionSocketSwing");
 
    // actions
-   qRegisterMetaType<IfThenElse>("IfThenElse");
+   //qRegisterMetaType<IfThenElse>("IfThenElse");
 
    LogixNG_Metatypes::ng_done = true;
 }

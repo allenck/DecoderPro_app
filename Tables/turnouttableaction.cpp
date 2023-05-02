@@ -701,7 +701,11 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   //We have found another turnout with the same address, therefore we need to go onto the next address.
   sName=prefix+InstanceManager::turnoutManagerInstance()->typeLetter()+curAddress;
   QString testSN = prefix+"L"+curAddress;
-  Light* testLight = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->
+  Light* testLight = nullptr;
+  NamedBean* nb = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->
+                  AbstractProxyManager::getBySystemName(testSN);
+  if(nb)
+   testLight =(Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->
           AbstractProxyManager::getBySystemName(testSN)->self();
   if (testLight != NULL)
   {
@@ -839,10 +843,11 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  if (prefixBox->getSelectedIndex() == -1) {
      prefixBox->setSelectedIndex(0);
  }
- TurnoutManager* manager = (TurnoutManager*)prefixBox->getSelectedItem()->mself();
+ TurnoutManager* manager = (AbstractTurnoutManager*)prefixBox->getSelectedItem()->mself();
  Q_ASSERT( manager != nullptr);
  QString systemPrefix = manager->getSystemPrefix();
- rangeBox->setEnabled(((AbstractTurnoutManager*)manager->mself())->allowMultipleAdditions(systemPrefix));
+ //rangeBox->setEnabled(((AbstractTurnoutManager*)manager->mself())->allowMultipleAdditions(systemPrefix));
+ rangeBox->setEnabled(manager->allowMultipleAdditions(systemPrefix));
  addEntryToolTip = manager->getEntryToolTip();
  // show sysName (HW address) field tooltip in the Add Turnout pane that matches system connection selected from combobox
  hardwareAddressTextField->setToolTip(

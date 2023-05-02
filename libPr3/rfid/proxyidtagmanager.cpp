@@ -232,3 +232,11 @@
         QList<IdTag*>* out = new QList<IdTag*>();
         return out;
     }
+
+    /**
+     * @return The type letter for for the primary implementation
+     */
+    //@Override
+        /*public*/ QChar ProxyIdTagManager::typeLetter()const{
+        return getDefaultManager()->typeLetter();
+    }

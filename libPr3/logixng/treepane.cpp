@@ -530,7 +530,8 @@
 
             //return _decorator->decorate(socket, mainPanel);
             QSize s = mainPanel->size();
-            mainPanel->setMinimumHeight(100);
+            mainPanel->setMinimumHeight(30);
+            mainPanel->adjustSize();
             return mainPanel;
         }
 

@@ -9,7 +9,7 @@
 
 SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(nullptr)
 {
-
+    setObjectName("SystemNameValidator");
 }
 /**
  * A {@link com.alexandriasoftware.swing.JInputValidator} that validates a
@@ -55,8 +55,11 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
      *                  must return true to allow focus change; false otherwise
      */
     /*public*/ SystemNameValidator::SystemNameValidator(/*@Nonnull*/ /*JComponent*/JComponent *component,
-                                                        /*@Nonnull*/ Manager* manager, bool required) : JInputValidator(component)
+                                                        /*@Nonnull*/ Manager* manager, bool required)
+     : JInputValidator(component)
     {
+     setObjectName("SystemNameValidator");
+
         //super(component, true, required);
      if(component == nullptr) throw new NullPointerException("JComponent is null!");
      if(manager == nullptr) throw new NullPointerException("Manager is null!");

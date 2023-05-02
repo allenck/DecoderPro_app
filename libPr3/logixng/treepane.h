@@ -153,7 +153,7 @@ Q_DECLARE_METATYPE(TP_FemaleSocketTreeNode)
     /*public*/  void valueForPathChanged(TreePath* path, QVariant newvalue)override;
     /*public*/  void addTreeModelListener(TreeModelListener* l)override;
     /*public*/  void removeTreeModelListener(TreeModelListener* l) override;
-    /*public*/  QVariant data(const QModelIndex &index, int role) const;
+    /*public*/  QVariant data(const QModelIndex &index, int role) const override;
 
 
 protected:

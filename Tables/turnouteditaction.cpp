@@ -12,6 +12,7 @@
 #include "beanitempanel.h"
 #include "jtextfield.h"
 #include <QMessageBox>
+#include "turnoutoperationmanager.h"
 #include "turnouttableaction.h"
 #include "signalspeedmap.h"
 #include "beanedititem.h"
@@ -284,7 +285,7 @@ FeedbackSaveItemListener::FeedbackSaveItemListener(TurnoutEditAction *act)
       break;
   default:		// named operation
       t->setInhibitOperation(false);
-      t->setTurnoutOperation(TurnoutOperationManager::getInstance()->
+      t->setTurnoutOperation(((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"))->
               getOperation(( act->automationBox->currentText())));
       break;
  }

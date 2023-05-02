@@ -2,8 +2,6 @@
 #define PROXYTURNOUTMANAGER_H
 #include "abstractprovidingproxymanager.h"
 #include "turnoutmanager.h"
-#include "internalturnoutmanager.h"
-#include "exceptions.h"
 
 class QCompleter;
 class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProvidingProxyManager, public TurnoutManager
@@ -145,6 +143,7 @@ public:
  }
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::addPropertyChangeListener(l); }
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::removePropertyChangeListener(l); }
+ /*public*/ QChar typeLetter()const override{return AbstractProxyManager::typeLetter();}
 
  QObject* mself() override {return (QObject*)this;}
  QObject* vself() override {return (QObject*)this;}

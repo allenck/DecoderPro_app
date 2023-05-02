@@ -90,7 +90,7 @@
   return;
  }
 
-if (static_cast<PropertyChangeListener*>(listener) == nullptr)
+if (qobject_cast<PropertyChangeListener*>(listener->pself()) == nullptr)
   throw new IllegalArgumentException("invalid propertychange listener");
 
  // If a listener has no self() function, a chrash here will occur!

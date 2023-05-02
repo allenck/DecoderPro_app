@@ -17,6 +17,7 @@ public:
  DefaultInstanceInitializer();
  virtual QObject* getDefault(QString type) const ;
  /*public*/ QSet<QString> *getInitalizes();
+
 private:
  static Logger* log;
 

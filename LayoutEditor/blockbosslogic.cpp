@@ -1,4 +1,5 @@
 #include "blockbosslogic.h"
+#include "abstractturnout.h"
 #include "namedbeanhandlemanager.h"
 #include "instancemanager.h"
 #include "proxysensormanager.h"

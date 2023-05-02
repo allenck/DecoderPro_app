@@ -1,4 +1,5 @@
 #include "storeandloadtest.h"
+#include "abstractturnout.h"
 #include "actionlightintensity.h"
 #include "actionsignalmast.h"
 #include "actionthrottle.h"

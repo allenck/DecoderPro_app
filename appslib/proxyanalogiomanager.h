@@ -21,6 +21,8 @@ class ProxyAnalogIOManager : public AbstractProxyManager, public AnalogIOManager
   /*public*/  void dispose()override;
   /*public*/  void addBeanType(/*Class<? extends AnalogIO>*/QString clazz, Manager/*<? extends NamedBean>*/* manager);
   /*public*/  void removeBeanType(/*Class<? extends AnalogIO>*/QString clazz, Manager/*<? extends NamedBean>*/* manager);
+  /*public*/ QChar typeLetter()const override{return AbstractProxyManager::typeLetter();}
+
 
   QObject* pself() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}

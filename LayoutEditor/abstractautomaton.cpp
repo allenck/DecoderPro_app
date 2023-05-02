@@ -1,4 +1,5 @@
 #include "abstractautomaton.h"
+#include "abstractturnout.h"
 #include "exceptions.h"
 #include "automatsummary.h"
 #include "sensor.h"

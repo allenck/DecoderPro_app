@@ -10,6 +10,7 @@
 
 class JInputValidator : public InputVerifier
 {
+    Q_OBJECT
  public:
   JInputValidator(JComponent* component);
   /*public*/ JInputValidator(/*@Nonnull*/ JComponent* jc, bool bln, bool bln1);

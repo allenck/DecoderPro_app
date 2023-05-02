@@ -5,6 +5,7 @@
 #include <QMenu>
 #include "editor.h"
 #include "tableitempanel.h"
+#include "abstractturnout.h"
 
 //TurnoutIcon::TurnoutIcon(QObject *parent) :
 //    PositionableIcon(parent)

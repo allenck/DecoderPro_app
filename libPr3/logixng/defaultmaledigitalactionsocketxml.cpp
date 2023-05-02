@@ -9,7 +9,7 @@
 //public class DefaultMaleDigitalActionSocketXml extends AbstractMaleSocketXml {
 DefaultMaleDigitalActionSocketXml::DefaultMaleDigitalActionSocketXml(QObject *parent) : AbstractMaleSocketXml(parent)
 {
-
+    setObjectName("DefaultMaleDigitalActionSocketXml");
 }
 /*public*/ QString DefaultMaleDigitalActionSocketXml::getClassName(){
  return "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleDigitalActionSocketXml";

@@ -276,8 +276,11 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
   return QString();
  }
 
- Turnout* t = (Turnout*)getBySystemName(tmpSName)->self();
- if(t==nullptr)
+ Turnout* t = nullptr;
+ NamedBean* nb = nullptr;
+ if((nb = getBySystemName(tmpSName)))
+  t = (Turnout*)nb->self();
+ if(t == nullptr)
  {
   return curAddress;
  }
@@ -297,13 +300,17 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
  iName = iName + t->getNumberOutputBits();
  //Check to determine if the systemName is in use, return nullptr if it is,
  //otherwise return the next valid address.
- t = (Turnout*)getBySystemName(prefix+typeLetter()+iName)->self();
+ nb = getBySystemName(prefix+typeLetter()+iName);
+ if(nb)
+  t = (Turnout*)getBySystemName(prefix+typeLetter()+iName)->self();
  if(t!=nullptr)
  {
   for(int x = 1; x<10; x++)
   {
    iName = iName + t->getNumberOutputBits();
-   t = (Turnout*)getBySystemName(prefix+typeLetter()+iName)->self();
+   nb = getBySystemName(prefix+typeLetter()+iName);
+   if(nb)
+    t = (Turnout*)getBySystemName(prefix+typeLetter()+iName)->self();
    if(t==nullptr)
        return QString("%1").arg(iName);
   }

@@ -1,12 +1,9 @@
 ﻿#ifndef TURNOUTTABLEACTION_H
 #define TURNOUTTABLEACTION_H
 #include "abstracttableaction.h"
-#include "../LayoutEditor/beantabledatamodel.h"
 #include "actionlistener.h"
-#include "jdialog.h"
 #include "libtables_global.h"
 #include <QHash>
-#include "namedbeancombobox.h"
 #include <functional>
 #include "managercombobox.h"
 #include "spinnernumbermodel.h"
@@ -86,7 +83,7 @@ private:
     JButton* addButton;
     QString userNameError;// = this.getName()+".DuplicateUserName";
     UserPreferencesManager* pref;
-    SystemNameValidator* hardwareAddressValidator;
+    SystemNameValidator* hardwareAddressValidator = nullptr;
     static Logger* log;
 //    void editButton(Turnout* t, QModelIndex index);
     TriStateJCheckBox* showFeedbackBox = new TriStateJCheckBox("Show feedback information");

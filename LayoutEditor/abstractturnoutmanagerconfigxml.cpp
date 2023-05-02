@@ -4,6 +4,7 @@
 #include "proxyturnoutmanager.h"
 #include "turnoutoperationxml.h"
 #include "instancemanager.h"
+#include "abstractturnoutmanager.h"
 
 AbstractTurnoutManagerConfigXML::AbstractTurnoutManagerConfigXML(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)

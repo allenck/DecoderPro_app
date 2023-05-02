@@ -10,6 +10,7 @@
 #include "defaultsignalmastlogic.h"
 #include "defaultsignalmastlogicmanager.h"
 #include "signalmastlogicmanager.h"
+#include "abstractturnoutmanager.h"
 
 DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)

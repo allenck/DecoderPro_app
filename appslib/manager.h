@@ -107,7 +107,7 @@ public:
 /**
  * @return The type letter for a specific implementation
  */
- virtual QChar typeLetter() const {return '?';}
+ virtual QChar typeLetter() const =0;
 
  /**
  * Get the class of NamedBean supported by this Manager. This should be the

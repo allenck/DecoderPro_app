@@ -1,4 +1,5 @@
 #include "simpleturnoutctrlframe.h"
+#include "abstractturnout.h"
 #include "jtextfield.h"
 #include <QPushButton>
 #include <QLabel>

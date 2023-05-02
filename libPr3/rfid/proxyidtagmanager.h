@@ -38,6 +38,7 @@ public:
  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
+ /*public*/ QChar typeLetter()const override;
 
 
  QObject* mself() override {return (QObject*)this;}
@@ -54,5 +55,5 @@ protected:
 /*protected*/ DefaultIdTag* makeBean(AbstractManager* m, QString systemName, QString userName)override;
 
 };
-Q_DECLARE_METATYPE(ProxyIdTagManager)
+//Q_DECLARE_METATYPE(ProxyIdTagManager)
 #endif // PROXYIDTAGMANAGER_H

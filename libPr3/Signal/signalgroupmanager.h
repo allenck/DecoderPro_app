@@ -30,45 +30,59 @@
  * @author   Bob Jacobsen Copyright (C) 2009
  * @version	$Revision: 17977 $
  */
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalGroupManager : public AbstractManager
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalGroupManager :  public Manager
 {
- Q_OBJECT
+ //Q_OBJECT
+    Q_INTERFACES(Manager)
 public:
-    SignalGroupManager(QObject* parent = 0) : AbstractManager(parent) {}
-    SignalGroupManager(SystemConnectionMemo*, QObject* parent = 0) : AbstractManager(memo, parent) {}
-    ~SignalGroupManager() {}
-    SignalGroupManager(const SignalGroupManager&) : AbstractManager() {}
-    /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return nullptr;}
+    /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) =0;
 
-    /*public*/ NamedBean* getBySystemName(QString name)const {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name)->self();}
+    /*public*/ virtual SignalGroup* getBySystemName(QString name)const =0;
 
 
-    /*public*/ SignalGroup* getByUserName(QString name)const {return (SignalGroup* )AbstractManager::getBeanByUserName(name)->self();}
+    /*public*/ virtual SignalGroup* getByUserName(QString name)const =0;
 
-    /*public*/ virtual SignalGroup* newSignalGroup(QString /*sys*/) {return nullptr;}
+    /**
+     * Create a new Signal group if the group does not exist.
+     * <p>
+     * Intended for use with
+     * User GUI, to allow the auto generation of systemNames, where the user can
+     * optionally supply a username.
+     *
+     * @deprecated since 4.25.2, use #newSignalGroupWithUserName(@Nonnull String userName)
+     * @param userName User name for the new group
+     * @return a Signal Group with the same userName if already exists
+     * @throws IllegalArgumentException if there is trouble creating a new Group
+     */
+    //@Deprecated // 4.25.2
+    //@Nonnull
+    QT_DEPRECATED /*public*/ virtual SignalGroup* newSignaGroupWithUserName(/*@Nonnull*/ QString userName) /*throws IllegalArgumentException*/=0;
+
+    /**
+     * Create a new Signal group if the group does not exist.
+     * <p>
+     * Intended for use with
+     * User GUI, to allow the auto generation of systemNames, where the user can
+     * optionally supply a username.
+     *
+     * @param userName User name for the new group
+     * @return a Signal Group with the same userName if already exists
+     * @throws IllegalArgumentException if there is trouble creating a new Group
+     */
+    //@Nonnull
+    /*public*/ virtual SignalGroup* newSignalGroupWithUserName(/*@Nonnull*/ QString userName) /*throws IllegalArgumentException*/=0;
 
     /*public*/ virtual SignalGroup* provideSignalGroup(QString /*systemName*/, QString /*userName*/) {return NULL;}
 
-    /*public*/ QStringList getSystemNameList() override{ return AbstractManager::getSystemNameList();}
+    /*public*/ virtual QStringList getSystemNameList() =0;
 
-    virtual void deleteSignalGroup(SignalGroup* /*s*/) {}
-    /*public*/ QString getNamedBeanClass()const override {
+    virtual void deleteSignalGroup(SignalGroup* /*s*/) =0;
+
+    /*public*/ virtual QString getNamedBeanClass()const  {
         return "SignalGroup";
     }
-    int getXMLOrder()const override
-    {
-     return Manager::SIGNALGROUPS;
-    }
-    QObject* self() override{return (QObject*)this;}
-    QObject* vself() override {return (QObject*)this;}
-    QObject* pself() override{return (QObject*)this;}
-
-//    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
-//    /*public*/ NamedBean* getBySystemName(QString name)const override {return AbstractManager::getBySystemName(name);}
-    /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
-    /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 
 
 };
-Q_DECLARE_METATYPE(SignalGroupManager)
+Q_DECLARE_INTERFACE(SignalGroupManager, "SignalGroupManager")
 #endif // SIGNALGROUPMANAGER_H

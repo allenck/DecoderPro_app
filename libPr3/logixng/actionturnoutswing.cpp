@@ -1,4 +1,5 @@
 #include "actionturnoutswing.h"
+#include "abstractturnoutmanager.h"
 #include "beanselectpanel.h"
 #include "jtabbedpane.h"
 #include "jtextfield.h"

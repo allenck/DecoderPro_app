@@ -2,8 +2,6 @@
 #include "instancemanager.h"
 #include <qmath.h>
 #include <QMessageBox>
-#include "inputdialog.h"
-//#include "editTurnout::h"
 #include "layouteditor.h"
 #include <QComboBox>
 #include <QLabel>
@@ -11,25 +9,19 @@
 #include <QPushButton>
 #include <QGraphicsItem>
 #include "jtextfield.h"
-#include "layoutblockroutetableaction.h"
 #include "layouteditorauxtools.h"
 #include "signalmastmanager.h"
 #include "signalmastlogicmanager.h"
 #include "signallingguitools.h"
-#include "editturnout.h"
-#include "jmribeancombobox.h"
 #include <QGroupBox>
-#include "path.h"
-#include "mathutil.h"
 #include "layouteditorfinditems.h"
 #include <cmath>
 #include <QApplication>
 #include "signalheadmanager.h"
-#include "joptionpane.h"
 //#include "layouttrackeditors.h"
 #include "layoutturnouteditor.h"
-#include "layouteditortoolbarpanel.h"
 #include "loggerfactory.h"
+#include "abstractturnout.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)

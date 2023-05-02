@@ -44,7 +44,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     /*public*/  void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
     /*public*/  SystemConnectionMemo* getMemo()override;
     /*public*/  QString getSystemPrefix() const override;
-    /*public*/  QChar typeLetter() const override;
+    /*public*/  QChar typeLetter() const /*final*/  override;
     /*public*/  QString makeSystemName(/*@Nonnull*/ QString s) override;
     /*public*/  int getObjectCount()override ;
     QT_DEPRECATED/*public*/  QStringList getSystemNameList()  override;

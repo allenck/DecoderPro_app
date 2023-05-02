@@ -36,6 +36,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 
 /*private*/ void TurnoutTableDataModel:: common()
 {
+ setObjectName("TurnoutTableDataModel");
  rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
  beanTypeChar = 'T'; // for Turnout
  onIconPath = rootPath + beanTypeChar + "-on-s.png";

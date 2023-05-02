@@ -78,6 +78,7 @@ public:
  /*public*/ bool isPullResistanceConfigurable() override;
  /*public*/ QString toString() override{return "ProxySensorManager";}
  /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ override;
+ /*public*/ QChar typeLetter()const override{return AbstractProxyManager::typeLetter();}
 
  QObject* mself() override {return (QObject*)this;}
  QObject* vself() override {return (QObject*)this;}

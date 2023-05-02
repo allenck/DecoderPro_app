@@ -1,5 +1,4 @@
 #include "jinputvalidator.h"
-#include "jtextarea.h"
 #include "jcomponent.h"
 #include "validatorborder.h"
 
@@ -9,6 +8,7 @@
 
 void JInputValidator::common(JComponent* component, bool /*onInput*/, bool isVerifying, /*@Nonnull*/ JInputValidatorPreferences *preferences)
 {
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  this->component = component;
  originalBorder = this->component->getBorder();
  originalToolTipText = ((QWidget*)this->component->jself())->toolTip();

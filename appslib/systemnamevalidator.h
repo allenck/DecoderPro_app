@@ -2,7 +2,6 @@
 #define SYSTEMNAMEVALIDATOR_H
 
 #include "jinputvalidator.h"
-#include "abstractborder.h"
 
 class JInputValidatorPreferences;
 class Validation;
@@ -23,7 +22,7 @@ signals:
 public slots:
 
 private:
- /*private*/ Manager* manager;
+ /*private*/ Manager* manager = nullptr;
  /*private*/ bool required = false;
   QValidator::State validate(QString& input, int &pos) const override;
 

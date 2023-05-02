@@ -1,4 +1,5 @@
 #include "conditionaleditbase.h"
+#include "abstractturnout.h"
 #include "userpreferencesmanager.h"
 #include "instancemanager.h"
 #include "joptionpane.h"

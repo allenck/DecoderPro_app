@@ -4,6 +4,7 @@
 #include "instancemanager.h"
 #include "signalspeedmap.h"
 #include "jmriexception.h"
+#include "internalturnoutmanager.h"
 
 ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     : AbstractProvidingProxyManager(parent)

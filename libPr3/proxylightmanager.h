@@ -32,6 +32,7 @@ public:
      return "Light";
  }
   /*public*/ QString toString() override {return "ProxyLightManager";}
+ /*public*/ QChar typeLetter()const override{return AbstractProxyManager::typeLetter();}
 
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}

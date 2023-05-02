@@ -1,4 +1,5 @@
 #include "slipturnouticon.h"
+#include "abstractturnout.h"
 #include "proxyturnoutmanager.h"
 #include "instancemanager.h"
 #include "namedicon.h"

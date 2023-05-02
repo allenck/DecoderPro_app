@@ -1,8 +1,8 @@
 #ifndef ABSTRACTNAMEDBEANMANAGERCONFIGXML_H
 #define ABSTRACTNAMEDBEANMANAGERCONFIGXML_H
 #include "abstractxmladapter.h"
-#include "abstractnamedbean.h"
 #include "liblayouteditor_global.h"
+#include "namedbean.h"
 
 
 class Manager;

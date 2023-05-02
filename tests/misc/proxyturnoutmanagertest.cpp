@@ -1,4 +1,6 @@
 #include "proxyturnoutmanagertest.h"
+#include "abstractturnout.h"
+#include "internalturnoutmanager.h"
 #include "junitutil.h"
 #include"instancemanager.h"
 #include "turnoutmanager.h"

@@ -6,7 +6,7 @@
 #include "instancemanager.h"
 
 DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMemo* memo, QObject *parent) :
-    SignalGroupManager(memo, parent)
+    AbstractManager(memo, parent)
 {
  setObjectName("DefaultSignalGroupManager");
  setProperty("JavaClassName", "jmri.managers.DefaultSignalGroupManager");
@@ -49,7 +49,7 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMem
     return getBySystemName(name);
 }
 
-/*public*/ SignalGroup* DefaultSignalGroupManager::getBySystemName(QString key) const {
+/*public*/ SignalGroup *DefaultSignalGroupManager::getBySystemName(QString key) const {
     NamedBean* nb = _tsys->value(key);
     if(nb)
      return (SignalGroup*)nb->self();
@@ -72,21 +72,10 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMem
     // Route does not exist, create a new group
     r = (SignalGroup*)new DefaultSignalGroup(systemName,userName);
     // save in the maps
-    Register(r);
+    AbstractManager::Register(r);
     return r;
 }
 
-/**
- * {@inheritDoc}
- * @deprecated 4.15.2 use newSignaGroupWithUserName
- */
-//@Nonnull
-//@Override
-//@Deprecated //  4.15.2 use newSignaGroupWithUserName
-/*public*/ SignalGroup* DefaultSignalGroupManager::newSignalGroup(QString userName){
- //jmri.util.LoggingUtil.deprecationWarning(log, "newSignalGroup");
- return newSignaGroupWithUserName(userName);
-}
 /**
  * {@inheritDoc}
  *
@@ -99,6 +88,17 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMem
     return provideSignalGroup(getAutoSystemName(), userName);
 }
 
+/**
+ * {@inheritDoc}
+ *
+ * Keep autostring in line with {@link #provideSignalGroup(String, String)},
+ * {@link #getSystemPrefix()} and {@link #typeLetter()}
+ */
+//@Nonnull
+//@Override
+/*public*/ SignalGroup* DefaultSignalGroupManager::newSignalGroupWithUserName(/*@Nonnull*/ QString userName) {
+    return provideSignalGroup(getAutoSystemName(), userName);
+}
 QStringList DefaultSignalGroupManager::getListOfNames()
 {
  QStringList retval =  QStringList();
@@ -128,5 +128,5 @@ QStringList DefaultSignalGroupManager::getListOfNames()
 }
 
 /*public*/ void DefaultSignalGroupManager::deleteSignalGroup(SignalGroup* s) {
- deregister(s);
+ AbstractManager::deregister(s);
 }

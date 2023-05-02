@@ -2,6 +2,8 @@
 #define TURNOUTTABLEWIDGET_H
 
 #include <QWidget>
+#include "abstractturnout.h"
+#include "abstractturnoutmanager.h"
 #include "proxyturnoutmanager.h"
 #include <QCheckBox>
 #include <QComboBox>

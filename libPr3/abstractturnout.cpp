@@ -1,5 +1,6 @@
 #include "abstractturnout.h"
 #include "instancemanager.h"
+#include "turnoutoperationmanager.h"
 #include "turnoutoperator.h"
 #include "nofeedbackturnoutoperation.h"
 #include "abstractsensor.h"
@@ -11,38 +12,39 @@
 #include "vptr.h"
 #include "signalspeedmap.h"
 #include "jmriexception.h"
+#include "turnoutoperation.h"
 
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
 {
- _validFeedbackNames =  QVector<QString>();
- _validFeedbackModes =  QVector<int>();
- _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR")<< QString("DELAYED") ;
+    _validFeedbackNames =  QVector<QString>();
+    _validFeedbackModes =  QVector<int>();
+    _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR")<< QString("DELAYED") ;
 
- _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR<<Turnout::DELAYED;
- _activeFeedbackType = Turnout::DIRECT;
- _validFeedbackTypes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR | Turnout::DELAYED;
- _knownState = UNKNOWN;
+    _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR<<Turnout::DELAYED;
+    _activeFeedbackType = Turnout::DIRECT;
+    _validFeedbackTypes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR | Turnout::DELAYED;
+    _knownState = UNKNOWN;
 
- _commandedState = UNKNOWN;
+    _commandedState = UNKNOWN;
 
- _numberOutputBits = 1;
- _controlType = 0;
- _inverted = false;
- _cabLockout = false;
+    _numberOutputBits = 1;
+    _controlType = 0;
+    _inverted = false;
+    _cabLockout = false;
 
- _pushButtonLockout = false;
+    _pushButtonLockout = false;
 
- _enableCabLockout = false;
+    _enableCabLockout = false;
 
- _enablePushButtonLockout = false;
- _reportLocked = true;
- inhibitOperation = false; // do not automate this turnout, even if globally operations are on
- binaryOutput = false;
- _firstNamedSensor = NULL;
- _secondNamedSensor = NULL;
- myTurnoutOperation = NULL;
- log = new Logger("AbstractTurnout");
+    _enablePushButtonLockout = false;
+    _reportLocked = true;
+    inhibitOperation = false; // do not automate this turnout, even if globally operations are on
+    binaryOutput = false;
+    _firstNamedSensor = NULL;
+    _secondNamedSensor = NULL;
+    myTurnoutOperation = NULL;
+    log = new Logger("AbstractTurnout");
 }
 
 /**
@@ -76,76 +78,76 @@ AbstractTurnout::AbstractTurnout(QObject *parent) :
 AbstractTurnout::AbstractTurnout(QString systemName, QObject *parent) :
     Turnout(systemName.toUpper(), parent)
 {
- //super(systemName.toUpperCase());
- //  _validFeedbackNames = new QStringList();
- // _validFeedbackModes = new QList<int>();
- _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR") ;
+    //super(systemName.toUpperCase());
+    //  _validFeedbackNames = new QStringList();
+    // _validFeedbackModes = new QList<int>();
+    _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR") ;
 
- _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR;
- _activeFeedbackType = Turnout::DIRECT;
- _validFeedbackTypes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR;
- _knownState = UNKNOWN;
+    _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR;
+    _activeFeedbackType = Turnout::DIRECT;
+    _validFeedbackTypes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR;
+    _knownState = UNKNOWN;
 
- _commandedState = UNKNOWN;
+    _commandedState = UNKNOWN;
 
- _numberOutputBits = 1;
- _controlType = 0;
- _inverted = false;
- _cabLockout = false;
+    _numberOutputBits = 1;
+    _controlType = 0;
+    _inverted = false;
+    _cabLockout = false;
 
- _pushButtonLockout = false;
+    _pushButtonLockout = false;
 
- _enableCabLockout = false;
+    _enableCabLockout = false;
 
- _enablePushButtonLockout = false;
- _reportLocked = true;
-  inhibitOperation = false; // do not automate this turnout, even if globally operations are on
-  binaryOutput = false;
-_validDecoderNames = PushbuttonPacket::getValidDecoderNames();
-_decoderName = PushbuttonPacket::unknown;
-  _firstNamedSensor = NULL;
-  _secondNamedSensor = NULL;
- setObjectName(systemName);
- myTurnoutOperation = NULL;
- log = new Logger("AbstractTurnout");
+    _enablePushButtonLockout = false;
+    _reportLocked = true;
+    inhibitOperation = false; // do not automate this turnout, even if globally operations are on
+    binaryOutput = false;
+    _validDecoderNames = PushbuttonPacket::getValidDecoderNames();
+    _decoderName = PushbuttonPacket::unknown;
+    _firstNamedSensor = NULL;
+    _secondNamedSensor = NULL;
+    setObjectName(systemName);
+    myTurnoutOperation = NULL;
+    log = new Logger("AbstractTurnout");
 }
 
 AbstractTurnout::AbstractTurnout(QString systemName, QString userName, QObject *parent) :
     Turnout(systemName.toUpper(), userName, parent)
 {
- //super(systemName.toUpperCase(), userName);
-// _validFeedbackNames = new QStringList();
-// _validFeedbackModes = new QList<int>();
+    //super(systemName.toUpperCase(), userName);
+    // _validFeedbackNames = new QStringList();
+    // _validFeedbackModes = new QList<int>();
 
-_validFeedbackNames << "DIRECT"<< "ONESENSOR"<< "TWOSENSOR" ;
+    _validFeedbackNames << "DIRECT"<< "ONESENSOR"<< "TWOSENSOR" ;
 
-_validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR;
-_activeFeedbackType = Turnout::DIRECT;
-_validFeedbackTypes = Turnout::DIRECT |Turnout::ONESENSOR |Turnout::TWOSENSOR;
-_knownState = UNKNOWN;
+    _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR;
+    _activeFeedbackType = Turnout::DIRECT;
+    _validFeedbackTypes = Turnout::DIRECT |Turnout::ONESENSOR |Turnout::TWOSENSOR;
+    _knownState = UNKNOWN;
 
-_commandedState = UNKNOWN;
+    _commandedState = UNKNOWN;
 
-_numberOutputBits = 1;
-_controlType = 0;
-_inverted = false;
-_cabLockout = false;
+    _numberOutputBits = 1;
+    _controlType = 0;
+    _inverted = false;
+    _cabLockout = false;
 
-_pushButtonLockout = false;
+    _pushButtonLockout = false;
 
-_enableCabLockout = false;
+    _enableCabLockout = false;
 
-_enablePushButtonLockout = false;
-_reportLocked = true;
- inhibitOperation = true; // do not automate this turnout, even if globally operations are on
- binaryOutput = false;
- _validDecoderNames = PushbuttonPacket::getValidDecoderNames();
- _decoderName = PushbuttonPacket::unknown;
- _firstNamedSensor = NULL;
- _secondNamedSensor = NULL;
- setObjectName(systemName);
- myTurnoutOperation = NULL;
- log = new Logger("AbstractTurnout");
+    _enablePushButtonLockout = false;
+    _reportLocked = true;
+    inhibitOperation = true; // do not automate this turnout, even if globally operations are on
+    binaryOutput = false;
+    _validDecoderNames = PushbuttonPacket::getValidDecoderNames();
+    _decoderName = PushbuttonPacket::unknown;
+    _firstNamedSensor = NULL;
+    _secondNamedSensor = NULL;
+    setObjectName(systemName);
+    myTurnoutOperation = NULL;
+    log = new Logger("AbstractTurnout");
 }
 
 /**
@@ -157,7 +159,7 @@ _reportLocked = true;
  */
 /*abstract protected*/ void AbstractTurnout::forwardCommandChangeToLayout(int s)
 {
- Q_UNUSED(s)
+    Q_UNUSED(s)
 }
 
 /*protected*/ void AbstractTurnout::forwardCommandChangeToLayout() {
@@ -178,15 +180,15 @@ _reportLocked = true;
  */
 /*protected*/ void AbstractTurnout::newCommandedState(int s)
 {
- if(s < UNKNOWN || s > INCONSISTENT)
-  s= UNKNOWN;
+    if(s < UNKNOWN || s > INCONSISTENT)
+        s= UNKNOWN;
 
- if (_commandedState != s)
- {
-  int oldState = _commandedState;
-  _commandedState = s;
-  firePropertyChange("CommandedState", QVariant(oldState), QVariant(_commandedState));
- }
+    if (_commandedState != s)
+    {
+        int oldState = _commandedState;
+        _commandedState = s;
+        firePropertyChange("CommandedState", QVariant(oldState), QVariant(_commandedState));
+    }
 }
 
 /*public*/ int AbstractTurnout::getKnownState() {
@@ -201,31 +203,31 @@ _reportLocked = true;
  */
 /*public*/ void AbstractTurnout::setCommandedState(int s)
 {
- log->debug("set commanded state for turnout " + getSystemName() + " to " + QString("%1").arg(s));
- newCommandedState(s);
+    log->debug("set commanded state for turnout " + getSystemName() + " to " + QString("%1").arg(s));
+    newCommandedState(s);
 
- myOperator = getTurnoutOperator(); // MUST set myOperator before starting the thread
- if (myOperator == NULL)
- {
-  forwardCommandChangeToLayout(s);
-  // optionally handle feedback
-  if (_activeFeedbackType == Turnout::DIRECT)
-  {
-   newKnownState(s);
-  }
-  else if (_activeFeedbackType == DELAYED)
-  {
-   newKnownState(INCONSISTENT);
+    myOperator = getTurnoutOperator(); // MUST set myOperator before starting the thread
+    if (myOperator == NULL)
+    {
+        forwardCommandChangeToLayout(s);
+        // optionally handle feedback
+        if (_activeFeedbackType == Turnout::DIRECT)
+        {
+            newKnownState(s);
+        }
+        else if (_activeFeedbackType == DELAYED)
+        {
+            newKnownState(INCONSISTENT);
 #if 0 // TODO:
    jmri.util.ThreadingUtil.runOnLayoutDelayed( () -> { newKnownState(s); },
             DELAYED_FEEDBACK_INTERVAL );
 #endif
-  }
- }
- else
- {
-  myOperator->start();
- }
+        }
+    }
+    else
+    {
+        myOperator->start();
+    }
 }
 
 /*public*/ int AbstractTurnout::getCommandedState() {
@@ -243,19 +245,19 @@ _reportLocked = true;
     if (nextWait->isAfter(LocalDateTime::now())) { // don't sleep if nextWait =< now()
         log->debug(tr("Turnout now() = %1, waitUntil = %2").arg(LocalDateTime::now()->toString(), nextWait->toString()));
         // insert wait before sending next output command to the layout
-//        r = []() {
-//            log->debug(tr("go to sleep for %1 ms...").arg(qMax(0ULL, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))));
-//            try {
-//                Thread.sleep(qMax(0L, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
-//                log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
-//                setCommandedState(s);
-//            } catch (InterruptedException ex) {
-//                log->debug(tr("setCommandedStateAtInterval(s) interrupted at {}", LocalDateTime.now());
-//                Thread.currentThread().interrupt(); // retain if needed later
-//            }
-//        };
-//        thr = new Thread(r);
-//        thr.start();
+        //        r = []() {
+        //            log->debug(tr("go to sleep for %1 ms...").arg(qMax(0ULL, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))));
+        //            try {
+        //                Thread.sleep(qMax(0L, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
+        //                log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
+        //                setCommandedState(s);
+        //            } catch (InterruptedException ex) {
+        //                log->debug(tr("setCommandedStateAtInterval(s) interrupted at {}", LocalDateTime.now());
+        //                Thread.currentThread().interrupt(); // retain if needed later
+        //            }
+        //        };
+        //        thr = new Thread(r);
+        //        thr.start();
         thr = new IntervalCheck(s, this);
         QThread* thread = new QThread();
         connect(thread, SIGNAL(started()), thr, SLOT(process()));
@@ -292,18 +294,18 @@ _reportLocked = true;
  */
 /*protected*/ void AbstractTurnout::newKnownState(int s)
 {
- if(s < UNKNOWN || s > INCONSISTENT)
-  s= UNKNOWN;
- if (_knownState != s)
- {
-  int oldState = _knownState;
-  _knownState = s;
-  firePropertyChange("KnownState", QVariant(oldState), QVariant(_knownState));
- }
- // if known state has moved to Thrown or Closed,
- // set the commanded state to match
- if (((_knownState == Turnout::THROWN) && (_commandedState != Turnout::THROWN))
-         || ((_knownState == Turnout::CLOSED) && (_commandedState != Turnout::CLOSED)))
+    if(s < UNKNOWN || s > INCONSISTENT)
+        s= UNKNOWN;
+    if (_knownState != s)
+    {
+        int oldState = _knownState;
+        _knownState = s;
+        firePropertyChange("KnownState", QVariant(oldState), QVariant(_knownState));
+    }
+    // if known state has moved to Thrown or Closed,
+    // set the commanded state to match
+    if (((_knownState == Turnout::THROWN) && (_commandedState != Turnout::THROWN))
+        || ((_knownState == Turnout::CLOSED) && (_commandedState != Turnout::CLOSED)))
         newCommandedState(_knownState);
 }
 
@@ -313,8 +315,8 @@ _reportLocked = true;
  */
 /*public*/ bool AbstractTurnout::isConsistentState()
 {
- return (_commandedState == _knownState)
-            && (_commandedState == Turnout::CLOSED || _commandedState == Turnout::THROWN);
+    return (_commandedState == _knownState)
+           && (_commandedState == Turnout::CLOSED || _commandedState == Turnout::THROWN);
 }
 
 /**
@@ -324,7 +326,7 @@ _reportLocked = true;
  */
 void AbstractTurnout::setKnownStateToCommanded()
 {
- newKnownState(_commandedState);
+    newKnownState(_commandedState);
 }
 
 /**
@@ -353,14 +355,14 @@ void AbstractTurnout::setKnownStateToCommanded()
     return getKnownState();
 }
 //@Override
-    //@CheckReturnValue
- /*public*/ QString AbstractTurnout::describeState(int state) {
-     switch (state) {
-         case THROWN: return tr("Thrown");
-         case CLOSED: return tr("Closed");
-         default: return Turnout::describeState(state);
-     }
- }
+//@CheckReturnValue
+/*public*/ QString AbstractTurnout::describeState(int state) {
+    switch (state) {
+    case THROWN: return tr("Thrown");
+    case CLOSED: return tr("Closed");
+    default: return Turnout::describeState(state);
+    }
+}
 
 /* Type of turnout control - defaults to 0 for 'steady state' */
 
@@ -391,15 +393,15 @@ void AbstractTurnout::setKnownStateToCommanded()
 
 /*public*/ void AbstractTurnout::setFeedbackMode(QString mode) /*throw(IllegalArgumentException)*/
 {
- for (int i = 0; i < _validFeedbackNames.length(); i++)
- {
-  if (mode==_validFeedbackNames.at(i))
-  {
-   setFeedbackMode(_validFeedbackModes.at(i));
-   return;
-  }
- }
- throw new IllegalArgumentException("Unexpected mode: " + mode);
+    for (int i = 0; i < _validFeedbackNames.length(); i++)
+    {
+        if (mode==_validFeedbackNames.at(i))
+        {
+            setFeedbackMode(_validFeedbackModes.at(i));
+            return;
+        }
+    }
+    throw new IllegalArgumentException("Unexpected mode: " + mode);
 }
 
 /*public*/ void AbstractTurnout::setFeedbackMode(int mode) /*throw(IllegalArgumentException)*/ {
@@ -422,16 +424,16 @@ void AbstractTurnout::setKnownStateToCommanded()
 
 /*public*/ QString AbstractTurnout::getFeedbackModeName()
 {
- for (int i = 0; i < _validFeedbackNames.length(); i++)
- {
-  if (_activeFeedbackType == _validFeedbackModes.at(i)) {
-      return _validFeedbackNames.at(i);
-  }
- }
- log->error("Unexpected internal mode: "
-         + QString::number(_activeFeedbackType));
- throw new IllegalArgumentException("Unexpected internal mode: "
-         + QString::number(_activeFeedbackType));
+    for (int i = 0; i < _validFeedbackNames.length(); i++)
+    {
+        if (_activeFeedbackType == _validFeedbackModes.at(i)) {
+            return _validFeedbackNames.at(i);
+        }
+    }
+    log->error("Unexpected internal mode: "
+               + QString::number(_activeFeedbackType));
+    throw new IllegalArgumentException("Unexpected internal mode: "
+                                       + QString::number(_activeFeedbackType));
 }
 
 //@Override
@@ -448,19 +450,19 @@ void AbstractTurnout::setKnownStateToCommanded()
 
 /*public*/ void AbstractTurnout::setInverted(bool inverted)
 {
- bool oldInverted = _inverted;
- _inverted = inverted;
- if (oldInverted != _inverted)
- {
-  firePropertyChange("inverted", QVariant(oldInverted),
-          QVariant(_inverted));
-  int state = _knownState;
-  if (state == Turnout::THROWN) {
-      newKnownState(Turnout::CLOSED);
-  } else if (state == Turnout::CLOSED) {
-      newKnownState(Turnout::THROWN);
-  }
- }
+    bool oldInverted = _inverted;
+    _inverted = inverted;
+    if (oldInverted != _inverted)
+    {
+        firePropertyChange("inverted", QVariant(oldInverted),
+                           QVariant(_inverted));
+        int state = _knownState;
+        if (state == Turnout::THROWN) {
+            newKnownState(Turnout::CLOSED);
+        } else if (state == Turnout::CLOSED) {
+            newKnownState(Turnout::THROWN);
+        }
+    }
 }
 
 /**
@@ -496,36 +498,36 @@ void AbstractTurnout::setKnownStateToCommanded()
  */
 
 /*public*/ void AbstractTurnout::setLocked(int turnoutLockout, bool locked) {
- bool firechange = false;
- if ((turnoutLockout & Turnout::CABLOCKOUT) > 0 && _cabLockout != locked)
- {
-  firechange = true;
-  if (canLock(Turnout::CABLOCKOUT))
-  {
-   _cabLockout = locked;
-  }
-  else
-  {
-   _cabLockout = false;
-  }
- }
- if ((turnoutLockout & Turnout::PUSHBUTTONLOCKOUT) > 0
-            && _pushButtonLockout != locked)
- {
-  firechange = true;
-  if (canLock(Turnout::PUSHBUTTONLOCKOUT))
-  {
-   _pushButtonLockout = locked;
-   // now change pushbutton lockout state on layout
-   turnoutPushbuttonLockout();
-  }
-  else
-  {
-   _pushButtonLockout = false;
-  }
- }
- if (firechange)
-  firePropertyChange("locked", QVariant(!locked), QVariant(locked));
+    bool firechange = false;
+    if ((turnoutLockout & Turnout::CABLOCKOUT) > 0 && _cabLockout != locked)
+    {
+        firechange = true;
+        if (canLock(Turnout::CABLOCKOUT))
+        {
+            _cabLockout = locked;
+        }
+        else
+        {
+            _cabLockout = false;
+        }
+    }
+    if ((turnoutLockout & Turnout::PUSHBUTTONLOCKOUT) > 0
+        && _pushButtonLockout != locked)
+    {
+        firechange = true;
+        if (canLock(Turnout::PUSHBUTTONLOCKOUT))
+        {
+            _pushButtonLockout = locked;
+            // now change pushbutton lockout state on layout
+            turnoutPushbuttonLockout();
+        }
+        else
+        {
+            _pushButtonLockout = false;
+        }
+    }
+    if (firechange)
+        firePropertyChange("locked", QVariant(!locked), QVariant(locked));
 }
 
 /**
@@ -534,25 +536,25 @@ void AbstractTurnout::setKnownStateToCommanded()
  */
 /*public*/ bool AbstractTurnout::getLocked(int turnoutLockout)
 {
- if (turnoutLockout == Turnout::CABLOCKOUT)
-  return _cabLockout;
- else if (turnoutLockout == Turnout::PUSHBUTTONLOCKOUT)
-  return _pushButtonLockout;
- else if (turnoutLockout == (Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT))
-  return _cabLockout || _pushButtonLockout;
- else
-  return false;
+    if (turnoutLockout == Turnout::CABLOCKOUT)
+        return _cabLockout;
+    else if (turnoutLockout == Turnout::PUSHBUTTONLOCKOUT)
+        return _pushButtonLockout;
+    else if (turnoutLockout == (Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT))
+        return _cabLockout || _pushButtonLockout;
+    else
+        return false;
 }
 
 
 /*public*/ bool AbstractTurnout::canLock(int turnoutLockout) {
- Q_UNUSED(turnoutLockout)
+    Q_UNUSED(turnoutLockout)
     return false;
 }
 
 /*public*/ void AbstractTurnout::enableLockOperation(int turnoutLockout, bool enabled) {
- Q_UNUSED(turnoutLockout)
- Q_UNUSED(enabled)
+    Q_UNUSED(turnoutLockout)
+    Q_UNUSED(enabled)
 }
 
 /**
@@ -565,7 +567,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     _reportLocked = reportLocked;
     if (oldReportLocked != _reportLocked)
         firePropertyChange("reportlocked", QVariant(oldReportLocked),
-                QVariant(_reportLocked));
+                           QVariant(_reportLocked));
 }
 
 /**
@@ -593,7 +595,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 
 /*abstract protected*/ void AbstractTurnout::turnoutPushbuttonLockout(bool locked)
 {
- Q_UNUSED(locked)
+    Q_UNUSED(locked)
 }
 
 /*protected*/ void AbstractTurnout::turnoutPushbuttonLockout() {
@@ -651,18 +653,18 @@ void AbstractTurnout::setKnownStateToCommanded()
  */
 /*protected*/ TurnoutOperator*  AbstractTurnout::getTurnoutOperator()
 {
- TurnoutOperator* to = NULL;
- if (!inhibitOperation)
- {
-  if (myTurnoutOperation != nullptr)
-  {
-   to = ((NoFeedbackTurnoutOperation*) myTurnoutOperation)->getOperator(this);
-  }
-  else
-  {
-   TurnoutOperation* toper = TurnoutOperationManager::getInstance()->getMatchingOperation((Turnout*)this, getFeedbackModeForOperation());
-   if (toper != nullptr)
-   {
+    TurnoutOperator* to = NULL;
+    if (!inhibitOperation)
+    {
+        if (myTurnoutOperation != nullptr)
+        {
+            to = ((NoFeedbackTurnoutOperation*) myTurnoutOperation)->getOperator(this);
+        }
+        else
+        {
+            TurnoutOperation* toper = ((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"))->getMatchingOperation((Turnout*)this, getFeedbackModeForOperation());
+            if (toper != nullptr)
+            {
     to = ((NoFeedbackTurnoutOperation*)toper)->getOperator(this);
    }
   }

@@ -1,5 +1,4 @@
 #include "abstractmalesocketxml.h"
-#include "instancemanager.h"
 #include "loggerfactory.h"
 #include "abstractmalesocket.h"
 #include "malesocket.h"

@@ -12,6 +12,7 @@
 #include "layoutslip.h"
 #include "turnout.h"
 #include "layoutturnout.h"
+#include "sleeperthread.h"
 
 //AutoTurnouts::AutoTurnouts(QObject *parent) : QObject(parent)
 //{

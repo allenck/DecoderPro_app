@@ -1,4 +1,5 @@
 #include "addeditsinglelightcontrolframe.h"
+#include "abstractturnout.h"
 #include "loggerfactory.h"
 #include "borderfactory.h"
 #include "defaultlightcontrol.h"

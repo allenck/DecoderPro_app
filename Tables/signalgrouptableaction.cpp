@@ -844,7 +844,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
     SignalGroup* g = NULL;
     // check if a SignalGroup with the same user name exists
     if (uName!=("")) {
-        g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getByUserName(uName);
+        g = static_cast<DefaultSignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getByUserName(uName);
         if (g!=NULL) {
             // SignalGroup with this user name already exists
 //            javax.swing.JOptionPane.showMessageDialog(NULL,"Signal Group with this username already exists","User Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -856,7 +856,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
         }
     }
     // check if a SignalGroup with this system name already exists
-    g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName)->self();
+    g = (SignalGroup*)static_cast<DefaultSignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName)->self();
     if (g!=NULL) {
         // SignalGroup already exists
 //        javax.swing.JOptionPane.showMessageDialog(NULL,"A SignalGroup with this system name already exists","System Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -888,7 +888,7 @@ SignalGroup* SignalGroupTableAction::checkNamesOK() {
         QMessageBox::warning(NULL, tr("Warning"),tr("Please enter a system name and user name."));
         return NULL;
     }
-    SignalGroup* g = ((DefaultSignalGroupManager*) static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager")))->provideSignalGroup(sName, uName);
+    SignalGroup* g = ((DefaultSignalGroupManager*) static_cast<DefaultSignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager")))->provideSignalGroup(sName, uName);
     if (g==NULL) {
         // should never get here
         log->error("Unknown failure to create SignalGroup with System Name: "+sName);
@@ -1003,13 +1003,13 @@ void SignalGroupTableAction::cancelEdit() {
 void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     // identify the SignalGroup with this name if it already exists
     QString sName = _systemName->text().toUpper();
-    SignalGroup* g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName)->self();
+    SignalGroup* g = (SignalGroup*)static_cast<DefaultSignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName)->self();
     if (g==NULL) {
         // SignalGroup does not exist, so cannot be edited
         return;
     }
     g->addPropertyChangeListener((PropertyChangeListener*)this);
-    SignalGroupManager* mgr = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"));
+    DefaultSignalGroupManager* mgr = static_cast<DefaultSignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"));
     connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 
@@ -1078,7 +1078,7 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
  * Responds to the Delete button
  */
 void SignalGroupTableAction::deletePressed(ActionEvent* /*e*/) {
-    static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->deleteSignalGroup(curSignalGroup);
+    static_cast<DefaultSignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->deleteSignalGroup(curSignalGroup);
     curSignalGroup = NULL;
     finishUpdate();
 }

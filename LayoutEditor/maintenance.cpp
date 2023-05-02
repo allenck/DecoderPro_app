@@ -1,4 +1,5 @@
 #include "maintenance.h"
+#include "abstractturnout.h"
 #include "instancemanager.h"
 #include "layoutblock.h"
 #include "proxysensormanager.h"

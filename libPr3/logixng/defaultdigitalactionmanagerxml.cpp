@@ -25,16 +25,16 @@
     /*public*/  QDomElement DefaultDigitalActionManagerXml::store(QObject* o) {
         QDomElement actions = doc.createElement("LogixNGDigitalActions");
         setStoreElementClass(actions);
-        DigitalActionManager* tm = (DigitalActionManager*) o;
+        DigitalActionManager* tm = (DefaultDigitalActionManager*) o;
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             DefaultMaleDigitalActionSocket* action = (DefaultMaleDigitalActionSocket*)nb->self();
-                log->debug("action system name is " + action->AbstractNamedBean::getSystemName());  // NOI18N
+             MaleDigitalActionSocket* action = (MaleDigitalActionSocket*)nb->self();
+                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    DefaultMaleDigitalActionSocket* a = action;
+                    MaleDigitalActionSocket* a = action;
                     while (!(static_cast<DefaultMaleDigitalActionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
                         a = (DefaultMaleDigitalActionSocket*) a->getObject()->bself();
