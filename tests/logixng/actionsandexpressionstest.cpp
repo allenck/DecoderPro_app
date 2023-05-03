@@ -198,19 +198,19 @@ ActionsAndExpressionsTest::ActionsAndExpressionsTest(QObject *parent) : QObject(
         return ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getActionClasses();
     }
 
-    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getDigitalBooleanActionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> ActionsAndExpressionsTest::getDigitalBooleanActionClasses() {
         return ((DefaultDigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getActionClasses();
     }
 
-    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getDigitalExpressionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> ActionsAndExpressionsTest::getDigitalExpressionClasses() {
         return ((DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses();
     }
 
-    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getStringActionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> ActionsAndExpressionsTest::getStringActionClasses() {
         return ((DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager"))->getActionClasses();
     }
 
-    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> getStringExpressionClasses() {
+    /*public*/  QHash<Category, QList</*Class<? extends Base>*/QString>> ActionsAndExpressionsTest::getStringExpressionClasses() {
         return ((DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses();
     }
 

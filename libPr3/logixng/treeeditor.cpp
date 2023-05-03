@@ -536,8 +536,8 @@
         _showReminder = true;
         // make an Edit Frame
         if (_editActionExpressionDialog == nullptr) {
-            Base* object = femaleSocket->getConnectedSocket()->getObject();
-            MutableObject<QString>* commentStr = new MutableObject<QString>(object->getComment());
+            Base* object = ((AbstractFemaleSocket*)femaleSocket->bself())->getConnectedSocket()->getObject();
+            MutableObject<QString>*commentStr = new MutableObject<QString>(object->getComment());
             // Edit ConditionalNG
             _edit = new JButton(tr("OK"));  // NOI18N
 #if 1
@@ -1518,6 +1518,7 @@
             bool parentIsLocked = (parent != nullptr) && ((AbstractMaleSocket*)parent->bself())->isLocked();
 
             menuItemAdd->setEnabled(!isConnected && !parentIsLocked);
+            editor->log->debug( tr("add %1").arg(menuItemAdd->isEnabled()?"enabled":"disabled"));
             menuItemRemove->setEnabled(isConnected && !isLocked && !parentIsLocked && !disableForRoot);
             menuItemEdit->setEnabled(isConnected && !isLocked);
             menuItemCut->setEnabled(isConnected && !isLocked && !parentIsLocked && !disableForRoot);
@@ -1579,6 +1580,7 @@
                                     ->getExecuteEvaluateMenuText());
                 }
             }
+            editor->log->debug( tr("add(2) %1").arg(menuItemAdd->isEnabled()?"enabled":"disabled"));
 
             //show(_tree, x, y);
             exec(QCursor::pos());

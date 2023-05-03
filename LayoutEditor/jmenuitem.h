@@ -2,7 +2,6 @@
 #define JMENUITEM_H
 
 #include "jmriabstractaction.h"
-#include "actionlistener.h"
 
 class JMenuItem : public JmriAbstractAction
 {
@@ -13,7 +12,10 @@ class JMenuItem : public JmriAbstractAction
   /*public*/ void addActionListener(JMenuItem *listener);
   /*public*/ void setActionCommand(QString cmd);
   /*public*/ QString getActionCommand();
+  /*public*/ void setEnabled(bool b) override {QAction::setEnabled(b);}
+
   QObject* pself() override{return (QObject*)this;}
+
 
  public slots:
   // /*public*/ void actionPerformed(JActionEvent* e = 0)override;

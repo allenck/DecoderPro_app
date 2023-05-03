@@ -345,7 +345,7 @@
  *
  * @param  b true to enable this <code>Action</code>, false to disable it
  */
-/*public*/  void Action::setEnabled(bool b) {}
+/*public*/  void Action::setEnabled(bool b) {QAction::setEnabled(b);}
 /**
  * Returns the enabled state of the <code>Action</code>. When enabled,
  * any component associated with this object is active and

@@ -97,8 +97,9 @@
                     {
                         name = femaleSocket->getName();
                         description = femaleSocket->getShortDescription();
-                        childCount = femaleSocket->getConnectedSocket()-> getChildCount();
-                        fsObject = femaleSocket->bself()->objectName();
+                        if(((AbstractFemaleSocket*)femaleSocket->bself())->isConnected())
+                         childCount = ((AbstractFemaleSocket*)femaleSocket->getConnectedSocket()->bself())-> getChildCount();
+                        fsObject = ((AbstractFemaleSocket*)femaleSocket->bself())->objectName();
                     }
                 }
             }

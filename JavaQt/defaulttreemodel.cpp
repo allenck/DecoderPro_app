@@ -419,7 +419,7 @@
 /*public*/ void DefaultTreeModel::addTreeModelListener(TreeModelListener* l) {
     listenerList->add("TreeModelListener", l);
     //connect()
-    connect(this, SIGNAL(treeStructureChanged(TreeModelEvent*)), l, SLOT(treeStructureChanged(TreeModelEvent*)));
+    //connect(this, SIGNAL(treeStructureChanged(TreeModelEvent*)), l, SLOT(treeStructureChanged(TreeModelEvent*)));
 }
 
 /**
@@ -613,20 +613,14 @@
 /*private*/ void DefaultTreeModel::fireTreeStructureChanged(QObject* source, TreePath* path) {
 #if 1
     // Guaranteed to return a non-NULL array
-    QVector<EventListener*> listeners = listenerList->getListenerList();
-    TreeModelEvent* e = NULL;
+    QList<TreeModelListener*> listeners = getTreeModelListeners();
+    TreeModelEvent* event = new TreeModelEvent(source, path);
     // Process the listeners last to first, notifying
     // those that are interested in this event
-//    for (int i = listeners.length-2; i>=0; i-=2) {
-//        if (listeners[i]==TreeModelListener.class) {
-//            // Lazily create the event:
-//            if (e == NULL)
-                e = new TreeModelEvent(source, path);
-//            ((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
-//        }
-//    }
+    for (int i = listeners.length() - 1; i >= 0; --i)
+     listeners[i]->treeStructureChanged(event);
 #endif
-  emit treeStructureChanged(e);
+  //emit treeStructureChanged(e);
 }
 
 /**

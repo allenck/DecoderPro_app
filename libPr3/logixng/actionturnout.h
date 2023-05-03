@@ -46,18 +46,18 @@ class ActionTurnout : public AbstractDigitalAction, public VetoableChangeListene
           }
       }
 
-//      /*public*/ static int getID( TYPE _id) {
-//          return _id;
-//      }
+      /*public*/ static int getID( STATE _id) {
+          return _id;
+      }
 
       //@Override
       /*public*/  static QString toString(STATE _id) {
            switch(_id)
            {
             case Closed:
-             ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getClosedText();
+            return ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getClosedText();
            case Thrown:
-            ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getThrownText();
+            return ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getThrownText();
            case Toggle:
             return tr("Toggle");
 

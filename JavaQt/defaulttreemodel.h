@@ -64,7 +64,7 @@ signals:
                           QList<QObject*>* children);
 
 public slots:
-    void treeStructureChanged(TreeModelEvent*);
+    //void treeStructureChanged(TreeModelEvent*);
 
 private:
     /*private*/ void fireTreeStructureChanged(QObject* source, TreePath* path);
