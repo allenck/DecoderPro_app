@@ -1,5 +1,6 @@
 #include "expressionconditionalxml.h"
 #include "defaultconditionalmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/defaultdigitalexpressionmanager.h"
 #include "logixng/expressionconditional.h"
 #include "instancemanager.h"

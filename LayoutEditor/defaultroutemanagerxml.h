@@ -12,7 +12,7 @@ public:
  DefaultRouteManagerXml(const DefaultRouteManagerXml&) : AbstractNamedBeanManagerConfigXML(){}
  /*public*/ QDomElement store(QObject* o) override;
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception)  override {}
- /*public*/ bool load(QDomElement routes, QDomElement perNodeRoutes) throw (JmriConfigureXmlException) override;
+ /*public*/ bool load(QDomElement routes, QDomElement perNodeRoutes) /*throw (JmriConfigureXmlException)*/ override;
  /*public*/ void loadRoutes(QDomElement routes);
  /*public*/ void setStoreElementClass(QDomElement routes);
  /*public*/ int loadOrder()const override;

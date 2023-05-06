@@ -1,4 +1,5 @@
 #include "defaultanalogactionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "defaultmaleanalogactionsocket.h"
 #include "abstractanalogaction.h"

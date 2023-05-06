@@ -470,8 +470,10 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     ProxyLightManager* mgr= static_cast<ProxyLightManager*> (InstanceManager::getDefault("LightManager"));
     QString sName = mgr->AbstractProxyManager::normalizeSystemName(suName);
     // check if a Light with this name already exists
-    Light* g = (Light*)mgr->AbstractProxyManager::getBySystemName(sName)->self();
-    if (g != NULL) {
+    Light* g =nullptr;
+    NamedBean* nb = mgr->AbstractProxyManager::getBySystemName(sName);
+    if (nb != NULL) {
+        g = (Light*)nb->self();
         // Light already exists
         status1->setText(tr("Error: an element with this System Name already exists."));
         status1->setForeground(Qt::red);
@@ -484,8 +486,10 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     // check if Light exists under an alternate name if an alternate name exists
     QString altName = mgr->convertSystemNameToAlternate(suName);
     if (altName != ("")) {
-        g = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(altName)->self();
-        if (g != NULL) {
+        nb =InstanceManager::lightManagerInstance()->getBySystemName(altName);
+        if (nb != NULL) {
+         g = (Light*)nb->self();
+
             // Light already exists
             status1->setText(tr("Error: Light") + " '" + altName + "' "
                     + tr("exists and is the same address."));
@@ -499,8 +503,10 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // check if a Light with the same user name exists
     if (uName != NULL && uName != ("")) {
-        g = (Light*)mgr->getByUserName(uName)->self();
-        if (g != NULL) {
+        nb = mgr->getByUserName(uName);
+        if (nb != NULL) {
+            g = (Light*)nb->self();
+
             // Light with this user name already exists
             status1->setText(tr("Error: an element with this User Name already exists."));
             status1->setForeground(Qt::red);
@@ -523,9 +529,11 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // check if requested Light uses the same address as a Turnout
     QString testSN = turnoutPrefix + curAddress;
-    Turnout* testT = (Turnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-            AbstractProxyManager::getBySystemName(testSN)->self();
-    if (testT != nullptr) {
+    Turnout* testT = nullptr;
+    nb = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
+            AbstractProxyManager::getBySystemName(testSN);
+    if (nb != nullptr) {
+        testT = (Turnout*)nb->self();
         // Address is already used as a Turnout
          log->warn("Requested Light " + sName + " uses same address as Turnout " + testT->getDisplayName());
         if (!noWarn) {

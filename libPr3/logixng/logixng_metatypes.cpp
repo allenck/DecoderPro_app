@@ -194,6 +194,12 @@
 #include "debuggermaledigitalexpressionsocketswing.h"
 #include "debuggermaledigitalexpressionsocketswing.h"
 #include "debuggermalestringexpressionsocketswing.h"
+#include "debuggermaledigitalactionsocketxml.h"
+#include "debuggermaleanalogactionsocketxml.h"
+#include "debuggermaleanalogexpressionsocketxml.h"
+#include "debuggermaledigitalbooleanactionsocket.xml.h"
+#include "debuggermalestringactionsocketxml.h"
+#include "debuggermalestringexpressionsocketxml.h"
 
 /*static*/ bool LogixNG_Metatypes::ng_done = false;
 
@@ -421,6 +427,14 @@ LogixNG_Metatypes::LogixNG_Metatypes(QObject *parent) : QObject(parent)
 
    // actions
    //qRegisterMetaType<IfThenElse>("IfThenElse");
+
+   // debuggers
+   qRegisterMetaType<DebuggerMaleDigitalActionSocketXml>("DebuggerMaleDigitalActionSocketXml");
+   qRegisterMetaType<DebuggerMaleAnalogActionSocketXml>("DebuggerMaleAnalogActionSocketXml");
+   qRegisterMetaType<DebuggerMaleAnalogExpressionSocketXml>("DebuggerMaleAnalogExpressionSocketXml");
+   qRegisterMetaType<DebuggerMaleDigitalBooleanActionSocketXml>("DebuggerMaleDigitalBooleanActionSocketXml");
+   qRegisterMetaType<DebuggerMaleStringActionSocketXml>("DebuggerMaleStringActionSocketXml");
+   qRegisterMetaType<DebuggerMaleStringExpressionSocketXml>("DebuggerMaleStringExpressionSocketXml");
 
    LogixNG_Metatypes::ng_done = true;
 }

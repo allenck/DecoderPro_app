@@ -65,7 +65,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ bool MeterFrameManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) {
+    /*public*/ bool MeterFrameManagerXml::load(QDomElement shared, QDomElement perNode) /*throw (JmriConfigureXmlException)*/ {
         // Don't create frames if headless
         //if (GraphicsEnvironment.isHeadless()) return true;
  return true;

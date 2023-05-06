@@ -1,5 +1,6 @@
 #include "expressionblockxml.h"
 #include "blockmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/defaultdigitalexpressionmanager.h"
 #include "logixng/expressionblock.h"
 #include "instancemanager.h"

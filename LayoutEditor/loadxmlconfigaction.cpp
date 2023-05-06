@@ -1,6 +1,7 @@
 #include "loadxmlconfigaction.h"
 #include "instancemanager.h"
 #include "jfilechooser.h"
+#include "jmriexception.h"
 #include "layoutblockmanager.h"
 #include "defaultcatalogtreemanagerxml.h"
 #include "logger.h"

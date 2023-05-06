@@ -1,6 +1,7 @@
 #include "defaultsignalmastmanagerxml.h"
 #include "instancemanager.h"
 #include "defaultsignalmastmanager.h"
+#include "jmriexception.h"
 #include "signalmastmanager.h"
 #include "signalmastrepeater.h"
 #include "signalheadsignalmastxml.h"

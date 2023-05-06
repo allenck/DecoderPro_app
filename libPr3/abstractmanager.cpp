@@ -1,6 +1,7 @@
 #include "abstractmanager.h"
 #include <QStringList>
 #include "instancemanager.h"
+#include "jmriexception.h"
 #include "swingpropertychangesupport.h"
 #include "configxmlmanager.h"
 #include "abstractcatalogtree.h"
@@ -901,9 +902,12 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
      testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
      // System.out.format("testaddr: "+testAddr);
      bean = getBySystemName(testAddr);
-     increment = ( static_cast<Turnout*>(bean->self())? ((Turnout*)bean->self())->getNumberOutputBits() : 1);
-     testAddr = testAddr.mid(getSystemNamePrefix().length());
-     getIncrement(testAddr, increment);
+     if(bean)
+     {
+         increment = ( static_cast<Turnout*>(bean->self())? ((Turnout*)bean->self())->getNumberOutputBits() : 1);
+         testAddr = testAddr.mid(getSystemNamePrefix().length());
+         getIncrement(testAddr, increment);
+     }
     }
     catch ( NamedBean::BadSystemNameException* ex){
         throw new JmriException(ex->getMessage());

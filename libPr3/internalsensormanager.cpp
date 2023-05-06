@@ -90,7 +90,8 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
 {
     //If the hardware address past does not already exist then this can
     //be considered the next valid address.
-    Sensor* s = (Sensor*)getBySystemName(prefix+QString(typeLetter())+curAddress)->self();
+    Sensor* s = nullptr;
+    NamedBean* nb = getBySystemName(prefix+QString(typeLetter())+curAddress);
     if(s==NULL){
         return curAddress;
     }
@@ -106,8 +107,9 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
     }
     //Check to determine if the systemName is in use, return null if it is,
     //otherwise return the next valid address.
-    s = (Sensor*)getBySystemName(prefix+typeLetter()+iName)->self();
+    nb = getBySystemName(prefix+typeLetter()+iName);
     if(s!=NULL){
+        s = (Sensor*)nb->self();
         for(int x = 1; x<10; x++){
             iName = iName + 1;
             s = (Sensor*)getBySystemName(prefix+typeLetter()+iName)->self();

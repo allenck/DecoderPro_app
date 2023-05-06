@@ -36,51 +36,54 @@ DefaultConditionalNGManagerXml::DefaultConditionalNGManagerXml(QObject *parent)
     setStoreElementClass(conditionalNGs);
     ConditionalNG_Manager* tm = (DefaultConditionalNGManager*) o;
     LogixNG_Manager* lm = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
-    if (tm != nullptr) {
+    if (tm != nullptr)
+    {
         if (lm->getNamedBeanSet().isEmpty()) return QDomElement();
-        for (NamedBean* nb : lm->getNamedBeanSet()) {
+        for (NamedBean* nb : lm->getNamedBeanSet())
+        {
          DefaultLogixNG* logixNG = (DefaultLogixNG*)nb->self();
-            for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
-                DefaultConditionalNG* conditionalNG = logixNG->getConditionalNG(i);
+         for (int i=0; i < logixNG->getNumConditionalNGs(); i++)
+         {
+            DefaultConditionalNG* conditionalNG = logixNG->getConditionalNG(i);
 
-                log->debug("ConditionalNG system name is " + nb->getSystemName());//((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName());  // NOI18N
-                bool enabled = conditionalNG->isEnabled();
-                QDomElement elem = doc.createElement("ConditionalNG");  // NOI18N
-                QDomElement esn;
-                elem.appendChild(esn=doc.createElement("systemName"));
-                  esn.appendChild(doc.createTextNode(nb->getSystemName()));//(((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName()))));  // NOI18N
+            log->debug("ConditionalNG system name is " + nb->getSystemName());//((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName());  // NOI18N
+            bool enabled = conditionalNG->isEnabled();
+            QDomElement elem = doc.createElement("ConditionalNG");  // NOI18N
+            QDomElement esn;
+            elem.appendChild(esn=doc.createElement("systemName"));
+              esn.appendChild(doc.createTextNode(nb->getSystemName()));//(((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName()))));  // NOI18N
 
-                // store common part
-                storeCommon(nb, elem);
+            // store common part
+            storeCommon(nb, elem);
 
-                QDomElement ethr;
-                elem.appendChild(ethr=doc.createElement("thread"));
-                ethr.appendChild(doc.createTextNode(
-                        QString::number(conditionalNG->getStartupThreadId())));  // NOI18N
+            QDomElement ethr;
+            elem.appendChild(ethr=doc.createElement("thread"));
+            ethr.appendChild(doc.createTextNode(
+                    QString::number(conditionalNG->getStartupThreadId())));  // NOI18N
 
-                QDomElement e2 = doc.createElement("Socket");
-                QDomElement e2sn;
-                e2.appendChild(e2sn=doc.createElement("socketName"));
-                e2sn.appendChild(doc.createTextNode(conditionalNG->getChild(0)->getName()));
-                MaleSocket* socket = conditionalNG->getChild(0)->getConnectedSocket();
-                QString socketSystemName;
-                if (socket != nullptr) {
-                    socketSystemName = socket->getSystemName();
-                } else {
-                    socketSystemName = ((DefaultConditionalNG*)conditionalNG->bself())->getSocketSystemName();
-                }
-                if (socketSystemName != "") {
-                 QDomElement esn2;
-                    e2.appendChild(esn2 =doc.createElement("systemName"));
-                      esn2.appendChild(doc.createTextNode(socketSystemName));
-                }
-                elem.appendChild(e2);
-
-                elem.setAttribute("enabled", enabled ? "yes" : "no");  // NOI18N
-
-                conditionalNGs.appendChild(elem);
+            QDomElement e2 = doc.createElement("Socket");
+            QDomElement e2sn;
+            e2.appendChild(e2sn=doc.createElement("socketName"));
+            e2sn.appendChild(doc.createTextNode(conditionalNG->getChild(0)->getName()));
+            MaleSocket* socket = conditionalNG->getChild(0)->getConnectedSocket();
+            QString socketSystemName;
+            if (socket != nullptr) {
+                socketSystemName = socket->getSystemName();
+            } else {
+                socketSystemName = ((DefaultConditionalNG*)conditionalNG->bself())->getSocketSystemName();
             }
-        }
+            if (socketSystemName != "") {
+             QDomElement esn2;
+                e2.appendChild(esn2 =doc.createElement("systemName"));
+                  esn2.appendChild(doc.createTextNode(socketSystemName));
+            }
+            elem.appendChild(e2);
+
+            elem.setAttribute("enabled", enabled ? "yes" : "no");  // NOI18N
+
+            conditionalNGs.appendChild(elem);
+         }
+      }
     }
     return (conditionalNGs);
 }

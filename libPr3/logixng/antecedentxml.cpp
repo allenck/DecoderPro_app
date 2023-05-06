@@ -2,6 +2,7 @@
 #include "defaultdigitalexpressionmanager.h"
 #include "antecedent.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 
 /**
  * Handle XML configuration for ActionLightXml objects.

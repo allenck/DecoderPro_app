@@ -1,4 +1,5 @@
 #include "actionturnoutlockxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/actionturnoutlock.h"
 #include "instancemanager.h"
 #include "logixng/defaultdigitalactionmanager.h"

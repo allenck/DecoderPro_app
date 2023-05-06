@@ -1,4 +1,5 @@
 ﻿#include "startupactionsmanager.h"
+#include "jmriexception.h"
 #include "loggerfactory.h"
 #include "profileutils.h"
 #include <QtXml>
@@ -21,6 +22,7 @@
 #include "triggerroutemodelfactory.h"
 #include "scriptbuttonmodelfactory.h"
 #include "performfilemodelfactory.h"
+#include "xmladapter.h"
 
 //StartupActionsManager::StartupActionsManager()
 //{

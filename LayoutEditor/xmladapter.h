@@ -5,7 +5,6 @@
 #include <QtXml>
 #include "exceptions.h"
 #include "configxmlmanager.h"
-#include "level.h"
 #include "liblayouteditor_global.h"
 #include "dialogerrorhandler.h"
 

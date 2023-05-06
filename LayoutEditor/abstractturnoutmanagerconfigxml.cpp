@@ -1,4 +1,5 @@
 #include "abstractturnoutmanagerconfigxml.h"
+#include "jmriexception.h"
 #include "turnoutmanager.h"
 #include "turnoutoperationmanagerxml.h"
 #include "proxyturnoutmanager.h"

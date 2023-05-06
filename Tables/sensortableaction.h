@@ -58,9 +58,9 @@ public slots:
 //    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
 
 private:
-    JmriJFrame* addFrame;// = NULL;
+    QPointer<JmriJFrame> addFrame =nullptr;
 
-    JTextField* hardwareAddressTextField = new JTextField(40);
+    JTextField* hardwareAddressTextField = new JTextField(20);
     // initially allow any 20 char string, updated by prefixBox selection
     JTextField* userNameField = new JTextField(40);
     ManagerComboBox/*<Sensor*>*/* prefixBox = new ManagerComboBox();
@@ -76,7 +76,7 @@ private:
 
     UserPreferencesManager* p;
     Manager/*<Sensor>*/* connectionChoice = nullptr;
-    SystemNameValidator* hardwareAddressValidator;
+    SystemNameValidator* hardwareAddressValidator=nullptr;
 
     BeanTableFrame* f;
     //BeanTableDataModel* m;

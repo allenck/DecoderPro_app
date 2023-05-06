@@ -24,7 +24,7 @@ public:
 
 private:
     void common();
-    JmriJFrame* addFrame;// = NULL;
+    QPointer<JmriJFrame> addFrame = NULL;
     JTextField* sysNameField;// = new JTextField(5);
     JTextField* userNameField;// = new JTextField(5);
     QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));

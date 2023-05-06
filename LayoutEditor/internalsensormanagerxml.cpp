@@ -57,7 +57,7 @@ InternalSensorManagerXml::InternalSensorManagerXml(QObject *parent) :
  return AbstractSensorManagerConfigXML::store(o, sensors);
 }
 
-/*public*/ bool InternalSensorManagerXml::load(QDomElement sharedSensors, QDomElement perNodeSensors) throw (JmriConfigureXmlException) {
+/*public*/ bool InternalSensorManagerXml::load(QDomElement sharedSensors, QDomElement perNodeSensors)  {
  // load individual sensors
  if (sharedSensors.firstChildElement("defaultInitialState") != QDomElement())
  {

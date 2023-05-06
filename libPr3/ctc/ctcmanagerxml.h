@@ -20,7 +20,7 @@ class CtcManagerXml : public AbstractNamedBeanManagerConfigXML
   static Logger* log;
   CtcManager* cm = (CtcManager*)InstanceManager::getDefault("CtcManager");
   /*public*/ QDomElement store(QObject o);
-  /*public*/ void load( QDomElement element, QObject* o) throw (JmriConfigureXmlException);
+  /*public*/ void load( QDomElement element, QObject* o) /*throw (JmriConfigureXmlException)*/;
   /*public*/ bool load( QDomElement sharedCtcData,  QDomElement perNodeCtcData);
   /*public*/ void setStoreElementClass( QDomElement ctcdata);
   /*public*/ int loadOrder();

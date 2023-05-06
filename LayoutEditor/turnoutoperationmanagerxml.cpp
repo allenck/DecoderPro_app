@@ -29,7 +29,7 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
 //}
 
 //@SuppressWarnings("unchecked")
-/*public*/ bool TurnoutOperationManagerXml::load(QDomElement sharedOperations, QDomElement perNodeOperations) throw (JmriConfigureXmlException)
+/*public*/ bool TurnoutOperationManagerXml::load(QDomElement sharedOperations, QDomElement perNodeOperations)
 {
  bool result = true;
  TurnoutOperationManager* manager = TurnoutOperationManager::getInstance();

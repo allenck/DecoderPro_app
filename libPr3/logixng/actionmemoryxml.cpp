@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "defaultdigitalactionmanager.h"
 #include "actionmemory.h"
+#include "jmriconfigurexmlexception.h"
 #include "namedbeanaddressing.h"
 #include "defaultmemorymanager.h"
 #include "parserexception.h"

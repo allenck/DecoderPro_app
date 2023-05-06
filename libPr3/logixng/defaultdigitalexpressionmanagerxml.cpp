@@ -1,4 +1,5 @@
 #include "defaultdigitalexpressionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalexpressionsocket.h"

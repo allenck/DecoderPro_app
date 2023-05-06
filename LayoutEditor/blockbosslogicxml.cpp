@@ -147,7 +147,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
  * @return true if successful
   */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockBossLogicXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
+/*public*/ bool BlockBossLogicXml::load(QDomElement shared, QDomElement perNode)
 {
  bool result = true;
  QDomNodeList l = shared.elementsByTagName("signalelement");

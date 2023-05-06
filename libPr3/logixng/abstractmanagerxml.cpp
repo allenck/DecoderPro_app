@@ -4,6 +4,7 @@
 #include "runtimeexception.h"
 #include "malesocketxml.h"
 #include "class.h"
+#include "abstractmalesocket.h"
 
 
 /**
@@ -28,8 +29,8 @@
         Base* m = maleSocket;
         if(!maleSocket)
          return QDomElement();
-        while (qobject_cast<MaleSocket*>(m->bself())) {
-            MaleSocket* ms = (MaleSocket*) m->bself();
+        while (qobject_cast<AbstractMaleSocket*>(m->bself())) {
+            MaleSocket* ms = (AbstractMaleSocket*) m->bself();
 
             try {
                 QDomElement e = ConfigXmlManager::elementFromObject(ms->bself());

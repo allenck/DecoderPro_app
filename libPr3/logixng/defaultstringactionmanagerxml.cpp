@@ -1,4 +1,5 @@
 #include "defaultstringactionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
 #include "malestringactionsocket.h"

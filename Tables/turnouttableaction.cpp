@@ -241,6 +241,11 @@ void TurnoutTableAction::common()
   canAddRange(nullptr);
  }
  hardwareAddressTextField->setName("hwAddressTextField"); // for GUI test NOI18N
+ connect(hardwareAddressTextField, &QLineEdit::textEdited, [=](QString txt){
+     bool bok;
+     if(txt.toInt(&bok) && bok && !addButton->isEnabled())
+         addButton->setEnabled(true);
+ });
  addButton->setName("createButton"); // for GUI test NOI18N
  // reset statusBarLabel text
  statusBarLabel->setText(tr("Enter a Hardware Address and (optional) User Name."));

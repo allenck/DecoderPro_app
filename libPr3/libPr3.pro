@@ -170,6 +170,7 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+  logixng/abstractdebuggermalesocketxml.cpp \
     memoryframeaction.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
@@ -1643,6 +1644,13 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+  logixng/abstractdebuggermalesocketxml.h \
+  logixng/debuggermaleanalogactionsocketxml.h \
+  logixng/debuggermaleanalogexpressionsocketxml.h \
+  logixng/debuggermaledigitalactionsocketxml.h \
+  logixng/debuggermaledigitalbooleanactionsocket.xml.h \
+  logixng/debuggermalestringactionsocketxml.h \
+  logixng/debuggermalestringexpressionsocketxml.h \
     memoryframeaction.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \

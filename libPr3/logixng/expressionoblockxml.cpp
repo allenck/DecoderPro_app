@@ -1,4 +1,5 @@
 #include "expressionoblockxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/defaultdigitalexpressionmanager.h"
 #include "logixng/expressionoblock.h"
 #include "instancemanager.h"

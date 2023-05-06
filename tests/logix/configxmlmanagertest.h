@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "configxmlmanager.h"
+#include "errorhandler.h"
 
 class ConfigXmlManagerTest : public QObject
 {

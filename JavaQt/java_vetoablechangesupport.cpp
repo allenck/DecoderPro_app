@@ -82,7 +82,7 @@
 //                                     (VetoableChangeListener*) p->getListener());
 //      }
 //    else
-     if (listeners != nullptr)
+     if (listeners != nullptr && !listeners->isEmpty())
       {
         listeners->removeOne(l);
         if (listeners->isEmpty())
@@ -195,14 +195,15 @@
     if (s == nullptr)
       return;
     while (dynamic_cast<VetoableChangeListenerProxy*>(l))
-     {
+    {
         VetoableChangeListenerProxy* p = (VetoableChangeListenerProxy*) l;
         if (propertyName == "" ? p->propertyName != ""
            :  propertyName != (p->propertyName))
           return;
         l = (VetoableChangeListener*) p->getListener();
-      }
-    s->listeners->removeOne(l);
+    }
+    if(!s->listeners->isEmpty())
+     s->listeners->removeOne(l);
     if (s->listeners->isEmpty())
       {
         children->remove(propertyName);

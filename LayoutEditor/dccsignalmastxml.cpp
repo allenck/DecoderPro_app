@@ -77,7 +77,7 @@ DccSignalMastXml::DccSignalMastXml(QObject *parent) :
  * @param element Top level QDomElement to unpack.
  * @return true if successful
  */
-/*public*/  bool DccSignalMastXml::load(QDomElement shared, QDomElement perNode)  throw(JmriConfigureXmlException)
+/*public*/  bool DccSignalMastXml::load(QDomElement shared, QDomElement perNode)
 {
  DccSignalMast* m;
  QString sys = getSystemName(shared);
@@ -134,7 +134,7 @@ DccSignalMastXml::DccSignalMastXml(QObject *parent) :
 
 }
 
-/*public*/  void DccSignalMastXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
+/*public*/  void DccSignalMastXml::load(QDomElement /*element*/, QObject* /*o*/) /*throw (Exception)*/
 {
     Logger::error("Invalid method called");
 }

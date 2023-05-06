@@ -11,7 +11,7 @@ public:
  RfidSensorManagerXml(const RfidSensorManagerXml&) : AbstractSensorManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement sensors);
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
- /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException);
+ /*public*/ bool load(QDomElement shared, QDomElement perNode) /*throw (JmriConfigureXmlException)*/;
 
 private:
  static Logger* log;

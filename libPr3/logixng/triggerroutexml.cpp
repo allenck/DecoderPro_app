@@ -1,6 +1,7 @@
 #include "triggerroutexml.h"
 #include "abstractroutemanager.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/defaultdigitalactionmanager.h"
 #include "logixng/parserexception.h"
 #include "triggerroute.h"

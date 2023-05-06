@@ -1,4 +1,5 @@
 #include "defaultnamedtablemanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "defaultnamedtablemanager.h"
 #include "runtimeexception.h"

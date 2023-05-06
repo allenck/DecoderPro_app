@@ -23,7 +23,7 @@
 }
 
 //@Override
-/*public*/ void JMRIClientReporterManagerXml::load(QDomElement element, QObject* o) throw (JmriConfigureXmlException) {
+/*public*/ void JMRIClientReporterManagerXml::load(QDomElement element, QObject* o) /*throw (JmriConfigureXmlException)*/ {
     log->error("Invalid method called");
 }
 

@@ -1,4 +1,5 @@
 #include "defaultstringexpressionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "stringexpressionmanager.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"

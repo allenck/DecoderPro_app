@@ -1,6 +1,7 @@
 #include "actionentryexitxml.h"
 #include "defaultdigitalactionmanager.h"
 #include "entryexitpairs.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/actionentryexit.h"
 #include "instancemanager.h"
 #include "parserexception.h"

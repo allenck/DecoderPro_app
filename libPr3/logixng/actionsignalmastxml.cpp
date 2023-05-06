@@ -1,5 +1,6 @@
 #include "actionsignalmastxml.h"
 #include "defaultsignalmastmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/actionsignalmast.h"
 #include "instancemanager.h"
 #include "logixng/defaultdigitalactionmanager.h"

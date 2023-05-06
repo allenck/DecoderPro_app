@@ -1,4 +1,5 @@
 #include "defaultdigitalactionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalactionsocket.h"
@@ -29,13 +30,14 @@
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleDigitalActionSocket* action = (MaleDigitalActionSocket*)nb->self();
+                MaleDigitalActionSocket* action = (MaleDigitalActionSocket*)nb->self();
                 log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
                     MaleDigitalActionSocket* a = action;
-                    while (!(static_cast<DefaultMaleDigitalActionSocket*>(a))) {
+                    DefaultMaleDigitalActionSocket* test = dynamic_cast<DefaultMaleDigitalActionSocket*>(a);
+                    while (!(dynamic_cast<DefaultMaleDigitalActionSocket*>(a))) {
                         elements.append(storeMaleSocket(a));
                         a = (DefaultMaleDigitalActionSocket*) a->getObject()->bself();
                     }

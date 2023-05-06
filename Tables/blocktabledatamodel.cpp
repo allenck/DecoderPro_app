@@ -15,6 +15,7 @@
 #include "file.h"
 #include "fileutil.h"
 #include "jmriexception.h"
+#include "abstractreporter.h"
 
 /**
  * Data model for a Block Table.
@@ -595,9 +596,9 @@ void BlockTableDataModel::editButton(Block* b) {
     QVector<QString> displayList = QVector<QString>(nameSet.size());
     int i = 0;
     foreach (NamedBean* nb, nameSet) {
-     Reporter* nBean = (Reporter*)nb;
-        if (nBean != nullptr) {
-            displayList[i++] = ((NamedBean*)nBean->self())->getDisplayName();
+        if (nb != nullptr) {
+            Reporter* nBean = (AbstractReporter*)nb->self();
+            displayList[i++] = nBean->getDisplayName();
         }
     }
     //Arrays.sort(displayList);

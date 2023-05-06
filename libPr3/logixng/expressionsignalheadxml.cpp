@@ -1,4 +1,5 @@
 #include "expressionsignalheadxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "expressionsignalhead.h"

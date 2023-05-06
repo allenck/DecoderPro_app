@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "expressionentryexit.h"
+#include "jmriconfigurexmlexception.h"
 #include "namedbeanhandle.h"
 #include "entryexitpairs.h"
 #include "is_isnot_enum.h"

@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "actionpositionable.h"
 #include "defaultdigitalactionmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "parserexception.h"
 
 /**

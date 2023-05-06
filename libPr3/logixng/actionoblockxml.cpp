@@ -1,4 +1,5 @@
 #include "actionoblockxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/actionoblock.h"
 #include "instancemanager.h"
 #include "logixng/defaultdigitalactionmanager.h"

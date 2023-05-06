@@ -2,6 +2,7 @@
 #include "actionblock.h"
 #include "instancemanager.h"
 #include "abstractblockmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "joptionpane.h"
 #include "parserexception.h"
 #include "defaultdigitalactionmanager.h"

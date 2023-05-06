@@ -222,7 +222,7 @@ return routes;
 * @param routes Top level QDomElement to unpack.
 * @return true if successful
 */
-/*public*/ bool DefaultRouteManagerXml::load(QDomElement sharedRoutes, QDomElement /*perNodeRoutes*/ ) throw (JmriConfigureXmlException) {
+/*public*/ bool DefaultRouteManagerXml::load(QDomElement sharedRoutes, QDomElement /*perNodeRoutes*/ ) /*throw (JmriConfigureXmlException)*/ {
  // create the master object
  replaceRouteManager();
  // load individual routes

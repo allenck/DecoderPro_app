@@ -3,6 +3,7 @@
 #include "is_isnot_enum.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "parserexception.h"
 
 /**

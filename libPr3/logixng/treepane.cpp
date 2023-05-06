@@ -15,6 +15,7 @@
 #include "emptyborder.h"
 #include "defaultfemaledigitalactionsocket.h"
 #include "uidefaults.h"
+#include "abstractmalesocket.h"
 
 /**
  * Show the action/expression tree.
@@ -98,7 +99,7 @@
                         name = femaleSocket->getName();
                         description = femaleSocket->getShortDescription();
                         if(((AbstractFemaleSocket*)femaleSocket->bself())->isConnected())
-                         childCount = ((AbstractFemaleSocket*)femaleSocket->getConnectedSocket()->bself())-> getChildCount();
+                            childCount = ((AbstractMaleSocket*)((AbstractFemaleSocket*)femaleSocket->getConnectedSocket()->bself()))-> getChildCount();
                         fsObject = ((AbstractFemaleSocket*)femaleSocket->bself())->objectName();
                     }
                 }
@@ -119,7 +120,7 @@
                 TP_FemaleSocketTreeNode* tnode = (TP_FemaleSocketTreeNode*)obj;
                 femaleSocket = tnode->getFemaleSocket();
             }
-            if (femaleSocket->isConnected() && femaleSocket->getConnectedSocket()->isEnabled()) {
+            if (((AbstractFemaleSocket*)femaleSocket->bself())->isConnected() && ((AbstractFemaleSocket*)femaleSocket->bself())->getConnectedSocket()->isEnabled()) {
                 _tree->expandRow(i);
             }
         }
@@ -355,15 +356,17 @@
         /*public*/  QVariant FemaleSocketTreeModel::data(const QModelIndex &index, int role) const
         {
             TP_FemaleSocketTreeNode* node = static_cast<TP_FemaleSocketTreeNode*>(index.internalPointer());
+            FemaleSocket* socket;
             if(static_cast<TP_FemaleSocketTreeNode*>(node))
             {
+                socket = ((TP_FemaleSocketTreeNode*)node)->getFemaleSocket();
+
 //                if(role == Qt::DisplayRole)
 //                {
 //                    FemaleSocket* socket = ((TP_FemaleSocketTreeNode*)node)->getFemaleSocket();
 //                    if(!socket)
 //                        return DefaultTreeModel::data(index, role);
 //                    return socket->getShortDescription();
-
 //                }
                 if(role == Qt::DecorationRole)
                 {
@@ -371,7 +374,7 @@
                     if(!socket)
                         return DefaultTreeModel::data(index, role);
                     QWidget* w = renderer->getTreeCellRendererComponent(treePane->_tree, (QObject*)socket->bself(), true, true, true, index.row(),true);
-                    w->setMaximumHeight(50);
+                    w->setMaximumHeight(200);
                     QRect rectangle = w->rect();
                     QPixmap pixmap(rectangle.size());
                     w->render(&pixmap, QPoint(), QRegion(rectangle));
@@ -442,14 +445,14 @@
             //socketLabel.setFont(font.deriveFont((float)(font.getSize2D()*1.7)));
             font.setPixelSize(font.pixelSize()*1.7);
             socketLabel->setFont(font);
-            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className(), Qt::red));
+            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->getClassName(), Qt::red));
 //            socketLabel.setForeground(Color.red);
             panelLayout->addWidget(socketLabel,0, Qt::AlignLeft);
 
             panelLayout->addWidget( Box::createRigidArea(QSize(5,0)), 0, Qt::AlignLeft);
 
             JLabel* socketNameLabel = new JLabel(socket->getName());
-            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className(), Qt::blue));
+            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->getClassName(), Qt::blue));
 //            socketNameLabel.setForeground(Color.red);
             panelLayout->addWidget(socketNameLabel, 0, Qt::AlignLeft);
 

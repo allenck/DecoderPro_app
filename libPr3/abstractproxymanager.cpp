@@ -1,24 +1,21 @@
 ﻿#include "abstractproxymanager.h"
 #include "exceptions.h"
 #include <QSet>
-#include "proxyreportermanager.h"
-#include "proxyturnoutmanager.h"
-#include "proxysensormanager.h"
-#include "proxylightmanager.h"
 #include "abstractturnoutmanager.h"
-#include "abstractsensormanager.h"
-#include "abstractlightmanager.h"
-#include "abstractreportermanager.h"
-#include "lnturnoutmanager.h"
+#include "lightmanager.h"
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
 #include "connectionconfigmanager.h"
 #include "connectionconfig.h"
 #include "loggingutil.h"
+#include "reportermanager.h"
+#include "sensormanager.h"
 #include "vptr.h"
 #include "namedbeancomparator.h"
 #include "abstractturnoutmanager.h"
 #include "jmriexception.h"
+#include "instancemanager.h"
+#include "abstractsensormanager.h"
 
 /**
  * Implementation of a Manager that can serves as a proxy for multiple
@@ -40,7 +37,9 @@
 //@SuppressWarnings("deprecation")
 // abstract /*public*/  class AbstractProxyManager<E extends NamedBean> extends VetoableChangeSupport implements ProxyManager/*<E>*/*, PropertyChangeListener, Manager.ManagerDataListener<E> {
 
-AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSupport(parent) {}
+AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSupport(parent) {
+    setObjectName("AbstractProxyManager");
+}
 
     /**
      * {@inheritDoc}
@@ -49,7 +48,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     /*public*/  QList<AbstractManager *> AbstractProxyManager::getManagerList() const   {
         // make sure internal present
         initInternal();
-        return QList<AbstractManager*>(mgrs.toList());
+        return QList<AbstractManager*>(mgrs.values());
     }
 
     /**
@@ -319,9 +318,9 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
                         case 'T':
                             return ((AbstractTurnoutManager*) m)->getNextValidAddress(curAddress, prefix);
                         case 'S':
-                            return ((SensorManager*) m)->getNextValidAddress(curAddress, prefix);
+                            return ((AbstractSensorManager*) m)->getNextValidAddress(curAddress, prefix);
                         case 'R':
-                            return ((ReporterManager*) m)->getNextValidAddress(curAddress, prefix);
+                            return ((AbstractReporterManager*) m)->getNextValidAddress(curAddress, prefix);
                         default:
                             return nullptr;
                     }
@@ -330,7 +329,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
                 }
             }
         }
-        return nullptr;
+        return "";
     }
 
     /*public*/  QString AbstractProxyManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, QChar typeLetter) /*throws jmri.JmriException*/ {
@@ -355,7 +354,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
                 }
             }
         }
-        return nullptr;
+        return "";
     }
 
     /** {@inheritDoc} */
@@ -518,7 +517,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@Override
     //@OverridingMethodsMustInvokeSuper
     /*public*/  /*synchronized*/ void AbstractProxyManager::removeVetoableChangeListener(VetoableChangeListener* l) {
-        VetoableChangeSupport::removeVetoableChangeListener(l);
+        ProxyManager::removeVetoableChangeListener(l);
         //mgrs.forEach(m -> m->removeVetoableChangeListener(l));
         for(Manager* m : mgrs)
          m->removeVetoableChangeListener( l);
@@ -528,7 +527,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@Override
     //@OverridingMethodsMustInvokeSuper
     /*public*/  void AbstractProxyManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-        VetoableChangeSupport::addVetoableChangeListener(propertyName, listener);
+        ProxyManager::addVetoableChangeListener(propertyName, listener);
         vetoablePropertyNames.append(propertyName);
         //mgrs.forEach(m -> m->addVetoableChangeListener(propertyName, listener));
         for(Manager* m : mgrs)
@@ -539,7 +538,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@Override
     //@OverridingMethodsMustInvokeSuper
     /*public*/  void AbstractProxyManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-        VetoableChangeSupport::removeVetoableChangeListener(propertyName, listener);
+        ProxyManager::removeVetoableChangeListener(propertyName, listener);
         //mgrs.forEach(m -> m->removeVetoableChangeListener(propertyName, listener));
         for(Manager* m : mgrs)
          m->removeVetoableChangeListener(propertyName, listener);

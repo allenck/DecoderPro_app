@@ -236,7 +236,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
     log->error("Invalid method called");
 }
 
-/*public*/ bool DefaultSignalMastLogicManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException){
+/*public*/ bool DefaultSignalMastLogicManagerXml::load(QDomElement shared, QDomElement perNode) /*throw (JmriConfigureXmlException)*/{
     // load individual Transits
     loadSignalMastLogic(shared);
     return true;

@@ -1,4 +1,5 @@
 #include "defaultdigitalbooleanactionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
 #include "defaultmaledigitalbooleanactionsocket.h"

@@ -2,6 +2,7 @@
 #include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
 #include "actionsensor.h"
+#include "jmriconfigurexmlexception.h"
 #include "namedbeanaddressing.h"
 #include "parserexception.h"
 

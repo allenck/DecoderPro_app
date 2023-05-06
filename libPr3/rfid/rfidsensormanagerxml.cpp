@@ -28,7 +28,7 @@
     }
 
     //@Override
-    /*public*/ bool RfidSensorManagerXml::load(QDomElement shared, QDomElement /*perNode*/) throw (JmriConfigureXmlException) {
+    /*public*/ bool RfidSensorManagerXml::load(QDomElement shared, QDomElement /*perNode*/) /*throw (JmriConfigureXmlException)*/ {
         // load individual sensors
         return loadSensors(shared);
     }

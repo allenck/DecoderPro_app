@@ -1,6 +1,7 @@
 #include "analogactionlightintensityxml.h"
 #include "analogactionlightintensity.h"
 #include "defaultvariablelightmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "parserexception.h"
 #include "defaultanalogactionmanager.h"
 

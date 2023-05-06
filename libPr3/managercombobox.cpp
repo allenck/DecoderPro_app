@@ -60,7 +60,8 @@
             if (selection == nullptr) {
                 setSelectedIndex(0);
             } else {
-                setSelectedItem(selection->toString());
+                //setSelectedItem(selection->toString());
+                setSelectedItem(selection->getMemo()->getUserName());
             }
         }
     }
@@ -78,7 +79,8 @@
      if (selection == nullptr) {
          setSelectedIndex(0);
      } else {
-         setSelectedItem(selection->toString());
+         //setSelectedItem(selection->toString());
+         setSelectedItem(selection->getMemo()->getUserName());
      }
  }
 }
@@ -94,16 +96,17 @@
      */
     /*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ Manager/*<B>*/* manager) {
         if (qobject_cast<ProxyManager*>(manager->mself())) {
-            //ProxyManager<B> proxy = (ProxyManager<B>) manager;
-            if(qobject_cast<ProxyTurnoutManager*>(manager->mself()))
-            //setManagers(proxy.getDisplayOrderManagerList(), proxy.getDefaultManager());
-             setManagers(((ProxyTurnoutManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxyTurnoutManager*)manager->mself())->getDefaultManager());
-            if(qobject_cast<ProxySensorManager*>(manager->mself()))
-             setManagers(((ProxySensorManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxySensorManager*)manager->mself())->getDefaultManager());
-            if(qobject_cast<ProxyLightManager*>(manager->mself()))
-             setManagers(((ProxyLightManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxyLightManager*)manager->mself())->getDefaultManager());
-            if(qobject_cast<ProxyReporterManager*>(manager->mself()))
-             setManagers(((ProxyReporterManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxyReporterManager*)manager->mself())->getDefaultManager());
+            AbstractProxyManager/*<B>*/* proxy = (AbstractProxyManager/*<B>*/*) manager->mself();
+            setManagers(proxy->getDisplayOrderManagerList(), proxy->getDefaultManager());
+//            if(qobject_cast<ProxyTurnoutManager*>(manager->mself()))
+//            //setManagers(proxy.getDisplayOrderManagerList(), proxy.getDefaultManager());
+//             setManagers(((ProxyTurnoutManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxyTurnoutManager*)manager->mself())->getDefaultManager());
+//            if(qobject_cast<ProxySensorManager*>(manager->mself()))
+//             setManagers(((ProxySensorManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxySensorManager*)manager->mself())->getDefaultManager());
+//            if(qobject_cast<ProxyLightManager*>(manager->mself()))
+//             setManagers(((ProxyLightManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxyLightManager*)manager->mself())->getDefaultManager());
+//            if(qobject_cast<ProxyReporterManager*>(manager->mself()))
+//             setManagers(((ProxyReporterManager*)manager->mself())->getDisplayOrderManagerList(), ((ProxyReporterManager*)manager->mself())->getDefaultManager());
         } else {
             QList<AbstractManager/*<B>*/*> list = QList<AbstractManager/*<B>*/*>();
             list.append((AbstractManager*)manager->mself());

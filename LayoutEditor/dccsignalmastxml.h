@@ -12,8 +12,8 @@ public:
  ~DccSignalMastXml() {}
  DccSignalMastXml(const DccSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
  /*public*/  QDomElement store(QObject* o);
- /*public*/  bool load(QDomElement shared, QDomElement perNode)throw (JmriConfigureXmlException);
- /*public*/  void load(QDomElement element, QObject* o) throw (Exception);
+ /*public*/  bool load(QDomElement shared, QDomElement perNode)/*throw (JmriConfigureXmlException)*/;
+ /*public*/  void load(QDomElement element, QObject* o) /*throw (Exception)*/;
 signals:
 
 public slots:

@@ -1,5 +1,6 @@
 #include "expressionsignalmastxml.h"
 #include "defaultsignalmastmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "logixng/defaultdigitalexpressionmanager.h"

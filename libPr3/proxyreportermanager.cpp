@@ -47,7 +47,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 //@Override
 //@Nonnull
 /*protected*/ NamedBean* ProxyReporterManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
-    return (NamedBean*)((ReporterManager*) manager)->newReporter(systemName, userName);
+    return (NamedBean*)((AbstractReporterManager*) manager)->newReporter(systemName, userName);
 }
 
 /*public*/ Reporter* ProxyReporterManager::provideReporter(QString sName)

@@ -75,7 +75,7 @@
  * @param o       ignored
  */
 //@Override
-/*public*/ void CreateButtonModelXml ::load(QDomElement element, QObject* o) throw (Exception){
+/*public*/ void CreateButtonModelXml ::load(QDomElement element, QObject* o) {
     log-> error("Unexpected call of load(Element, Object)");
 }
 

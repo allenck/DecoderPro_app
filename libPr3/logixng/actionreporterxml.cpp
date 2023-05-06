@@ -4,6 +4,7 @@
 #include "actionreporter.h"
 #include "abstractmemorymanager.h"
 #include "parserexception.h"
+#include "jmriconfigurexmlexception.h"
 
 /**
  * Handle XML configuration for Reporter objects.

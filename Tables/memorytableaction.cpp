@@ -48,6 +48,12 @@ void MemoryTableAction::common()
  userNameLabel = new QLabel(tr("User Name:"));
 
  systemNameAuto = QString(getClassName()) + ".AutoSystemName";
+ autoSystemNameBox = new JCheckBox(tr("Auto Sys Name"));
+ rangeBox = new JCheckBox(tr("Add Range Box"));
+ sysNameField = new JTextField(5);
+ numberToAddSpinner = new JSpinner(rangeSpinner);
+ userNameField = new JTextField(5);
+ statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
 
  log = new Logger("MemoryTableAction");
 }
@@ -183,7 +189,9 @@ return "package.jmri.jmrit.beantable.MemoryTable";
  if (addFrame == NULL) {
   addFrame = new JmriJFrameX(tr("Add Memory"), false, true);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.MemoryAddEdit", true);
-  addFrame->getContentPane()->setLayout(new QVBoxLayout(addFrame->getContentPane()));//, BoxLayout.Y_AXIS));
+  //addFrame->getContentPane()->setLayout(new QVBoxLayout(addFrame->getContentPane()));//, BoxLayout.Y_AXIS));
+  if(!addFrame->getContentPane()->layout())
+        addFrame->getContentPane()->setLayout(new QVBoxLayout());
   addFrame->setFrameRef(getClassName() + ":AddMemory");
 //        ActionListener okListener = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -196,12 +204,6 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 //        };
   MtCancelListener* cancelListener = new MtCancelListener(this);
   AddNewBeanPanel* anbp;
-  autoSystemNameBox = new JCheckBox(tr("Auto Sys Name"));
-  rangeBox = new JCheckBox(tr("Add Range Box"));
-  sysNameField = new JTextField(5);
-  numberToAddSpinner = new JSpinner(rangeSpinner);
-  userNameField = new JTextField(5);
-  statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
   addFrame->layout()->addWidget(anbp = new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, tr("Create"), okListener, cancelListener, statusBarLabel));
   //addFrame.getRootPane().setDefaultButton(anbp.ok);
   anbp->ok->setDefault(true);

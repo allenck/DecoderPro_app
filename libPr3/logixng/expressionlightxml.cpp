@@ -1,6 +1,7 @@
 #include "expressionlightxml.h"
 #include "instancemanager.h"
 #include "expressionlight.h"
+#include "jmriconfigurexmlexception.h"
 #include "proxylightmanager.h"
 #include "parserexception.h"
 #include "defaultdigitalexpressionmanager.h"

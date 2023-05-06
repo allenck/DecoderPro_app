@@ -1,6 +1,7 @@
 #include "actionlightintensityxml.h"
 #include "defaultvariablelightmanager.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/actionlightintensity.h"
 #include "logixng/defaultdigitalactionmanager.h"
 #include "logixng/parserexception.h"

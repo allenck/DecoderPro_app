@@ -6,7 +6,6 @@
 #include "proxysensormanager.h"
 #include <QVBoxLayout>
 #include "connectionnamefromsystemname.h"
-#include "jmriuserpreferencesmanager.h"
 #include "userpreferencesmanager.h"
 #include <QMessageBox>
 #include "jframe.h"
@@ -135,7 +134,12 @@ SensorTableAction::SensorTableAction(QObject *parent) :
   //addButton.addActionListener(createListener);
   //connect(addButton, SIGNAL(clicked(bool)), createListener->self(), SLOT(actionPerformed()));
   connect(addButton, &JButton::clicked, [=]{createListener->actionPerformed();});
-  hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
+  //log->debug(tr("add frame hwAddValidator is %1 prefix box is %2").arg(hardwareAddressValidator, prefixBox->getSelectedItem()));
+  if (hardwareAddressValidator==nullptr){
+   hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
+  } else {
+   hardwareAddressValidator->setManager(prefixBox->getSelectedItem());
+  }
   // create panel
   addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameField, prefixBox,
           numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBarLabel));
@@ -146,8 +150,13 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
  hardwareAddressTextField->setBackground(QColor(Qt::yellow));
-// addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
-// addButton->setObjectName("createButton"); // for GUI test NOI18N
+ connect(hardwareAddressTextField, &QLineEdit::textEdited, [=](QString txt){
+     bool bok;
+     if(txt.toInt(&bok) && bok && !addButton->isEnabled())
+         addButton->setEnabled(true);
+ });
+ addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
+ addButton->setObjectName("createButton"); // for GUI test NOI18N
  // reset statusBar text
  statusBarLabel->setText(tr("HardwareAddStatusEnter"));
  statusBarLabel->setStyleSheet("QLabel {color: gray}");
@@ -240,6 +249,7 @@ void SensorTableAction::createPressed()
      statusBarLabel->setText(tr("You must provide a Hardware Address to start."));
      statusBarLabel->setStyleSheet("QLabel {color: red}");
      hardwareAddressTextField->setBackground(QColor(Qt::red));
+     addButton->setEnabled(false);
      return;
  } else {
      hardwareAddressTextField->setBackground(QColor(Qt::white));

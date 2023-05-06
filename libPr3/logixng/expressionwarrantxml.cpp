@@ -1,5 +1,6 @@
 #include "expressionwarrantxml.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/defaultdigitalexpressionmanager.h"
 #include "logixng/expressionwarrant.h"
 #include "logixng/parserexception.h"

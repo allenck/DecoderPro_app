@@ -122,7 +122,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
  * register and fill it.
  * @param sensors Top level QDomElement to unpack.
  */
-// /*abstract*/ /*public*/ boolean load(QDomElement sensors) throw (JmriConfigureXmlException);
+// /*abstract*/ /*public*/ boolean load(QDomElement sensors) /*throw (JmriConfigureXmlException)*/;
 
 /**
  * Utility method to load the individual Sensor objects.

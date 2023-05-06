@@ -80,7 +80,7 @@
      * @throws jmri.configurexml.JmriConfigureXmlException if error during load.
      */
     //@Override
-    /*public*/ bool AbstractMeterManagerXml::load(QDomElement sharedMeters, QDomElement perNodeMemories) throw (JmriConfigureXmlException) {
+    /*public*/ bool AbstractMeterManagerXml::load(QDomElement sharedMeters, QDomElement perNodeMemories) /*throw (JmriConfigureXmlException)*/ {
         loadMeters(sharedMeters);
         return true;
     }

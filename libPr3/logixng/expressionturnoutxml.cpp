@@ -2,6 +2,7 @@
 #include "expressionturnout.h"
 #include "defaultdigitalexpressionmanager.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "proxyturnoutmanager.h"
 #include "parserexception.h"
 /**

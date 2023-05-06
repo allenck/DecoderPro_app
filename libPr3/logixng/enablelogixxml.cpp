@@ -1,5 +1,6 @@
 #include "enablelogixxml.h"
 #include "defaultlogixmanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/defaultdigitalactionmanager.h"
 #include "logixng/enablelogix.h"
 #include "instancemanager.h"

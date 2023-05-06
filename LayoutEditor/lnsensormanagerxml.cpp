@@ -25,11 +25,11 @@ LnSensorManagerXml::LnSensorManagerXml(QObject *parent) :
     sensors.setAttribute("class","jmri.jmrix.loconet.configurexml.LnSensorManagerXml");
 }
 
-/*public*/ void LnSensorManagerXml::load(QDomElement element, QObject* o) throw (JmriConfigureXmlException) {
+/*public*/ void LnSensorManagerXml::load(QDomElement element, QObject* o)  {
     log->error("Invalid method called");
 }
 
-/*public*/ bool LnSensorManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) {
+/*public*/ bool LnSensorManagerXml::load(QDomElement shared, QDomElement perNode)  {
     // load individual sensors
     loadSensors(shared);
     return true;

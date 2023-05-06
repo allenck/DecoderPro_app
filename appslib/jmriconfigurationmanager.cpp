@@ -1,4 +1,6 @@
 #include "jmriconfigurationmanager.h"
+#include "dialogerrorhandler.h"
+#include "jmriexception.h"
 #include "profilemanager.h"
 #include "configxmlmanager.h"
 #include "profile.h"

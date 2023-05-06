@@ -1,5 +1,6 @@
 #include "actionsignalheadxml.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "actionsignalhead.h"
 #include "abstractsignalheadmanager.h"

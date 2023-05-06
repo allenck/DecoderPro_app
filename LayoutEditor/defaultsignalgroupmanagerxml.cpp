@@ -37,7 +37,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
 {
  QDomElement groups = doc.createElement("signalgroups");
  groups.setAttribute("class", "jmri.managers.configurexml.DefaultSignalGroupManagerXml"); //this.getClass().getName());
- SignalGroupManager* sgm = (SignalGroupManager*)o;
+ SignalGroupManager* sgm = (DefaultSignalGroupManager*)o;
  if(sgm != nullptr)
  {
   QSet<NamedBean*> sgList = sgm->getNamedBeanSet();

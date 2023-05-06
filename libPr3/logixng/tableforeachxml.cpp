@@ -1,5 +1,6 @@
 #include "tableforeachxml.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "tableforeach.h"
 #include "namedbeanaddressing.h"
 #include "tableroworcolumn.h"

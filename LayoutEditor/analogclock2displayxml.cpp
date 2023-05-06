@@ -1,6 +1,7 @@
 #include "analogclock2displayxml.h"
 #include "editor.h"
 #include "analogclock2display.h"
+#include "jmriconfigurexmlexception.h"
 
 AnalogClock2DisplayXml::AnalogClock2DisplayXml(QObject *parent) :
     AbstractXmlAdapter(parent)

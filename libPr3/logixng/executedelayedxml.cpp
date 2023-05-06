@@ -1,6 +1,7 @@
 #include "executedelayedxml.h"
 #include "defaultdigitalactionmanager.h"
 #include "executedelayed.h"
+#include "jmriconfigurexmlexception.h"
 #include "parserexception.h"
 #include "instancemanager.h"
 

@@ -1,5 +1,6 @@
 #include "actionwarrantxml.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "logixng/actionwarrant.h"
 #include "logixng/defaultdigitalactionmanager.h"
 #include "logixng/parserexception.h"

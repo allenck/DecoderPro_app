@@ -1,4 +1,5 @@
 #include "positionablelabelxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "layouteditor.h"
 #include "positionablepopuputil.h"
 #include "exceptions.h"

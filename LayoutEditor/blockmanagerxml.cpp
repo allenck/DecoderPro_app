@@ -2,6 +2,7 @@
 #include "blockmanager.h"
 #include "abstractreporter.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 #include "level.h"
 #include "path.h"
 #include "abstractblockmanager.h"

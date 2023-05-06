@@ -11,7 +11,7 @@ public:
     ~BlockBossLogicXml();
     BlockBossLogicXml(const BlockBossLogicXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o) override;
-    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) /*throw (JmriConfigureXmlException)*/ override;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
     /*public*/ int loadOrder()const override;
 

@@ -2,6 +2,7 @@
 #include "defaultdigitalactionmanager.h"
 #include "instancemanager.h"
 #include "actionlight.h"
+#include "jmriconfigurexmlexception.h"
 #include "proxylightmanager.h"
 #include "parserexception.h"
 /**

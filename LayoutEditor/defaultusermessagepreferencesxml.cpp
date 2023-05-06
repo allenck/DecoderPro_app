@@ -42,7 +42,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool DefaultUserMessagePreferencesXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
+/*public*/ bool DefaultUserMessagePreferencesXml::load(QDomElement shared, QDomElement perNode)
 {
  // ensure the master object exists
  UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");

@@ -1,4 +1,5 @@
 #include "defaultanalogexpressionmanagerxml.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "analogexpressionmanager.h"
 #include "instancemanager.h"

@@ -12,7 +12,7 @@ public:
     /*public*/ void setStoreElementClass(QDomElement sensors)  override;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
     /*public*/ QDomElement store(QObject* o) override;
-    /*public*/ bool load(QDomElement sensors, QDomElement perNodeSensors) throw (JmriConfigureXmlException) override;
+    /*public*/ bool load(QDomElement sensors, QDomElement perNodeSensors) /*throw (JmriConfigureXmlException)*/ override;
 
 signals:
 

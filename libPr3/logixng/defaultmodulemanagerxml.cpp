@@ -1,5 +1,6 @@
 #include "defaultmodulemanagerxml.h"
 #include "instancemanager.h"
+#include "jmriconfigurexmlexception.h"
 #include "loggerfactory.h"
 #include "modulemanager.h"
 #include "defaultmodulemanager.h"
