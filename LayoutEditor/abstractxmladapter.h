@@ -31,7 +31,7 @@ public:
     /*final*/ /*public*/ int getAttributeIntegerValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, int def) ;
     /*final*/ /*public*/ double getAttributeDoubleValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, double def);
     /*final*/ /*public*/ float getAttributeFloatValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, float def);
-
+    /*public*/ virtual QString getClassName() {return "";}
 signals:
 
 public slots:

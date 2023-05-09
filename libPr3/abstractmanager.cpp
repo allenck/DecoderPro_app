@@ -3,10 +3,7 @@
 #include "instancemanager.h"
 #include "jmriexception.h"
 #include "swingpropertychangesupport.h"
-#include "configxmlmanager.h"
-#include "abstractcatalogtree.h"
 #include "systemnamecomparator.h"
-#include "jmriconfigurationmanager.h"
 #include "vetoablechangesupport.h"
 #include "namedbeancomparator.h"
 #include "namedbean.h"
@@ -77,12 +74,12 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
  **/
 /*protected*/ void AbstractManager::registerSelf()
 {
-  log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
+  //log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
   ConfigureManager* cm;
   cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   if (cm != NULL) {
       cm->registerConfig(this, getXMLOrder());
-      log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
+      //log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
   }
 }
 

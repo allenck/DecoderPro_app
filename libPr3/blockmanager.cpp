@@ -1,15 +1,11 @@
 #include "blockmanager.h"
 #include "instancemanager.h"
-#include "sensormanager.h"
-#include "reportermanager.h"
 #include "abstractpowermanager.h"
 #include "vptr.h"
 #include "nosuchmethoderror.h"
 #include "rosterentry.h"
 #include "limits.h"
 #include "loggerfactory.h"
-#include "abstractsensormanager.h"
-#include "abstractreportermanager.h"
 #include "jmriexception.h"
 
 /**
@@ -46,6 +42,7 @@ BlockManager::BlockManager(QObject *parent) :
  setObjectName("BlockManager");
  setProperty("JavaClassName", "jmri.BlockManager");
  setProperty("InstanceManagerAutoDefault", "true");
+ setProperty("AdapterName", "jmri.configurexml.BlockManagerXml");
 
  registerSelf();
  saveBlockPath = true;

@@ -18,7 +18,7 @@ protected:
     /*protected*/ QString mainWindowHelpID();
     /*protected*/ QString line1();
     /*protected*/ QString line2();
-    /*protected*/ QWidget* statusPanel();
+    /*protected*/ JPanel* statusPanel();
 };
 class InstallTestQuitAction : public AbstractAction
 {

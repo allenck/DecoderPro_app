@@ -71,7 +71,7 @@ InstallTest::InstallTest(JFrame* p) : Apps(p) {
 }
 
 //@Override
-/*protected*/ QWidget* InstallTest::statusPanel() {
+/*protected*/ JPanel *InstallTest::statusPanel() {
     QWidget* j = new QWidget();
     QBoxLayout* jLayout;
     j->setLayout(jLayout =new QVBoxLayout()); //(j, BoxLayout.Y_AXIS));

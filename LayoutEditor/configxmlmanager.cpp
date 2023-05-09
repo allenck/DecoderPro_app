@@ -305,6 +305,8 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
 {
  //QString className = o->objectName();
  QString className = o->metaObject()->className();
+ if(o->property("AdapterName")!= QVariant())
+  return o->property("AdapterName").toString();
  if(className == "LayoutEditor")
   className = "LayoutEditor";
  if(className == "Pr3ConnectionConfig")
@@ -324,6 +326,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
            + "Xml";
    log->trace(tr("adapter class name is %1").arg(result));
    return result;
+   //return className;
  } else {
    // no last dot found!
   if(className.isEmpty())

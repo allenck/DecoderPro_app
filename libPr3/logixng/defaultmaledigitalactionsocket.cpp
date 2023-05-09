@@ -19,7 +19,8 @@
 /*public*/  DefaultMaleDigitalActionSocket::DefaultMaleDigitalActionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
                        /*@Nonnull*/ DigitalActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (AbstractBase*)action->bself(), parent){
     //super(manager, action);
- setObjectName("DefaultMaleDigitalActionSocket");
+    setObjectName("DefaultMaleDigitalActionSocket");
+    QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleDigitalActionSocketXml");
 }
 
 /** {@inheritDoc} */

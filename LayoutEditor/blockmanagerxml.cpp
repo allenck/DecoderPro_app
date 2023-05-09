@@ -3,7 +3,6 @@
 #include "abstractreporter.h"
 #include "instancemanager.h"
 #include "jmriexception.h"
-#include "level.h"
 #include "path.h"
 #include "abstractblockmanager.h"
 BlockManagerXml::BlockManagerXml(QObject *parent) :
@@ -11,6 +10,7 @@ BlockManagerXml::BlockManagerXml(QObject *parent) :
 {
  log = new Logger("BlockManagerXml");
  setObjectName("BlockManagerXml");
+ setProperty("JavaClassName", "jmri.jmrit.configurexml.BlockManagerXml");
 }
 
 BlockManagerXml::~BlockManagerXml()

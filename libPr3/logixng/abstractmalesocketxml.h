@@ -12,7 +12,7 @@ class AbstractMaleSocketXml : public AbstractNamedBeanManagerConfigXML, public M
  public:
   explicit AbstractMaleSocketXml(QObject *parent = nullptr);
   /*public*/  QDomElement store(QObject* o)override;
-  virtual QString getClassName()=0;
+  //virtual QString getClassName()=0;
   /*public*/  bool load(QDomElement shared, QDomElement perNode)override;
   /*public*/  bool load(QDomElement maleSocketElement, MaleSocket* maleSocket)override;
 

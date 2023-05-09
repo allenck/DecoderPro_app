@@ -1,4 +1,5 @@
 #include "abstractmanagerxml.h"
+#include "logixng/abstractmalesocketxml.h"
 #include "malesocket.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
@@ -95,7 +96,7 @@
 
                 if (c != nullptr) {
                     try {
-                        MaleSocketXml* o = (MaleSocketXml*)(c->newInstance());
+                        MaleSocketXml* o = (AbstractMaleSocketXml*)(c->newInstance());
 
                         QMap<MaleSocketXml*, QDomElement> entry = {{o, e}};
 //                                new HashMap.SimpleEntry<>(o, e);
@@ -109,13 +110,17 @@
 
         Base* m = maleSocket;
         while (qobject_cast<MaleSocket*>(m->bself())) {
-            MaleSocket* ms = (MaleSocket*) m->bself();
+            MaleSocket* ms = (AbstractMaleSocket*) m->bself();
 
             QString cName = ConfigXmlManager::adapterName(ms->bself());
+
             QMapIterator<MaleSocketXml*, QDomElement> entry(maleSocketXmlClasses.value(cName));
 
             try {
-                entry.key()->load(entry.value(), ms);
+                entry.next();
+                MaleSocketXml* k=entry.key();
+                QDomElement e = entry.value();
+                k->load(e, ms);
             } catch (RuntimeException* ex) {
                 log->error(tr("Error storing maleSocket: %1").arg(ex->toString()), ex);
             }

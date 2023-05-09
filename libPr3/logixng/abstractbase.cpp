@@ -292,9 +292,9 @@
  */
 /*public*/  /*default*/  void AbstractBase::doSocketOperation(int index, FemaleSocketOperation::TYPES oper)
 {
- if(qobject_cast<MaleSocket*>(this->bself()))
+ if(qobject_cast<AbstractMaleSocket*>(this->bself()))
  {
-   ((MaleSocket*)this->bself())->getObject()->doSocketOperation(index, oper);
+   ((AbstractMaleSocket*)this->bself())->getObject()->doSocketOperation(index, oper);
  }
  // By default, do nothing if not a male socket
 }

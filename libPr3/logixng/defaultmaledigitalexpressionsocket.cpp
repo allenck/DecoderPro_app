@@ -17,7 +17,9 @@
   /*@Nonnull*/ DigitalExpressionBean* expression, QObject *parent)
  :  AbstractMaleSocket(manager, expression, parent){
     //super(manager, expression);
- setObjectName("DefaultMaleDigitalExpressionSocket");
+    setObjectName("DefaultMaleDigitalExpressionSocket");
+    QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleDigitalExpressionSocket");
+
 }
 
 /** {@inheritDoc} */

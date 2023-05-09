@@ -429,6 +429,7 @@
             _numConditionalNGs++;
             _showReminder = true;
             makeEditConditionalNGWindow();
+            _conditionalNGTableModel->fireTableDataChanged();
         }
     }
 

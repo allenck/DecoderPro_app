@@ -2,12 +2,10 @@
 #define BLOCKMANAGER_H
 
 #include "block.h"
-#include "exceptions.h"
 #include <QCompleter>
 #include "decimalformat.h"
 #include "abstractshutdowntask.h"
 #include "instancemanagerautodefault.h"
-#include "propertyvetoexception.h"
 #include "providingmanager.h"
 #include "abstractblockmanager.h"
 
@@ -54,6 +52,7 @@ public:
     virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/override ;
     /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
+
     QObject* self() override {return (QObject*)this;}
     QObject* vself() override{return (QObject*)this;}
     QObject* pself() override{return (QObject*)this;}

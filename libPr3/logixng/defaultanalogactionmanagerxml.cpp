@@ -1,8 +1,8 @@
 #include "defaultanalogactionmanagerxml.h"
 #include "jmriconfigurexmlexception.h"
+#include "logixng/abstractanalogaction.h"
+#include "logixng/defaultmaleanalogactionsocket.h"
 #include "loggerfactory.h"
-#include "defaultmaleanalogactionsocket.h"
-#include "abstractanalogaction.h"
 
 /**
  * Provides the functionality for configuring ActionManagers
@@ -14,6 +14,7 @@
 
 
     /*public*/  DefaultAnalogActionManagerXml::DefaultAnalogActionManagerXml(QObject*parent) : AbstractManagerXml(parent){
+     setProperty("JavaClassName", "jmri.jmrit.logixng.implementation.configut=rexml.DefaultAnalogActionManagerXml");
     }
 
     /**
@@ -68,7 +69,7 @@
      * @param actions The top-level element being created
      */
     /*public*/  void  DefaultAnalogActionManagerXml::setStoreElementClass(QDomElement actions) {
-        actions.setAttribute("class", "jmri.jmrit.logixng.implementation.configut=rexml.DefaultAnalogActionManagerXml");  // NOI18N
+        actions.setAttribute("class", property("JavaClassName").toString());  // NOI18N
     }
 
     /**

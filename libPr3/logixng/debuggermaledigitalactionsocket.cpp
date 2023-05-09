@@ -11,8 +11,8 @@
       : AbstractDebuggerMaleSocket(manager, maleSocket,parent)
     {
         //super(manager, maleSocket);
-     setObjectName("DebuggerMaleDigitalActionSocket");
-
+        setObjectName("DebuggerMaleDigitalActionSocket");
+        setProperty("AdapterName","jmri.jmrit.logixng.tools.debugger.configurexml.DebuggerMaleDigitalActionSocketXml");
     }
 
     /** {@inheritDoc} */
