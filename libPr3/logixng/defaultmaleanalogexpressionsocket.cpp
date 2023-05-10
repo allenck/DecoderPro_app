@@ -17,6 +17,8 @@
    /*@Nonnull*/ AnalogExpressionBean* expression, QObject *parent) : AbstractMaleSocket(manager, expression, parent) {
     //super(manager, expression);
  setObjectName("DefaultMaleAnalogExpressionSocket");
+    QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleAnalogExpressionSocketXml");
+
 }
 
 /** {@inheritDoc} */

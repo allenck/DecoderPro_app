@@ -18,6 +18,8 @@
  /*@Nonnull*/ StringActionBean* stringAction, QObject* parent) : AbstractMaleSocket(manager, stringAction, parent)
 {
     //super(manager, stringAction);
+    QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleStringActionSocketXml");
+
 }
 
 /** {@inheritDoc} */

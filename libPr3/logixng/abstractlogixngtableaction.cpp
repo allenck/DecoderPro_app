@@ -73,6 +73,7 @@
     //@Override
     /*protected*/ void AbstractLogixNGTableAction::createModel() {
         m = new LNGBeanTableDataModel/*<E>*/(this);// {
+
     }
 //            // overlay the state column with the edit column
             /*static*/ /*public*/  /*final*/ int LNGBeanTableDataModel::ENABLECOL = VALUECOL;
@@ -129,7 +130,7 @@
                     return Qt::ItemIsEnabled | Qt::ItemIsEditable;
                 }
                 if (index.column() == ENABLECOL) {
-                    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+                    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
                 }
                 return BeanTableDataModel::flags(index);
             }
@@ -158,7 +159,9 @@
 
             //@SuppressWarnings("unchecked")  // Unchecked cast from Object to E
             //@Override
-            /*public*/  /*public*/  bool LNGBeanTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+            /*public*/  /*public*/  bool LNGBeanTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
+            {
+
              if(role == Qt::EditRole)
              {
                 if (index.column() == EDITCOL) {
@@ -177,12 +180,17 @@
                     } else if (tr("Delete") == (value)) {  // NOI18N
                         act->deletePressed(sName);
                     }
-                } else if (index.column() == ENABLECOL) {
+                }
+                return true;
+             }
+             if(role == Qt::CheckStateRole){
+                if (index.column() == ENABLECOL) {
                     // alternate
                     NamedBean* x = VPtr<NamedBean>::asPtr(BeanTableDataModel::getValueAt(index.row(), SYSNAMECOL));
                     bool v = act->isEnabled(x);
                     act->setEnabled(x, !v);
                 }
+                return true;
               }
               BeanTableDataModel::setData(index, value, role);
             }

@@ -14,6 +14,8 @@
     {
         //super(manager, maleSocket);
      setObjectName("DebuggerMaleStringActionSocket");
+        QObject::setProperty("AdapterName", "jmri.jmrit.logixng.tools,debugger.configurexml.DebuggerMaleStringActionSocketXml");
+
     }
 
     /** {@inheritDoc} */

@@ -683,7 +683,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
 
 /*protected*/ void BeanTableDataModel::configValueColumn(JTable* table) {
  // have the value column hold a button
- setColumnToHoldButton(table, VALUECOL, configureButton());
+ //setColumnToHoldButton(table, VALUECOL, configureButton());
  connect(table, SIGNAL(clicked(QModelIndex)),this, SLOT(On_itemClicked(QModelIndex)));
 }
 

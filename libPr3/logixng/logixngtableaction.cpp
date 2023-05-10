@@ -56,18 +56,18 @@
 
     //@Override
     /*protected*/ void LogixNGTableAction::setEnabled(NamedBean* logixNG, bool enable) {
-        ((LogixNG*)logixNG->self())->setEnabled(enable);
+        ((DefaultLogixNG*)logixNG->self())->setEnabled(enable);
     }
 
     //@Override
     /*protected*/ bool LogixNGTableAction::isEnabled(NamedBean* logixNG) {
-        return ((LogixNG*)logixNG->self())->isEnabled();
+        return ((DefaultLogixNG*)logixNG->self())->isEnabled();
     }
 
     //@Override
     /*protected*/ void LogixNGTableAction::enableAll(bool enable) {
         for (NamedBean* x : getManager()->getNamedBeanSet()) {
-            ((LogixNG*)x->self())->setEnabled(enable);
+            ((DefaultLogixNG*)x->self())->setEnabled(enable);
         }
         m->fireTableDataChanged();
     }
@@ -92,7 +92,7 @@
 
     //@Override
     /*public*/  void LogixNGTableAction::deleteBean(NamedBean* logixNG) {
-        ((LogixNG*)logixNG->self())->setEnabled(false);
+        ((DefaultLogixNG*)logixNG->self())->setEnabled(false);
         try {
             ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->deleteBean(logixNG, "DoDelete");
         } catch (PropertyVetoException* e) {

@@ -206,7 +206,7 @@
 
                     QDomElement systemNameElement = conditionalNGList.at(j).toElement();
                     QString systemName = "";
-                    if (systemNameElement != QDomElement()) {
+                    if (!systemNameElement .isNull()) {
                         systemName = systemNameElement.text().trimmed();
                     }
                     logixNG->setConditionalNG_SystemName(j, systemName);
@@ -219,7 +219,7 @@
         LogixNG_Manager* tm = (DefaultLogixNGManager*)
                 InstanceManager::getDefault("LogixNG_Manager");
 
-        LogixNG_InitializationManager* initializationManager =(LogixNG_InitializationManager*)
+        LogixNG_InitializationManager* initializationManager =(DefaultLogixNGInitializationManager*)
                 InstanceManager::getDefault("LogixNG_InitializationManager");
 
         QDomNodeList initTableList = sharedLogixNG.elementsByTagName("InitializationTable");  // NOI18N

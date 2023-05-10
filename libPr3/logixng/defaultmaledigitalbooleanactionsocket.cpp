@@ -20,6 +20,8 @@
       /*@Nonnull*/ DigitalBooleanActionBean* action, QObject* parent) : AbstractMaleSocket(manager, (Base*)action, parent) {
         //super(manager, action);
      setObjectName("DefaultMaleDigitalBooleanActionSocket");
+        QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleDigitalBooleanActionSocketXml");
+
     }
 
     /** {@inheritDoc} */

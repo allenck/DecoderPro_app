@@ -24,6 +24,8 @@
         //super(sys, user);
      setObjectName("ClipboardMany");
         _itemEntries.append(new ItemEntry(new DefaultFemaleAnySocket(this, this, getNewSocketName())));
+     QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.ClipboardManyXml");
+
     }
 
     /*public*/ ClipboardMany::ClipboardMany(QString sys, QString user, QList<ItemData*> itemSystemNames, QObject *parent)

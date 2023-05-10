@@ -13,6 +13,8 @@
      : AbstractDebuggerMaleSocket(manager, maleSocket, parent) {
         //super(manager, maleSocket);
         setObjectName("DebuggerMaleDigitalExpressionSocket");
+        QObject::setProperty("AdapterName", "jmri.jmrit.logixng.tools,debugger.configurexml.DebuggerMaleDigitalExpressionSocketXml");
+
     }
 
     /** {@inheritDoc} */

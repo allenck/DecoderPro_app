@@ -128,6 +128,7 @@
         for (NamedBean* nb : ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->AbstractManager::getNamedBeanSet()) {
          DefaultLogixNG* logixNG = (DefaultLogixNG*)nb->self();
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {
+                QString sn =logixNG->getConditionalNG_SystemName(i);
                 if (systemName == (logixNG->getConditionalNG_SystemName(i))) {
                     return logixNG;
                 }

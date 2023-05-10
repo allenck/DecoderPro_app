@@ -51,7 +51,7 @@ DefaultConditionalNGManagerXml::DefaultConditionalNGManagerXml(QObject *parent)
             QDomElement elem = doc.createElement("ConditionalNG");  // NOI18N
             QDomElement esn;
             elem.appendChild(esn=doc.createElement("systemName"));
-              esn.appendChild(doc.createTextNode(nb->getSystemName()));//(((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName()))));  // NOI18N
+            esn.appendChild(doc.createTextNode(conditionalNG->AbstractNamedBean::getSystemName()));//(((DefaultConditionalNG*)conditionalNG->bself())->AbstractNamedBean::getSystemName()))));  // NOI18N
 
             // store common part
             storeCommon(nb, elem);

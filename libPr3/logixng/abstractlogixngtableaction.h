@@ -3,6 +3,7 @@
 
 #include <abstracttableaction.h>
 #include "jtextarea.h"
+#include "logixng/defaultlogixngmanager.h"
 #include "namedbean.h"
 #include "abstractlogixngeditor.h"
 #include "beantabledatamodel.h"
@@ -119,7 +120,12 @@ class LNGBeanTableDataModel : public BeanTableDataModel
   Q_OBJECT
   AbstractLogixNGTableAction* act;
  public:
-  LNGBeanTableDataModel(AbstractLogixNGTableAction* act) {this->act = act;}
+  LNGBeanTableDataModel(AbstractLogixNGTableAction* act) {
+      this->act = act;
+      setManager((AbstractManager*)(DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"));
+      //updateNameList();
+      init();
+  }
   // overlay the state column with the edit column
   static /*public*/  /*final*/ int ENABLECOL;// = VALUECOL;
   static /*public*/  /*final*/ int EDITCOL;// = DELETECOL;

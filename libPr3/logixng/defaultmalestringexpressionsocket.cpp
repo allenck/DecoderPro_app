@@ -18,6 +18,8 @@
   /*@Nonnull*/ StringExpressionBean* stringExpression, QObject* parent) : AbstractMaleSocket(manager, stringExpression, parent){
     //super(manager, stringExpression);
  setObjectName("DefaultMaleStringExpressionSocket");
+    QObject::setProperty("AdapterName", "jmri.jmrit.logixng.implementation.configurexml.DefaultMaleStringExpressionSocketXml");
+
 }
 
 /** {@inheritDoc} */

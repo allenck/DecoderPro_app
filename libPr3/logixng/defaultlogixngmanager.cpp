@@ -413,7 +413,7 @@ void DLMRunnable::run()
 
     ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))->printTree(settings, locale, writer, indent, lineNumber);
     ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->printTree(locale, writer, indent);
-    ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->printTree(locale, writer, indent);
+    ((DefaultLogixNGInitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->printTree(locale, writer, indent);
 }
 
 
